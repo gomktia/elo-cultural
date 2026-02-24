@@ -1,0 +1,159 @@
+import { createClient } from '@/lib/supabase/server'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
+import { FileText, FolderOpen, Users, BarChart3, TrendingUp, ArrowRight, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import type { Edital } from '@/types/database.types'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+
+export default async function GestorDashboardPage() {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('tenant_id, nome')
+    .eq('id', user!.id)
+    .single()
+
+  const tenantId = profile?.tenant_id
+
+  const [
+    { count: totalEditais },
+    { count: totalProjetos },
+    { count: totalUsuarios },
+    { count: totalAvaliacoes },
+    { data: editaisRecentes },
+  ] = await Promise.all([
+    supabase.from('editais').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('active', true),
+    supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+    supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('active', true),
+    supabase.from('avaliacoes').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('status', 'finalizada'),
+    supabase.from('editais').select('*').eq('tenant_id', tenantId).eq('active', true).order('created_at', { ascending: false }).limit(5),
+  ])
+
+  const stats = [
+    { label: 'Editais Ativos', value: totalEditais ?? 0, icon: FileText },
+    { label: 'Inscricoes', value: totalProjetos ?? 0, icon: FolderOpen },
+    { label: 'Usuarios', value: totalUsuarios ?? 0, icon: Users },
+    { label: 'Avaliacoes Concluidas', value: totalAvaliacoes ?? 0, icon: BarChart3 },
+  ]
+
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite'
+  const firstName = profile?.nome?.split(' ')[0] || 'Gestor'
+
+  return (
+    <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-2 text-slate-400 mb-1">
+            <TrendingUp className="h-3 w-3" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Visão Geral</span>
+          </div>
+          <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none">
+            {greeting}, <span className="text-[var(--brand-primary)]">{firstName}</span>
+          </h1>
+          <p className="text-slate-500 font-medium mt-1.5 text-sm italic">
+            {format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
+          </p>
+        </div>
+        <Link href="/admin/editais/novo">
+          <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-black shadow-lg shadow-brand-primary/20 transition-all active:scale-95 text-sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Edital
+          </Button>
+        </Link>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, i) => (
+          <Card key={i} className="group border-none shadow-md bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-500">
+            <div className="absolute top-0 left-0 w-full h-1 bg-[var(--brand-primary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-4">
+                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors duration-500">
+                  <stat.icon className="h-5 w-5" />
+                </div>
+                <div className="text-[10px] font-black text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-lg flex items-center gap-1 group-hover:scale-105 transition-transform">
+                  <TrendingUp className="h-3 w-3" />
+                  +12%
+                </div>
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-2xl font-black text-slate-900 tracking-tighter leading-none group-hover:scale-105 transition-transform duration-500 origin-left">
+                  {stat.value.toLocaleString('pt-BR')}
+                </div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Recent Editais */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-lg font-black text-slate-900 tracking-tight">Editais Recentes</h2>
+            <Link href="/admin/editais" className="text-[10px] font-black text-[var(--brand-primary)] hover:underline uppercase tracking-widest">Ver Todos</Link>
+          </div>
+
+          <div className="grid gap-3">
+            {(editaisRecentes as Edital[] | null)?.map(edital => (
+              <Link key={edital.id} href={`/admin/editais/${edital.id}`} className="group">
+                <div className="flex items-center justify-between p-4 bg-white border border-slate-100/50 rounded-2xl shadow-sm group-hover:shadow-lg group-hover:border-[var(--brand-primary)]/20 transition-all duration-300">
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-brand-primary/5 group-hover:text-brand-primary transition-colors">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 leading-none mb-1 group-hover:text-[var(--brand-primary)] transition-colors text-sm">{edital.titulo}</h3>
+                      <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest leading-none">{edital.numero_edital}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <EditalStatusBadge status={edital.status} />
+                    <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-brand-primary group-hover:text-white transition-all transform group-hover:translate-x-0.5">
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Access Shortcuts */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-black text-slate-900 tracking-tight px-1">Acesso Rápido</h2>
+          <div className="grid gap-2.5">
+            {[
+              { href: '/gestor/rankings', icon: BarChart3, label: 'Rankings', desc: 'Classificação oficial', color: 'text-indigo-600', bg: 'bg-indigo-50' },
+              { href: '/gestor/relatorios', icon: FileText, label: 'Relatórios', desc: 'Dados e estatísticas', color: 'text-brand-primary', bg: 'bg-brand-primary/5' },
+              { href: '/admin/usuarios', icon: Users, label: 'Usuários', desc: 'Permissões e acessos', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+              { href: '/admin/auditoria', icon: BarChart3, label: 'Auditoria', desc: 'Log de segurança', color: 'text-slate-900', bg: 'bg-slate-100' },
+            ].map(item => (
+              <Link key={item.href} href={item.href} className="group">
+                <div className="flex items-center gap-4 p-4 rounded-[20px] bg-white border border-slate-100 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:translate-x-0.5">
+                  <div className={`h-10 w-10 rounded-xl ${item.bg} ${item.color} flex items-center justify-center transition-transform group-hover:scale-105`}>
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm text-slate-900 leading-none mb-1">{item.label}</p>
+                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-wider">{item.desc}</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-slate-200 group-hover:text-[var(--brand-primary)]" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
