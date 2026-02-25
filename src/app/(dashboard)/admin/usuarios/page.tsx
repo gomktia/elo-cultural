@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { Loader2, Search, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 import type { UserRole } from '@/types/database.types'
 
 const roleLabels: Record<string, string> = {
@@ -178,9 +179,11 @@ export default function UsuariosAdminPage() {
                   </div>
                 </div>
 
-                <Button variant="ghost" className="h-8 w-8 p-0 rounded-lg text-slate-300 hover:text-[var(--brand-primary)] hover:bg-brand-primary/5 transition-all">
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
+                <Link href={`/admin/usuarios/${u.id}`}>
+                  <Button variant="ghost" className="h-8 w-8 p-0 rounded-lg text-slate-300 hover:text-[var(--brand-primary)] hover:bg-brand-primary/5 transition-all">
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
