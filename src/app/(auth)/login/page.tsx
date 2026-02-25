@@ -181,13 +181,6 @@ function LoginForm() {
           </div>
         </div>
 
-        {/* Brand accent line */}
-        <div className="mt-6 flex items-center justify-center gap-2">
-          <div className="h-1 w-6 rounded-full bg-[#0047AB] opacity-40" />
-          <div className="h-1 w-6 rounded-full bg-[#e32a74] opacity-40" />
-          <div className="h-1 w-6 rounded-full bg-[#eeb513] opacity-40" />
-          <div className="h-1 w-6 rounded-full bg-[#77a80b] opacity-40" />
-        </div>
       </motion.div>
     </div>
   )

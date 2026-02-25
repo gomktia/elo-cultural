@@ -16,10 +16,10 @@ export default async function EditaisPublicosPage() {
     <div className="container mx-auto px-4 py-12 md:py-16 max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8 mb-10 md:mb-16 border-b border-slate-100 pb-6 md:pb-10">
         <div className="space-y-2 md:space-y-4">
-          <h1 className="text-4xl md:text-6xl font-[900] tracking-tighter text-slate-900 leading-[0.9]">
-            Editais <span className="text-[var(--brand-primary)]">Abertos</span>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
+            Editais Abertos
           </h1>
-          <p className="text-base md:text-xl text-slate-500 font-medium italic">
+          <p className="text-sm md:text-base text-slate-500">
             Descubra novas oportunidades para o seu projeto cultural.
           </p>
         </div>

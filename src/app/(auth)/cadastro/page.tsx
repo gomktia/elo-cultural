@@ -145,35 +145,32 @@ export default function CadastroPage() {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 bg-[#1a1c20] overflow-hidden selection:bg-[#0047AB]/30">
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#FF1493] rounded-full blur-[150px] opacity-[0.06] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500 rounded-full blur-[150px] opacity-[0.06] pointer-events-none" />
-
+    <div className="relative min-h-screen flex items-center justify-center p-4 bg-[#F8FAFC] overflow-hidden selection:bg-[#0047AB]/20">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
         className="relative z-10 w-full max-w-xl"
       >
-        <div className="bg-white/[0.03] backdrop-blur-[32px] rounded-[40px] border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.6)] overflow-hidden">
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_8px_40px_rgba(0,0,0,0.06)] overflow-hidden">
           <div className="p-8 md:p-12">
 
             <div className="flex flex-col items-center mb-8">
-              <h1 className="text-3xl font-bold tracking-tight text-white leading-none mb-2">
-                Criar <span className="text-[#0047AB]">Conta</span>
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900 leading-none mb-2">
+                Criar <span className="text-[var(--brand-primary)]">Conta</span>
               </h1>
-              <p className="text-[11px] uppercase font-semibold tracking-wider text-white/30 text-center">
+              <p className="text-[11px] uppercase font-semibold tracking-wider text-slate-400 text-center">
                 {step === 1 ? 'Dados Pessoais' : 'Dados do Perfil'}
               </p>
               {/* Step indicator */}
               <div className="flex items-center gap-2 mt-4">
-                <div className={`h-1.5 w-8 rounded-full transition-all ${step === 1 ? 'bg-[#0047AB]' : 'bg-white/10'}`} />
-                <div className={`h-1.5 w-8 rounded-full transition-all ${step === 2 ? 'bg-[#0047AB]' : 'bg-white/10'}`} />
+                <div className={`h-1.5 w-8 rounded-full transition-all ${step === 1 ? 'bg-[#0047AB]' : 'bg-slate-200'}`} />
+                <div className={`h-1.5 w-8 rounded-full transition-all ${step === 2 ? 'bg-[#0047AB]' : 'bg-slate-200'}`} />
               </div>
             </div>
 
             {error && (
-              <div className="rounded-2xl bg-rose-500/10 border border-rose-500/20 p-4 text-xs font-bold text-rose-400 text-center mb-5">
+              <div className="rounded-2xl bg-rose-50 border border-rose-200/60 p-4 text-xs font-bold text-rose-600 text-center mb-5">
                 {error}
               </div>
             )}
@@ -190,56 +187,56 @@ export default function CadastroPage() {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2 group">
-                      <Label htmlFor="nome" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Nome Completo</Label>
+                      <Label htmlFor="nome" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nome Completo</Label>
                       <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="nome" placeholder="Seu nome" value={nome} onChange={e => setNome(e.target.value)} required
-                          className="h-11 pl-12 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10 focus:ring-2 focus:ring-[#0047AB]/40 outline-none transition-all" />
+                          className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all" />
                       </div>
                     </div>
 
                     <div className="space-y-2 group">
-                      <Label htmlFor="email" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">E-mail</Label>
+                      <Label htmlFor="email" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">E-mail</Label>
                       <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="email" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} required
-                          className="h-11 pl-12 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10 focus:ring-2 focus:ring-[#0047AB]/40 outline-none transition-all" />
+                          className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all" />
                       </div>
                     </div>
 
                     <div className="space-y-2 group">
-                      <Label htmlFor="password" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Senha</Label>
+                      <Label htmlFor="password" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Senha</Label>
                       <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="password" type="password" placeholder="Min. 6 caracteres" value={password} onChange={e => setPassword(e.target.value)} minLength={6} required
-                          className="h-11 pl-12 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10 focus:ring-2 focus:ring-[#0047AB]/40 outline-none transition-all" />
+                          className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all" />
                       </div>
                     </div>
 
                     <div className="space-y-2 group">
-                      <Label htmlFor="cpf" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">CPF ou CNPJ</Label>
+                      <Label htmlFor="cpf" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">CPF ou CNPJ</Label>
                       <div className="relative">
-                        <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
+                        <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="cpf" placeholder="000.000.000-00" value={cpfCnpj} onChange={e => setCpfCnpj(e.target.value)} required
-                          className="h-11 pl-12 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10 focus:ring-2 focus:ring-[#0047AB]/40 outline-none transition-all" />
+                          className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all" />
                       </div>
                     </div>
 
                     <div className="space-y-2 group md:col-span-2">
-                      <Label htmlFor="telefone" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Telefone / WhatsApp</Label>
+                      <Label htmlFor="telefone" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Telefone / WhatsApp</Label>
                       <div className="relative">
-                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
+                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="telefone" placeholder="(00) 00000-0000" value={telefone} onChange={e => setTelefone(e.target.value)} required
-                          className="h-11 pl-12 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10 focus:ring-2 focus:ring-[#0047AB]/40 outline-none transition-all" />
+                          className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all" />
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 bg-white/[0.02] p-4 rounded-2xl border border-white/5 mt-4">
+                  <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 mt-4">
                     <input type="checkbox" id="lgpd" checked={lgpdConsent} onChange={e => setLgpdConsent(e.target.checked)}
-                      className="mt-1 h-4 w-4 rounded border-white/10 bg-white/5 text-[#0047AB] focus:ring-offset-0 focus:ring-[#0047AB]" />
-                    <Label htmlFor="lgpd" className="text-[11px] text-white/40 font-medium leading-relaxed uppercase tracking-wider cursor-pointer">
-                      Li e aceito os <span className="text-white underline">Termos de Uso</span> e a <span className="text-white underline">Politica de Privacidade</span> (LGPD).
+                      className="mt-1 h-4 w-4 rounded border-slate-200 bg-slate-50 text-[#0047AB] focus:ring-offset-0 focus:ring-[#0047AB]" />
+                    <Label htmlFor="lgpd" className="text-[11px] text-slate-500 font-medium leading-relaxed uppercase tracking-wider cursor-pointer">
+                      Li e aceito os <span className="text-[var(--brand-primary)] underline">Termos de Uso</span> e a <span className="text-[var(--brand-primary)] underline">Politica de Privacidade</span> (LGPD).
                     </Label>
                   </div>
 
@@ -247,9 +244,9 @@ export default function CadastroPage() {
                     <ArrowRight className="mr-2 h-4 w-4" /> Proximo: Dados do Perfil
                   </Button>
 
-                  <p className="text-center text-xs font-medium text-white/20 uppercase tracking-wide pt-2">
+                  <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-wide pt-2">
                     Ja possui acesso? {' '}
-                    <Link href="/login" className="text-white hover:text-[#0047AB] underline transition-colors">Entrar</Link>
+                    <Link href="/login" className="text-[var(--brand-primary)] hover:underline transition-colors">Entrar</Link>
                   </p>
                 </motion.form>
               ) : (
@@ -263,7 +260,7 @@ export default function CadastroPage() {
                 >
                   {/* Profile type selector */}
                   <div className="space-y-2">
-                    <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Tipo de Perfil</Label>
+                    <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Tipo de Perfil</Label>
                     <div className="grid grid-cols-3 gap-2">
                       {([
                         { key: 'proponente' as const, label: 'Proponente' },
@@ -278,7 +275,7 @@ export default function CadastroPage() {
                             'py-2.5 rounded-xl text-[11px] font-semibold uppercase tracking-wide transition-all border',
                             perfilTipo === tipo.key
                               ? 'bg-[#0047AB] text-white border-[#0047AB] shadow-lg shadow-[#0047AB]/20'
-                              : 'bg-white/[0.02] text-white/40 border-white/10 hover:border-white/20'
+                              : 'bg-slate-50 text-slate-400 border-slate-200 hover:border-slate-300'
                           ].join(' ')}
                         >
                           {tipo.label}
@@ -287,7 +284,7 @@ export default function CadastroPage() {
                     </div>
                   </div>
 
-                  <div className="h-px bg-white/5 my-4" />
+                  <div className="h-px bg-slate-200 my-4" />
 
                   {/* Role-specific form */}
                   <div className="max-h-[400px] overflow-y-auto pr-1 scrollbar-thin">
@@ -307,7 +304,7 @@ export default function CadastroPage() {
                       type="button"
                       onClick={() => setStep(1)}
                       variant="outline"
-                      className="h-12 px-6 rounded-2xl border-white/10 text-white/60 hover:text-white hover:bg-white/5 font-semibold uppercase text-xs tracking-wider transition-all"
+                      className="h-12 px-6 rounded-2xl border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-100 font-semibold uppercase text-xs tracking-wider transition-all"
                     >
                       <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
                     </Button>
@@ -316,7 +313,7 @@ export default function CadastroPage() {
                     </Button>
                   </div>
 
-                  <p className="text-center text-xs font-medium text-white/15 uppercase tracking-wide pt-1">
+                  <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-wide pt-1">
                     Esses dados podem ser atualizados depois no seu perfil.
                   </p>
                 </motion.form>
