@@ -50,7 +50,7 @@ export default async function RankingPage({
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-[900] tracking-tight text-slate-900">Ranking</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Ranking</h1>
           <p className="text-sm text-slate-500 font-medium">{edital.titulo} — {edital.numero_edital}</p>
         </div>
       </div>

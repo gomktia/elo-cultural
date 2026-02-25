@@ -50,7 +50,7 @@ export function UserMenu({ userName, userEmail, role }: UserMenuProps) {
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton size="lg" className="h-12 w-full rounded-xl hover:bg-white/[0.08] group transition-all duration-200 group-data-[collapsible=icon]:!size-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:mx-auto">
           <Avatar className="h-8 w-8 border border-white/20 group-data-[collapsible=icon]:h-7 group-data-[collapsible=icon]:w-7">
-            <AvatarFallback className="bg-[var(--brand-primary)] text-white font-bold text-[10px]">
+            <AvatarFallback className="bg-[var(--brand-primary)] text-white font-semibold text-[11px]">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -58,7 +58,7 @@ export function UserMenu({ userName, userEmail, role }: UserMenuProps) {
             <span className="text-sm font-semibold text-white truncate">
               {userName}
             </span>
-            <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider truncate">
+            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wide truncate">
               {roleLabels[role]}
             </span>
           </div>
@@ -67,13 +67,13 @@ export function UserMenu({ userName, userEmail, role }: UserMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" side="top" className="w-[240px] p-2 rounded-xl shadow-premium border-slate-100 backdrop-blur-xl bg-white/95">
         <div className="px-3 py-2.5 mb-1 border-b border-slate-100">
-          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.15em] mb-0.5">Logado como</p>
-          <p className="text-sm font-bold text-slate-900 truncate">{userEmail}</p>
+          <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mb-0.5">Logado como</p>
+          <p className="text-sm font-medium text-slate-900 truncate">{userEmail}</p>
         </div>
 
         <DropdownMenuItem
           onClick={() => router.push('/perfil')}
-          className="rounded-lg py-2.5 px-3 font-semibold text-sm text-slate-600 hover:text-slate-900 focus:bg-slate-50 transition-colors cursor-pointer group"
+          className="rounded-lg py-2.5 px-3 font-medium text-sm text-slate-600 hover:text-slate-900 focus:bg-slate-50 transition-colors cursor-pointer group"
         >
           <User className="mr-2.5 h-4 w-4 text-slate-400 group-hover:text-[var(--brand-primary)]" />
           Meu Perfil
@@ -83,7 +83,7 @@ export function UserMenu({ userName, userEmail, role }: UserMenuProps) {
 
         <DropdownMenuItem
           onClick={handleLogout}
-          className="rounded-lg py-2.5 px-3 font-semibold text-sm text-destructive hover:bg-destructive/5 focus:bg-destructive/5 transition-colors cursor-pointer group"
+          className="rounded-lg py-2.5 px-3 font-medium text-sm text-destructive hover:bg-destructive/5 focus:bg-destructive/5 transition-colors cursor-pointer group"
         >
           <LogOut className="mr-2.5 h-4 w-4 text-destructive/40 group-hover:text-destructive" />
           Encerrar Sessao

@@ -84,7 +84,7 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
     <Sidebar collapsible="icon" className="border-none bg-transparent">
       <div className="flex h-full flex-col sidebar-navy">
         {/* Header with Logo */}
-        <SidebarHeader className="px-5 pt-6 pb-4 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pt-4 group-data-[collapsible=icon]:pb-3">
+        <SidebarHeader className="flex items-center px-5 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:justify-center" style={{ height: 80 }}>
           <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
             <div className="flex-shrink-0 flex items-center justify-center">
               <Image
@@ -92,16 +92,16 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
                 alt="Elo Cultura"
                 width={40}
                 height={40}
-                className="rounded-xl bg-white p-1 shadow-lg shadow-black/20 ring-1 ring-white/20 transition-all group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
+                className="rounded-xl bg-white p-1 shadow-lg shadow-black/20 ring-1 ring-white/20 object-contain transition-all group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
               />
             </div>
             <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-              <p className="truncate text-[15px] font-[800] tracking-[-0.02em] text-white leading-tight">
+              <p className="truncate text-sm font-bold tracking-tight text-white leading-tight">
                 {tenantName || 'Elo Cultura'}
               </p>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
-                <p className="text-[10px] text-slate-400 font-medium uppercase tracking-[0.12em]">Sistema Ativo</p>
+                <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Sistema Ativo</p>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
         {/* Navigation */}
         <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-1.5">
           <SidebarGroup className="group-data-[collapsible=icon]:p-1">
-            <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500 px-3 mb-2 group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-[11px] font-medium uppercase tracking-wider text-slate-500 px-3 mb-2 group-data-[collapsible=icon]:hidden">
               Menu
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -130,7 +130,7 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
                         <Link
                           href={item.url}
                           className={[
-                            'flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-200 relative group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0',
+                            'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 relative group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0',
                             isExactlyActive
                               ? 'sidebar-item-active text-white'
                               : 'text-slate-400 hover:text-white hover:bg-white/[0.05]',

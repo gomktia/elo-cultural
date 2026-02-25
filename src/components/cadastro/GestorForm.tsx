@@ -17,7 +17,7 @@ export function GestorForm({ form, onChange }: GestorFormProps) {
   return (
     <div className="space-y-5">
       <div className="space-y-2">
-        <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
           <Building2 className="h-3 w-3" /> Orgao Vinculado
         </Label>
         <Input
@@ -31,7 +31,7 @@ export function GestorForm({ form, onChange }: GestorFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
             <Briefcase className="h-3 w-3" /> Funcao / Cargo
           </Label>
           <Input
@@ -44,7 +44,7 @@ export function GestorForm({ form, onChange }: GestorFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
             <Hash className="h-3 w-3" /> Matricula
           </Label>
           <Input

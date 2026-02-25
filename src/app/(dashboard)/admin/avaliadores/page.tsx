@@ -42,10 +42,10 @@ export default async function AvaliadoresPage() {
       <div className="border-b border-slate-100 pb-6">
         <div className="flex items-center gap-3 mb-2">
           <ClipboardList className="h-5 w-5 text-[var(--brand-primary)]" />
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Painel de Avaliadores</span>
+          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Painel de Avaliadores</span>
         </div>
-        <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">Avaliadores</h1>
-        <p className="text-sm text-slate-500 font-medium italic">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Avaliadores</h1>
+        <p className="text-sm text-slate-500 font-normal">
           {avaliadores?.length || 0} avaliador{(avaliadores?.length || 0) !== 1 ? 'es' : ''} cadastrado{(avaliadores?.length || 0) !== 1 ? 's' : ''} no tenant
         </p>
       </div>
@@ -61,34 +61,34 @@ export default async function AvaliadoresPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] opacity-0 group-hover:opacity-[0.02] transition-opacity duration-500 rounded-[28px]" />
                 <div className="relative p-6 bg-white border border-slate-100 rounded-[28px] shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
                   <div className="flex items-start gap-4 mb-5">
-                    <div className="h-12 w-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-black text-sm flex-shrink-0">
+                    <div className="h-12 w-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm flex-shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-sm font-bold text-slate-900 truncate group-hover:text-[var(--brand-primary)] transition-colors">
                         {av.nome}
                       </h3>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
+                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mt-0.5">
                         {av.cpf_cnpj || 'CPF não informado'}
                       </p>
                     </div>
-                    <Badge className={`${av.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[8px] font-black uppercase tracking-widest py-0.5`}>
+                    <Badge className={`${av.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
                       {av.active ? 'Ativo' : 'Inativo'}
                     </Badge>
                   </div>
 
                   <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50/50 rounded-2xl">
                     <div className="text-center">
-                      <p className="text-lg font-black text-slate-900">{stats?.total || 0}</p>
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Atribuidas</p>
+                      <p className="text-lg font-semibold text-slate-900">{stats?.total || 0}</p>
+                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Atribuidas</p>
                     </div>
                     <div className="text-center border-x border-slate-100">
-                      <p className="text-lg font-black text-[var(--brand-success)]">{stats?.finalizadas || 0}</p>
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Concluidas</p>
+                      <p className="text-lg font-semibold text-[var(--brand-success)]">{stats?.finalizadas || 0}</p>
+                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Concluidas</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-lg font-black text-amber-600">{stats?.em_andamento || 0}</p>
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Pendentes</p>
+                      <p className="text-lg font-semibold text-amber-600">{stats?.em_andamento || 0}</p>
+                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Pendentes</p>
                     </div>
                   </div>
 
@@ -96,12 +96,12 @@ export default async function AvaliadoresPage() {
                     <div className="mt-4 flex items-center gap-2 flex-wrap">
                       <FileText className="h-3 w-3 text-slate-300 flex-shrink-0" />
                       {Array.from(stats.editais).slice(0, 3).map(ed => (
-                        <span key={ed} className="text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md">
+                        <span key={ed} className="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md">
                           {ed}
                         </span>
                       ))}
                       {stats.editais.size > 3 && (
-                        <span className="text-[9px] font-bold text-slate-300">+{stats.editais.size - 3}</span>
+                        <span className="text-[11px] font-bold text-slate-300">+{stats.editais.size - 3}</span>
                       )}
                     </div>
                   )}
@@ -109,9 +109,9 @@ export default async function AvaliadoresPage() {
                   <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <User className="h-3 w-3 text-slate-300" />
-                      <span className="text-[9px] font-bold text-slate-400">{av.telefone || 'Sem telefone'}</span>
+                      <span className="text-[11px] font-bold text-slate-400">{av.telefone || 'Sem telefone'}</span>
                     </div>
-                    <span className="text-[9px] font-bold text-slate-300">
+                    <span className="text-[11px] font-bold text-slate-300">
                       Desde {new Date(av.created_at).toLocaleDateString('pt-BR')}
                     </span>
                   </div>
@@ -126,7 +126,7 @@ export default async function AvaliadoresPage() {
             <ClipboardList className="h-8 w-8 text-slate-200" />
           </div>
           <h3 className="text-lg font-bold text-slate-900 mb-1">Nenhum avaliador cadastrado</h3>
-          <p className="text-sm text-slate-500 max-w-xs font-medium italic">
+          <p className="text-sm text-slate-500 max-w-xs font-normal">
             Promova usuarios ao perfil de avaliador na pagina de Usuarios.
           </p>
         </div>

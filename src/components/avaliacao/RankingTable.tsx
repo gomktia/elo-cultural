@@ -27,7 +27,7 @@ export function RankingTable({ items }: RankingTableProps) {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
         <div className="space-y-1">
-          <h3 className="text-xl font-[900] text-slate-900 tracking-tight flex items-center gap-3">
+          <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
             <div className="h-2 w-8 bg-[var(--brand-primary)] rounded-full" />
             Classificação Geral
           </h3>
@@ -39,11 +39,11 @@ export function RankingTable({ items }: RankingTableProps) {
         <Table>
           <TableHeader className="bg-slate-50/50">
             <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="w-24 py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Posição</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Projeto</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Nota Final</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-center">Avaliações</TableHead>
-              <TableHead className="py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-right">Status</TableHead>
+              <TableHead className="w-24 py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Posição</TableHead>
+              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto</TableHead>
+              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Nota Final</TableHead>
+              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Avaliações</TableHead>
+              <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,7 +64,7 @@ export function RankingTable({ items }: RankingTableProps) {
                           <Trophy className="h-5 w-5 fill-current" />
                         </div>
                       ) : (
-                        <div className="h-10 w-10 flex items-center justify-center font-black text-slate-300 text-lg">
+                        <div className="h-10 w-10 flex items-center justify-center font-semibold text-slate-300 text-lg">
                           {item.posicao}
                         </div>
                       )}
@@ -72,30 +72,30 @@ export function RankingTable({ items }: RankingTableProps) {
                   </TableCell>
                   <TableCell className="py-6 px-4">
                     <div className="space-y-1">
-                      <div className="text-base font-black text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
+                      <div className="text-base font-semibold text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
                         {item.titulo}
                       </div>
-                      <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">
                         PROT: {item.protocolo}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="py-6 px-4">
                     <div className={[
-                      'text-lg md:text-2xl font-[900] tracking-tighter transition-transform group-hover:scale-110 origin-left',
+                      'text-lg md:text-2xl font-bold tracking-tight transition-transform group-hover:scale-110 origin-left',
                       isTop3 ? 'text-slate-900' : 'text-slate-400'
                     ].join(' ')}>
                       {item.nota_media?.toFixed(2) ?? '—'}
                     </div>
                   </TableCell>
                   <TableCell className="py-6 px-4 text-center">
-                    <div className="h-8 w-12 bg-slate-50 rounded-lg flex items-center justify-center mx-auto border border-slate-100 font-black text-xs text-slate-600">
+                    <div className="h-8 w-12 bg-slate-50 rounded-lg flex items-center justify-center mx-auto border border-slate-100 font-semibold text-xs text-slate-600">
                       {item.num_avaliacoes}
                     </div>
                   </TableCell>
                   <TableCell className="py-6 px-8 text-right">
                     <Badge className={[
-                      'border-none rounded-lg px-2 text-[10px] font-black uppercase tracking-widest py-1',
+                      'border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-1',
                       item.status === 'selecionado' ? 'bg-green-50 text-[var(--brand-success)]' :
                         item.status === 'suplente' ? 'bg-orange-50 text-[var(--brand-warning)]' :
                           'bg-slate-50 text-slate-400'
@@ -113,7 +113,7 @@ export function RankingTable({ items }: RankingTableProps) {
                     <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <Trophy className="h-8 w-8" />
                     </div>
-                    <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Nenhum resultado processado</p>
+                    <p className="text-slate-400 font-medium text-xs uppercase tracking-wide">Nenhum resultado processado</p>
                   </div>
                 </TableCell>
               </TableRow>

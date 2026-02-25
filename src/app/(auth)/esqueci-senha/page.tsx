@@ -60,14 +60,14 @@ export default function EsqueciSenhaPage() {
                   <CheckCircle2 className="h-10 w-10 text-emerald-500" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-white tracking-tight leading-none mb-3">Link Enviado</h2>
+                  <h2 className="text-2xl font-semibold text-white tracking-tight leading-none mb-3">Link Enviado</h2>
                   <p className="text-sm text-white/40 font-medium leading-relaxed">
                     Enviamos as instruções de recuperação para o e-mail: <br />
                     <span className="text-white font-bold">{email}</span>
                   </p>
                 </div>
                 <Link href="/login" className="block pt-4">
-                  <Button variant="outline" className="w-full h-12 rounded-2xl border-white/10 bg-white/5 text-white font-bold uppercase text-[10px] tracking-widest hover:bg-white/10 transition-all active:scale-95">
+                  <Button variant="outline" className="w-full h-12 rounded-2xl border-white/10 bg-white/5 text-white font-semibold uppercase text-xs tracking-wide hover:bg-white/10 transition-all active:scale-95">
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Voltar ao Login
                   </Button>
@@ -79,10 +79,10 @@ export default function EsqueciSenhaPage() {
                   <div className="h-16 w-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mb-6 border border-white/10">
                     <Mail className="h-8 w-8 text-[#0047AB]" />
                   </div>
-                  <h1 className="text-3xl font-[900] tracking-tighter text-white leading-none mb-2">
+                  <h1 className="text-3xl font-bold tracking-tight text-white leading-none mb-2">
                     Recuperar <span className="text-[#0047AB]">Senha</span>
                   </h1>
-                  <p className="text-[10px] uppercase font-black tracking-[0.4em] text-white/30">
+                  <p className="text-[11px] uppercase font-semibold tracking-wider text-white/30">
                     Portal de Autoatendimento
                   </p>
                 </div>
@@ -95,7 +95,7 @@ export default function EsqueciSenhaPage() {
                   )}
 
                   <div className="space-y-2 group">
-                    <Label htmlFor="email" className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">E-mail de Cadastro</Label>
+                    <Label htmlFor="email" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">E-mail de Cadastro</Label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
                       <Input
@@ -110,12 +110,12 @@ export default function EsqueciSenhaPage() {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]" disabled={loading}>
+                  <Button type="submit" className="w-full h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-semibold uppercase text-xs tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]" disabled={loading}>
                     {loading ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : 'Enviar Link de Recuperação'}
                   </Button>
 
                   <div className="text-center pt-2">
-                    <Link href="/login" className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] hover:text-white transition-colors flex items-center justify-center gap-2">
+                    <Link href="/login" className="text-[11px] font-medium text-white/20 uppercase tracking-wider hover:text-white transition-colors flex items-center justify-center gap-2">
                       <ArrowLeft className="h-3 w-3" />
                       Lembrei minha senha
                     </Link>

@@ -56,7 +56,7 @@ export function AvancarEtapaButton({ editalId, currentStatus }: AvancarEtapaButt
     <Button
       onClick={handleClick}
       disabled={loading}
-      className="w-full h-10 rounded-xl bg-[var(--brand-success)] hover:opacity-90 text-white font-black transition-all text-xs uppercase tracking-widest shadow-sm"
+      className="w-full h-10 rounded-xl bg-[var(--brand-success)] hover:opacity-90 text-white font-semibold transition-all text-xs uppercase tracking-wide shadow-sm"
     >
       {loading ? (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

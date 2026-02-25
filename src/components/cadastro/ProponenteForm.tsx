@@ -49,7 +49,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
     <div className="space-y-6">
       {/* Areas de Atuacao */}
       <div className="space-y-2">
-        <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
           <Briefcase className="h-3 w-3" /> Areas de Atuacao Cultural
         </Label>
         <div className="flex flex-wrap gap-2">
@@ -59,7 +59,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
               type="button"
               onClick={() => toggleArea(area)}
               className={[
-                'px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border',
+                'px-3 py-1.5 rounded-xl text-[11px] font-medium uppercase tracking-wider transition-all border',
                 form.areas_atuacao?.includes(area)
                   ? 'bg-[#0047AB] text-white border-[#0047AB]'
                   : 'bg-white/[0.02] text-white/40 border-white/10 hover:border-white/20'
@@ -74,7 +74,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Tempo de Atuacao */}
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Tempo de Atuacao</Label>
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Tempo de Atuacao</Label>
           <Select value={form.tempo_atuacao} onValueChange={v => onChange('tempo_atuacao', v)}>
             <SelectTrigger className="h-11 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white">
               <SelectValue placeholder="Selecione..." />
@@ -87,7 +87,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
 
         {/* Renda */}
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Faixa de Renda</Label>
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Faixa de Renda</Label>
           <Select value={form.renda} onValueChange={v => onChange('renda', v)}>
             <SelectTrigger className="h-11 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white">
               <SelectValue placeholder="Selecione..." />
@@ -100,7 +100,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
 
         {/* Genero */}
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
             <Heart className="h-3 w-3" /> Genero
           </Label>
           <Select value={form.genero} onValueChange={v => onChange('genero', v)}>
@@ -115,7 +115,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
 
         {/* Orientacao Sexual */}
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Orientacao Sexual</Label>
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Orientacao Sexual</Label>
           <Select value={form.orientacao_sexual} onValueChange={v => onChange('orientacao_sexual', v)}>
             <SelectTrigger className="h-11 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white">
               <SelectValue placeholder="Selecione..." />
@@ -128,7 +128,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
 
         {/* Raca/Etnia */}
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Raca / Etnia</Label>
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Raca / Etnia</Label>
           <Select value={form.raca_etnia} onValueChange={v => onChange('raca_etnia', v)}>
             <SelectTrigger className="h-11 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white">
               <SelectValue placeholder="Selecione..." />
@@ -156,7 +156,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
 
       {/* Endereco */}
       <div className="space-y-2">
-        <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
           <MapPin className="h-3 w-3" /> Endereco
         </Label>
         <Input
@@ -169,7 +169,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Municipio</Label>
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Municipio</Label>
           <Input
             placeholder="Cidade"
             value={form.municipio}
@@ -178,7 +178,7 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Estado</Label>
+          <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Estado</Label>
           <Select value={form.estado} onValueChange={v => onChange('estado', v)}>
             <SelectTrigger className="h-11 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white">
               <SelectValue placeholder="UF" />

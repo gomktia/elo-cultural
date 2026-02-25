@@ -98,7 +98,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-50 pb-6">
         <div className="space-y-1">
-          <h2 className="text-2xl font-[900] text-slate-900 tracking-tight flex items-center gap-3">
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
             <div className="h-8 w-2 bg-[var(--brand-primary)] rounded-full" />
             Definição de Parâmetros
           </h2>
@@ -108,7 +108,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
           <Button
             variant="outline"
             onClick={addCriterio}
-            className="h-12 px-6 rounded-2xl border-slate-200 hover:bg-slate-50 font-black transition-all active:scale-95 flex items-center gap-2"
+            className="h-12 px-6 rounded-2xl border-slate-200 hover:bg-slate-50 font-semibold transition-all active:scale-95 flex items-center gap-2"
           >
             <Plus className="h-5 w-5 text-slate-400" />
             Adicionar Critério
@@ -116,7 +116,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
           <Button
             onClick={saveAll}
             disabled={saving}
-            className="h-12 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-black shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
+            className="h-12 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-semibold shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
           >
             {saving ? <Plus className="h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5 text-white/70 group-hover:scale-110 transition-transform" />}
             Salvar Critérios
@@ -128,11 +128,11 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
         <Table>
           <TableHeader className="bg-slate-50/50">
             <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="w-16 py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-center">#</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Descrição do Critério</TableHead>
-              <TableHead className="w-28 py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-center">Mínima</TableHead>
-              <TableHead className="w-28 py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-center">Máxima</TableHead>
-              <TableHead className="w-28 py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-center">Peso</TableHead>
+              <TableHead className="w-16 py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">#</TableHead>
+              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Descrição do Critério</TableHead>
+              <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Mínima</TableHead>
+              <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Máxima</TableHead>
+              <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Peso</TableHead>
               <TableHead className="w-16 py-6 px-8"></TableHead>
             </TableRow>
           </TableHeader>
@@ -140,7 +140,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
             {items.map((item, idx) => (
               <TableRow key={idx} className="hover:bg-slate-50/50 transition-colors border-slate-50 group">
                 <TableCell className="py-6 px-8 text-center">
-                  <div className="h-10 w-10 flex items-center justify-center font-black text-slate-300 text-lg bg-slate-50 rounded-xl mx-auto">
+                  <div className="h-10 w-10 flex items-center justify-center font-semibold text-slate-300 text-lg bg-slate-50 rounded-xl mx-auto">
                     {idx + 1}
                   </div>
                 </TableCell>
@@ -154,7 +154,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                 </TableCell>
                 <TableCell className="py-6 px-4">
                   <Input
-                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-[var(--brand-primary)]/20"
+                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-semibold focus:ring-2 focus:ring-[var(--brand-primary)]/20"
                     type="number"
                     value={item.nota_minima}
                     onChange={e => updateField(idx, 'nota_minima', Number(e.target.value))}
@@ -162,7 +162,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                 </TableCell>
                 <TableCell className="py-6 px-4">
                   <Input
-                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-[var(--brand-primary)]/20"
+                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-semibold focus:ring-2 focus:ring-[var(--brand-primary)]/20"
                     type="number"
                     value={item.nota_maxima}
                     onChange={e => updateField(idx, 'nota_maxima', Number(e.target.value))}
@@ -170,7 +170,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                 </TableCell>
                 <TableCell className="py-6 px-4">
                   <Input
-                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-[var(--brand-primary)]/20"
+                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-semibold focus:ring-2 focus:ring-[var(--brand-primary)]/20"
                     type="number"
                     value={item.peso}
                     onChange={e => updateField(idx, 'peso', Number(e.target.value))}
@@ -195,7 +195,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                     <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <Plus className="h-8 w-8" />
                     </div>
-                    <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest italic leading-relaxed max-w-[200px] mx-auto">
+                    <p className="text-slate-400 font-medium text-xs uppercase tracking-wide italic leading-relaxed max-w-[200px] mx-auto">
                       Nenhum critério definido para este edital.
                     </p>
                   </div>

@@ -132,7 +132,7 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-50 pb-6">
         <div className="space-y-1">
-          <h2 className="text-2xl font-[900] text-slate-900 tracking-tight flex items-center gap-3">
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
             <div className="h-8 w-2 bg-[var(--brand-primary)] rounded-full" />
             Painel de Distribuição
           </h2>
@@ -142,7 +142,7 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
         <Button
           onClick={saveAtribuicoes}
           disabled={saving}
-          className="h-14 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-black shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
+          className="h-14 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-semibold shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
         >
           {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Shield className="mr-2 h-5 w-5 text-white/70 group-hover:scale-110 transition-transform" />}
           Salvar Atribuições
@@ -153,16 +153,16 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
         <Table>
           <TableHeader className="bg-slate-50/50">
             <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="sticky left-0 bg-slate-50/90 backdrop-blur-md z-20 w-[280px] py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">
+              <TableHead className="sticky left-0 bg-slate-50/90 backdrop-blur-md z-20 w-[280px] py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">
                 Avaliador
               </TableHead>
               {projetos.map(p => (
                 <TableHead key={p.id} className="text-center min-w-[200px] py-6 px-4">
                   <div className="space-y-1">
-                    <div className="text-sm font-black text-slate-900 tracking-tight truncate max-w-[180px] mx-auto" title={p.titulo}>
+                    <div className="text-sm font-semibold text-slate-900 tracking-tight truncate max-w-[180px] mx-auto" title={p.titulo}>
                       {p.titulo}
                     </div>
-                    <div className="text-[10px] font-black text-[var(--brand-primary)] uppercase tracking-widest bg-brand-primary/5 inline-block px-2 py-0.5 rounded-md">
+                    <div className="text-[11px] font-medium text-[var(--brand-primary)] uppercase tracking-wide bg-brand-primary/5 inline-block px-2 py-0.5 rounded-md">
                       {p.numero_protocolo}
                     </div>
                   </div>
@@ -175,14 +175,14 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
               <TableRow key={av.id} className="hover:bg-slate-50/50 transition-colors border-slate-50 group">
                 <TableCell className="sticky left-0 bg-white/95 backdrop-blur-md z-20 py-5 px-8 group-hover:bg-slate-50/95 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-black text-sm group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors">
+                    <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-semibold text-sm group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors">
                       {av.nome?.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <div className="text-base font-[900] text-slate-900 leading-none mb-1 group-hover:text-[var(--brand-primary)] transition-colors">
+                      <div className="text-base font-bold text-slate-900 leading-none mb-1 group-hover:text-[var(--brand-primary)] transition-colors">
                         {av.nome}
                       </div>
-                      <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Avaliador Externo</div>
+                      <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Avaliador Externo</div>
                     </div>
                   </div>
                 </TableCell>
@@ -218,7 +218,7 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
                     <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <Users className="h-8 w-8" />
                     </div>
-                    <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Nenhum avaliador cadastrado</p>
+                    <p className="text-slate-400 font-medium text-xs uppercase tracking-wide">Nenhum avaliador cadastrado</p>
                   </div>
                 </TableCell>
               </TableRow>

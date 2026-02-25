@@ -66,9 +66,9 @@ export default async function RecursosAdminPage({
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-slate-400 mb-1">
             <Scale className="h-4 w-4" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">{edital.numero_edital}</span>
+            <span className="text-xs font-medium uppercase tracking-wide">{edital.numero_edital}</span>
           </div>
-          <h1 className="text-4xl font-[900] tracking-tight text-slate-900 leading-none">Recursos Impetrados</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">Recursos Impetrados</h1>
           <p className="text-lg text-slate-400 font-medium">{edital.titulo}</p>
         </div>
       </div>
@@ -77,11 +77,11 @@ export default async function RecursosAdminPage({
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
             <div className="space-y-1">
-              <h3 className="text-xl font-[900] text-slate-900 tracking-tight flex items-center gap-3">
+              <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
                 <div className="h-8 w-2 bg-amber-500 rounded-full" />
                 Histórico de Solicitações
               </h3>
-              <p className="text-slate-500 font-medium italic text-sm">Visualize e gerencie os pedidos de revisão dos proponentes.</p>
+              <p className="text-slate-500 font-normal text-sm">Visualize e gerencie os pedidos de revisão dos proponentes.</p>
             </div>
           </div>
 
@@ -89,40 +89,40 @@ export default async function RecursosAdminPage({
             <Table>
               <TableHeader className="bg-slate-50/50">
                 <TableRow className="hover:bg-transparent border-slate-100">
-                  <TableHead className="py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Protocolo</TableHead>
-                  <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Projeto / Proponente</TableHead>
-                  <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Tipo / Fase</TableHead>
-                  <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Status</TableHead>
-                  <TableHead className="py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-right">Data</TableHead>
+                  <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
+                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto / Proponente</TableHead>
+                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tipo / Fase</TableHead>
+                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Status</TableHead>
+                  <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Data</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {(recursos || []).map((rec: any) => (
                   <TableRow key={rec.id} className="hover:bg-slate-50/50 transition-all duration-300 border-slate-50 group">
                     <TableCell className="py-6 px-8">
-                      <code className="text-[10px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-widest">
+                      <code className="text-xs font-medium text-slate-900 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-wide">
                         {rec.numero_protocolo}
                       </code>
                     </TableCell>
                     <TableCell className="py-6 px-4 font-medium">
                       <div className="space-y-1">
-                        <div className="text-sm font-black text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
+                        <div className="text-sm font-semibold text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
                           {rec.projetos?.titulo}
                         </div>
-                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <div className="text-xs font-medium text-slate-400 uppercase tracking-wide">
                           {rec.profiles?.nome}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="py-6 px-4">
                       <div className="flex flex-col gap-1">
-                        <span className="text-xs font-black text-slate-600 capitalize">{rec.tipo}</span>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Original</span>
+                        <span className="text-xs font-semibold text-slate-600 capitalize">{rec.tipo}</span>
+                        <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Original</span>
                       </div>
                     </TableCell>
                     <TableCell className="py-6 px-4">
                       <Badge className={[
-                        'border-none rounded-lg px-2 text-[10px] font-black uppercase tracking-widest py-1',
+                        'border-none rounded-lg px-2 text-xs font-medium uppercase tracking-wide py-1',
                         rec.status === 'deferido' ? 'bg-green-50 text-[var(--brand-success)]' :
                           rec.status === 'indeferido' ? 'bg-destructive/10 text-destructive' :
                             rec.status === 'em_analise' ? 'bg-blue-50 text-blue-600' :
@@ -131,7 +131,7 @@ export default async function RecursosAdminPage({
                         {rec.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="py-6 px-8 text-right font-black text-[10px] text-slate-400 uppercase tracking-widest">
+                    <TableCell className="py-6 px-8 text-right font-medium text-xs text-slate-400 uppercase tracking-wide">
                       {format(new Date(rec.created_at), 'dd MMM yyyy', { locale: ptBR })}
                     </TableCell>
                   </TableRow>
@@ -143,7 +143,7 @@ export default async function RecursosAdminPage({
                         <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                           <Scale className="h-8 w-8" />
                         </div>
-                        <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Nenhum recurso protocolado</p>
+                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wide">Nenhum recurso protocolado</p>
                       </div>
                     </TableCell>
                   </TableRow>

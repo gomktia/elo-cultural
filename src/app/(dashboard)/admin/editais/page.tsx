@@ -19,11 +19,11 @@ export default async function AdminEditaisPage() {
     <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-100 pb-6">
         <div>
-          <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">Editais</h1>
-          <p className="text-sm text-slate-500 font-medium italic">Gestão estratégica dos processos seletivos do município.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Editais</h1>
+          <p className="text-sm text-slate-500 font-normal">Gestão estratégica dos processos seletivos do município.</p>
         </div>
         <Link href="/admin/editais/novo">
-          <Button className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-brand-primary/20 transition-all active:scale-95">
+          <Button className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-xs shadow-lg shadow-brand-primary/20 transition-all active:scale-95">
             <Plus className="mr-2 h-4 w-4" />
             Novo Edital
           </Button>
@@ -41,15 +41,15 @@ export default async function AdminEditaisPage() {
                 </div>
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[9px] font-black text-[var(--brand-primary)] uppercase tracking-widest bg-brand-primary/5 px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-semibold text-[var(--brand-primary)] uppercase tracking-wide bg-brand-primary/5 px-2 py-0.5 rounded-md">
                       ID {edital.numero_edital}
                     </span>
                     <EditalStatusBadge status={edital.status} />
                   </div>
-                  <h3 className="text-lg font-[900] text-slate-900 tracking-tight truncate group-hover:text-[var(--brand-primary)] transition-colors">
+                  <h3 className="text-base font-semibold text-slate-900 tracking-tight truncate group-hover:text-[var(--brand-primary)] transition-colors">
                     {edital.titulo}
                   </h3>
-                  <div className="flex items-center gap-4 text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                  <div className="flex items-center gap-4 text-xs text-slate-400 font-medium">
                     <span>Criado em: {format(new Date(edital.created_at), "dd MMM, yyyy", { locale: ptBR })}</span>
                     <span className="h-1 w-1 rounded-full bg-slate-200" />
                     <span>Início: {edital.inicio_inscricao ? format(new Date(edital.inicio_inscricao), "dd/MM/yyyy") : '—'}</span>
@@ -59,7 +59,7 @@ export default async function AdminEditaisPage() {
 
               <div className="flex items-center gap-3">
                 <Link href={`/admin/editais/${edital.id}`} className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full h-9 px-4 rounded-lg border-slate-200 font-black text-[10px] text-slate-600 uppercase tracking-widest hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)] hover:bg-brand-primary/5 transition-all">
+                  <Button variant="outline" className="w-full h-9 px-4 rounded-lg border-slate-200 font-medium text-xs text-slate-600 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)] hover:bg-brand-primary/5 transition-all">
                     Gerenciar Painel
                   </Button>
                 </Link>
@@ -73,8 +73,8 @@ export default async function AdminEditaisPage() {
             <div className="h-16 w-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mb-6">
               <Plus className="h-8 w-8 text-slate-200" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-1">Nenhum edital cadastrado</h3>
-            <p className="text-sm text-slate-500 max-w-xs font-medium italic">Comece criando o primeiro edital para lançar seu projeto cultural.</p>
+            <h3 className="text-base font-semibold text-slate-900 mb-1">Nenhum edital cadastrado</h3>
+            <p className="text-sm text-slate-500 max-w-xs font-normal">Comece criando o primeiro edital para lançar seu projeto cultural.</p>
           </div>
         )}
       </div>

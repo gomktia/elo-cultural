@@ -95,8 +95,8 @@ export default function UsuariosAdminPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 pb-6">
         <div>
-          <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">Usuários</h1>
-          <p className="text-sm text-slate-500 font-medium italic">Controle de acessos e permissões do sistema.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Usuários</h1>
+          <p className="text-sm text-slate-500 font-normal">Controle de acessos e permissões do sistema.</p>
         </div>
 
         <div className="relative w-full md:w-80 group">
@@ -118,7 +118,7 @@ export default function UsuariosAdminPage() {
             <div className="relative p-5 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/5 transition-colors overflow-hidden font-black text-lg">
+                  <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/5 transition-colors overflow-hidden font-bold text-base">
                     {u.nome?.charAt(0).toUpperCase()}
                   </div>
                   <div className="space-y-0.5 min-w-0">
@@ -126,9 +126,9 @@ export default function UsuariosAdminPage() {
                       {u.nome}
                     </h3>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{u.cpf_cnpj || 'Sem CPF/CNPJ'}</span>
+                      <span className="text-xs font-medium text-slate-400">{u.cpf_cnpj || 'Sem CPF/CNPJ'}</span>
                       <span className="h-0.5 w-0.5 rounded-full bg-slate-200" />
-                      <Badge className={`${u.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[8px] font-black uppercase tracking-widest py-0.5`}>
+                      <Badge className={`${u.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
                         {u.active ? 'Ativo' : 'Inativo'}
                       </Badge>
                     </div>
@@ -145,19 +145,19 @@ export default function UsuariosAdminPage() {
                           value={u.role}
                           onValueChange={v => alterarRole(u.id, v as UserRole)}
                         >
-                          <SelectTrigger className="h-8 w-32 rounded-lg border-slate-100 bg-slate-50/50 font-black text-[9px] uppercase tracking-widest text-slate-500 hover:text-slate-900 hover:border-slate-200 transition-all">
+                          <SelectTrigger className="h-8 w-32 rounded-lg border-slate-100 bg-slate-50/50 font-medium text-xs text-slate-500 hover:text-slate-900 hover:border-slate-200 transition-all">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                            <SelectItem value="proponente" className="font-bold text-[10px] uppercase tracking-widest">Proponente</SelectItem>
-                            <SelectItem value="avaliador" className="font-bold text-[10px] uppercase tracking-widest text-indigo-600">Avaliador</SelectItem>
-                            <SelectItem value="gestor" className="font-bold text-[10px] uppercase tracking-widest text-[var(--brand-primary)]">Gestor</SelectItem>
-                            <SelectItem value="admin" className="font-bold text-[10px] uppercase tracking-widest text-rose-600">Admin</SelectItem>
+                            <SelectItem value="proponente" className="font-medium text-xs">Proponente</SelectItem>
+                            <SelectItem value="avaliador" className="font-medium text-xs text-indigo-600">Avaliador</SelectItem>
+                            <SelectItem value="gestor" className="font-medium text-xs text-[var(--brand-primary)]">Gestor</SelectItem>
+                            <SelectItem value="admin" className="font-medium text-xs text-rose-600">Admin</SelectItem>
                           </SelectContent>
                         </Select>
                       )
                     ) : (
-                      <Badge variant={roleBadgeVariant[u.role] || 'outline'} className="rounded-lg px-3 py-1 text-[9px] font-black uppercase tracking-widest">
+                      <Badge variant={roleBadgeVariant[u.role] || 'outline'} className="rounded-lg px-3 py-1 text-[11px] font-medium uppercase tracking-wide">
                         {roleLabels[u.role] || u.role}
                       </Badge>
                     )}
@@ -168,13 +168,13 @@ export default function UsuariosAdminPage() {
               <div className="mt-5 pt-4 border-t border-slate-50 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="space-y-0.5">
-                    <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none">Telefone</p>
-                    <p className="text-xs font-bold text-slate-500">{u.telefone || '—'}</p>
+                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none">Telefone</p>
+                    <p className="text-xs font-medium text-slate-600">{u.telefone || '—'}</p>
                   </div>
                   <div className="w-px h-5 bg-slate-100" />
                   <div className="space-y-0.5">
-                    <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none">Cadastro</p>
-                    <p className="text-xs font-bold text-slate-500">{new Date(u.created_at).toLocaleDateString('pt-BR')}</p>
+                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none">Cadastro</p>
+                    <p className="text-xs font-medium text-slate-600">{new Date(u.created_at).toLocaleDateString('pt-BR')}</p>
                   </div>
                 </div>
 
@@ -191,8 +191,8 @@ export default function UsuariosAdminPage() {
             <div className="h-16 w-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mb-6">
               <Search className="h-8 w-8 text-slate-100" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-1">Nenhum usuário encontrado</h3>
-            <p className="text-sm text-slate-500 max-w-xs font-medium italic">Não encontramos perfis para os termos de busca utilizados.</p>
+            <h3 className="text-base font-semibold text-slate-900 mb-1">Nenhum usuário encontrado</h3>
+            <p className="text-sm text-slate-500 max-w-xs font-normal">Não encontramos perfis para os termos de busca utilizados.</p>
           </div>
         )}
       </div>

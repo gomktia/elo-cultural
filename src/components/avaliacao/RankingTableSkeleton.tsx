@@ -22,11 +22,11 @@ export function RankingTableSkeleton() {
         <Table>
           <TableHeader className="bg-slate-50/50">
             <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="w-24 py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Posicao</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Projeto</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Nota Final</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-center">Avaliacoes</TableHead>
-              <TableHead className="py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-right">Status</TableHead>
+              <TableHead className="w-24 py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Posicao</TableHead>
+              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto</TableHead>
+              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Nota Final</TableHead>
+              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Avaliacoes</TableHead>
+              <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

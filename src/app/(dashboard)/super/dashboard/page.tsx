@@ -43,10 +43,10 @@ export default async function SuperDashboardPage() {
       <div className="border-b border-slate-100 pb-6">
         <div className="flex items-center gap-3 mb-2">
           <Globe className="h-5 w-5 text-[var(--brand-primary)]" />
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Super Admin</span>
+          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Super Admin</span>
         </div>
-        <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">Visao Global</h1>
-        <p className="text-sm text-slate-500 font-medium italic">Metricas consolidadas de toda a plataforma Elo Cultura.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Visao Global</h1>
+        <p className="text-sm text-slate-500 font-normal">Metricas consolidadas de toda a plataforma Elo Cultura.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
@@ -61,8 +61,8 @@ export default async function SuperDashboardPage() {
                 >
                   <Icon className="h-5 w-5" style={{ color: stat.color }} />
                 </div>
-                <p className="text-3xl font-black text-slate-900">{stat.value}</p>
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">{stat.label}</p>
+                <p className="text-3xl font-semibold text-slate-900">{stat.value}</p>
+                <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mt-1">{stat.label}</p>
               </div>
             </div>
           )

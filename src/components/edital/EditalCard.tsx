@@ -1,8 +1,7 @@
 import Link from 'next/link'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { EditalStatusBadge } from './EditalStatusBadge'
 import type { Edital } from '@/types/database.types'
-import { Calendar, AlertTriangle, Scale, FileText } from 'lucide-react'
+import { Calendar, AlertTriangle, Scale, ArrowUpRight } from 'lucide-react'
 import { format, differenceInDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
@@ -27,88 +26,95 @@ function getMood(edital: Edital): 'open' | 'closing' | 'recurso' | 'default' {
   return 'default'
 }
 
-const moodRing: Record<string, string> = {
-  open: 'ring-1 ring-[var(--brand-success)]/40 shadow-lg shadow-[var(--brand-success)]/10',
-  closing: 'ring-1 ring-[var(--brand-warning)]/50 shadow-lg shadow-[var(--brand-warning)]/10',
-  recurso: 'ring-1 ring-[var(--brand-primary)]/40 shadow-lg shadow-[var(--brand-primary)]/10',
-  default: 'shadow-sm hover:shadow-md',
-}
-
-const moodAccent: Record<string, string> = {
-  open: 'bg-[var(--brand-success)]',
-  closing: 'bg-[var(--brand-warning)]',
-  recurso: 'bg-[var(--brand-primary)]',
-  default: '',
+const moodColors: Record<string, { accent: string; bg: string; glow: string }> = {
+  open: { accent: '#77a80b', bg: 'rgba(119, 168, 11, 0.06)', glow: 'rgba(119, 168, 11, 0.15)' },
+  closing: { accent: '#eeb513', bg: 'rgba(238, 181, 19, 0.06)', glow: 'rgba(238, 181, 19, 0.15)' },
+  recurso: { accent: '#0047AB', bg: 'rgba(0, 71, 171, 0.06)', glow: 'rgba(0, 71, 171, 0.15)' },
+  default: { accent: '#0047AB', bg: 'transparent', glow: 'transparent' },
 }
 
 export function EditalCard({ edital, href }: EditalCardProps) {
   const mood = getMood(edital)
+  const colors = moodColors[mood]
   const daysLeft = edital.fim_inscricao
     ? differenceInDays(new Date(edital.fim_inscricao), new Date())
     : null
 
   return (
     <Link href={href} className="block group">
-      <div className="relative h-full bg-white border border-slate-100 rounded-2xl md:rounded-[40px] p-5 md:p-8 shadow-sm group-hover:shadow-premium transition-all duration-500 group-hover:-translate-y-2 overflow-hidden flex flex-col justify-between min-h-[280px] md:min-h-[320px]">
-        {/* Mood Accent Layer */}
-        {mood !== 'default' && (
-          <div className={`absolute top-0 left-0 right-0 h-1.5 md:h-2 ${moodAccent[mood]} opacity-80`} />
-        )}
+      <div className="relative h-full bg-white rounded-2xl md:rounded-3xl overflow-hidden transition-all duration-500 group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.12)] border border-slate-100 group-hover:border-slate-200/80 flex flex-col min-h-[280px] md:min-h-[310px]"
+        style={{ boxShadow: `0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02)` }}
+      >
+        {/* Colored accent bar — left side */}
+        <div
+          className="absolute left-0 top-0 bottom-0 w-1 md:w-1.5 transition-all duration-500 group-hover:w-2"
+          style={{ backgroundColor: colors.accent }}
+        />
 
-        {/* Background Decorative Element */}
-        <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-500">
-          <FileText className="h-32 w-32 md:h-40 md:w-40 text-slate-900" />
-        </div>
+        {/* Hover glow effect */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style={{ background: `radial-gradient(circle at top left, ${colors.glow}, transparent 60%)` }}
+        />
 
-        <div className="relative z-10 space-y-3 md:space-y-4">
-          <div className="flex items-start justify-between gap-4">
-            <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] bg-slate-50 px-2 py-1 rounded-lg">
+        {/* Card content */}
+        <div className="relative z-10 p-5 md:p-7 pl-6 md:pl-8 flex flex-col flex-1">
+          {/* Top row: number + status */}
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <span
+              className="text-[11px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-lg"
+              style={{ color: colors.accent, backgroundColor: colors.bg }}
+            >
               {edital.numero_edital}
             </span>
             <EditalStatusBadge status={edital.status} />
           </div>
 
-          <h3 className="text-xl md:text-2xl font-[900] text-slate-900 leading-tight tracking-tight group-hover:text-[var(--brand-primary)] transition-colors">
+          {/* Title */}
+          <h3 className="text-base md:text-lg font-semibold text-slate-900 leading-snug tracking-tight group-hover:text-[var(--brand-primary)] transition-colors mb-3">
             {edital.titulo}
           </h3>
 
+          {/* Description */}
           {edital.descricao && (
-            <p className="text-xs md:text-sm text-slate-500 line-clamp-3 leading-relaxed font-medium italic">
-              "{edital.descricao}"
+            <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed mb-auto">
+              {edital.descricao}
             </p>
           )}
-        </div>
 
-        <div className="relative z-10 pt-6 flex items-center justify-between gap-4 flex-wrap mt-auto">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/5 group-hover:text-brand-primary transition-colors">
-              <Calendar className="h-4 w-4 md:h-5 md:w-5" />
+          {/* Bottom row: deadline + action */}
+          <div className="pt-5 mt-auto flex items-center justify-between gap-3 border-t border-slate-100 group-hover:border-slate-200/80 transition-colors">
+            <div className="flex items-center gap-2.5">
+              <Calendar className="h-4 w-4 text-slate-300" />
+              <div className="flex flex-col">
+                <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none mb-0.5">Prazo</span>
+                <span className="text-xs font-medium text-slate-600">
+                  {edital.fim_inscricao ? format(new Date(edital.fim_inscricao), 'dd MMM yyyy', { locale: ptBR }) : 'A definir'}
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Prazo Final</span>
-              <span className="text-[10px] md:text-xs font-black text-slate-900 uppercase">
-                {edital.fim_inscricao ? format(new Date(edital.fim_inscricao), 'dd MMM yyyy', { locale: ptBR }) : 'A definir'}
-              </span>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            {mood === 'closing' && daysLeft !== null && daysLeft >= 0 && (
-              <span className="flex items-center gap-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 px-2 md:px-3 py-1 md:py-1.5 rounded-xl border border-amber-100 shadow-sm animate-pulse">
-                <AlertTriangle className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                {daysLeft === 0 ? 'Expira hoje' : `${daysLeft}d restantes`}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {mood === 'closing' && daysLeft !== null && daysLeft >= 0 && (
+                <span className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-wide text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100/60 animate-pulse">
+                  <AlertTriangle className="h-2.5 w-2.5" />
+                  {daysLeft === 0 ? 'Hoje' : `${daysLeft}d`}
+                </span>
+              )}
 
-            {mood === 'recurso' && (
-              <span className="flex items-center gap-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-2 md:px-3 py-1 md:py-1.5 rounded-xl border border-blue-100 shadow-sm">
-                <Scale className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                Recursos
-              </span>
-            )}
+              {mood === 'recurso' && (
+                <span className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-wide text-[var(--brand-primary)] bg-[var(--brand-primary)]/[0.06] px-2 py-1 rounded-lg border border-[var(--brand-primary)]/10">
+                  <Scale className="h-2.5 w-2.5" />
+                  Recurso
+                </span>
+              )}
 
-            <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-lg shadow-blue-200/40 group-hover:opacity-90 transition-all active:scale-90">
-              <Calendar className="h-4 w-4 md:h-5 md:w-5" />
+              <div
+                className="h-8 w-8 md:h-9 md:w-9 rounded-xl flex items-center justify-center text-white shadow-md transition-all group-hover:scale-110 group-hover:shadow-lg"
+                style={{ backgroundColor: colors.accent }}
+              >
+                <ArrowUpRight className="h-4 w-4" />
+              </div>
             </div>
           </div>
         </div>

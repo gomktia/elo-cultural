@@ -51,10 +51,10 @@ export default async function SuperTenantsPage() {
       <div className="border-b border-slate-100 pb-6">
         <div className="flex items-center gap-3 mb-2">
           <Building2 className="h-5 w-5 text-[var(--brand-primary)]" />
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Gestao de Tenants</span>
+          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Gestao de Tenants</span>
         </div>
-        <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">Prefeituras e Municipios</h1>
-        <p className="text-sm text-slate-500 font-medium italic">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Prefeituras e Municipios</h1>
+        <p className="text-sm text-slate-500 font-normal">
           {tenants?.length || 0} tenant{(tenants?.length || 0) !== 1 ? 's' : ''} cadastrado{(tenants?.length || 0) !== 1 ? 's' : ''}
         </p>
       </div>
@@ -71,7 +71,7 @@ export default async function SuperTenantsPage() {
                 <div className="flex items-start justify-between gap-4 mb-5">
                   <div className="flex items-center gap-4">
                     <div
-                      className="h-12 w-12 rounded-2xl flex items-center justify-center text-white font-black text-sm flex-shrink-0"
+                      className="h-12 w-12 rounded-2xl flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
                       style={{ backgroundColor: brandColor }}
                     >
                       {t.nome.slice(0, 2).toUpperCase()}
@@ -82,32 +82,32 @@ export default async function SuperTenantsPage() {
                       </h3>
                       <div className="flex items-center gap-2 mt-0.5">
                         <Globe className="h-3 w-3 text-slate-300" />
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{t.dominio}</span>
+                        <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">{t.dominio}</span>
                       </div>
                     </div>
                   </div>
-                  <Badge className={`${statusColors[t.status] || statusColors.inativo} border-none rounded-lg px-2 text-[8px] font-black uppercase tracking-widest py-0.5`}>
+                  <Badge className={`${statusColors[t.status] || statusColors.inativo} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
                     {t.status}
                   </Badge>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50/50 rounded-2xl">
                   <div className="text-center">
-                    <p className="text-lg font-black text-slate-900">{usersByTenant.get(t.id) || 0}</p>
-                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Usuarios</p>
+                    <p className="text-lg font-semibold text-slate-900">{usersByTenant.get(t.id) || 0}</p>
+                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Usuarios</p>
                   </div>
                   <div className="text-center border-x border-slate-100">
-                    <p className="text-lg font-black text-slate-900">{editaisByTenant.get(t.id) || 0}</p>
-                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Editais</p>
+                    <p className="text-lg font-semibold text-slate-900">{editaisByTenant.get(t.id) || 0}</p>
+                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Editais</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-[10px] font-bold text-slate-500 leading-tight">{t.cnpj || '—'}</p>
-                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">CNPJ</p>
+                    <p className="text-xs font-bold text-slate-500 leading-tight">{t.cnpj || '—'}</p>
+                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">CNPJ</p>
                   </div>
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
-                  <span className="text-[9px] font-bold text-slate-300">
+                  <span className="text-[11px] font-bold text-slate-300">
                     Criado em {new Date(t.created_at).toLocaleDateString('pt-BR')}
                   </span>
                   <div className="h-2 w-2 rounded-full" style={{ backgroundColor: brandColor }} />

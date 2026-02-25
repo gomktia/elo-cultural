@@ -114,7 +114,7 @@ export function EditalTimeline({ faseAtual, prazos, corTenant = '#0047AB' }: Edi
                 {/* Label */}
                 <span
                   className={[
-                    'text-[10px] text-center leading-tight max-w-[72px]',
+                    'text-[11px] text-center leading-tight max-w-[72px]',
                     isCurrent ? 'font-semibold' :
                     isPast ? 'text-slate-500 dark:text-slate-400' :
                     'text-slate-400',

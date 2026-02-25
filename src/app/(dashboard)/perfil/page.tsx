@@ -95,7 +95,7 @@ export default function PerfilPage() {
         <img
           src="/icon-192.png"
           alt="Logo"
-          className="h-20 w-20 rounded-full bg-white/80 p-2 shadow-lg ring-1 ring-slate-200/50"
+          className="h-20 w-20 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-slate-200/50 object-contain"
         />
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Meu Perfil</h1>

@@ -76,10 +76,10 @@ export default async function GestorRelatoriosPage() {
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div>
-        <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">
           Relatórios
         </h1>
-        <p className="text-sm text-slate-500 font-medium max-w-xl italic">
+        <p className="text-sm text-slate-500 font-normal max-w-xl">
           Extração de atas, rankings e homologações oficiais. Gestão documental automatizada para prestação de contas.
         </p>
       </div>
@@ -91,12 +91,12 @@ export default async function GestorRelatoriosPage() {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <div className="px-2 py-0.5 rounded-md bg-[var(--brand-primary)] text-white text-[9px] font-black tracking-widest uppercase">
+                    <div className="px-2 py-0.5 rounded-md bg-[var(--brand-primary)] text-white text-[11px] font-semibold tracking-wide uppercase">
                       ID {rel.numero_edital}
                     </div>
                     <EditalStatusBadge status={rel.status as FaseEdital} />
                   </div>
-                  <CardTitle className="text-xl font-[900] text-slate-900 leading-tight tracking-tight group-hover:text-[var(--brand-primary)] transition-colors">
+                  <CardTitle className="text-xl font-bold text-slate-900 leading-tight tracking-tight group-hover:text-[var(--brand-primary)] transition-colors">
                     {rel.titulo}
                   </CardTitle>
                 </div>
@@ -115,29 +115,29 @@ export default async function GestorRelatoriosPage() {
             <CardContent className="p-5">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="space-y-1 relative">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inscritos</p>
-                  <div className="text-3xl font-black text-slate-900 tracking-tighter">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Inscritos</p>
+                  <div className="text-3xl font-semibold text-slate-900 tracking-tight">
                     {rel.totalInscritos.toString().padStart(2, '0')}
                   </div>
                   <div className="absolute -right-3 top-1/2 -translate-y-1/2 h-8 w-[1px] bg-slate-100 hidden lg:block" />
                 </div>
                 <div className="space-y-1 relative">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Habilitados</p>
-                  <div className="text-3xl font-black text-[var(--brand-success)] tracking-tighter">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Habilitados</p>
+                  <div className="text-3xl font-semibold text-[var(--brand-success)] tracking-tight">
                     {rel.habilitados.toString().padStart(2, '0')}
                   </div>
                   <div className="absolute -right-3 top-1/2 -translate-y-1/2 h-8 w-[1px] bg-slate-100 hidden lg:block" />
                 </div>
                 <div className="space-y-1 relative">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Avaliações</p>
-                  <div className="text-3xl font-black text-[var(--brand-primary)] tracking-tighter">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Avaliações</p>
+                  <div className="text-3xl font-semibold text-[var(--brand-primary)] tracking-tight">
                     {rel.avaliacoesFinalizadas.toString().padStart(2, '0')}
                   </div>
                   <div className="absolute -right-3 top-1/2 -translate-y-1/2 h-8 w-[1px] bg-slate-100 hidden lg:block" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recursos</p>
-                  <div className="text-3xl font-black text-rose-500 tracking-tighter">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Recursos</p>
+                  <div className="text-3xl font-semibold text-rose-500 tracking-tight">
                     {rel.recursosAbertos.toString().padStart(2, '0')}
                   </div>
                 </div>
@@ -146,14 +146,14 @@ export default async function GestorRelatoriosPage() {
               <div className="mt-8 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic leading-none">
+                  <p className="text-xs text-slate-500 font-medium uppercase tracking-wide leading-none">
                     Cronograma: <span className="text-slate-900 not-italic ml-1">
                       {new Date(rel.inicio_inscricao).toLocaleDateString('pt-BR')}
                       {rel.fim_inscricao && ` — ${new Date(rel.fim_inscricao).toLocaleDateString('pt-BR')}`}
                     </span>
                   </p>
                 </div>
-                <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em]">Gestão {rel.tenantNome}</span>
+                <span className="text-[11px] font-medium text-slate-300 uppercase tracking-wide">Gestão {rel.tenantNome}</span>
               </div>
             </CardContent>
           </Card>
@@ -165,7 +165,7 @@ export default async function GestorRelatoriosPage() {
               <FileText className="h-6 w-6 text-slate-200" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-1">Sem editais ativos</h3>
-            <p className="text-xs text-slate-500 max-w-xs font-medium italic">Não encontramos nenhum edital aguardando relatórios.</p>
+            <p className="text-xs text-slate-500 max-w-xs font-normal">Não encontramos nenhum edital aguardando relatórios.</p>
           </div>
         )}
       </div>

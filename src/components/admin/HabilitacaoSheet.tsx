@@ -78,13 +78,13 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoShe
             <SheetContent className="sm:max-w-xl overflow-y-auto glass-modal border-l-0 p-0">
                 <div className="px-8 pt-8 pb-6">
                     <SheetHeader className="mb-0">
-                        <SheetTitle className="text-2xl font-[800] tracking-[-0.02em] text-slate-900 dark:text-white">
+                        <SheetTitle className="text-2xl font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
                             Revisao Documental
                         </SheetTitle>
                         <SheetDescription className="mt-2">
                             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{projeto.titulo}</span>
                             <br />
-                            <code className="text-[10px] font-black text-[var(--brand-primary)] bg-[var(--brand-primary)]/5 px-2 py-0.5 rounded-md uppercase tracking-widest mt-1 inline-block">
+                            <code className="text-[11px] font-medium text-[var(--brand-primary)] bg-[var(--brand-primary)]/5 px-2 py-0.5 rounded-md uppercase tracking-wide mt-1 inline-block">
                                 {projeto.numero_protocolo}
                             </code>
                         </SheetDescription>
@@ -94,7 +94,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoShe
                 <div className="space-y-8 px-8 pb-4">
                     {/* Documentos */}
                     <section>
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
+                        <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4 flex items-center gap-2">
                             <FileIcon className="h-3.5 w-3.5" /> Documentos Anexados
                         </h3>
                         {loading ? (
@@ -113,7 +113,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoShe
                                             </div>
                                             <div>
                                                 <p className="text-sm font-semibold text-slate-900 dark:text-white leading-none">{doc.nome_arquivo}</p>
-                                                <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-1 font-bold">{doc.tipo}</p>
+                                                <p className="text-[11px] text-slate-400 uppercase tracking-wide mt-1 font-medium">{doc.tipo}</p>
                                             </div>
                                         </div>
                                         <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-[var(--brand-primary)]/10 hover:text-[var(--brand-primary)]">
@@ -135,7 +135,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoShe
                     {/* Decisao */}
                     <section className="space-y-6 pt-6 border-t border-slate-100 dark:border-white/5">
                         <div className="space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Decisao da Habilitacao</Label>
+                            <Label className="text-xs font-medium uppercase tracking-wide text-slate-400">Decisao da Habilitacao</Label>
                             <div className="grid grid-cols-2 gap-3">
                                 <Button
                                     type="button"
@@ -169,7 +169,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoShe
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="justificativa" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            <Label htmlFor="justificativa" className="text-xs font-medium uppercase tracking-wide text-slate-400">
                                 Justificativa {status === 'inabilitado' && <span className="text-[var(--brand-secondary)]">*</span>}
                             </Label>
                             <Textarea

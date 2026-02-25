@@ -36,7 +36,7 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
     <div className="space-y-6">
       {/* Curriculo */}
       <div className="space-y-2">
-        <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
           <FileText className="h-3 w-3" /> Descricao do Curriculo
         </Label>
         <Textarea
@@ -50,7 +50,7 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
 
       {/* Areas de Avaliacao */}
       <div className="space-y-2">
-        <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
           <Briefcase className="h-3 w-3" /> Areas de Atuacao / Avaliacao
         </Label>
         <div className="flex flex-wrap gap-2">
@@ -60,7 +60,7 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
               type="button"
               onClick={() => toggleArea(area)}
               className={[
-                'px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border',
+                'px-3 py-1.5 rounded-xl text-[11px] font-medium uppercase tracking-wider transition-all border',
                 form.areas_avaliacao?.includes(area)
                   ? 'bg-[#0047AB] text-white border-[#0047AB]'
                   : 'bg-white/[0.02] text-white/40 border-white/10 hover:border-white/20'
@@ -74,7 +74,7 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
 
       {/* Lattes */}
       <div className="space-y-2">
-        <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
           <Link2 className="h-3 w-3" /> Link do Curriculo Lattes
         </Label>
         <Input

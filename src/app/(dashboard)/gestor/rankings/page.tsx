@@ -49,14 +49,14 @@ export default async function GestorRankingsPage() {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div>
-        <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">Rankings</h1>
-        <p className="text-sm text-slate-500 font-medium italic">Classificação em tempo real dos projetos por edital.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Rankings</h1>
+        <p className="text-sm text-slate-500 font-normal">Classificação em tempo real dos projetos por edital.</p>
       </div>
 
       {editaisComResultado.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-3xl text-center">
           <Trophy className="h-8 w-8 text-slate-200 mb-4" />
-          <p className="text-sm text-slate-500 font-medium italic">Nenhum edital com avaliações concluídas.</p>
+          <p className="text-sm text-slate-500 font-normal">Nenhum edital com avaliações concluídas.</p>
         </div>
       ) : (
         <div className="space-y-8">
@@ -65,10 +65,10 @@ export default async function GestorRankingsPage() {
               <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <CardTitle className="text-base font-black text-slate-900 leading-none">{edital.titulo}</CardTitle>
-                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{edital.numero_edital}</p>
+                    <CardTitle className="text-base font-semibold text-slate-900 leading-none">{edital.titulo}</CardTitle>
+                    <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">{edital.numero_edital}</p>
                   </div>
-                  <Badge variant="outline" className="border-slate-200 text-[9px] font-black uppercase tracking-widest bg-white">
+                  <Badge variant="outline" className="border-slate-200 text-[11px] font-medium uppercase tracking-wide bg-white">
                     {edital.status}
                   </Badge>
                 </div>
@@ -77,11 +77,11 @@ export default async function GestorRankingsPage() {
                 <Table>
                   <TableHeader className="bg-slate-50/30">
                     <TableRow className="hover:bg-transparent border-slate-100">
-                      <TableHead className="w-16 py-3 px-4 font-black text-[9px] uppercase tracking-[0.2em] text-slate-400 text-center">Pos.</TableHead>
-                      <TableHead className="py-3 px-2 font-black text-[9px] uppercase tracking-[0.2em] text-slate-400">Projeto</TableHead>
-                      <TableHead className="py-3 px-2 font-black text-[9px] uppercase tracking-[0.2em] text-slate-400">Protocolo</TableHead>
-                      <TableHead className="py-3 px-4 font-black text-[9px] uppercase tracking-[0.2em] text-slate-400 text-right">Nota</TableHead>
-                      <TableHead className="py-3 px-4 font-black text-[9px] uppercase tracking-[0.2em] text-slate-400 text-right">Status</TableHead>
+                      <TableHead className="w-16 py-3 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Pos.</TableHead>
+                      <TableHead className="py-3 px-2 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto</TableHead>
+                      <TableHead className="py-3 px-2 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
+                      <TableHead className="py-3 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Nota</TableHead>
+                      <TableHead className="py-3 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -95,10 +95,10 @@ export default async function GestorRankingsPage() {
                             <div className="flex items-center justify-center">
                               {isTop3 ? (
                                 <div className={`h-8 w-8 rounded-lg bg-white shadow-sm flex items-center justify-center border border-slate-50 ${colors[idx]}`}>
-                                  <span className="font-black text-xs">{idx + 1}º</span>
+                                  <span className="font-semibold text-xs">{idx + 1}º</span>
                                 </div>
                               ) : (
-                                <span className="text-xs font-black text-slate-300">{idx + 1}</span>
+                                <span className="text-xs font-semibold text-slate-300">{idx + 1}</span>
                               )}
                             </div>
                           </TableCell>
@@ -108,15 +108,15 @@ export default async function GestorRankingsPage() {
                             </div>
                           </TableCell>
                           <TableCell className="py-3 px-2">
-                            <span className="text-[10px] font-mono text-slate-400 font-bold">{p.numero_protocolo}</span>
+                            <span className="text-xs font-mono text-slate-400 font-bold">{p.numero_protocolo}</span>
                           </TableCell>
                           <TableCell className="py-3 px-4 text-right">
-                            <span className={['text-base font-black tracking-tighter', idx < 3 ? 'text-slate-900' : 'text-slate-400'].join(' ')}>
+                            <span className={['text-base font-semibold tracking-tight', idx < 3 ? 'text-slate-900' : 'text-slate-400'].join(' ')}>
                               {Number(p.nota_final).toFixed(2)}
                             </span>
                           </TableCell>
                           <TableCell className="py-3 px-4 text-right">
-                            <Badge variant="outline" className="border-none bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md">
+                            <Badge variant="outline" className="border-none bg-slate-50 text-slate-400 text-[11px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-md">
                               {p.status_atual}
                             </Badge>
                           </TableCell>

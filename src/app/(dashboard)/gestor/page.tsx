@@ -52,17 +52,17 @@ export default async function GestorDashboardPage() {
         <div>
           <div className="flex items-center gap-2 text-slate-400 mb-1">
             <TrendingUp className="h-3 w-3" />
-            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Visão Geral</span>
+            <span className="text-[11px] font-medium uppercase tracking-wider">Visão Geral</span>
           </div>
-          <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
             {greeting}, <span className="text-[var(--brand-primary)]">{firstName}</span>
           </h1>
-          <p className="text-slate-500 font-medium mt-1.5 text-sm italic">
+          <p className="text-slate-500 mt-1.5 text-sm">
             {format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
           </p>
         </div>
         <Link href="/admin/editais/novo">
-          <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-black shadow-lg shadow-brand-primary/20 transition-all active:scale-95 text-sm">
+          <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-lg shadow-brand-primary/20 transition-all active:scale-95 text-sm">
             <Plus className="mr-2 h-4 w-4" />
             Novo Edital
           </Button>
@@ -79,16 +79,16 @@ export default async function GestorDashboardPage() {
                 <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors duration-500">
                   <stat.icon className="h-5 w-5" />
                 </div>
-                <div className="text-[10px] font-black text-[var(--brand-success)] bg-green-50 px-2 py-0.5 rounded-lg flex items-center gap-1 group-hover:scale-105 transition-transform">
+                <div className="text-xs font-medium text-[var(--brand-success)] bg-green-50 px-2 py-0.5 rounded-lg flex items-center gap-1 group-hover:scale-105 transition-transform">
                   <TrendingUp className="h-3 w-3" />
                   +12%
                 </div>
               </div>
               <div className="space-y-0.5">
-                <div className="text-2xl font-black text-slate-900 tracking-tighter leading-none group-hover:scale-105 transition-transform duration-500 origin-left">
+                <div className="text-2xl font-bold text-slate-900 tracking-tight leading-none group-hover:scale-105 transition-transform duration-500 origin-left">
                   {stat.value.toLocaleString('pt-BR')}
                 </div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -99,8 +99,8 @@ export default async function GestorDashboardPage() {
         {/* Recent Editais */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-lg font-black text-slate-900 tracking-tight">Editais Recentes</h2>
-            <Link href="/admin/editais" className="text-[10px] font-black text-[var(--brand-primary)] hover:underline uppercase tracking-widest">Ver Todos</Link>
+            <h2 className="text-lg font-semibold text-slate-900 tracking-tight">Editais Recentes</h2>
+            <Link href="/admin/editais" className="text-xs font-medium text-[var(--brand-primary)] hover:underline">Ver Todos</Link>
           </div>
 
           <div className="grid gap-3">
@@ -112,8 +112,8 @@ export default async function GestorDashboardPage() {
                       <FileText className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 leading-none mb-1 group-hover:text-[var(--brand-primary)] transition-colors text-sm">{edital.titulo}</h3>
-                      <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest leading-none">{edital.numero_edital}</p>
+                      <h3 className="font-semibold text-slate-900 leading-none mb-1 group-hover:text-[var(--brand-primary)] transition-colors text-sm">{edital.titulo}</h3>
+                      <p className="text-xs text-slate-400 font-medium leading-none">{edital.numero_edital}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -130,7 +130,7 @@ export default async function GestorDashboardPage() {
 
         {/* Access Shortcuts */}
         <div className="space-y-4">
-          <h2 className="text-lg font-black text-slate-900 tracking-tight px-1">Acesso Rápido</h2>
+          <h2 className="text-lg font-semibold text-slate-900 tracking-tight px-1">Acesso Rápido</h2>
           <div className="grid gap-2.5">
             {[
               { href: '/gestor/rankings', icon: BarChart3, label: 'Rankings', desc: 'Classificação oficial', color: 'text-indigo-600', bg: 'bg-indigo-50' },
@@ -144,8 +144,8 @@ export default async function GestorDashboardPage() {
                     <item.icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm text-slate-900 leading-none mb-1">{item.label}</p>
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-wider">{item.desc}</p>
+                    <p className="font-medium text-sm text-slate-900 leading-none mb-1">{item.label}</p>
+                    <p className="text-xs text-slate-400 font-normal">{item.desc}</p>
                   </div>
                   <ArrowRight className="h-4 w-4 text-slate-200 group-hover:text-[var(--brand-primary)]" />
                 </div>

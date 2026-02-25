@@ -62,10 +62,10 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
                 <Table>
                     <TableHeader className="bg-slate-50/50">
                         <TableRow className="hover:bg-transparent border-slate-100">
-                            <TableHead className="min-w-[140px] py-6 px-4 md:px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Protocolo</TableHead>
-                            <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Titulo do Projeto</TableHead>
-                            <TableHead className="min-w-[120px] py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Status</TableHead>
-                            <TableHead className="min-w-[80px] py-6 px-4 md:px-8 text-right font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Acoes</TableHead>
+                            <TableHead className="min-w-[140px] py-6 px-4 md:px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
+                            <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Titulo do Projeto</TableHead>
+                            <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Status</TableHead>
+                            <TableHead className="min-w-[80px] py-6 px-4 md:px-8 text-right font-medium text-xs uppercase tracking-wide text-slate-400">Acoes</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -79,12 +79,12 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
                                 }}
                             >
                                 <TableCell className="py-6 px-8">
-                                    <code className="text-[10px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-widest">
+                                    <code className="text-[11px] font-medium text-slate-900 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-wide">
                                         {p.numero_protocolo}
                                     </code>
                                 </TableCell>
                                 <TableCell className="py-6 px-4">
-                                    <div className="text-base font-black text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
+                                    <div className="text-base font-semibold text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
                                         {p.titulo}
                                     </div>
                                 </TableCell>
@@ -105,7 +105,7 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
                                         <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                                             <Search className="h-8 w-8" />
                                         </div>
-                                        <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Nenhum projeto encontrado</p>
+                                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wide">Nenhum projeto encontrado</p>
                                     </div>
                                 </TableCell>
                             </TableRow>

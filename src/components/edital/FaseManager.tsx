@@ -82,7 +82,7 @@ export function FaseManager({ editalId, currentStatus, fases, onStatusChange }: 
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2 border-b border-slate-50">
         <div className="space-y-1">
-          <h2 className="text-xl font-[900] text-slate-900 tracking-tight flex items-center gap-3">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
             <div className="h-6 w-1.5 bg-[var(--brand-primary)] rounded-full" />
             Gestão de Fluxo
           </h2>
@@ -93,7 +93,7 @@ export function FaseManager({ editalId, currentStatus, fases, onStatusChange }: 
           <Button
             onClick={avancarFase}
             disabled={loading}
-            className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-black shadow-lg shadow-brand-primary/20 transition-all active:scale-98 group text-xs"
+            className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-lg shadow-brand-primary/20 transition-all active:scale-98 group text-xs"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronRight className="mr-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />}
             Próxima Fase: {faseLabels[faseOrder[currentIndex + 1]]}
@@ -131,26 +131,26 @@ export function FaseManager({ editalId, currentStatus, fases, onStatusChange }: 
                     {isPast ? <Check className="h-5 w-5 stroke-[3px]" /> :
                       isCurrent ? <Clock className="h-5 w-5 animate-spin-slow" /> :
                         faseData?.bloqueada ? <Lock className="h-4 w-4" /> :
-                          <span className="text-[10px] font-black">{idx + 1}</span>}
+                          <span className="text-[11px] font-semibold">{idx + 1}</span>}
                   </div>
                 </div>
 
                 <div className="flex-1 min-w-0 pr-2">
                   <div className="flex items-center gap-2 mb-0.5">
                     <h4 className={[
-                      'text-base font-black tracking-tight transition-colors',
+                      'text-base font-semibold tracking-tight transition-colors',
                       isCurrent ? 'text-white' : isPast ? 'text-slate-900 opacity-60' : 'text-slate-400'
                     ].join(' ')}>
                       {faseLabels[fase]}
                     </h4>
                     {isCurrent && (
-                      <Badge className="bg-white/10 text-white border-none rounded-md font-black text-[8px] uppercase tracking-widest px-1.5 py-0">
+                      <Badge className="bg-white/10 text-white border-none rounded-md font-medium text-[11px] uppercase tracking-wide px-1.5 py-0">
                         Ativa
                       </Badge>
                     )}
                   </div>
                   <p className={[
-                    'text-[10px] font-bold uppercase tracking-widest',
+                    'text-[11px] font-medium uppercase tracking-wide',
                     isCurrent ? 'text-white/60' : 'text-slate-400'
                   ].join(' ')}>
                     {faseData?.data_inicio ? (

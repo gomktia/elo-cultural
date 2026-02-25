@@ -130,7 +130,7 @@ export function DownloadRelatorios({
                 ) : (
                     <div className="p-4 text-center">
                         <Loader2 className="h-5 w-5 animate-spin mx-auto text-slate-300" />
-                        <p className="text-[10px] text-slate-400 mt-2 uppercase tracking-widest">Carregando dados...</p>
+                        <p className="text-xs text-slate-400 mt-2 uppercase tracking-wide">Carregando dados...</p>
                     </div>
                 )}
             </DropdownMenuContent>

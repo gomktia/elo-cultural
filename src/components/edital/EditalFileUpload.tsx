@@ -80,7 +80,7 @@ export function EditalFileUpload({ tenantId, editalId, label, tipo, files, onFil
 
   return (
     <div className="space-y-3">
-      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
+      <label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">{label}</label>
 
       <div
         onClick={() => inputRef.current?.click()}
@@ -92,7 +92,7 @@ export function EditalFileUpload({ tenantId, editalId, label, tipo, files, onFil
           <>
             <Upload className="h-6 w-6 text-slate-300" />
             <p className="text-xs text-slate-400 font-medium">Clique para selecionar arquivos</p>
-            <p className="text-[9px] text-slate-300 font-bold uppercase tracking-widest">PDF, DOC, DOCX, XLS, XLSX</p>
+            <p className="text-[11px] text-slate-300 font-medium uppercase tracking-wide">PDF, DOC, DOCX, XLS, XLSX</p>
           </>
         )}
         <input
@@ -112,7 +112,7 @@ export function EditalFileUpload({ tenantId, editalId, label, tipo, files, onFil
               <FileText className="h-4 w-4 text-slate-400 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-slate-700 truncate">{file.nome_arquivo}</p>
-                <p className="text-[9px] text-slate-400 font-bold">{formatSize(file.tamanho_bytes)}</p>
+                <p className="text-[11px] text-slate-400 font-medium">{formatSize(file.tamanho_bytes)}</p>
               </div>
               <button
                 type="button"

@@ -109,18 +109,18 @@ export default function ConfiguracoesPage() {
   return (
     <div className="space-y-6 max-w-2xl pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div>
-        <h1 className="text-3xl font-[900] tracking-tight text-slate-900 leading-none mb-2">Configurações</h1>
-        <p className="text-sm text-slate-500 font-medium italic">Dados do município e personalização visual da plataforma.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Configurações</h1>
+        <p className="text-sm text-slate-500 font-normal">Dados do município e personalização visual da plataforma.</p>
       </div>
 
       <form onSubmit={salvar} className="space-y-6">
         <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
           <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
-            <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">Dados do Município</CardTitle>
+            <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Dados do Município</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="nome" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome da Prefeitura / Secretaria</Label>
+              <Label htmlFor="nome" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Nome da Prefeitura / Secretaria</Label>
               <Input
                 id="nome"
                 value={form.nome}
@@ -131,7 +131,7 @@ export default function ConfiguracoesPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="cnpj" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">CNPJ</Label>
+                <Label htmlFor="cnpj" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">CNPJ</Label>
                 <Input
                   id="cnpj"
                   value={form.cnpj}
@@ -141,7 +141,7 @@ export default function ConfiguracoesPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="dominio" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Domínio Customizado</Label>
+                <Label htmlFor="dominio" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Domínio Customizado</Label>
                 <Input
                   id="dominio"
                   value={form.dominio}
@@ -156,12 +156,12 @@ export default function ConfiguracoesPage() {
 
         <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
           <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
-            <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">Identidade Visual</CardTitle>
+            <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Identidade Visual</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="cor-primaria" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cor Primária</Label>
+                <Label htmlFor="cor-primaria" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Cor Primária</Label>
                 <div className="flex gap-2 items-center">
                   <input
                     type="color"
@@ -178,7 +178,7 @@ export default function ConfiguracoesPage() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="cor-secundaria" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cor Secundária</Label>
+                <Label htmlFor="cor-secundaria" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Cor Secundária</Label>
                 <div className="flex gap-2 items-center">
                   <input
                     type="color"
@@ -197,13 +197,13 @@ export default function ConfiguracoesPage() {
             </div>
             <div className="flex gap-3 pt-2">
               <div
-                className="h-10 flex-1 rounded-xl flex items-center justify-center text-white text-[10px] font-black uppercase tracking-widest shadow-lg transition-transform hover:scale-[1.02]"
+                className="h-10 flex-1 rounded-xl flex items-center justify-center text-white text-xs font-medium uppercase tracking-wide shadow-lg transition-transform hover:scale-[1.02]"
                 style={{ backgroundColor: form.cor_primaria }}
               >
                 Branding Primário
               </div>
               <div
-                className="h-10 flex-1 rounded-xl flex items-center justify-center text-white text-[10px] font-black uppercase tracking-widest shadow-lg transition-transform hover:scale-[1.02]"
+                className="h-10 flex-1 rounded-xl flex items-center justify-center text-white text-xs font-medium uppercase tracking-wide shadow-lg transition-transform hover:scale-[1.02]"
                 style={{ backgroundColor: form.cor_secundaria }}
               >
                 Branding Secundário
@@ -215,13 +215,13 @@ export default function ConfiguracoesPage() {
         {/* Logo Upload */}
         <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
           <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
-            <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">Logotipos</CardTitle>
+            <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Logotipos</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Logo Principal */}
               <div className="space-y-3">
-                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Logo Principal (Cabecalho)</Label>
+                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Logo Principal (Cabecalho)</Label>
                 {logoUrl ? (
                   <div className="relative inline-block">
                     <img src={logoUrl} alt="Logo" className="h-20 w-auto rounded-xl border border-slate-100 shadow-sm" />
@@ -266,7 +266,7 @@ export default function ConfiguracoesPage() {
 
               {/* Logo Rodape */}
               <div className="space-y-3">
-                <Label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Logo de Rodape (Gov. Federal)</Label>
+                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Logo de Rodape (Gov. Federal)</Label>
                 {logoRodapeUrl ? (
                   <div className="relative inline-block">
                     <img src={logoRodapeUrl} alt="Logo Rodape" className="h-20 w-auto rounded-xl border border-slate-100 shadow-sm" />
@@ -316,9 +316,9 @@ export default function ConfiguracoesPage() {
 
         <div className="flex items-center justify-between bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status da Instância</span>
+            <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Status da Instância</span>
             <Badge className={[
-              'border-none rounded-lg px-2 text-[10px] font-black uppercase tracking-widest py-0.5',
+              'border-none rounded-lg px-2 text-xs font-medium uppercase tracking-wide py-0.5',
               tenant.status === 'ativo' ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'
             ].join(' ')}>
               {tenant.status}
@@ -327,7 +327,7 @@ export default function ConfiguracoesPage() {
           <Button
             type="submit"
             disabled={saving}
-            className="h-10 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-[900] text-xs uppercase tracking-widest shadow-lg shadow-brand-primary/20 transition-all active:scale-95"
+            className="h-10 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs uppercase tracking-wide shadow-lg shadow-brand-primary/20 transition-all active:scale-95"
           >
             {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Alterações'}
           </Button>

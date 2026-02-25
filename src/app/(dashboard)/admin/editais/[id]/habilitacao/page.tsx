@@ -43,9 +43,9 @@ export default async function HabilitacaoPage({
                     <div>
                         <div className="flex items-center gap-2 text-slate-500 mb-1">
                             <Scale className="h-4 w-4" />
-                            <span className="text-xs font-bold uppercase tracking-widest">{edital.numero_edital}</span>
+                            <span className="text-xs font-bold uppercase tracking-wide">{edital.numero_edital}</span>
                         </div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+                        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
                             Habilitação Documental
                         </h1>
                         <p className="text-slate-500 font-medium">{edital.titulo}</p>

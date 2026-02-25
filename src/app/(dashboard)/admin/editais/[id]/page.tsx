@@ -46,10 +46,10 @@ export default async function AdminEditalDetailPage({
           </Link>
           <div className="space-y-0.5">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-[900] tracking-tight text-slate-900 leading-none">{e.titulo}</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">{e.titulo}</h1>
               <EditalStatusBadge status={e.status} />
             </div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">
               Protocolo: <span className="text-slate-600 ml-1">{e.numero_edital}</span>
             </p>
           </div>
@@ -68,8 +68,8 @@ export default async function AdminEditalDetailPage({
             <CardContent className="p-4 relative">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
-                  <div className="text-xl font-black text-slate-900 tracking-tight group-hover:scale-105 transition-transform duration-300 origin-left">
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none">{stat.label}</p>
+                  <div className="text-xl font-semibold text-slate-900 tracking-tight group-hover:scale-105 transition-transform duration-300 origin-left">
                     {stat.value}
                   </div>
                 </div>
@@ -90,10 +90,10 @@ export default async function AdminEditalDetailPage({
             <Card className="border-none shadow-sm bg-white/50 backdrop-blur-md rounded-2xl overflow-hidden">
               <div className="h-1.5 w-full bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-secondary)] opacity-20" />
               <CardHeader className="pt-6 px-6 pb-2">
-                <CardTitle className="text-[10px] font-black tracking-[0.2em] uppercase text-slate-400">Descrição do Edital</CardTitle>
+                <CardTitle className="text-xs font-medium tracking-wide uppercase text-slate-400">Descrição do Edital</CardTitle>
               </CardHeader>
               <CardContent className="px-6 pb-8">
-                <p className="text-slate-600 font-medium leading-relaxed text-sm whitespace-pre-wrap italic">
+                <p className="text-slate-600 font-normal leading-relaxed text-sm whitespace-pre-wrap">
                   {e.descricao}
                 </p>
               </CardContent>
@@ -103,8 +103,8 @@ export default async function AdminEditalDetailPage({
           {/* New Management Navigation Grid */}
           <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 space-y-6">
             <div className="space-y-1">
-              <h2 className="text-lg font-black text-slate-900 tracking-tight">Ferramentas de Gestão</h2>
-              <p className="text-xs text-slate-500 font-medium italic">Acesse os módulos específicos para análise e controle.</p>
+              <h2 className="text-lg font-semibold text-slate-900 tracking-tight">Ferramentas de Gestão</h2>
+              <p className="text-xs text-slate-500 font-normal">Acesse os módulos específicos para análise e controle.</p>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
@@ -124,7 +124,7 @@ export default async function AdminEditalDetailPage({
                     </div>
                     <div>
                       <h3 className="font-bold text-sm text-slate-900 leading-none mb-1 group-hover:text-[var(--brand-primary)] transition-colors">{nav.title}</h3>
-                      <p className="text-[9px] text-slate-400 font-black uppercase tracking-wider">{nav.desc}</p>
+                      <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wide">{nav.desc}</p>
                     </div>
                   </div>
                 </Link>
@@ -140,13 +140,13 @@ export default async function AdminEditalDetailPage({
               <FileText className="h-24 w-24 rotate-12" />
             </div>
             <div className="relative z-10 space-y-5">
-              <h3 className="text-sm font-black tracking-widest leading-none uppercase">Ações Rápidas</h3>
+              <h3 className="text-sm font-semibold tracking-wide leading-none uppercase">Ações Rápidas</h3>
               <div className="space-y-2.5">
                 <AvancarEtapaButton editalId={id} currentStatus={e.status} />
-                <Button className="w-full h-10 rounded-xl bg-white text-[var(--brand-primary)] font-black hover:bg-slate-50 transition-all text-xs uppercase tracking-widest shadow-sm">
+                <Button className="w-full h-10 rounded-xl bg-white text-[var(--brand-primary)] font-semibold hover:bg-slate-50 transition-all text-xs uppercase tracking-wide shadow-sm">
                   Publicar Resultado
                 </Button>
-                <Button variant="outline" className="w-full h-10 rounded-xl border-white/40 bg-white/15 hover:bg-white/25 text-white font-black transition-all text-xs uppercase tracking-widest">
+                <Button variant="outline" className="w-full h-10 rounded-xl border-white/40 bg-white/15 hover:bg-white/25 text-white font-semibold transition-all text-xs uppercase tracking-wide">
                   Editar Edital
                 </Button>
               </div>
@@ -154,7 +154,7 @@ export default async function AdminEditalDetailPage({
           </Card>
 
           <Card className="border-none shadow-sm bg-slate-50 rounded-2xl p-6 space-y-6">
-            <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-2">Linha do Tempo</h3>
+            <h3 className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none mb-2">Linha do Tempo</h3>
             <div className="space-y-5">
               {[
                 { label: 'Criação', date: format(new Date(e.created_at), 'dd MMM, yyyy', { locale: ptBR }), active: true },
@@ -165,8 +165,8 @@ export default async function AdminEditalDetailPage({
                   {i !== 2 && <div className="absolute left-2 top-5 bottom-0 w-0.5 bg-slate-200/50" />}
                   <div className={`h-4 w-4 rounded-full flex-shrink-0 border-[3px] border-white shadow-sm ${step.active ? 'bg-[var(--brand-primary)]' : 'bg-slate-200'}`} />
                   <div className="space-y-1">
-                    <p className={`text-xs font-black leading-none ${step.active ? 'text-slate-900' : 'text-slate-400'}`}>{step.label}</p>
-                    <p className="text-[10px] text-slate-400 font-bold italic tracking-wide lowercase tracking-widest">{step.date}</p>
+                    <p className={`text-xs font-semibold leading-none ${step.active ? 'text-slate-900' : 'text-slate-400'}`}>{step.label}</p>
+                    <p className="text-xs text-slate-400 font-normal tracking-wide lowercase">{step.date}</p>
                   </div>
                 </div>
               ))}

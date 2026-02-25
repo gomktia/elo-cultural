@@ -159,10 +159,10 @@ export default function CadastroPage() {
           <div className="p-8 md:p-12">
 
             <div className="flex flex-col items-center mb-8">
-              <h1 className="text-3xl font-[900] tracking-tighter text-white leading-none mb-2">
+              <h1 className="text-3xl font-bold tracking-tight text-white leading-none mb-2">
                 Criar <span className="text-[#0047AB]">Conta</span>
               </h1>
-              <p className="text-[10px] uppercase font-black tracking-[0.4em] text-white/30 text-center">
+              <p className="text-[11px] uppercase font-semibold tracking-wider text-white/30 text-center">
                 {step === 1 ? 'Dados Pessoais' : 'Dados do Perfil'}
               </p>
               {/* Step indicator */}
@@ -190,7 +190,7 @@ export default function CadastroPage() {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2 group">
-                      <Label htmlFor="nome" className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Nome Completo</Label>
+                      <Label htmlFor="nome" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Nome Completo</Label>
                       <div className="relative">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="nome" placeholder="Seu nome" value={nome} onChange={e => setNome(e.target.value)} required
@@ -199,7 +199,7 @@ export default function CadastroPage() {
                     </div>
 
                     <div className="space-y-2 group">
-                      <Label htmlFor="email" className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">E-mail</Label>
+                      <Label htmlFor="email" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">E-mail</Label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="email" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} required
@@ -208,7 +208,7 @@ export default function CadastroPage() {
                     </div>
 
                     <div className="space-y-2 group">
-                      <Label htmlFor="password" className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Senha</Label>
+                      <Label htmlFor="password" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Senha</Label>
                       <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="password" type="password" placeholder="Min. 6 caracteres" value={password} onChange={e => setPassword(e.target.value)} minLength={6} required
@@ -217,7 +217,7 @@ export default function CadastroPage() {
                     </div>
 
                     <div className="space-y-2 group">
-                      <Label htmlFor="cpf" className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">CPF ou CNPJ</Label>
+                      <Label htmlFor="cpf" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">CPF ou CNPJ</Label>
                       <div className="relative">
                         <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="cpf" placeholder="000.000.000-00" value={cpfCnpj} onChange={e => setCpfCnpj(e.target.value)} required
@@ -226,7 +226,7 @@ export default function CadastroPage() {
                     </div>
 
                     <div className="space-y-2 group md:col-span-2">
-                      <Label htmlFor="telefone" className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Telefone / WhatsApp</Label>
+                      <Label htmlFor="telefone" className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Telefone / WhatsApp</Label>
                       <div className="relative">
                         <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-[#0047AB] transition-colors" />
                         <Input id="telefone" placeholder="(00) 00000-0000" value={telefone} onChange={e => setTelefone(e.target.value)} required
@@ -238,16 +238,16 @@ export default function CadastroPage() {
                   <div className="flex items-start gap-3 bg-white/[0.02] p-4 rounded-2xl border border-white/5 mt-4">
                     <input type="checkbox" id="lgpd" checked={lgpdConsent} onChange={e => setLgpdConsent(e.target.checked)}
                       className="mt-1 h-4 w-4 rounded border-white/10 bg-white/5 text-[#0047AB] focus:ring-offset-0 focus:ring-[#0047AB]" />
-                    <Label htmlFor="lgpd" className="text-[10px] text-white/40 font-bold leading-relaxed uppercase tracking-wider cursor-pointer">
+                    <Label htmlFor="lgpd" className="text-[11px] text-white/40 font-medium leading-relaxed uppercase tracking-wider cursor-pointer">
                       Li e aceito os <span className="text-white underline">Termos de Uso</span> e a <span className="text-white underline">Politica de Privacidade</span> (LGPD).
                     </Label>
                   </div>
 
-                  <Button type="submit" className="w-full h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98] mt-4">
+                  <Button type="submit" className="w-full h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-semibold uppercase text-xs tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98] mt-4">
                     <ArrowRight className="mr-2 h-4 w-4" /> Proximo: Dados do Perfil
                   </Button>
 
-                  <p className="text-center text-[10px] font-bold text-white/20 uppercase tracking-widest pt-2">
+                  <p className="text-center text-xs font-medium text-white/20 uppercase tracking-wide pt-2">
                     Ja possui acesso? {' '}
                     <Link href="/login" className="text-white hover:text-[#0047AB] underline transition-colors">Entrar</Link>
                   </p>
@@ -263,7 +263,7 @@ export default function CadastroPage() {
                 >
                   {/* Profile type selector */}
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Tipo de Perfil</Label>
+                    <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1">Tipo de Perfil</Label>
                     <div className="grid grid-cols-3 gap-2">
                       {([
                         { key: 'proponente' as const, label: 'Proponente' },
@@ -275,7 +275,7 @@ export default function CadastroPage() {
                           type="button"
                           onClick={() => setPerfilTipo(tipo.key)}
                           className={[
-                            'py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border',
+                            'py-2.5 rounded-xl text-[11px] font-semibold uppercase tracking-wide transition-all border',
                             perfilTipo === tipo.key
                               ? 'bg-[#0047AB] text-white border-[#0047AB] shadow-lg shadow-[#0047AB]/20'
                               : 'bg-white/[0.02] text-white/40 border-white/10 hover:border-white/20'
@@ -307,16 +307,16 @@ export default function CadastroPage() {
                       type="button"
                       onClick={() => setStep(1)}
                       variant="outline"
-                      className="h-12 px-6 rounded-2xl border-white/10 text-white/60 hover:text-white hover:bg-white/5 font-black uppercase text-xs tracking-[0.2em] transition-all"
+                      className="h-12 px-6 rounded-2xl border-white/10 text-white/60 hover:text-white hover:bg-white/5 font-semibold uppercase text-xs tracking-wider transition-all"
                     >
                       <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
                     </Button>
-                    <Button type="submit" className="flex-1 h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]" disabled={loading}>
+                    <Button type="submit" className="flex-1 h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-semibold uppercase text-xs tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]" disabled={loading}>
                       {loading ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : 'Finalizar Cadastro'}
                     </Button>
                   </div>
 
-                  <p className="text-center text-[10px] font-bold text-white/15 uppercase tracking-widest pt-1">
+                  <p className="text-center text-xs font-medium text-white/15 uppercase tracking-wide pt-1">
                     Esses dados podem ser atualizados depois no seu perfil.
                   </p>
                 </motion.form>

@@ -51,9 +51,9 @@ export default async function AtribuicoesPage({
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-slate-400 mb-1">
             <Users className="h-4 w-4" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">{edital.numero_edital}</span>
+            <span className="text-xs font-medium uppercase tracking-wide">{edital.numero_edital}</span>
           </div>
-          <h1 className="text-4xl font-[900] tracking-tight text-slate-900 leading-none">Atribuição de Avaliadores</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">Atribuição de Avaliadores</h1>
           <p className="text-lg text-slate-400 font-medium">{edital.titulo}</p>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default async function AtribuicoesPage({
           Precisa adicionar novos avaliadores? Altere o perfil de um usuario para "Avaliador" na pagina de usuarios.
         </p>
         <Link href="/admin/usuarios">
-          <Button variant="outline" className="rounded-xl border-amber-200 text-amber-700 hover:bg-amber-100 font-bold text-xs uppercase tracking-widest">
+          <Button variant="outline" className="rounded-xl border-amber-200 text-amber-700 hover:bg-amber-100 font-bold text-xs uppercase tracking-wide">
             Gerenciar Usuarios
           </Button>
         </Link>
