@@ -39,7 +39,7 @@ export default async function AvaliadoresPage() {
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="border-b border-slate-100 pb-6">
+      <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-3 mb-2">
           <ClipboardList className="h-5 w-5 text-[var(--brand-primary)]" />
           <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Painel de Avaliadores</span>
@@ -59,7 +59,7 @@ export default async function AvaliadoresPage() {
             return (
               <div key={av.id} className="group relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] opacity-0 group-hover:opacity-[0.02] transition-opacity duration-500 rounded-[28px]" />
-                <div className="relative p-6 bg-white border border-slate-100 rounded-[28px] shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
+                <div className="relative p-6 bg-white border border-slate-200 rounded-[28px] shadow-sm hover:shadow-md transition-all duration-500">
                   <div className="flex items-start gap-4 mb-5">
                     <div className="h-12 w-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm flex-shrink-0">
                       {initials}
@@ -82,7 +82,7 @@ export default async function AvaliadoresPage() {
                       <p className="text-lg font-semibold text-slate-900">{stats?.total || 0}</p>
                       <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Atribuidas</p>
                     </div>
-                    <div className="text-center border-x border-slate-100">
+                    <div className="text-center border-x border-slate-200">
                       <p className="text-lg font-semibold text-[var(--brand-success)]">{stats?.finalizadas || 0}</p>
                       <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Concluidas</p>
                     </div>
@@ -122,7 +122,7 @@ export default async function AvaliadoresPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[32px] text-center">
-          <div className="h-16 w-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mb-6">
+          <div className="h-16 w-16 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center mb-6">
             <ClipboardList className="h-8 w-8 text-slate-200" />
           </div>
           <h3 className="text-lg font-bold text-slate-900 mb-1">Nenhum avaliador cadastrado</h3>

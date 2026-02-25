@@ -114,8 +114,8 @@ export default function ConfiguracoesPage() {
       </div>
 
       <form onSubmit={salvar} className="space-y-6">
-        <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
+        <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
             <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Dados do Município</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
@@ -125,7 +125,7 @@ export default function ConfiguracoesPage() {
                 id="nome"
                 value={form.nome}
                 onChange={e => setForm(p => ({ ...p, nome: e.target.value }))}
-                className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                 required
               />
             </div>
@@ -136,7 +136,7 @@ export default function ConfiguracoesPage() {
                   id="cnpj"
                   value={form.cnpj}
                   onChange={e => setForm(p => ({ ...p, cnpj: e.target.value }))}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   placeholder="00.000.000/0000-00"
                 />
               </div>
@@ -146,7 +146,7 @@ export default function ConfiguracoesPage() {
                   id="dominio"
                   value={form.dominio}
                   onChange={e => setForm(p => ({ ...p, dominio: e.target.value }))}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   placeholder="prefeitura.gov.br"
                 />
               </div>
@@ -154,8 +154,8 @@ export default function ConfiguracoesPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
+        <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
             <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Identidade Visual</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
@@ -168,12 +168,12 @@ export default function ConfiguracoesPage() {
                     id="cor-primaria"
                     value={form.cor_primaria}
                     onChange={e => setForm(p => ({ ...p, cor_primaria: e.target.value }))}
-                    className="h-10 w-10 rounded-lg cursor-pointer border-slate-100 bg-white"
+                    className="h-10 w-10 rounded-lg cursor-pointer border-slate-200 bg-white"
                   />
                   <Input
                     value={form.cor_primaria}
                     onChange={e => setForm(p => ({ ...p, cor_primaria: e.target.value }))}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-mono text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-mono text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
               </div>
@@ -185,12 +185,12 @@ export default function ConfiguracoesPage() {
                     id="cor-secundaria"
                     value={form.cor_secundaria}
                     onChange={e => setForm(p => ({ ...p, cor_secundaria: e.target.value }))}
-                    className="h-10 w-10 rounded-lg cursor-pointer border-slate-100 bg-white"
+                    className="h-10 w-10 rounded-lg cursor-pointer border-slate-200 bg-white"
                   />
                   <Input
                     value={form.cor_secundaria}
                     onChange={e => setForm(p => ({ ...p, cor_secundaria: e.target.value }))}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-mono text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-mono text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
               </div>
@@ -213,8 +213,8 @@ export default function ConfiguracoesPage() {
         </Card>
 
         {/* Logo Upload */}
-        <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
+        <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
             <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Logotipos</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-6">
@@ -224,7 +224,7 @@ export default function ConfiguracoesPage() {
                 <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Logo Principal (Cabecalho)</Label>
                 {logoUrl ? (
                   <div className="relative inline-block">
-                    <img src={logoUrl} alt="Logo" className="h-20 w-auto rounded-xl border border-slate-100 shadow-sm" />
+                    <img src={logoUrl} alt="Logo" className="h-20 w-auto rounded-xl border border-slate-200 shadow-sm" />
                     <button
                       type="button"
                       onClick={() => setLogoUrl(null)}
@@ -269,7 +269,7 @@ export default function ConfiguracoesPage() {
                 <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Logo de Rodape (Gov. Federal)</Label>
                 {logoRodapeUrl ? (
                   <div className="relative inline-block">
-                    <img src={logoRodapeUrl} alt="Logo Rodape" className="h-20 w-auto rounded-xl border border-slate-100 shadow-sm" />
+                    <img src={logoRodapeUrl} alt="Logo Rodape" className="h-20 w-auto rounded-xl border border-slate-200 shadow-sm" />
                     <button
                       type="button"
                       onClick={() => setLogoRodapeUrl(null)}
@@ -314,7 +314,7 @@ export default function ConfiguracoesPage() {
 
         <Separator className="bg-slate-100" />
 
-        <div className="flex items-center justify-between bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+        <div className="flex items-center justify-between bg-slate-50/50 p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center gap-3">
             <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Status da Instância</span>
             <Badge className={[
@@ -327,7 +327,7 @@ export default function ConfiguracoesPage() {
           <Button
             type="submit"
             disabled={saving}
-            className="h-10 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs uppercase tracking-wide shadow-lg shadow-brand-primary/20 transition-all active:scale-95"
+            className="h-10 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs uppercase tracking-wide shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95"
           >
             {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Alterações'}
           </Button>

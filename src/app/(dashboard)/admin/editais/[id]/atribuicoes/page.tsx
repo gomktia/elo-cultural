@@ -42,7 +42,7 @@ export default async function AtribuicoesPage({
 
   return (
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-6 border-b border-slate-100 pb-8">
+      <div className="flex items-center gap-6 border-b border-slate-200 pb-8">
         <Link href={`/admin/editais/${id}`}>
           <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-slate-200 hover:bg-slate-50 transition-all active:scale-90 shadow-sm">
             <ArrowLeft className="h-5 w-5 text-slate-500" />
@@ -71,7 +71,7 @@ export default async function AtribuicoesPage({
         </Link>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-md rounded-[40px] border border-slate-100 p-10 shadow-premium">
+      <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-premium">
         <AtribuicaoMatrix
           editalId={id}
           tenantId={edital.tenant_id}

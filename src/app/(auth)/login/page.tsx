@@ -46,31 +46,26 @@ function LoginForm() {
 
   return (
     <div className="relative min-h-[100dvh] flex items-center justify-center p-4 bg-[#F8FAFC] overflow-hidden selection:bg-[#0047AB]/20">
-      {/* Subtle background accents */}
-      <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-[#0047AB]/[0.04] rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-15%] left-[-10%] w-[400px] h-[400px] bg-[#e32a74]/[0.03] rounded-full blur-[80px] pointer-events-none" />
-
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
         className="relative z-10 w-full max-w-md"
       >
-        {/* Card */}
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_8px_40px_rgba(0,0,0,0.06)] overflow-hidden">
-          <div className="p-8 md:p-10">
+          <div className="p-8 md:p-12">
 
             {/* Branding */}
             <div className="flex flex-col items-center mb-8">
               <img
                 src="/icon-192.png"
                 alt="Elo Cultura"
-                className="h-16 w-16 mb-4 rounded-2xl bg-white p-2 object-contain shadow-md ring-1 ring-slate-100 transition-all duration-300 hover:scale-105"
+                className="h-14 w-14 mb-4 rounded-2xl bg-white p-2 object-contain shadow-md ring-1 ring-slate-100"
               />
-              <h1 className="text-2xl font-[Sora,sans-serif] font-extrabold tracking-tight text-slate-900 leading-none mb-1.5">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900 leading-none mb-2">
                 Elo<span className="text-[var(--brand-primary)]">Cultural</span>
               </h1>
-              <p className="text-xs font-medium text-slate-400">
+              <p className="text-[11px] uppercase font-semibold tracking-wider text-slate-400">
                 Acesse sua conta para continuar
               </p>
             </div>
@@ -80,16 +75,16 @@ function LoginForm() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="rounded-xl bg-rose-50 border border-rose-200/60 p-3.5 text-xs font-semibold text-rose-600 text-center"
+                  className="rounded-2xl bg-rose-50 border border-rose-200/60 p-4 text-xs font-bold text-rose-600 text-center"
                 >
                   {error}
                 </motion.div>
               )}
 
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-xs font-semibold text-slate-600 ml-0.5">E-mail</Label>
+              <div className="space-y-2 group">
+                <Label htmlFor="email" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">E-mail</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
                   <Input
                     id="email"
                     type="email"
@@ -97,20 +92,20 @@ function LoginForm() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
-                    className="h-11 pl-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 font-medium placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] transition-all outline-none"
+                    className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center ml-0.5">
-                  <Label htmlFor="password" className="text-xs font-semibold text-slate-600">Senha</Label>
+              <div className="space-y-2 group">
+                <div className="flex justify-between items-center ml-1">
+                  <Label htmlFor="password" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Senha</Label>
                   <Link href="/esqueci-senha" className="text-[11px] font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-primary)]/80 transition-colors">
                     Esqueceu a senha?
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
                   <Input
                     id="password"
                     type="password"
@@ -118,14 +113,14 @@ function LoginForm() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
-                    className="h-11 pl-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 font-medium placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] transition-all outline-none"
+                    className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
                   />
                 </div>
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-11 rounded-xl bg-[var(--brand-primary)] hover:bg-[#005cdd] text-white font-bold text-sm shadow-lg shadow-[var(--brand-primary)]/20 transition-all active:scale-[0.98] disabled:opacity-50"
+                className="w-full h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-semibold uppercase text-xs tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98] disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? (
@@ -135,9 +130,9 @@ function LoginForm() {
                 )}
               </Button>
 
-              <p className="text-center text-xs text-slate-400 font-medium pt-1">
+              <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-wide pt-2">
                 Não possui conta?{' '}
-                <Link href="/cadastro" className="text-[var(--brand-primary)] hover:underline font-semibold">
+                <Link href="/cadastro" className="text-[var(--brand-primary)] hover:underline transition-colors">
                   Criar conta
                 </Link>
               </p>
@@ -145,8 +140,8 @@ function LoginForm() {
 
             {/* Quick Access — Test Users */}
             {process.env.NODE_ENV === 'development' && (
-              <div className="mt-6 pt-5 border-t border-slate-100">
-                <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.15em] text-center mb-3">
+              <div className="mt-6 pt-5 border-t border-slate-200">
+                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-3">
                   Acesso Rápido — Teste
                 </p>
                 <div className="grid grid-cols-2 gap-2">
@@ -160,7 +155,7 @@ function LoginForm() {
                           setEmail(user.email)
                           setPassword(user.password)
                         }}
-                        className="group flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 hover:bg-slate-100/80 transition-all text-left"
+                        className="group flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 hover:bg-slate-100/80 transition-all text-left"
                       >
                         <div
                           className="h-7 w-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
@@ -180,7 +175,6 @@ function LoginForm() {
             )}
           </div>
         </div>
-
       </motion.div>
     </div>
   )

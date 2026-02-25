@@ -17,10 +17,9 @@
   --brand-success-rgb: 119, 168, 11;
   --brand-warning-rgb: 238, 181, 19;
 
-  /* ── Sidebar: Dark Navy Solid ── */
-  --sidebar-dark: #0B1929;
-  --sidebar-dark-lighter: #0F2240;
-  --sidebar-dark-rgb: 11, 25, 41;
+  /* ── Sidebar: Light ── */
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: #E2E8F0;
 
   --radius: 0.75rem;
 
@@ -49,14 +48,14 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
 
-  --sidebar: var(--sidebar-dark);
-  --sidebar-foreground: #CBD5E1;
-  --sidebar-primary: #60A5FA;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #334155;
+  --sidebar-primary: var(--brand-primary);
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: rgba(255, 255, 255, 0.08);
-  --sidebar-accent-foreground: #F1F5F9;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #60A5FA;
+  --sidebar-accent: #F1F5F9;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: var(--brand-primary);
 
   --success: #059669;
   --warning: #D97706;
@@ -131,7 +130,7 @@
   --input: #2a2a3a;
   --ring: #4d8fea;
 
-  --sidebar: #080E1A;
+  --sidebar: #1a1a24;
   --sidebar-foreground: #CBD5E1;
   --sidebar-primary: #60A5FA;
   --sidebar-primary-foreground: #ffffff;
@@ -173,15 +172,10 @@ body {
     inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
 }
 
-/* Sidebar: Solid dark navy */
-.sidebar-navy {
-  background: linear-gradient(180deg, var(--sidebar-dark-lighter) 0%, var(--sidebar-dark) 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.dark .sidebar-navy {
-  background: linear-gradient(180deg, #0A1222 0%, #060D18 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.04);
+/* Sidebar: Clean light */
+.sidebar-light {
+  background: #FFFFFF;
+  border-right: 1px solid #E2E8F0;
 }
 
 /* Glass variant for modals/sheets */
@@ -302,12 +296,9 @@ body {
     0 0 0 4px var(--brand-primary);
 }
 
-/* ── Sidebar active item glow ── */
+/* ── Sidebar active item ── */
 .sidebar-item-active {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 1px 3px rgba(0, 0, 0, 0.12);
+  background: #F1F5F9;
 }
 
 /* ── Responsive table wrapper ── */

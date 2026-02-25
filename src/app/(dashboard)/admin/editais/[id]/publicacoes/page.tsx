@@ -89,7 +89,7 @@ export default function PublicacoesAdminPage() {
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-100 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-200 pb-6">
         <div className="flex items-center gap-6">
           <Link href={`/admin/editais/${editalId}`}>
             <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
@@ -104,12 +104,12 @@ export default function PublicacoesAdminPage() {
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-lg shadow-brand-primary/20 transition-all active:scale-95 group text-sm">
-              <Plus className="mr-2 h-4 w-4 text-white group-hover:rotate-90 transition-transform duration-500" />
+            <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95 group text-sm">
+              <Plus className="mr-2 h-4 w-4 text-white transition-transform duration-500" />
               Nova Publicação
             </Button>
           </DialogTrigger>
-          <DialogContent className="rounded-[32px] p-6 border-slate-100 shadow-2xl overflow-hidden max-w-md">
+          <DialogContent className="rounded-[32px] p-6 border-slate-200 shadow-2xl overflow-hidden max-w-md">
             <div className="absolute top-0 left-0 w-full h-1.5 bg-[var(--brand-primary)]" />
             <DialogHeader className="mb-4">
               <DialogTitle className="text-xl font-bold tracking-tight text-slate-900 text-left">Criar Comunicado</DialogTitle>
@@ -118,10 +118,10 @@ export default function PublicacoesAdminPage() {
               <div className="space-y-1.5">
                 <Label className="text-[11px] font-medium text-slate-400 uppercase tracking-wide ml-1">Tipo de Documento</Label>
                 <Select value={form.tipo} onValueChange={v => setForm(p => ({ ...p, tipo: v }))}>
-                  <SelectTrigger className="h-11 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm">
+                  <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50 font-bold focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm">
                     <SelectValue placeholder="Selecione o tipo..." />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl shadow-xl border-slate-100">
+                  <SelectContent className="rounded-xl shadow-xl border-slate-200">
                     <SelectItem value="resultado_preliminar">Resultado Preliminar</SelectItem>
                     <SelectItem value="resultado_final">Resultado Final</SelectItem>
                     <SelectItem value="ata">Ata de Reunião</SelectItem>
@@ -134,7 +134,7 @@ export default function PublicacoesAdminPage() {
                 <Input
                   value={form.titulo}
                   onChange={e => setForm(p => ({ ...p, titulo: e.target.value }))}
-                  className="h-11 rounded-xl border-slate-100 bg-slate-50 font-bold focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm"
+                  className="h-11 rounded-xl border-slate-200 bg-slate-50 font-bold focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm"
                   placeholder="Ex: Resultado da Etapa Técnica"
                 />
               </div>
@@ -144,14 +144,14 @@ export default function PublicacoesAdminPage() {
                   value={form.conteudo}
                   onChange={e => setForm(p => ({ ...p, conteudo: e.target.value }))}
                   rows={4}
-                  className="rounded-2xl border-slate-100 bg-slate-50 font-medium p-4 focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm"
+                  className="rounded-2xl border-slate-200 bg-slate-50 font-medium p-4 focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm"
                   placeholder="Digite aqui os detalhes da publicação..."
                 />
               </div>
               <Button
                 onClick={criarPublicacao}
                 disabled={saving || !form.tipo || !form.titulo}
-                className="h-11 w-full rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold shadow-lg shadow-brand-primary/20 transition-all active:scale-98 text-sm mt-2"
+                className="h-11 w-full rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-98 text-sm mt-2"
               >
                 {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Confirmar Publicação'}
               </Button>
@@ -160,10 +160,10 @@ export default function PublicacoesAdminPage() {
         </Dialog>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-md rounded-[32px] border border-slate-100 p-1 overflow-hidden shadow-lg">
+      <div className="bg-white rounded-[32px] border border-slate-200 p-1 overflow-hidden shadow-lg">
         <Table>
           <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-100">
+            <TableRow className="hover:bg-transparent border-slate-200">
               <TableHead className="w-16 py-4 px-6 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">#</TableHead>
               <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Título</TableHead>
               <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tipo</TableHead>

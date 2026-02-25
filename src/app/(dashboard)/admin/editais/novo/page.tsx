@@ -114,7 +114,7 @@ export default function NovoEditalPage() {
 
   return (
     <div className="space-y-6 max-w-2xl pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-4 border-b border-slate-100 pb-6">
+      <div className="flex items-center gap-4 border-b border-slate-200 pb-6">
         <Link href="/admin/editais">
           <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
             <ArrowLeft className="h-4 w-4 text-slate-500" />
@@ -127,8 +127,8 @@ export default function NovoEditalPage() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
+        <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
             <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Dados Estruturais</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
@@ -140,7 +140,7 @@ export default function NovoEditalPage() {
                   placeholder="Ex: 001/2026"
                   value={form.numero_edital}
                   onChange={e => updateForm('numero_edital', e.target.value)}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   required
                 />
               </div>
@@ -151,7 +151,7 @@ export default function NovoEditalPage() {
                   placeholder="Ex: Prêmio Cultura Viva 2026"
                   value={form.titulo}
                   onChange={e => updateForm('titulo', e.target.value)}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   required
                 />
               </div>
@@ -165,7 +165,7 @@ export default function NovoEditalPage() {
                 value={form.descricao}
                 onChange={e => updateForm('descricao', e.target.value)}
                 rows={4}
-                className="rounded-2xl border-slate-100 bg-slate-50/50 font-medium text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                className="rounded-2xl border-slate-200 bg-slate-50/50 font-medium text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
               />
             </div>
 
@@ -177,7 +177,7 @@ export default function NovoEditalPage() {
                   type="datetime-local"
                   value={form.inicio_inscricao}
                   onChange={e => updateForm('inicio_inscricao', e.target.value)}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                 />
               </div>
               <div className="space-y-1.5">
@@ -187,7 +187,7 @@ export default function NovoEditalPage() {
                   type="datetime-local"
                   value={form.fim_inscricao}
                   onChange={e => updateForm('fim_inscricao', e.target.value)}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                 />
               </div>
               <div className="space-y-1.5">
@@ -197,7 +197,7 @@ export default function NovoEditalPage() {
                   type="datetime-local"
                   value={form.inicio_recurso}
                   onChange={e => updateForm('inicio_recurso', e.target.value)}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                 />
               </div>
               <div className="space-y-1.5">
@@ -207,14 +207,14 @@ export default function NovoEditalPage() {
                   type="datetime-local"
                   value={form.fim_recurso}
                   onChange={e => updateForm('fim_recurso', e.target.value)}
-                  className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                 />
               </div>
             </div>
 
             {/* Documentos do Edital */}
             {tenantId && (
-              <div className="pt-4 border-t border-slate-100 mt-2">
+              <div className="pt-4 border-t border-slate-200 mt-2">
                 <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Documentos do Edital</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <EditalFileUpload
@@ -238,7 +238,7 @@ export default function NovoEditalPage() {
             )}
 
             {/* Prazos de Recurso */}
-            <div className="pt-4 border-t border-slate-100 mt-2">
+            <div className="pt-4 border-t border-slate-200 mt-2">
               <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Prazos de Recurso</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -247,7 +247,7 @@ export default function NovoEditalPage() {
                     type="datetime-local"
                     value={form.inicio_recurso_inscricao}
                     onChange={e => updateForm('inicio_recurso_inscricao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -256,7 +256,7 @@ export default function NovoEditalPage() {
                     type="datetime-local"
                     value={form.fim_recurso_inscricao}
                     onChange={e => updateForm('fim_recurso_inscricao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -265,7 +265,7 @@ export default function NovoEditalPage() {
                     type="datetime-local"
                     value={form.inicio_recurso_selecao}
                     onChange={e => updateForm('inicio_recurso_selecao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -274,7 +274,7 @@ export default function NovoEditalPage() {
                     type="datetime-local"
                     value={form.fim_recurso_selecao}
                     onChange={e => updateForm('fim_recurso_selecao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -283,7 +283,7 @@ export default function NovoEditalPage() {
                     type="datetime-local"
                     value={form.inicio_recurso_habilitacao}
                     onChange={e => updateForm('inicio_recurso_habilitacao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -292,7 +292,7 @@ export default function NovoEditalPage() {
                     type="datetime-local"
                     value={form.fim_recurso_habilitacao}
                     onChange={e => updateForm('fim_recurso_habilitacao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-100 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   />
                 </div>
               </div>
@@ -307,7 +307,7 @@ export default function NovoEditalPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="h-10 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs uppercase tracking-wide shadow-lg shadow-brand-primary/20 transition-all active:scale-95"
+                className="h-10 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs uppercase tracking-wide shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95"
               >
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Criar Edital'}
               </Button>

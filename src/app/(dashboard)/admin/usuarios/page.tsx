@@ -93,7 +93,7 @@ export default function UsuariosAdminPage() {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Usuários</h1>
           <p className="text-sm text-slate-500 font-normal">Controle de acessos e permissões do sistema.</p>
@@ -102,7 +102,7 @@ export default function UsuariosAdminPage() {
         <div className="relative w-full md:w-80 group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[var(--brand-primary)] transition-colors" />
           <input
-            className="w-full h-10 pl-11 pr-4 rounded-xl border border-slate-200 bg-white/50 backdrop-blur-sm text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] outline-none transition-all"
+            className="w-full h-10 pl-11 pr-4 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] outline-none transition-all"
             placeholder="Buscar por nome ou CPF..."
             value={busca}
             onChange={e => setBusca(e.target.value)}
@@ -115,10 +115,10 @@ export default function UsuariosAdminPage() {
         {filtrados.map(u => (
           <div key={u.id} className="group relative">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] opacity-0 group-hover:opacity-[0.02] transition-opacity duration-500 rounded-2xl" />
-            <div className="relative p-5 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
+            <div className="relative p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/5 transition-colors overflow-hidden font-bold text-base">
+                  <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/5 transition-colors overflow-hidden font-bold text-base">
                     {u.nome?.charAt(0).toUpperCase()}
                   </div>
                   <div className="space-y-0.5 min-w-0">
@@ -145,10 +145,10 @@ export default function UsuariosAdminPage() {
                           value={u.role}
                           onValueChange={v => alterarRole(u.id, v as UserRole)}
                         >
-                          <SelectTrigger className="h-8 w-32 rounded-lg border-slate-100 bg-slate-50/50 font-medium text-xs text-slate-500 hover:text-slate-900 hover:border-slate-200 transition-all">
+                          <SelectTrigger className="h-8 w-32 rounded-lg border-slate-200 bg-slate-50/50 font-medium text-xs text-slate-500 hover:text-slate-900 hover:border-slate-200 transition-all">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
+                          <SelectContent className="rounded-xl border-slate-200 shadow-2xl">
                             <SelectItem value="proponente" className="font-medium text-xs">Proponente</SelectItem>
                             <SelectItem value="avaliador" className="font-medium text-xs text-indigo-600">Avaliador</SelectItem>
                             <SelectItem value="gestor" className="font-medium text-xs text-[var(--brand-primary)]">Gestor</SelectItem>
@@ -188,7 +188,7 @@ export default function UsuariosAdminPage() {
 
         {filtrados.length === 0 && (
           <div className="col-span-full flex flex-col items-center justify-center py-20 bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-3xl text-center">
-            <div className="h-16 w-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mb-6">
+            <div className="h-16 w-16 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center mb-6">
               <Search className="h-8 w-8 text-slate-100" />
             </div>
             <h3 className="text-base font-semibold text-slate-900 mb-1">Nenhum usuário encontrado</h3>

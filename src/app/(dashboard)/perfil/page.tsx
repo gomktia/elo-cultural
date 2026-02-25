@@ -5,11 +5,10 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { Loader2, User } from 'lucide-react'
+import { Loader2, User, Lock } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const roleLabels: Record<string, string> = {
   proponente: 'Proponente',
@@ -84,82 +83,102 @@ export default function PerfilPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin" />
+        <Loader2 className="h-6 w-6 animate-spin text-[var(--brand-primary)]" />
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
-      <div className="flex flex-col items-center text-center gap-4 pb-4">
+    <div className="space-y-6 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Profile Header */}
+      <div className="flex flex-col items-center text-center gap-4 pb-6 border-b border-slate-200">
         <img
           src="/icon-192.png"
           alt="Logo"
-          className="h-20 w-20 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-slate-200/50 object-contain"
+          className="h-16 w-16 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200 object-contain"
         />
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Meu Perfil</h1>
-          <div className="flex items-center justify-center gap-2 mt-1">
-            <Badge variant="secondary">{roleLabels[profile?.role] || profile?.role}</Badge>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Meu Perfil</h1>
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <Badge className="text-[11px] font-medium uppercase tracking-wide rounded-lg bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] border-none">
+              {roleLabels[profile?.role] || profile?.role}
+            </Badge>
           </div>
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Dados Pessoais</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={salvarPerfil} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="nome">Nome completo</Label>
+      {/* Dados Pessoais */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center">
+              <User className="h-4 w-4 text-slate-400" />
+            </div>
+            <h2 className="text-base font-semibold text-slate-900">Dados Pessoais</h2>
+          </div>
+        </div>
+        <div className="p-6">
+          <form onSubmit={salvarPerfil} className="space-y-5">
+            <div className="space-y-2 group">
+              <Label htmlFor="nome" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nome completo</Label>
               <Input
                 id="nome"
                 value={form.nome}
                 onChange={e => setForm(p => ({ ...p, nome: e.target.value }))}
                 required
+                className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="cpf">CPF / CNPJ</Label>
+              <div className="space-y-2 group">
+                <Label htmlFor="cpf" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">CPF / CNPJ</Label>
                 <Input
                   id="cpf"
                   value={form.cpf_cnpj}
                   onChange={e => setForm(p => ({ ...p, cpf_cnpj: e.target.value }))}
                   placeholder="000.000.000-00"
+                  className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="telefone">Telefone</Label>
+              <div className="space-y-2 group">
+                <Label htmlFor="telefone" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Telefone</Label>
                 <Input
                   id="telefone"
                   value={form.telefone}
                   onChange={e => setForm(p => ({ ...p, telefone: e.target.value }))}
                   placeholder="(00) 00000-0000"
+                  className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
                 />
               </div>
             </div>
-            <div className="flex justify-end">
-              <Button type="submit" disabled={saving}>
+            <div className="flex justify-end pt-2">
+              <Button
+                type="submit"
+                disabled={saving}
+                className="h-10 px-6 rounded-2xl bg-[var(--brand-primary)] hover:bg-[#005cdd] text-white font-semibold text-xs uppercase tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]"
+              >
                 {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Salvar Alteracoes
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Separator />
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Alterar Senha</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={alterarSenha} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="nova-senha">Nova Senha</Label>
+      {/* Alterar Senha */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center">
+              <Lock className="h-4 w-4 text-slate-400" />
+            </div>
+            <h2 className="text-base font-semibold text-slate-900">Alterar Senha</h2>
+          </div>
+        </div>
+        <div className="p-6">
+          <form onSubmit={alterarSenha} className="space-y-5">
+            <div className="space-y-2 group">
+              <Label htmlFor="nova-senha" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nova Senha</Label>
               <Input
                 id="nova-senha"
                 type="password"
@@ -167,10 +186,11 @@ export default function PerfilPage() {
                 onChange={e => setSenha(p => ({ ...p, nova: e.target.value }))}
                 minLength={6}
                 required
+                className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmar-senha">Confirmar Nova Senha</Label>
+            <div className="space-y-2 group">
+              <Label htmlFor="confirmar-senha" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Confirmar Nova Senha</Label>
               <Input
                 id="confirmar-senha"
                 type="password"
@@ -178,20 +198,26 @@ export default function PerfilPage() {
                 onChange={e => setSenha(p => ({ ...p, confirmar: e.target.value }))}
                 minLength={6}
                 required
+                className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
               />
             </div>
-            <div className="flex justify-end">
-              <Button type="submit" variant="outline" disabled={alterandoSenha}>
+            <div className="flex justify-end pt-2">
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={alterandoSenha}
+                className="h-10 px-6 rounded-2xl border-slate-200 font-semibold text-xs text-slate-600 uppercase tracking-wider transition-all active:scale-[0.98]"
+              >
                 {alterandoSenha && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Alterar Senha
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {profile?.consentimento_lgpd && (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-slate-400 text-center">
           Consentimento LGPD registrado em {new Date(profile.data_consentimento).toLocaleDateString('pt-BR')}.
         </p>
       )}

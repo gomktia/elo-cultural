@@ -36,7 +36,7 @@ export default async function HabilitacaoPage({
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
                     <Link href={`/admin/editais/${id}`}>
-                        <Button variant="outline" size="icon" className="rounded-xl border-white/20 bg-white/50 backdrop-blur-md shadow-sm hover:scale-105 transition-transform">
+                        <Button variant="outline" size="icon" className="rounded-xl border-white/20 bg-white shadow-sm transition-transform">
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
                     </Link>

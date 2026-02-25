@@ -57,7 +57,7 @@ export default async function RecursosAdminPage({
 
   return (
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-6 border-b border-slate-100 pb-8">
+      <div className="flex items-center gap-6 border-b border-slate-200 pb-8">
         <Link href={`/admin/editais/${id}`}>
           <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-slate-200 hover:bg-slate-50 transition-all active:scale-90 shadow-sm">
             <ArrowLeft className="h-5 w-5 text-slate-500" />
@@ -73,7 +73,7 @@ export default async function RecursosAdminPage({
         </div>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-md rounded-[40px] border border-slate-100 p-10 shadow-premium">
+      <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-premium">
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
             <div className="space-y-1">
@@ -85,10 +85,10 @@ export default async function RecursosAdminPage({
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+          <div className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100">
             <Table>
               <TableHeader className="bg-slate-50/50">
-                <TableRow className="hover:bg-transparent border-slate-100">
+                <TableRow className="hover:bg-transparent border-slate-200">
                   <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
                   <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto / Proponente</TableHead>
                   <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tipo / Fase</TableHead>

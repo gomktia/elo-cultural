@@ -47,8 +47,8 @@ export function TenantHeader({ tenantName }: TenantHeaderProps) {
   const pageTitle = getPageTitle(pathname)
 
   return (
-    <header className="sticky top-0 z-40 flex items-center gap-4 border-b border-slate-200/60 dark:border-white/[0.06] bg-white/80 dark:bg-[#121218]/80 backdrop-blur-xl px-5 md:px-6"
-      style={{ height: 80 }}
+    <header className="sticky top-0 z-40 flex items-center gap-4 border-b border-slate-200 bg-white px-5 md:px-6"
+      style={{ height: 64 }}
     >
       {/* Left: Trigger + Breadcrumb */}
       <div className="flex items-center gap-3 min-w-0 flex-1">

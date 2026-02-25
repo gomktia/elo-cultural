@@ -28,7 +28,7 @@ export default async function AvaliacaoListPage() {
       {avaliacoes.length > 0 ? (
         <div className="grid gap-3">
           {avaliacoes.map((av) => (
-            <Card key={av.id} className="border-slate-100 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
+            <Card key={av.id} className="border-slate-200 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white">
               <CardContent className="flex items-center gap-4 p-4">
                 <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
                   <FileText className="h-5 w-5" />
@@ -57,7 +57,7 @@ export default async function AvaliacaoListPage() {
                     </div>
                   )}
                   <Badge variant="outline" className={[
-                    'border-none text-[11px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-md',
+                    'border border-slate-200 text-[11px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-md',
                     av.status === 'finalizada' ? 'bg-green-50 text-[var(--brand-success)]' :
                       av.status === 'em_andamento' ? 'bg-amber-50 text-amber-600' :
                         'bg-slate-50 text-slate-400'
@@ -66,7 +66,7 @@ export default async function AvaliacaoListPage() {
                   </Badge>
                   {av.status === 'em_andamento' && (
                     <Link href={`/avaliacao/${av.projeto_id}`}>
-                      <Button className="h-9 px-4 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm shadow-lg shadow-brand-primary/20 transition-all active:scale-95">
+                      <Button className="h-9 px-4 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95">
                         Avaliar
                         <ArrowRight className="ml-2 h-3 w-3" />
                       </Button>

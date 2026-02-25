@@ -61,8 +61,8 @@ export default async function GestorRankingsPage() {
       ) : (
         <div className="space-y-8">
           {editaisComResultado.map(edital => (
-            <Card key={edital.id} className="border-slate-100 shadow-lg rounded-2xl overflow-hidden bg-white/60 backdrop-blur-md">
-              <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-100">
+            <Card key={edital.id} className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+              <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <CardTitle className="text-base font-semibold text-slate-900 leading-none">{edital.titulo}</CardTitle>
@@ -76,7 +76,7 @@ export default async function GestorRankingsPage() {
               <CardContent className="p-1">
                 <Table>
                   <TableHeader className="bg-slate-50/30">
-                    <TableRow className="hover:bg-transparent border-slate-100">
+                    <TableRow className="hover:bg-transparent border-slate-200">
                       <TableHead className="w-16 py-3 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Pos.</TableHead>
                       <TableHead className="py-3 px-2 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto</TableHead>
                       <TableHead className="py-3 px-2 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
@@ -116,7 +116,7 @@ export default async function GestorRankingsPage() {
                             </span>
                           </TableCell>
                           <TableCell className="py-3 px-4 text-right">
-                            <Badge variant="outline" className="border-none bg-slate-50 text-slate-400 text-[11px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-md">
+                            <Badge variant="outline" className="border border-slate-200 bg-slate-50 text-slate-400 text-[11px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-md">
                               {p.status_atual}
                             </Badge>
                           </TableCell>

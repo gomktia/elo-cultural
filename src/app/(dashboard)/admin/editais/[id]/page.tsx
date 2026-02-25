@@ -37,7 +37,7 @@ export default async function AdminEditalDetailPage({
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-6">
         <div className="flex items-center gap-6">
           <Link href="/admin/editais">
             <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
@@ -64,16 +64,16 @@ export default async function AdminEditalDetailPage({
           { label: 'Início Inscrição', value: e.inicio_inscricao ? format(new Date(e.inicio_inscricao), 'dd/MM/yyyy', { locale: ptBR }) : '—', icon: Settings, color: 'text-brand-primary', bg: 'bg-brand-primary/5' },
           { label: 'Fim Inscrição', value: e.fim_inscricao ? format(new Date(e.fim_inscricao), 'dd/MM/yyyy', { locale: ptBR }) : '—', icon: Calendar, color: 'text-brand-secondary', bg: 'bg-brand-secondary/5' },
         ].map((stat, i) => (
-          <Card key={i} className="border-none shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden bg-white/60 backdrop-blur-sm border border-slate-100/50 rounded-2xl">
+          <Card key={i} className="border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden bg-white rounded-2xl">
             <CardContent className="p-4 relative">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none">{stat.label}</p>
-                  <div className="text-xl font-semibold text-slate-900 tracking-tight group-hover:scale-105 transition-transform duration-300 origin-left">
+                  <div className="text-xl font-semibold text-slate-900 tracking-tight transition-transform duration-300 origin-left">
                     {stat.value}
                   </div>
                 </div>
-                <div className={`p-2.5 rounded-xl ${stat.bg} ${stat.color} transition-all duration-300 group-hover:rotate-12`}>
+                <div className={`p-2.5 rounded-xl ${stat.bg} ${stat.color} transition-all duration-300`}>
                   <stat.icon className="h-4 w-4" />
                 </div>
               </div>
@@ -87,7 +87,7 @@ export default async function AdminEditalDetailPage({
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {e.descricao && (
-            <Card className="border-none shadow-sm bg-white/50 backdrop-blur-md rounded-2xl overflow-hidden">
+            <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
               <div className="h-1.5 w-full bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-secondary)] opacity-20" />
               <CardHeader className="pt-6 px-6 pb-2">
                 <CardTitle className="text-xs font-medium tracking-wide uppercase text-slate-400">Descrição do Edital</CardTitle>
@@ -101,7 +101,7 @@ export default async function AdminEditalDetailPage({
           )}
 
           {/* New Management Navigation Grid */}
-          <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 space-y-6">
+          <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-200 space-y-6">
             <div className="space-y-1">
               <h2 className="text-lg font-semibold text-slate-900 tracking-tight">Ferramentas de Gestão</h2>
               <p className="text-xs text-slate-500 font-normal">Acesse os módulos específicos para análise e controle.</p>
@@ -118,8 +118,8 @@ export default async function AdminEditalDetailPage({
                 { title: 'Publicações', url: 'publicacoes', icon: FileText, desc: 'Atas e documentos oficiais.', color: 'text-slate-900', bg: 'bg-slate-900/5' },
               ].map((nav, i) => (
                 <Link key={i} href={`/admin/editais/${id}/${nav.url}`} className="group p-0.5">
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:translate-x-0.5 group-active:scale-98">
-                    <div className={`h-10 w-10 rounded-xl ${nav.bg} ${nav.color} flex items-center justify-center transition-transform duration-300 group-hover:rotate-6`}>
+                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm transition-all duration-300 group-hover:shadow-md group-active:scale-98">
+                    <div className={`h-10 w-10 rounded-xl ${nav.bg} ${nav.color} flex items-center justify-center transition-transform duration-300`}>
                       <nav.icon className="h-5 w-5" />
                     </div>
                     <div>
@@ -135,7 +135,7 @@ export default async function AdminEditalDetailPage({
 
         {/* Sidebar Info */}
         <div className="space-y-6">
-          <Card className="border-none shadow-lg bg-[var(--brand-primary)] rounded-2xl p-6 text-white overflow-hidden relative group">
+          <Card className="border border-slate-200 shadow-sm bg-[var(--brand-primary)] rounded-2xl p-6 text-white overflow-hidden relative group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
               <FileText className="h-24 w-24 rotate-12" />
             </div>
@@ -153,7 +153,7 @@ export default async function AdminEditalDetailPage({
             </div>
           </Card>
 
-          <Card className="border-none shadow-sm bg-slate-50 rounded-2xl p-6 space-y-6">
+          <Card className="border border-slate-200 shadow-sm bg-slate-50 rounded-2xl p-6 space-y-6">
             <h3 className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none mb-2">Linha do Tempo</h3>
             <div className="space-y-5">
               {[

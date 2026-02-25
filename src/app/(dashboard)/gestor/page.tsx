@@ -62,7 +62,7 @@ export default async function GestorDashboardPage() {
           </p>
         </div>
         <Link href="/admin/editais/novo">
-          <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-lg shadow-brand-primary/20 transition-all active:scale-95 text-sm">
+          <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95 text-sm">
             <Plus className="mr-2 h-4 w-4" />
             Novo Edital
           </Button>
@@ -72,20 +72,20 @@ export default async function GestorDashboardPage() {
       {/* Stats Grid */}
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, i) => (
-          <Card key={i} className="group border-none shadow-md bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-500">
+          <Card key={i} className="group border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden transition-all duration-500">
             <div className="absolute top-0 left-0 w-full h-1 bg-[var(--brand-primary)] opacity-0 group-hover:opacity-100 transition-opacity" />
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors duration-500">
                   <stat.icon className="h-5 w-5" />
                 </div>
-                <div className="text-xs font-medium text-[var(--brand-success)] bg-green-50 px-2 py-0.5 rounded-lg flex items-center gap-1 group-hover:scale-105 transition-transform">
+                <div className="text-xs font-medium text-[var(--brand-success)] bg-green-50 px-2 py-0.5 rounded-lg flex items-center gap-1 transition-transform">
                   <TrendingUp className="h-3 w-3" />
                   +12%
                 </div>
               </div>
               <div className="space-y-0.5">
-                <div className="text-2xl font-bold text-slate-900 tracking-tight leading-none group-hover:scale-105 transition-transform duration-500 origin-left">
+                <div className="text-2xl font-bold text-slate-900 tracking-tight leading-none transition-transform duration-500 origin-left">
                   {stat.value.toLocaleString('pt-BR')}
                 </div>
                 <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">{stat.label}</p>
@@ -106,7 +106,7 @@ export default async function GestorDashboardPage() {
           <div className="grid gap-3">
             {(editaisRecentes as Edital[] | null)?.map(edital => (
               <Link key={edital.id} href={`/admin/editais/${edital.id}`} className="group">
-                <div className="flex items-center justify-between p-4 bg-white border border-slate-100/50 rounded-2xl shadow-sm group-hover:shadow-lg group-hover:border-[var(--brand-primary)]/20 transition-all duration-300">
+                <div className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl shadow-sm group-hover:shadow-md group-hover:border-[var(--brand-primary)]/20 transition-all duration-300">
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-brand-primary/5 group-hover:text-brand-primary transition-colors">
                       <FileText className="h-5 w-5" />
@@ -118,7 +118,7 @@ export default async function GestorDashboardPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <EditalStatusBadge status={edital.status} />
-                    <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-brand-primary group-hover:text-white transition-all transform group-hover:translate-x-0.5">
+                    <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-brand-primary group-hover:text-white transition-all transform">
                       <ArrowRight className="h-4 w-4" />
                     </div>
                   </div>
@@ -139,8 +139,8 @@ export default async function GestorDashboardPage() {
               { href: '/admin/auditoria', icon: BarChart3, label: 'Auditoria', desc: 'Log de segurança', color: 'text-slate-900', bg: 'bg-slate-100' },
             ].map(item => (
               <Link key={item.href} href={item.href} className="group">
-                <div className="flex items-center gap-4 p-4 rounded-[20px] bg-white border border-slate-100 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:translate-x-0.5">
-                  <div className={`h-10 w-10 rounded-xl ${item.bg} ${item.color} flex items-center justify-center transition-transform group-hover:scale-105`}>
+                <div className="flex items-center gap-4 p-4 rounded-[20px] bg-white border border-slate-200 shadow-sm transition-all duration-300 group-hover:shadow-md">
+                  <div className={`h-10 w-10 rounded-xl ${item.bg} ${item.color} flex items-center justify-center transition-transform`}>
                     <item.icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0">

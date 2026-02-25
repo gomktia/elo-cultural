@@ -82,25 +82,25 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
 
   return (
     <Sidebar collapsible="icon" className="border-none bg-transparent">
-      <div className="flex h-full flex-col sidebar-navy">
+      <div className="flex h-full flex-col sidebar-light">
         {/* Header with Logo */}
-        <SidebarHeader className="flex items-center px-5 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:justify-center" style={{ height: 80 }}>
+        <SidebarHeader className="flex items-center px-5 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:justify-center" style={{ height: 64 }}>
           <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
             <div className="flex-shrink-0 flex items-center justify-center">
               <Image
                 src={tenantLogoUrl || '/icon-192.png'}
                 alt="Elo Cultura"
-                width={40}
-                height={40}
-                className="rounded-xl bg-white p-1 shadow-lg shadow-black/20 ring-1 ring-white/20 object-contain transition-all group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
+                width={36}
+                height={36}
+                className="rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200 object-contain transition-all group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
               />
             </div>
             <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-              <p className="truncate text-sm font-bold tracking-tight text-white leading-tight">
+              <p className="truncate text-sm font-bold tracking-tight text-slate-900 leading-tight">
                 {tenantName || 'Elo Cultura'}
               </p>
-              <div className="flex items-center gap-1.5 mt-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Sistema Ativo</p>
               </div>
             </div>
@@ -108,12 +108,12 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
         </SidebarHeader>
 
         {/* Separator */}
-        <div className="mx-4 h-px bg-white/[0.06] group-data-[collapsible=icon]:mx-2" />
+        <div className="mx-4 h-px bg-slate-100 group-data-[collapsible=icon]:mx-2" />
 
         {/* Navigation */}
         <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-1.5">
           <SidebarGroup className="group-data-[collapsible=icon]:p-1">
-            <SidebarGroupLabel className="text-[11px] font-medium uppercase tracking-wider text-slate-500 px-3 mb-2 group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-[11px] font-medium uppercase tracking-wider text-slate-400 px-3 mb-2 group-data-[collapsible=icon]:hidden">
               Menu
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -132,8 +132,8 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
                           className={[
                             'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 relative group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0',
                             isExactlyActive
-                              ? 'sidebar-item-active text-white'
-                              : 'text-slate-400 hover:text-white hover:bg-white/[0.05]',
+                              ? 'sidebar-item-active text-slate-900'
+                              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50',
                           ].join(' ')}
                         >
                           {/* Active indicator bar */}
@@ -149,7 +149,7 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
 
                           <item.icon className={[
                             'h-[18px] w-[18px] flex-shrink-0 transition-colors duration-200',
-                            isExactlyActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'
+                            isExactlyActive ? 'text-[var(--brand-primary)]' : 'text-slate-400 group-hover:text-slate-600'
                           ].join(' ')} />
                           <span className="relative z-10 tracking-[-0.01em] group-data-[collapsible=icon]:hidden truncate">
                             {item.title}
@@ -166,7 +166,7 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
 
         {/* Footer - User Menu */}
         <SidebarFooter className="p-3 group-data-[collapsible=icon]:p-1.5 mt-auto">
-          <div className="border-t border-white/[0.06] pt-3 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pt-0">
+          <div className="border-t border-slate-100 pt-3 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pt-0">
             <UserMenu userName={userName} userEmail={userEmail} role={role} />
           </div>
         </SidebarFooter>

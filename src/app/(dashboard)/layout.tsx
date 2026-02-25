@@ -69,9 +69,8 @@ export default async function DashboardLayout({
         />
         <SidebarInset className="bg-transparent">
           <TenantHeader tenantName={tenantName} />
-          <main className="flex-1 px-4 py-6 md:px-8 lg:px-10 md:py-8 relative">
-            <div className="absolute inset-0 bg-dot-grid opacity-[0.08] pointer-events-none" />
-            <div className="relative z-10 w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
+          <main className="flex-1 px-4 py-6 md:px-8 lg:px-10 md:py-8">
+            <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
               {children}
             </div>
           </main>

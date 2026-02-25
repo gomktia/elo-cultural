@@ -48,21 +48,21 @@ export function UserMenu({ userName, userEmail, role }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton size="lg" className="h-12 w-full rounded-xl hover:bg-white/[0.08] group transition-all duration-200 group-data-[collapsible=icon]:!size-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:mx-auto">
-          <Avatar className="h-8 w-8 border border-white/20 group-data-[collapsible=icon]:h-7 group-data-[collapsible=icon]:w-7">
+        <SidebarMenuButton size="lg" className="h-12 w-full rounded-xl hover:bg-slate-50 group transition-all duration-200 group-data-[collapsible=icon]:!size-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:mx-auto">
+          <Avatar className="h-8 w-8 border border-slate-200 group-data-[collapsible=icon]:h-7 group-data-[collapsible=icon]:w-7">
             <AvatarFallback className="bg-[var(--brand-primary)] text-white font-semibold text-[11px]">
               {initials}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col flex-1 text-left leading-tight ml-2 group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold text-white truncate">
+            <span className="text-sm font-semibold text-slate-900 truncate">
               {userName}
             </span>
-            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wide truncate">
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide truncate">
               {roleLabels[role]}
             </span>
           </div>
-          <ChevronsUpDown className="ml-auto h-4 w-4 text-slate-500 group-data-[collapsible=icon]:hidden" />
+          <ChevronsUpDown className="ml-auto h-4 w-4 text-slate-300 group-data-[collapsible=icon]:hidden" />
         </SidebarMenuButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" side="top" className="w-[240px] p-2 rounded-xl shadow-premium border-slate-100 backdrop-blur-xl bg-white/95">

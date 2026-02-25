@@ -35,10 +35,10 @@ export default async function AuditoriaPage() {
         <p className="text-sm text-slate-500 font-normal">Registro de todas as acoes do sistema</p>
       </div>
 
-      <div className="relative overflow-hidden rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100">
         <Table>
           <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-100">
+            <TableRow className="hover:bg-transparent border-slate-200">
               <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Data/Hora</TableHead>
               <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Acao</TableHead>
               <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tabela</TableHead>

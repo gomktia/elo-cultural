@@ -86,8 +86,8 @@ export default async function GestorRelatoriosPage() {
 
       <div className="grid gap-6">
         {relatorios.map(rel => (
-          <Card key={rel.id} className="relative group border-slate-200/50 hover:shadow-lg transition-all duration-500 rounded-2xl overflow-hidden">
-            <CardHeader className="border-b border-slate-100 p-5 bg-slate-50/50">
+          <Card key={rel.id} className="relative group border-slate-200/50 hover:shadow-md transition-all duration-500 rounded-2xl overflow-hidden">
+            <CardHeader className="border-b border-slate-200 p-5 bg-slate-50/50">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export default async function GestorRelatoriosPage() {
                 </div>
               </div>
 
-              <div className="mt-8 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="mt-8 pt-5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
                   <p className="text-xs text-slate-500 font-medium uppercase tracking-wide leading-none">
@@ -161,7 +161,7 @@ export default async function GestorRelatoriosPage() {
 
         {relatorios.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-3xl text-center">
-            <div className="h-12 w-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mb-6">
+            <div className="h-12 w-12 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center mb-6">
               <FileText className="h-6 w-6 text-slate-200" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-1">Sem editais ativos</h3>
