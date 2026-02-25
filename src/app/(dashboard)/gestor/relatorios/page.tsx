@@ -123,7 +123,7 @@ export default async function GestorRelatoriosPage() {
                 </div>
                 <div className="space-y-1 relative">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Habilitados</p>
-                  <div className="text-3xl font-black text-emerald-500 tracking-tighter">
+                  <div className="text-3xl font-black text-[var(--brand-success)] tracking-tighter">
                     {rel.habilitados.toString().padStart(2, '0')}
                   </div>
                   <div className="absolute -right-3 top-1/2 -translate-y-1/2 h-8 w-[1px] bg-slate-100 hidden lg:block" />

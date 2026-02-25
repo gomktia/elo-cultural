@@ -14,7 +14,7 @@ const TEST_USERS = [
   { email: 'admin@elocultura.teste', password: 'Teste@2026', role: 'Admin', nome: 'Maria Admin', icon: Shield, color: '#ef4444' },
   { email: 'gestor@elocultura.teste', password: 'Teste@2026', role: 'Gestor', nome: 'João Gestor', icon: BarChart3, color: '#f59e0b' },
   { email: 'avaliador@elocultura.teste', password: 'Teste@2026', role: 'Avaliador', nome: 'Ana Avaliadora', icon: ClipboardList, color: '#0047AB' },
-  { email: 'proponente@elocultura.teste', password: 'Teste@2026', role: 'Proponente', nome: 'Carlos Proponente', icon: FolderOpen, color: '#10b981' },
+  { email: 'proponente@elocultura.teste', password: 'Teste@2026', role: 'Proponente', nome: 'Carlos Proponente', icon: FolderOpen, color: '#43A047' },
 ]
 
 function LoginForm() {
@@ -47,8 +47,8 @@ function LoginForm() {
   return (
     <div className="relative min-h-[100dvh] flex items-center justify-center p-4 bg-[#1a1c20] overflow-hidden selection:bg-[#0047AB]/30">
       {/* Background Depth Effects (Glows) */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#FF1493] rounded-full blur-[150px] opacity-[0.08] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500 rounded-full blur-[150px] opacity-[0.08] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#E91E63] rounded-full blur-[150px] opacity-[0.08] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#0047AB] rounded-full blur-[150px] opacity-[0.06] pointer-events-none" />
 
       {/* Luxury Glass Card */}
       <motion.div

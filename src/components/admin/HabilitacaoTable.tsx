@@ -33,9 +33,9 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
     function getStatusBadge(status: string) {
         switch (status) {
             case 'habilitado':
-                return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none rounded-md px-2">Habilitado</Badge>
+                return <Badge className="bg-green-50 text-[var(--brand-success)] hover:bg-green-50 border-none rounded-md px-2 font-semibold">Habilitado</Badge>
             case 'inabilitado':
-                return <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-100 border-none rounded-md px-2">Inabilitado</Badge>
+                return <Badge className="bg-red-50 text-red-600 hover:bg-red-50 border-none rounded-md px-2 font-semibold">Inabilitado</Badge>
             default:
                 return <Badge variant="outline" className="text-slate-400 border-slate-200 rounded-md px-2">Pendente</Badge>
         }
@@ -58,14 +58,14 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
                 </Button>
             </div>
 
-            <div className="relative overflow-hidden rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+            <div className="relative overflow-x-auto rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
                 <Table>
                     <TableHeader className="bg-slate-50/50">
                         <TableRow className="hover:bg-transparent border-slate-100">
-                            <TableHead className="w-[180px] py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Protocolo</TableHead>
-                            <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Título do Projeto</TableHead>
-                            <TableHead className="w-[180px] py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Status</TableHead>
-                            <TableHead className="w-[100px] py-6 px-8 text-right font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Ações</TableHead>
+                            <TableHead className="min-w-[140px] py-6 px-4 md:px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Protocolo</TableHead>
+                            <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Titulo do Projeto</TableHead>
+                            <TableHead className="min-w-[120px] py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Status</TableHead>
+                            <TableHead className="min-w-[80px] py-6 px-4 md:px-8 text-right font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Acoes</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

@@ -41,7 +41,7 @@ export default async function SuperTenantsPage() {
   }
 
   const statusColors: Record<string, string> = {
-    ativo: 'bg-emerald-50 text-emerald-600',
+    ativo: 'bg-green-50 text-[var(--brand-success)]',
     inativo: 'bg-slate-50 text-slate-400',
     suspenso: 'bg-amber-50 text-amber-600',
   }

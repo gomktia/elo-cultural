@@ -72,7 +72,7 @@ export default async function AvaliadoresPage() {
                         {av.cpf_cnpj || 'CPF não informado'}
                       </p>
                     </div>
-                    <Badge className={`${av.active ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[8px] font-black uppercase tracking-widest py-0.5`}>
+                    <Badge className={`${av.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[8px] font-black uppercase tracking-widest py-0.5`}>
                       {av.active ? 'Ativo' : 'Inativo'}
                     </Badge>
                   </div>
@@ -83,7 +83,7 @@ export default async function AvaliadoresPage() {
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Atribuidas</p>
                     </div>
                     <div className="text-center border-x border-slate-100">
-                      <p className="text-lg font-black text-emerald-600">{stats?.finalizadas || 0}</p>
+                      <p className="text-lg font-black text-[var(--brand-success)]">{stats?.finalizadas || 0}</p>
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Concluidas</p>
                     </div>
                     <div className="text-center">

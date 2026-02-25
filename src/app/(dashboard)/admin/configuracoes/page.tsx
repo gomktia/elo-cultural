@@ -319,7 +319,7 @@ export default function ConfiguracoesPage() {
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status da Instância</span>
             <Badge className={[
               'border-none rounded-lg px-2 text-[10px] font-black uppercase tracking-widest py-0.5',
-              tenant.status === 'ativo' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'
+              tenant.status === 'ativo' ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'
             ].join(' ')}>
               {tenant.status}
             </Badge>

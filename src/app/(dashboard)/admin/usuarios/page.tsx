@@ -128,7 +128,7 @@ export default function UsuariosAdminPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{u.cpf_cnpj || 'Sem CPF/CNPJ'}</span>
                       <span className="h-0.5 w-0.5 rounded-full bg-slate-200" />
-                      <Badge className={`${u.active ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[8px] font-black uppercase tracking-widest py-0.5`}>
+                      <Badge className={`${u.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[8px] font-black uppercase tracking-widest py-0.5`}>
                         {u.active ? 'Ativo' : 'Inativo'}
                       </Badge>
                     </div>

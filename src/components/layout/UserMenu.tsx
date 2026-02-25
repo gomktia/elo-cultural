@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -14,7 +13,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { SidebarMenuButton } from '@/components/ui/sidebar'
 import { ChevronsUpDown, LogOut, User } from 'lucide-react'
 import type { UserRole } from '@/types/database.types'
-import { Badge } from '@/components/ui/badge'
 
 const roleLabels: Record<UserRole, string> = {
   proponente: 'Proponente',
@@ -50,45 +48,45 @@ export function UserMenu({ userName, userEmail, role }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton size="lg" className="h-14 w-full rounded-[20px] hover:bg-slate-900 group transition-all duration-300 group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:mx-auto">
-          <Avatar className="h-10 w-10 border-2 border-slate-100 group-hover:border-slate-800 transition-colors group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8">
-            <AvatarFallback className="bg-slate-900 text-white font-black text-xs group-hover:bg-[var(--brand-primary)]">
+        <SidebarMenuButton size="lg" className="h-12 w-full rounded-xl hover:bg-white/[0.08] group transition-all duration-200 group-data-[collapsible=icon]:!size-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:mx-auto">
+          <Avatar className="h-8 w-8 border border-white/20 group-data-[collapsible=icon]:h-7 group-data-[collapsible=icon]:w-7">
+            <AvatarFallback className="bg-[var(--brand-primary)] text-white font-bold text-[10px]">
               {initials}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col flex-1 text-left leading-tight ml-2 group-data-[collapsible=icon]:hidden transition-all">
-            <span className="text-sm font-black text-slate-900 group-hover:text-white truncate transition-colors">
+          <div className="flex flex-col flex-1 text-left leading-tight ml-2 group-data-[collapsible=icon]:hidden">
+            <span className="text-sm font-semibold text-white truncate">
               {userName}
             </span>
-            <span className="text-[10px] font-black text-slate-400 group-hover:text-white/60 uppercase tracking-widest truncate transition-colors">
+            <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider truncate">
               {roleLabels[role]}
             </span>
           </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 text-slate-400 group-hover:text-white transition-colors group-data-[collapsible=icon]:hidden" />
+          <ChevronsUpDown className="ml-auto h-4 w-4 text-slate-500 group-data-[collapsible=icon]:hidden" />
         </SidebarMenuButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[240px] p-2 rounded-[28px] shadow-premium border-slate-100 backdrop-blur-xl bg-white/95 animate-in fade-in slide-in-from-top-2 duration-300">
-        <div className="px-4 py-3 mb-2 border-b border-slate-50">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Logado como</p>
-          <p className="text-sm font-black text-slate-900 truncate">{userEmail}</p>
+      <DropdownMenuContent align="end" side="top" className="w-[240px] p-2 rounded-xl shadow-premium border-slate-100 backdrop-blur-xl bg-white/95">
+        <div className="px-3 py-2.5 mb-1 border-b border-slate-100">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.15em] mb-0.5">Logado como</p>
+          <p className="text-sm font-bold text-slate-900 truncate">{userEmail}</p>
         </div>
 
         <DropdownMenuItem
           onClick={() => router.push('/perfil')}
-          className="rounded-xl py-3 px-4 font-black text-sm text-slate-600 hover:text-slate-900 focus:bg-slate-50 transition-colors cursor-pointer group"
+          className="rounded-lg py-2.5 px-3 font-semibold text-sm text-slate-600 hover:text-slate-900 focus:bg-slate-50 transition-colors cursor-pointer group"
         >
-          <User className="mr-3 h-5 w-5 text-slate-400 group-hover:text-brand-primary" />
+          <User className="mr-2.5 h-4 w-4 text-slate-400 group-hover:text-[var(--brand-primary)]" />
           Meu Perfil
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="bg-slate-50 mx-2" />
+        <DropdownMenuSeparator className="bg-slate-100 mx-1" />
 
         <DropdownMenuItem
           onClick={handleLogout}
-          className="rounded-xl py-3 px-4 font-black text-sm text-destructive hover:bg-destructive/5 focus:bg-destructive/5 transition-colors cursor-pointer group"
+          className="rounded-lg py-2.5 px-3 font-semibold text-sm text-destructive hover:bg-destructive/5 focus:bg-destructive/5 transition-colors cursor-pointer group"
         >
-          <LogOut className="mr-3 h-5 w-5 text-destructive/40 group-hover:text-destructive" />
-          Encerrar Sessão
+          <LogOut className="mr-2.5 h-4 w-4 text-destructive/40 group-hover:text-destructive" />
+          Encerrar Sessao
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

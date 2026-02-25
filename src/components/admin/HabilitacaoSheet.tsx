@@ -144,7 +144,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoShe
                                         'h-14 gap-2.5 rounded-2xl font-bold text-sm transition-all',
                                         status === 'habilitado'
                                             ? 'bg-[var(--brand-success)] hover:bg-[var(--brand-success)]/90 text-white shadow-glow-success border-none'
-                                            : 'border-slate-200 dark:border-white/10 hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 text-slate-600 dark:text-slate-400'
+                                            : 'border-slate-200 dark:border-white/10 hover:border-green-300 hover:bg-green-50/50 dark:hover:bg-green-500/5 text-slate-600 dark:text-slate-400'
                                     ].join(' ')}
                                     onClick={() => setStatus('habilitado')}
                                 >

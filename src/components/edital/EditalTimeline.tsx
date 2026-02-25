@@ -45,7 +45,7 @@ interface EditalTimelineProps {
   corTenant?: string
 }
 
-export function EditalTimeline({ faseAtual, prazos, corTenant = '#1A56DB' }: EditalTimelineProps) {
+export function EditalTimeline({ faseAtual, prazos, corTenant = '#0047AB' }: EditalTimelineProps) {
   const currentIndex = faseOrder.indexOf(faseAtual)
 
   return (
@@ -78,7 +78,7 @@ export function EditalTimeline({ faseAtual, prazos, corTenant = '#1A56DB' }: Edi
                     layout
                     className={[
                       'relative z-10 flex h-9 w-9 items-center justify-center rounded-full',
-                      isPast ? 'bg-emerald-500 text-white shadow-sm' :
+                      isPast ? 'bg-[var(--brand-success)] text-white shadow-sm' :
                       isCurrent ? 'text-white shadow-md' :
                       'bg-slate-100 dark:bg-slate-800 text-slate-400',
                     ].join(' ')}
@@ -136,7 +136,7 @@ export function EditalTimeline({ faseAtual, prazos, corTenant = '#1A56DB' }: Edi
               {idx < faseOrder.length - 1 && (
                 <motion.div
                   className="h-0.5 w-5 flex-shrink-0 mx-0.5 rounded-full mt-[-20px]"
-                  animate={{ backgroundColor: isPast ? '#10b981' : '#e2e8f0' }}
+                  animate={{ backgroundColor: isPast ? '#43A047' : '#e2e8f0' }}
                   transition={{ duration: 0.4, delay: idx * 0.04 }}
                 />
               )}

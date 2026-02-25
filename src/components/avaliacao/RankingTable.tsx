@@ -28,7 +28,7 @@ export function RankingTable({ items }: RankingTableProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
         <div className="space-y-1">
           <h3 className="text-xl font-[900] text-slate-900 tracking-tight flex items-center gap-3">
-            <div className="h-2 w-8 bg-emerald-500 rounded-full" />
+            <div className="h-2 w-8 bg-[var(--brand-primary)] rounded-full" />
             Classificação Geral
           </h3>
           <p className="text-slate-500 font-medium italic text-sm">Os projetos mais bem avaliados aparecem no topo.</p>
@@ -82,7 +82,7 @@ export function RankingTable({ items }: RankingTableProps) {
                   </TableCell>
                   <TableCell className="py-6 px-4">
                     <div className={[
-                      'text-2xl font-[900] tracking-tighter transition-transform group-hover:scale-110 origin-left',
+                      'text-lg md:text-2xl font-[900] tracking-tighter transition-transform group-hover:scale-110 origin-left',
                       isTop3 ? 'text-slate-900' : 'text-slate-400'
                     ].join(' ')}>
                       {item.nota_media?.toFixed(2) ?? '—'}
@@ -96,8 +96,8 @@ export function RankingTable({ items }: RankingTableProps) {
                   <TableCell className="py-6 px-8 text-right">
                     <Badge className={[
                       'border-none rounded-lg px-2 text-[10px] font-black uppercase tracking-widest py-1',
-                      item.status === 'selecionado' ? 'bg-emerald-50 text-emerald-600' :
-                        item.status === 'suplente' ? 'bg-amber-50 text-amber-600' :
+                      item.status === 'selecionado' ? 'bg-green-50 text-[var(--brand-success)]' :
+                        item.status === 'suplente' ? 'bg-orange-50 text-[var(--brand-warning)]' :
                           'bg-slate-50 text-slate-400'
                     ].join(' ')}>
                       {item.status}

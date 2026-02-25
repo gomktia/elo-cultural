@@ -28,16 +28,16 @@ function getMood(edital: Edital): 'open' | 'closing' | 'recurso' | 'default' {
 }
 
 const moodRing: Record<string, string> = {
-  open: 'ring-1 ring-emerald-400/50 shadow-lg shadow-emerald-100/60',
-  closing: 'ring-1 ring-amber-400/60 shadow-lg shadow-amber-100/60',
-  recurso: 'ring-1 ring-blue-400/50 shadow-lg shadow-blue-100/60',
+  open: 'ring-1 ring-[var(--brand-success)]/40 shadow-lg shadow-[var(--brand-success)]/10',
+  closing: 'ring-1 ring-[var(--brand-warning)]/50 shadow-lg shadow-[var(--brand-warning)]/10',
+  recurso: 'ring-1 ring-[var(--brand-primary)]/40 shadow-lg shadow-[var(--brand-primary)]/10',
   default: 'shadow-sm hover:shadow-md',
 }
 
 const moodAccent: Record<string, string> = {
-  open: 'bg-gradient-to-r from-emerald-400 to-emerald-300',
-  closing: 'bg-gradient-to-r from-amber-400 to-orange-400',
-  recurso: 'bg-gradient-to-r from-blue-400 to-indigo-400',
+  open: 'bg-[var(--brand-success)]',
+  closing: 'bg-[var(--brand-warning)]',
+  recurso: 'bg-[var(--brand-primary)]',
   default: '',
 }
 
@@ -107,7 +107,7 @@ export function EditalCard({ edital, href }: EditalCardProps) {
               </span>
             )}
 
-            <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-200 group-hover:bg-[var(--brand-primary)] group-hover:shadow-brand-primary/30 transition-all active:scale-90">
+            <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-[var(--brand-primary)] flex items-center justify-center text-white shadow-lg shadow-blue-200/40 group-hover:opacity-90 transition-all active:scale-90">
               <Calendar className="h-4 w-4 md:h-5 md:w-5" />
             </div>
           </div>

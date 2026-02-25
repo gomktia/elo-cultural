@@ -79,7 +79,7 @@ export default async function GestorDashboardPage() {
                 <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors duration-500">
                   <stat.icon className="h-5 w-5" />
                 </div>
-                <div className="text-[10px] font-black text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-lg flex items-center gap-1 group-hover:scale-105 transition-transform">
+                <div className="text-[10px] font-black text-[var(--brand-success)] bg-green-50 px-2 py-0.5 rounded-lg flex items-center gap-1 group-hover:scale-105 transition-transform">
                   <TrendingUp className="h-3 w-3" />
                   +12%
                 </div>
@@ -135,7 +135,7 @@ export default async function GestorDashboardPage() {
             {[
               { href: '/gestor/rankings', icon: BarChart3, label: 'Rankings', desc: 'Classificação oficial', color: 'text-indigo-600', bg: 'bg-indigo-50' },
               { href: '/gestor/relatorios', icon: FileText, label: 'Relatórios', desc: 'Dados e estatísticas', color: 'text-brand-primary', bg: 'bg-brand-primary/5' },
-              { href: '/admin/usuarios', icon: Users, label: 'Usuários', desc: 'Permissões e acessos', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+              { href: '/admin/usuarios', icon: Users, label: 'Usuários', desc: 'Permissões e acessos', color: 'text-[var(--brand-success)]', bg: 'bg-green-50' },
               { href: '/admin/auditoria', icon: BarChart3, label: 'Auditoria', desc: 'Log de segurança', color: 'text-slate-900', bg: 'bg-slate-100' },
             ].map(item => (
               <Link key={item.href} href={item.href} className="group">

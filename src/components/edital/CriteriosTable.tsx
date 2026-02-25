@@ -99,7 +99,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-50 pb-6">
         <div className="space-y-1">
           <h2 className="text-2xl font-[900] text-slate-900 tracking-tight flex items-center gap-3">
-            <div className="h-8 w-2 bg-purple-500 rounded-full" />
+            <div className="h-8 w-2 bg-[var(--brand-primary)] rounded-full" />
             Definição de Parâmetros
           </h2>
           <p className="text-slate-500 font-medium italic text-sm">Configure os critérios de pontuação para avaliação técnica.</p>
@@ -116,9 +116,9 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
           <Button
             onClick={saveAll}
             disabled={saving}
-            className="h-12 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black shadow-xl shadow-slate-200 transition-all active:scale-95 group"
+            className="h-12 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-black shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
           >
-            {saving ? <Plus className="h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5 text-emerald-400 group-hover:scale-110 transition-transform" />}
+            {saving ? <Plus className="h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5 text-white/70 group-hover:scale-110 transition-transform" />}
             Salvar Critérios
           </Button>
         </div>
@@ -146,7 +146,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                 </TableCell>
                 <TableCell className="py-6 px-4">
                   <Input
-                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-purple-500/20 font-bold transition-all"
+                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 font-bold transition-all"
                     value={item.descricao}
                     onChange={e => updateField(idx, 'descricao', e.target.value)}
                     placeholder="Ex: Mérito Cultural e Inovação"
@@ -154,7 +154,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                 </TableCell>
                 <TableCell className="py-6 px-4">
                   <Input
-                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-purple-500/20"
+                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-[var(--brand-primary)]/20"
                     type="number"
                     value={item.nota_minima}
                     onChange={e => updateField(idx, 'nota_minima', Number(e.target.value))}
@@ -162,7 +162,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                 </TableCell>
                 <TableCell className="py-6 px-4">
                   <Input
-                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-purple-500/20"
+                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-[var(--brand-primary)]/20"
                     type="number"
                     value={item.nota_maxima}
                     onChange={e => updateField(idx, 'nota_maxima', Number(e.target.value))}
@@ -170,7 +170,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                 </TableCell>
                 <TableCell className="py-6 px-4">
                   <Input
-                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-purple-500/20"
+                    className="h-12 rounded-xl border-slate-100 bg-slate-50/50 text-center font-black focus:ring-2 focus:ring-[var(--brand-primary)]/20"
                     type="number"
                     value={item.peso}
                     onChange={e => updateField(idx, 'peso', Number(e.target.value))}

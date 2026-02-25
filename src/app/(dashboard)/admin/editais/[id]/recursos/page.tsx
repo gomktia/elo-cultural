@@ -123,7 +123,7 @@ export default async function RecursosAdminPage({
                     <TableCell className="py-6 px-4">
                       <Badge className={[
                         'border-none rounded-lg px-2 text-[10px] font-black uppercase tracking-widest py-1',
-                        rec.status === 'deferido' ? 'bg-emerald-50 text-emerald-600' :
+                        rec.status === 'deferido' ? 'bg-green-50 text-[var(--brand-success)]' :
                           rec.status === 'indeferido' ? 'bg-destructive/10 text-destructive' :
                             rec.status === 'em_analise' ? 'bg-blue-50 text-blue-600' :
                               'bg-slate-50 text-slate-400'

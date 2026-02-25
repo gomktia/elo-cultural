@@ -142,9 +142,9 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
         <Button
           onClick={saveAtribuicoes}
           disabled={saving}
-          className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black shadow-xl shadow-slate-200 transition-all active:scale-95 group"
+          className="h-14 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-black shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
         >
-          {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Shield className="mr-2 h-5 w-5 text-emerald-400 group-hover:scale-110 transition-transform" />}
+          {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Shield className="mr-2 h-5 w-5 text-white/70 group-hover:scale-110 transition-transform" />}
           Salvar Atribuições
         </Button>
       </div>

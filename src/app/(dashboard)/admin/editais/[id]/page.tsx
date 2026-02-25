@@ -60,7 +60,7 @@ export default async function AdminEditalDetailPage({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {[
           { label: 'Número Edital', value: e.numero_edital, icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-          { label: 'Projetos Inscritos', value: projetosCount ?? 0, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: 'Projetos Inscritos', value: projetosCount ?? 0, icon: Users, color: 'text-[var(--brand-success)]', bg: 'bg-green-50' },
           { label: 'Início Inscrição', value: e.inicio_inscricao ? format(new Date(e.inicio_inscricao), 'dd/MM/yyyy', { locale: ptBR }) : '—', icon: Settings, color: 'text-brand-primary', bg: 'bg-brand-primary/5' },
           { label: 'Fim Inscrição', value: e.fim_inscricao ? format(new Date(e.fim_inscricao), 'dd/MM/yyyy', { locale: ptBR }) : '—', icon: Calendar, color: 'text-brand-secondary', bg: 'bg-brand-secondary/5' },
         ].map((stat, i) => (
@@ -113,7 +113,7 @@ export default async function AdminEditalDetailPage({
                 { title: 'Criterios de Avaliação', url: 'criterios', icon: FileText, desc: 'Gestão de quesitos e pontuações.', color: 'text-indigo-600', bg: 'bg-indigo-100/50' },
                 { title: 'Cronograma', url: 'cronograma', icon: Settings, desc: 'Ajuste de datas e prazos.', color: 'text-slate-600', bg: 'bg-slate-200/50' },
                 { title: 'Atribuições', url: 'atribuicoes', icon: Users, desc: 'Vincular avaliadores aos projetos.', color: 'text-violet-600', bg: 'bg-violet-100/50' },
-                { title: 'Ranking Final', url: 'ranking', icon: BarChart3, desc: 'Visualizar classificação dos projetos.', color: 'text-emerald-600', bg: 'bg-emerald-100/50' },
+                { title: 'Ranking Final', url: 'ranking', icon: BarChart3, desc: 'Visualizar classificação dos projetos.', color: 'text-[var(--brand-success)]', bg: 'bg-green-100/50' },
                 { title: 'Recursos', url: 'recursos', icon: Scale, desc: 'Gestão de contestações enviadas.', color: 'text-brand-secondary', bg: 'bg-brand-secondary/10' },
                 { title: 'Publicações', url: 'publicacoes', icon: FileText, desc: 'Atas e documentos oficiais.', color: 'text-slate-900', bg: 'bg-slate-900/5' },
               ].map((nav, i) => (

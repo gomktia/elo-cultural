@@ -46,7 +46,7 @@ export default async function DashboardLayout({
   const tenantRodapeUrl = (tenant as any)?.logo_rodape_url || null
   const temaCores = tenant?.tema_cores as TenantTemaCores | null
   const brandColor = temaCores?.primary || '#0047AB'
-  const brandSecondary = temaCores?.secondary || '#FF1493'
+  const brandSecondary = temaCores?.secondary || '#E91E63'
   const brandRgb = hexToRgb(brandColor)
 
   return (
@@ -56,7 +56,7 @@ export default async function DashboardLayout({
         ['--brand-secondary' as string]: brandSecondary,
         ['--brand-rgb' as string]: brandRgb,
       }}
-      className="min-h-screen bg-[var(--background)] dark:bg-[#121218]"
+      className="min-h-screen bg-[var(--background)]"
     >
       <SidebarProvider>
         <AppSidebar
@@ -69,15 +69,21 @@ export default async function DashboardLayout({
         />
         <SidebarInset className="bg-transparent">
           <TenantHeader tenantName={tenantName} brandColor={brandColor} userName={userName} userRole={role} />
-          <main className="flex-1 px-5 py-8 md:px-10 md:py-10 relative">
-            <div className="absolute inset-0 bg-dot-grid opacity-[0.12] pointer-events-none" />
-            <div className="relative z-10 w-full max-w-7xl mx-auto space-y-8 md:space-y-10">
+          <main className="flex-1 px-4 py-6 md:px-8 lg:px-10 md:py-8 relative">
+            <div className="absolute inset-0 bg-dot-grid opacity-[0.08] pointer-events-none" />
+            <div className="relative z-10 w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
               {children}
             </div>
           </main>
           {tenantRodapeUrl && (
             <footer className="border-t border-slate-100 dark:border-white/5 px-5 py-4 flex items-center justify-center">
-              <img src={tenantRodapeUrl} alt="Governo" className="h-10 w-auto opacity-60" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={tenantRodapeUrl}
+                alt="Governo"
+                className="h-10 w-auto opacity-60"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+              />
             </footer>
           )}
         </SidebarInset>

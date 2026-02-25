@@ -124,7 +124,7 @@ export function FaseManager({ editalId, currentStatus, fases, onStatusChange }: 
                   )}
                   <div className={[
                     'h-10 w-10 rounded-2xl flex items-center justify-center border-2 transition-all duration-500',
-                    isPast ? 'bg-emerald-50 border-emerald-100 text-emerald-500' :
+                    isPast ? 'bg-green-50 border-green-100 text-[var(--brand-success)]' :
                       isCurrent ? 'bg-white border-white text-[var(--brand-primary)] shadow-md' :
                         'bg-slate-50 border-slate-100 text-slate-300'
                   ].join(' ')}>
