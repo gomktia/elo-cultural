@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { Loader2, ArrowLeft, AlertTriangle } from 'lucide-react'
+import { Loader2, ArrowLeft, AlertTriangle, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 interface CriterioAvaliacao {
@@ -33,6 +33,8 @@ export default function AvaliacaoPage() {
   const [avaliacao, setAvaliacao] = useState<any>(null)
   const [criterios, setCriterios] = useState<CriterioAvaliacao[]>([])
   const [justificativa, setJustificativa] = useState('')
+  const [aiSugestoes, setAiSugestoes] = useState<Record<string, { nota: number; justificativa: string; confianca: number }>>({})
+  const [expandedAiHint, setExpandedAiHint] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -89,6 +91,44 @@ export default function AvaliacaoPage() {
             }
           })
         )
+
+        // Load AI suggestions (if triagem was run)
+        const { data: latestExec } = await supabase
+          .from('triagem_ia_execucoes')
+          .select('id')
+          .eq('edital_id', proj.edital_id)
+          .eq('status', 'concluida')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+
+        let aiNotas: Record<string, { nota: number; justificativa: string; confianca: number }> = {}
+        if (latestExec) {
+          const { data: resultado } = await supabase
+            .from('triagem_ia_resultados')
+            .select('id')
+            .eq('execucao_id', latestExec.id)
+            .eq('projeto_id', projetoId)
+            .single()
+
+          if (resultado) {
+            const { data: notas } = await supabase
+              .from('triagem_ia_notas')
+              .select('criterio_id, nota_sugerida, justificativa, confianca')
+              .eq('resultado_id', resultado.id)
+
+            if (notas) {
+              for (const n of notas) {
+                aiNotas[n.criterio_id] = {
+                  nota: n.nota_sugerida,
+                  justificativa: n.justificativa,
+                  confianca: n.confianca,
+                }
+              }
+            }
+          }
+        }
+        setAiSugestoes(aiNotas)
       }
 
       setLoading(false)
@@ -208,11 +248,47 @@ export default function AvaliacaoPage() {
           {criterios.map((c, idx) => (
             <div key={c.criterio_id} className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label className="font-medium">{c.descricao}</Label>
+                <div className="flex items-center gap-2">
+                  <Label className="font-medium">{c.descricao}</Label>
+                  {aiSugestoes[c.criterio_id] && (
+                    <button
+                      type="button"
+                      onClick={() => setExpandedAiHint(
+                        expandedAiHint === c.criterio_id ? null : c.criterio_id
+                      )}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-medium bg-blue-50 text-[var(--brand-primary)] hover:bg-blue-100 transition-colors"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      Dica IA
+                    </button>
+                  )}
+                </div>
                 <span className="text-xs text-muted-foreground">
                   Min: {c.nota_minima} | Max: {c.nota_maxima} | Peso: {c.peso}
                 </span>
               </div>
+              {expandedAiHint === c.criterio_id && aiSugestoes[c.criterio_id] && (
+                <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-3 space-y-2 animate-in fade-in duration-300">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-[var(--brand-primary)]">Sugestao IA</span>
+                    <span className="text-sm font-bold text-[var(--brand-primary)]">
+                      {aiSugestoes[c.criterio_id].nota.toFixed(1)} / {c.nota_maxima}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600">{aiSugestoes[c.criterio_id].justificativa}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-slate-400">Confianca:</span>
+                    <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[var(--brand-primary)] rounded-full"
+                        style={{ width: `${aiSugestoes[c.criterio_id].confianca * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-[11px] text-slate-500">{Math.round(aiSugestoes[c.criterio_id].confianca * 100)}%</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 italic">Apenas sugestao — sua avaliacao independente e o que conta.</p>
+                </div>
+              )}
               <div className="grid grid-cols-4 gap-3">
                 <Input
                   type="number"
