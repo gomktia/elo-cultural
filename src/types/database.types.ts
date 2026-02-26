@@ -243,3 +243,65 @@ export type PrestacaoWithProjeto = PrestacaoContas & {
 }
 
 export type TenantTemaCores = { primary: string; secondary: string }
+
+// ============================================================
+// Triagem IA
+// ============================================================
+
+export type TipoTriagem = 'habilitacao' | 'avaliacao' | 'irregularidades' | 'completa'
+export type StatusTriagem = 'em_andamento' | 'concluida' | 'erro'
+export type SugestaoHabilitacao = 'habilitado' | 'inabilitado' | 'pendencia'
+
+export interface TriagemExecucao {
+  id: string
+  tenant_id: string
+  edital_id: string
+  executado_por: string
+  tipo: TipoTriagem
+  status: StatusTriagem
+  total_projetos: number
+  projetos_analisados: number
+  erro_mensagem: string | null
+  created_at: string
+  concluida_em: string | null
+}
+
+export interface TriagemResultado {
+  id: string
+  execucao_id: string
+  projeto_id: string
+  tenant_id: string
+  habilitacao_sugerida: SugestaoHabilitacao | null
+  habilitacao_motivo: string | null
+  docs_completos: boolean
+  docs_problemas: string[]
+  irregularidades_flags: string[]
+  similaridade_max: number
+  projeto_similar_id: string | null
+  created_at: string
+}
+
+export interface TriagemNota {
+  id: string
+  resultado_id: string
+  criterio_id: string
+  nota_sugerida: number
+  justificativa: string
+  confianca: number
+  created_at: string
+}
+
+export type TriagemResultadoWithProjeto = TriagemResultado & {
+  projetos: Pick<Projeto, 'titulo' | 'numero_protocolo' | 'resumo' | 'orcamento_total'> | null
+  projeto_similar: Pick<Projeto, 'titulo' | 'numero_protocolo'> | null
+}
+
+export type TriagemResultadoWithNotas = TriagemResultado & {
+  triagem_ia_notas: (TriagemNota & {
+    criterios: Pick<Criterio, 'descricao' | 'nota_minima' | 'nota_maxima' | 'peso'> | null
+  })[]
+}
+
+export type TriagemExecucaoWithResults = TriagemExecucao & {
+  triagem_ia_resultados: TriagemResultadoWithProjeto[]
+}
