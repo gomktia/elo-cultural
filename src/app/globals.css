@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Sora:wght@400;600;700;800&display=swap');
+@import "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -298,7 +299,7 @@ body {
 
 /* ── Sidebar active item ── */
 .sidebar-item-active {
-  background: #F1F5F9;
+  background: rgba(var(--brand-rgb), 0.08);
 }
 
 /* ── Responsive table wrapper ── */

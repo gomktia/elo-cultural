@@ -45,6 +45,12 @@ export default async function PublicLayout({
             >
               Indicadores
             </Link>
+            <Link
+              href="/mapa"
+              className="hidden sm:block text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
+              Mapa
+            </Link>
 
             {user ? (
               <Link href="/dashboard">
@@ -89,6 +95,7 @@ export default async function PublicLayout({
                 <div className="flex flex-col gap-2">
                   <Link href="/editais" className="text-sm text-white/70 hover:text-white transition-colors">Editais</Link>
                   <Link href="/indicadores" className="text-sm text-white/70 hover:text-white transition-colors">Indicadores</Link>
+                  <Link href="/mapa" className="text-sm text-white/70 hover:text-white transition-colors">Mapa Cultural</Link>
                   <Link href="/cadastro" className="text-sm text-white/70 hover:text-white transition-colors">Cadastro</Link>
                   <Link href="/login" className="text-sm text-white/70 hover:text-white transition-colors">Entrar</Link>
                 </div>
