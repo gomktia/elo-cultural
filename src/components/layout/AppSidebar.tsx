@@ -21,7 +21,7 @@ import type { UserRole } from '@/types/database.types'
 import {
   Home, FolderOpen, FileText, Users, BarChart3,
   ClipboardList, Shield, Settings, Trophy, Search,
-  Building2, Globe,
+  Building2, Globe, FileCheck,
 } from 'lucide-react'
 
 interface NavItem {
@@ -47,6 +47,7 @@ const navByRole: Record<UserRole, NavItem[]> = {
     { title: 'Dashboard', url: '/gestor', icon: BarChart3 },
     { title: 'Relatorios', url: '/gestor/relatorios', icon: FileText },
     { title: 'Rankings', url: '/gestor/rankings', icon: Trophy },
+    { title: 'Prestacao Contas', url: '/gestor/prestacao-contas', icon: FileCheck },
   ],
   admin: [
     { title: 'Inicio', url: '/', icon: Home },
@@ -132,8 +133,8 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
                           className={[
                             'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 relative group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0',
                             isExactlyActive
-                              ? 'sidebar-item-active text-slate-900'
-                              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50',
+                              ? 'sidebar-item-active text-[var(--brand-primary)] font-semibold'
+                              : 'text-slate-500 hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/10',
                           ].join(' ')}
                         >
                           {/* Active indicator bar */}
@@ -149,7 +150,7 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
 
                           <item.icon className={[
                             'h-[18px] w-[18px] flex-shrink-0 transition-colors duration-200',
-                            isExactlyActive ? 'text-[var(--brand-primary)]' : 'text-slate-400 group-hover:text-slate-600'
+                            isExactlyActive ? 'text-[var(--brand-primary)]' : 'text-slate-400 group-hover:text-[var(--brand-primary)]'
                           ].join(' ')} />
                           <span className="relative z-10 tracking-[-0.01em] group-data-[collapsible=icon]:hidden truncate">
                             {item.title}

@@ -189,6 +189,24 @@ export interface Publicacao {
   created_at: string
 }
 
+export type StatusPrestacao = 'rascunho' | 'enviada' | 'em_analise' | 'aprovada' | 'reprovada' | 'com_pendencias'
+
+export interface PrestacaoContas {
+  id: string
+  tenant_id: string
+  projeto_id: string
+  proponente_id: string
+  valor_total_executado: number | null
+  resumo_atividades: string | null
+  observacoes: string | null
+  status: StatusPrestacao
+  parecer_gestor: string | null
+  analisado_por: string | null
+  data_envio: string | null
+  data_analise: string | null
+  created_at: string
+}
+
 export interface LogAuditoria {
   id: string
   tenant_id: string
@@ -216,6 +234,12 @@ export type AvaliacaoWithProjeto = Avaliacao & {
 
 export type LogAuditoriaWithProfile = LogAuditoria & {
   profiles: Pick<Profile, 'nome'> | null
+}
+
+export type PrestacaoWithProjeto = PrestacaoContas & {
+  projetos: Pick<Projeto, 'titulo' | 'numero_protocolo' | 'orcamento_total'> & {
+    editais: Pick<Edital, 'titulo' | 'numero_edital'> | null
+  } | null
 }
 
 export type TenantTemaCores = { primary: string; secondary: string }

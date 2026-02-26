@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusTracker } from '@/components/projeto/StatusTracker'
 import { ProjetoTimeline } from '@/components/projeto/ProjetoTimeline'
-import { ArrowLeft, Scale, FileText } from 'lucide-react'
+import { ArrowLeft, Scale, FileText, FileCheck } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { ProjetoWithEdital, ProjetoDocumento } from '@/types/database.types'
@@ -125,16 +125,24 @@ export default async function ProjetoDetailPage({
         </Card>
       )}
 
-      {canRecurso && (
-        <div className="flex gap-3">
+      <div className="flex gap-3">
+        {canRecurso && (
           <Link href={`/projetos/${id}/recurso`}>
             <Button variant="outline">
               <Scale className="mr-2 h-4 w-4" />
               Interpor Recurso
             </Button>
           </Link>
-        </div>
-      )}
+        )}
+        {projeto.status_habilitacao === 'habilitado' && (
+          <Link href={`/projetos/${id}/prestacao-contas`}>
+            <Button variant="outline" className="border-[var(--brand-primary)]/30 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5">
+              <FileCheck className="mr-2 h-4 w-4" />
+              Prestação de Contas
+            </Button>
+          </Link>
+        )}
+      </div>
     </div>
   )
 }
