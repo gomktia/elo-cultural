@@ -1,72 +1,32 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Bell, ChevronRight } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface TenantHeaderProps {
   tenantName?: string
 }
 
-const pageTitles: Record<string, string> = {
-  '/': 'Inicio',
-  '/projetos': 'Meus Projetos',
-  '/editais': 'Editais Abertos',
-  '/perfil': 'Meu Perfil',
-  '/avaliacao': 'Projetos Atribuidos',
-  '/gestor': 'Dashboard',
-  '/gestor/relatorios': 'Relatorios',
-  '/gestor/rankings': 'Rankings',
-  '/admin/editais': 'Editais',
-  '/admin/usuarios': 'Usuarios',
-  '/admin/avaliadores': 'Avaliadores',
-  '/admin/auditoria': 'Auditoria',
-  '/admin/configuracoes': 'Configuracoes',
-  '/super/tenants': 'Tenants',
-  '/super/dashboard': 'Visao Global',
-  '/super/usuarios': 'Todos Usuarios',
-}
-
-function getPageTitle(pathname: string): string {
-  if (pageTitles[pathname]) return pageTitles[pathname]
-  const match = Object.entries(pageTitles).find(
-    ([path]) => path !== '/' && pathname.startsWith(path)
-  )
-  return match ? match[1] : 'Inicio'
-}
-
 export function TenantHeader({ tenantName }: TenantHeaderProps) {
-  const pathname = usePathname()
-
-  const pageTitle = getPageTitle(pathname)
-
   return (
     <header className="sticky top-0 z-40 flex items-center gap-4 border-b border-slate-200 bg-white px-5 md:px-6"
       style={{ height: 64 }}
     >
-      {/* Left: Trigger + Breadcrumb */}
+      {/* Left: Trigger + Tenant Name */}
       <div className="flex items-center gap-3 min-w-0 flex-1">
         <SidebarTrigger className="-ml-1 h-9 w-9 rounded-xl text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all" />
 
-        <div className="flex items-center gap-2 min-w-0">
-          {tenantName && (
-            <>
-              <span className="text-sm text-slate-400 dark:text-slate-500 font-medium truncate hidden sm:block max-w-[180px]">
-                {tenantName}
-              </span>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-300 dark:text-slate-600 flex-shrink-0 hidden sm:block" />
-            </>
-          )}
-          <h1 className="text-base font-semibold text-slate-800 dark:text-slate-200 truncate">
-            {pageTitle}
-          </h1>
-        </div>
+        {tenantName && (
+          <span className="text-sm text-slate-400 font-medium truncate hidden sm:block max-w-[240px]">
+            {tenantName}
+          </span>
+        )}
       </div>
 
       {/* Right: Actions */}
