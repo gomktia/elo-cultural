@@ -30,6 +30,33 @@ export default async function HabilitacaoPage({
         .eq('edital_id', id)
         .order('created_at', { ascending: false })
 
+    // 3. Fetch latest AI triagem results
+    const { data: latestExec } = await supabase
+        .from('triagem_ia_execucoes')
+        .select('id')
+        .eq('edital_id', id)
+        .eq('status', 'concluida')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+
+    let aiSugestoes: Record<string, { sugestao: string; motivo: string }> = {}
+    if (latestExec) {
+        const { data: resultados } = await supabase
+            .from('triagem_ia_resultados')
+            .select('projeto_id, habilitacao_sugerida, habilitacao_motivo')
+            .eq('execucao_id', latestExec.id)
+
+        if (resultados) {
+            for (const r of resultados) {
+                aiSugestoes[r.projeto_id] = {
+                    sugestao: r.habilitacao_sugerida || 'pendencia',
+                    motivo: r.habilitacao_motivo || '',
+                }
+            }
+        }
+    }
+
     return (
         <div className="space-y-8">
             {/* Header */}
@@ -57,7 +84,7 @@ export default async function HabilitacaoPage({
 
             {/* Tabela de Projetos */}
             <section>
-                <HabilitacaoTable projetos={(projetos as Projeto[]) || []} />
+                <HabilitacaoTable projetos={(projetos as Projeto[]) || []} aiSugestoes={aiSugestoes} />
             </section>
         </div>
     )

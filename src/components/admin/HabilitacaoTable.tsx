@@ -13,14 +13,26 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Projeto } from '@/types/database.types'
 import { HabilitacaoSheet } from './HabilitacaoSheet'
-import { Search, Eye, Filter } from 'lucide-react'
+import { Search, Eye, Filter, Sparkles } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
 interface HabilitacaoTableProps {
     projetos: Projeto[]
+    aiSugestoes?: Record<string, { sugestao: string; motivo: string }>
 }
 
-export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
+function getAiBadge(sugestao: string) {
+    switch (sugestao) {
+        case 'habilitado':
+            return <Badge className="bg-green-50 text-green-600 hover:bg-green-50 border-none rounded-md px-2 text-[11px] font-medium"><Sparkles className="h-3 w-3 mr-1" />Habilitado</Badge>
+        case 'inabilitado':
+            return <Badge className="bg-red-50 text-red-600 hover:bg-red-50 border-none rounded-md px-2 text-[11px] font-medium"><Sparkles className="h-3 w-3 mr-1" />Inabilitado</Badge>
+        default:
+            return <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-50 border-none rounded-md px-2 text-[11px] font-medium"><Sparkles className="h-3 w-3 mr-1" />Pendencia</Badge>
+    }
+}
+
+export function HabilitacaoTable({ projetos, aiSugestoes }: HabilitacaoTableProps) {
     const [selectedProjeto, setSelectedProjeto] = useState<Projeto | null>(null)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
@@ -65,6 +77,7 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
                             <TableHead className="min-w-[140px] py-6 px-4 md:px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
                             <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Titulo do Projeto</TableHead>
                             <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Status</TableHead>
+                            <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Sugestao IA</TableHead>
                             <TableHead className="min-w-[80px] py-6 px-4 md:px-8 text-right font-medium text-xs uppercase tracking-wide text-slate-400">Acoes</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -91,6 +104,18 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
                                 <TableCell className="py-6 px-4">
                                     {getStatusBadge(p.status_habilitacao)}
                                 </TableCell>
+                                <TableCell className="py-6 px-4">
+                                    {aiSugestoes?.[p.id] ? (
+                                        <div className="flex flex-col gap-1">
+                                            {getAiBadge(aiSugestoes[p.id].sugestao)}
+                                            <span className="text-[11px] text-slate-400 truncate max-w-[200px]" title={aiSugestoes[p.id].motivo}>
+                                                {aiSugestoes[p.id].motivo}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <span className="text-slate-300 text-xs">&mdash;</span>
+                                    )}
+                                </TableCell>
                                 <TableCell className="py-6 px-8 text-right">
                                     <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all border border-transparent group-hover:shadow-lg group-hover:shadow-brand-primary/20">
                                         <Eye className="h-5 w-5" />
@@ -100,7 +125,7 @@ export function HabilitacaoTable({ projetos }: HabilitacaoTableProps) {
                         ))}
                         {filteredProjetos.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={4} className="h-64 text-center">
+                                <TableCell colSpan={5} className="h-64 text-center">
                                     <div className="flex flex-col items-center justify-center space-y-4">
                                         <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                                             <Search className="h-8 w-8" />
