@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { Loader2, User, Lock } from 'lucide-react'
+import { Loader2, User, Lock, Download, Trash2, ShieldCheck, AlertTriangle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const roleLabels: Record<string, string> = {
@@ -24,6 +25,11 @@ export default function PerfilPage() {
   const [form, setForm] = useState({ nome: '', telefone: '', cpf_cnpj: '' })
   const [senha, setSenha] = useState({ nova: '', confirmar: '' })
   const [alterandoSenha, setAlterandoSenha] = useState(false)
+  const [exportando, setExportando] = useState(false)
+  const [mostrarExclusao, setMostrarExclusao] = useState(false)
+  const [motivoExclusao, setMotivoExclusao] = useState('')
+  const [enviandoExclusao, setEnviandoExclusao] = useState(false)
+  const [protocoloExclusao, setProtocoloExclusao] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -78,6 +84,56 @@ export default function PerfilPage() {
       setSenha({ nova: '', confirmar: '' })
     }
     setAlterandoSenha(false)
+  }
+
+  async function exportarDados() {
+    setExportando(true)
+    try {
+      const response = await fetch('/api/lgpd/exportar-dados')
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error || 'Erro ao exportar dados')
+      }
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `elo-cultura-meus-dados-${new Date().toISOString().slice(0, 10)}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      toast.success('Dados exportados com sucesso')
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao exportar dados')
+    }
+    setExportando(false)
+  }
+
+  async function solicitarExclusao(e: React.FormEvent) {
+    e.preventDefault()
+    if (motivoExclusao.trim().length < 10) {
+      toast.error('Descreva o motivo com pelo menos 10 caracteres.')
+      return
+    }
+    setEnviandoExclusao(true)
+    try {
+      const response = await fetch('/api/lgpd/solicitar-exclusao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ motivo: motivoExclusao }),
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao enviar solicitacao')
+      }
+      setProtocoloExclusao(data.protocolo)
+      toast.success('Solicitacao registrada com sucesso')
+      setMotivoExclusao('')
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao enviar solicitacao')
+    }
+    setEnviandoExclusao(false)
   }
 
   if (loading) {
@@ -216,11 +272,144 @@ export default function PerfilPage() {
         </div>
       </div>
 
-      {profile?.consentimento_lgpd && (
-        <p className="text-xs text-slate-400 text-center">
-          Consentimento LGPD registrado em {new Date(profile.data_consentimento).toLocaleDateString('pt-BR')}.
-        </p>
-      )}
+      {/* Privacidade e Dados (LGPD) */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center">
+              <ShieldCheck className="h-4 w-4 text-slate-400" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-slate-900">Privacidade e Dados (LGPD)</h2>
+              <p className="text-xs text-slate-400 mt-0.5">Seus direitos conforme a Lei Geral de Protecao de Dados</p>
+            </div>
+          </div>
+        </div>
+        <div className="p-6 space-y-5">
+          {/* Status do consentimento */}
+          {profile?.consentimento_lgpd && (
+            <div className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
+              <ShieldCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
+              <p className="text-xs text-green-700">
+                Consentimento LGPD registrado em{' '}
+                <span className="font-semibold">
+                  {profile.data_consentimento
+                    ? new Date(profile.data_consentimento).toLocaleDateString('pt-BR')
+                    : new Date(profile.created_at).toLocaleDateString('pt-BR')}
+                </span>
+              </p>
+            </div>
+          )}
+
+          {/* Exportar dados */}
+          <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <Download className="h-5 w-5 text-[var(--brand-primary)] flex-shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-semibold text-slate-900">Exportar meus dados</h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Baixe uma copia completa de todos os seus dados pessoais, projetos, avaliacoes e historico de acoes em formato JSON. Direito garantido pelo Art. 18, V da LGPD (Portabilidade).
+              </p>
+              <Button
+                onClick={exportarDados}
+                disabled={exportando}
+                variant="outline"
+                className="mt-3 h-9 px-4 rounded-xl border-slate-200 font-semibold text-xs text-slate-600 uppercase tracking-wider transition-all active:scale-[0.98]"
+              >
+                {exportando ? (
+                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-3.5 w-3.5" />
+                )}
+                {exportando ? 'Exportando...' : 'Baixar meus dados'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Solicitar exclusao */}
+          <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <Trash2 className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-semibold text-slate-900">Solicitar exclusao dos meus dados</h3>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                Solicite a eliminacao dos seus dados pessoais. Conforme o Art. 18, VI da LGPD, dados vinculados a processos administrativos em andamento podem ser retidos ate o arquivamento, conforme obrigacao legal.
+              </p>
+
+              {protocoloExclusao ? (
+                <div className="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-100">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                    <p className="text-xs text-amber-700 font-medium">Solicitacao registrada</p>
+                  </div>
+                  <p className="text-xs text-amber-600 mt-1">
+                    Protocolo: <span className="font-mono font-semibold">{protocoloExclusao}</span>
+                  </p>
+                  <p className="text-xs text-amber-600 mt-0.5">
+                    A administracao analisara seu pedido e entrara em contato.
+                  </p>
+                </div>
+              ) : !mostrarExclusao ? (
+                <Button
+                  onClick={() => setMostrarExclusao(true)}
+                  variant="outline"
+                  className="mt-3 h-9 px-4 rounded-xl border-red-200 font-semibold text-xs text-red-600 uppercase tracking-wider hover:bg-red-50 transition-all active:scale-[0.98]"
+                >
+                  <Trash2 className="mr-2 h-3.5 w-3.5" />
+                  Solicitar exclusao
+                </Button>
+              ) : (
+                <form onSubmit={solicitarExclusao} className="mt-3 space-y-3">
+                  <div className="p-3 bg-red-50 rounded-xl border border-red-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                      <p className="text-xs text-red-700 font-semibold">Atencao: esta acao e irreversivel</p>
+                    </div>
+                    <p className="text-xs text-red-600 leading-relaxed">
+                      Ao solicitar a exclusao, seus dados pessoais serao removidos apos analise administrativa. Dados vinculados a processos seletivos em andamento serao anonimizados apos o arquivamento do edital.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="motivo" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+                      Motivo da solicitacao
+                    </Label>
+                    <Textarea
+                      id="motivo"
+                      value={motivoExclusao}
+                      onChange={e => setMotivoExclusao(e.target.value)}
+                      placeholder="Descreva o motivo da sua solicitacao de exclusao de dados..."
+                      required
+                      minLength={10}
+                      rows={3}
+                      className="rounded-xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-red-200 outline-none resize-none transition-all"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="submit"
+                      disabled={enviandoExclusao}
+                      className="h-9 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-red-600/20 transition-all active:scale-[0.98]"
+                    >
+                      {enviandoExclusao ? (
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="mr-2 h-3.5 w-3.5" />
+                      )}
+                      {enviandoExclusao ? 'Enviando...' : 'Confirmar solicitacao'}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => { setMostrarExclusao(false); setMotivoExclusao('') }}
+                      className="h-9 px-4 rounded-xl font-semibold text-xs text-slate-500 uppercase tracking-wider"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
