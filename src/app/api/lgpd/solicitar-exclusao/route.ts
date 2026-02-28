@@ -1,7 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 deletion requests per hour per IP
+  const ip = getClientIp(request.headers)
+  const rl = checkRateLimit(`lgpd-exclusao:${ip}`, { limit: 3, windowSeconds: 3600 })
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Muitas solicitações. Tente novamente mais tarde.' }, { status: 429 })
+  }
+
   const supabase = await createClient()
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -72,8 +80,9 @@ export async function POST(request: NextRequest) {
     })
 
   if (logError) {
+    console.error('Erro ao registrar solicitação LGPD:', logError)
     return NextResponse.json(
-      { error: 'Erro ao registrar solicitação: ' + logError.message },
+      { error: 'Erro interno ao registrar solicitação' },
       { status: 500 }
     )
   }

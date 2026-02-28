@@ -23,6 +23,16 @@ interface DocumentUploadProps {
   existingFiles?: UploadedFile[]
 }
 
+const MAX_FILE_SIZE_MB = 10
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+const ALLOWED_MIME_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'image/jpeg',
+  'image/png',
+]
+
 export function DocumentUpload({ tipo, label, tenantId, onUpload, existingFiles = [] }: DocumentUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [files, setFiles] = useState<UploadedFile[]>(existingFiles)
@@ -30,6 +40,20 @@ export function DocumentUpload({ tipo, label, tenantId, onUpload, existingFiles 
   const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      toast.error(`Arquivo muito grande. Tamanho máximo: ${MAX_FILE_SIZE_MB}MB`)
+      e.target.value = ''
+      return
+    }
+
+    // Validate MIME type
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      toast.error('Tipo de arquivo não permitido. Use PDF, DOC, DOCX, JPG ou PNG.')
+      e.target.value = ''
+      return
+    }
 
     setUploading(true)
     const supabase = createClient()
@@ -40,7 +64,7 @@ export function DocumentUpload({ tipo, label, tenantId, onUpload, existingFiles 
       .upload(filePath, file)
 
     if (error) {
-      toast.error('Erro ao enviar arquivo: ' + error.message)
+      toast.error('Erro ao enviar arquivo. Tente novamente.')
       setUploading(false)
       return
     }
@@ -67,6 +91,9 @@ export function DocumentUpload({ tipo, label, tenantId, onUpload, existingFiles 
             <Upload className="h-8 w-8 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
               Arraste um arquivo ou clique para selecionar
+            </p>
+            <p className="text-xs text-muted-foreground/60">
+              PDF, DOC, DOCX, JPG ou PNG (máx. {MAX_FILE_SIZE_MB}MB)
             </p>
             <label>
               <input

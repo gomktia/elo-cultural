@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 const FASE_ORDER = [
     'criacao', 'publicacao', 'inscricao', 'inscricao_encerrada',
@@ -9,7 +9,20 @@ const FASE_ORDER = [
     'resultado_definitivo_habilitacao', 'resultado_final', 'homologacao', 'arquivamento',
 ]
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    // Verify Vercel Cron secret or Authorization header
+    const authHeader = request.headers.get('authorization')
+    const cronSecret = process.env.CRON_SECRET
+
+    if (cronSecret) {
+        if (authHeader !== `Bearer ${cronSecret}`) {
+            return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+        }
+    } else if (process.env.NODE_ENV === 'production') {
+        // In production, require CRON_SECRET to be set
+        return NextResponse.json({ error: 'CRON_SECRET não configurado' }, { status: 500 })
+    }
+
     const supabase = await createClient()
 
     // 1. Bloqueia fases expiradas na tabela edital_fases
@@ -22,7 +35,7 @@ export async function GET() {
 
     if (faseError) {
         console.error('Erro ao bloquear fases:', faseError)
-        return NextResponse.json({ error: faseError.message }, { status: 500 })
+        return NextResponse.json({ error: 'Erro interno ao processar fases' }, { status: 500 })
     }
 
     // 2. Auto-advance editais whose current phase matches a just-blocked phase

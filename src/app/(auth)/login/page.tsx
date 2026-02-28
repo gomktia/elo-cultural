@@ -7,15 +7,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2, Mail, Lock, Shield, BarChart3, ClipboardList, FolderOpen } from 'lucide-react'
+import { Loader2, Mail, Lock } from 'lucide-react'
 import { motion } from 'framer-motion'
-
-const TEST_USERS = [
-  { email: 'admin@elocultura.teste', password: 'Teste@2026', role: 'Admin', nome: 'Maria Admin', icon: Shield, color: '#e32a74' },
-  { email: 'gestor@elocultura.teste', password: 'Teste@2026', role: 'Gestor', nome: 'João Gestor', icon: BarChart3, color: '#eeb513' },
-  { email: 'avaliador@elocultura.teste', password: 'Teste@2026', role: 'Avaliador', nome: 'Ana Avaliadora', icon: ClipboardList, color: '#0047AB' },
-  { email: 'proponente@elocultura.teste', password: 'Teste@2026', role: 'Proponente', nome: 'Carlos Proponente', icon: FolderOpen, color: '#77a80b' },
-]
 
 function LoginForm() {
   const router = useRouter()
@@ -138,41 +131,6 @@ function LoginForm() {
               </p>
             </form>
 
-            {/* Quick Access — Test Users */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="mt-6 pt-5 border-t border-slate-200">
-                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-3">
-                  Acesso Rápido — Teste
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {TEST_USERS.map((user) => {
-                    const Icon = user.icon
-                    return (
-                      <button
-                        key={user.role}
-                        type="button"
-                        onClick={() => {
-                          setEmail(user.email)
-                          setPassword(user.password)
-                        }}
-                        className="group flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 hover:bg-slate-100/80 transition-all text-left"
-                      >
-                        <div
-                          className="h-7 w-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
-                          style={{ backgroundColor: `${user.color}12` }}
-                        >
-                          <Icon className="h-3.5 w-3.5" style={{ color: user.color }} />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-bold text-slate-600 leading-none mb-0.5">{user.role}</p>
-                          <p className="text-[9px] text-slate-400 font-medium truncate">{user.nome}</p>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </motion.div>

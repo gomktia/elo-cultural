@@ -3,10 +3,18 @@ import { getOpenAIClient } from '@/lib/openai'
 import { buildHabilitacaoPrompt, buildAvaliacaoPrompt } from '@/lib/ia/prompts'
 import { detectarIrregularidades } from '@/lib/ia/similaridade'
 import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export const maxDuration = 300 // 5 minutes max
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 triagem executions per hour per IP (expensive OpenAI calls)
+  const ip = getClientIp(request.headers)
+  const rl = checkRateLimit(`triagem-ia:${ip}`, { limit: 3, windowSeconds: 3600 })
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Muitas solicitações. Tente novamente mais tarde.' }, { status: 429 })
+  }
+
   const supabase = await createClient()
 
   // 1. Auth check
@@ -73,8 +81,9 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (execError || !execucao) {
+    console.error('Erro ao criar execucao de triagem:', execError)
     return NextResponse.json(
-      { error: 'Erro ao criar execucao de triagem' },
+      { error: 'Erro interno ao iniciar triagem' },
       { status: 500 }
     )
   }
@@ -352,6 +361,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ execucao_id: execucao.id })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Erro desconhecido na triagem'
+    console.error('Triagem IA error:', message)
 
     // Update execution to error status
     await supabase
@@ -362,6 +372,6 @@ export async function POST(request: NextRequest) {
       })
       .eq('id', execucao.id)
 
-    return NextResponse.json({ error: message }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno ao processar triagem' }, { status: 500 })
   }
 }

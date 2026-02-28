@@ -1,7 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limit: 5 exports per hour per IP
+  const ip = getClientIp(request.headers)
+  const rl = checkRateLimit(`lgpd-export:${ip}`, { limit: 5, windowSeconds: 3600 })
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Muitas solicitações. Tente novamente mais tarde.' }, { status: 429 })
+  }
+
   const supabase = await createClient()
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()

@@ -45,7 +45,7 @@ export async function GET(
       erro_mensagem: execucao.erro_mensagem,
     })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Erro desconhecido'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('Erro ao buscar status da triagem:', error instanceof Error ? error.message : error)
+    return NextResponse.json({ error: 'Erro interno ao buscar status' }, { status: 500 })
   }
 }

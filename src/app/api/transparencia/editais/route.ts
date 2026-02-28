@@ -36,8 +36,9 @@ export async function GET(request: NextRequest) {
   const { data, count, error } = await query
 
   if (error) {
+    console.error('Erro ao consultar editais (transparência):', error)
     return NextResponse.json(
-      { erro: 'Erro ao consultar editais', detalhes: error.message },
+      { erro: 'Erro interno ao consultar editais' },
       { status: 500, headers: CORS_HEADERS }
     )
   }

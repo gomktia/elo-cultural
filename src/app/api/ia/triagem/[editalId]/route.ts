@@ -104,7 +104,7 @@ export async function GET(
       resultados: resultadosWithNotas,
     })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Erro desconhecido'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('Erro ao buscar resultados da triagem:', error instanceof Error ? error.message : error)
+    return NextResponse.json({ error: 'Erro interno ao buscar resultados' }, { status: 500 })
   }
 }
