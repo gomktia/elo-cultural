@@ -7,7 +7,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Bell } from 'lucide-react'
-import { toast } from 'sonner'
 
 interface TenantHeaderProps {
   tenantName?: string
@@ -33,14 +32,12 @@ export function TenantHeader({ tenantName }: TenantHeaderProps) {
       <div className="flex items-center gap-1.5">
         <Tooltip>
           <TooltipTrigger asChild>
-            <button
+            <span
               aria-label="Notificações"
-              onClick={() => toast.info('Notificações em breve!')}
-              className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+              className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 cursor-default"
             >
               <Bell className="h-[18px] w-[18px]" />
-              <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[var(--brand-secondary)] ring-2 ring-white dark:ring-[#121218]" />
-            </button>
+            </span>
           </TooltipTrigger>
           <TooltipContent>Notificações</TooltipContent>
         </Tooltip>

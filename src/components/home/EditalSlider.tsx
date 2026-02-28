@@ -39,7 +39,7 @@ export function EditalSlider({ editais }: EditalSliderProps) {
           Bem-vindo ao Elo Cultural
         </h2>
         <p className="text-sm text-slate-500 mb-6">
-          Em breve novos editais serão publicados. Cadastre-se para ser notificado.
+          Nenhum edital publicado no momento. Acompanhe esta página para novidades.
         </p>
         <div className="flex gap-3 justify-center">
           <Button asChild className="rounded-xl bg-[#0047AB] hover:bg-[#003d91]">
