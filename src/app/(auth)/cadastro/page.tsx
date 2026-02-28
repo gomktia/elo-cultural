@@ -72,6 +72,12 @@ export default function CadastroPage() {
 
     const supabase = createClient()
 
+    // Read tenant_id from cookie (set by middleware from domain)
+    const tenantId = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('tenant_id='))
+      ?.split('=')[1] || undefined
+
     // 1. Create account
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -82,6 +88,7 @@ export default function CadastroPage() {
           cpf_cnpj: cpfCnpj,
           telefone,
           consentimento_lgpd: true,
+          ...(tenantId ? { tenant_id: tenantId } : {}),
         },
       },
     })
