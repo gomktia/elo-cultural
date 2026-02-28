@@ -37,7 +37,7 @@ export default async function CriteriosPage({
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Criterios de Avaliacao</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Critérios de Avaliação</h1>
           <p className="text-muted-foreground">{edital.titulo} - {edital.numero_edital}</p>
         </div>
       </div>

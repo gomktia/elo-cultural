@@ -68,9 +68,9 @@ export default function UsuariosAdminPage() {
       .eq('id', userId)
 
     if (error) {
-      toast.error('Erro ao alterar funcao: ' + error.message)
+      toast.error('Erro ao alterar função: ' + error.message)
     } else {
-      toast.success('Funcao atualizada com sucesso')
+      toast.success('Função atualizada com sucesso')
       setUsuarios(prev =>
         prev.map(u => u.id === userId ? { ...u, role: novoRole } : u)
       )

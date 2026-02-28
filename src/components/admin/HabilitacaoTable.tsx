@@ -29,7 +29,7 @@ function getAiBadge(sugestao: string) {
         case 'inabilitado':
             return <Badge className="bg-red-50 text-red-600 hover:bg-red-50 border-none rounded-md px-2 text-[11px] font-medium"><Sparkles className="h-3 w-3 mr-1" />Inabilitado</Badge>
         default:
-            return <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-50 border-none rounded-md px-2 text-[11px] font-medium"><Sparkles className="h-3 w-3 mr-1" />Pendencia</Badge>
+            return <Badge className="bg-amber-50 text-amber-600 hover:bg-amber-50 border-none rounded-md px-2 text-[11px] font-medium"><Sparkles className="h-3 w-3 mr-1" />Pendência</Badge>
     }
 }
 
@@ -77,10 +77,10 @@ export function HabilitacaoTable({ projetos, aiSugestoes }: HabilitacaoTableProp
                     <TableHeader className="bg-slate-50/50">
                         <TableRow className="hover:bg-transparent border-slate-100">
                             <TableHead className="min-w-[140px] py-6 px-4 md:px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
-                            <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Titulo do Projeto</TableHead>
+                            <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Título do Projeto</TableHead>
                             <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Status</TableHead>
-                            <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Sugestao IA</TableHead>
-                            <TableHead className="min-w-[80px] py-6 px-4 md:px-8 text-right font-medium text-xs uppercase tracking-wide text-slate-400">Acoes</TableHead>
+                            <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Sugestão IA</TableHead>
+                            <TableHead className="min-w-[80px] py-6 px-4 md:px-8 text-right font-medium text-xs uppercase tracking-wide text-slate-400">Ações</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

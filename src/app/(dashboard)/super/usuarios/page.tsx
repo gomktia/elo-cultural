@@ -44,9 +44,9 @@ export default async function SuperUsuariosPage() {
           <Users className="h-5 w-5 text-[var(--brand-primary)]" />
           <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Todos os Tenants</span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Usuarios Globais</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Usuários Globais</h1>
         <p className="text-sm text-slate-500 font-normal">
-          {usuarios?.length || 0} usuario{(usuarios?.length || 0) !== 1 ? 's' : ''} em toda a plataforma
+          {usuarios?.length || 0} usuário{(usuarios?.length || 0) !== 1 ? 's' : ''} em toda a plataforma
         </p>
       </div>
 
@@ -77,7 +77,7 @@ export default async function SuperUsuariosPage() {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between text-[11px] font-bold text-slate-300">
-                  <span>{u.cpf_cnpj || 'CPF nao informado'}</span>
+                  <span>{u.cpf_cnpj || 'CPF não informado'}</span>
                   <span>{new Date(u.created_at).toLocaleDateString('pt-BR')}</span>
                 </div>
               </div>

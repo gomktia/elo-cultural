@@ -86,9 +86,9 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
     )
 
     if (error) {
-      toast.error('Erro ao salvar criterios: ' + error.message)
+      toast.error('Erro ao salvar critérios: ' + error.message)
     } else {
-      toast.success('Criterios salvos com sucesso')
+      toast.success('Critérios salvos com sucesso')
       onUpdate?.()
     }
     setSaving(false)
@@ -102,7 +102,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
             <div className="h-8 w-2 bg-[var(--brand-primary)] rounded-full" />
             Definição de Parâmetros
           </h2>
-          <p className="text-slate-500 font-medium italic text-sm">Configure os critérios de pontuação para avaliação técnica.</p>
+          <p className="text-slate-500 font-medium text-sm">Configure os critérios de pontuação para avaliação técnica.</p>
         </div>
         <div className="flex gap-4">
           <Button
@@ -111,7 +111,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
             className="h-12 px-6 rounded-2xl border-slate-200 hover:bg-slate-50 font-semibold transition-all active:scale-95 flex items-center gap-2"
           >
             <Plus className="h-5 w-5 text-slate-400" />
-            Adicionar Critério
+            Novo Critério
           </Button>
           <Button
             onClick={saveAll}
@@ -130,8 +130,8 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
             <TableRow className="hover:bg-transparent border-slate-100">
               <TableHead className="w-16 py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">#</TableHead>
               <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Descrição do Critério</TableHead>
-              <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Mínima</TableHead>
-              <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Máxima</TableHead>
+              <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Nota Mín.</TableHead>
+              <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Nota Máx.</TableHead>
               <TableHead className="w-28 py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Peso</TableHead>
               <TableHead className="w-16 py-6 px-8"></TableHead>
             </TableRow>
@@ -195,7 +195,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
                     <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <Plus className="h-8 w-8" />
                     </div>
-                    <p className="text-slate-400 font-medium text-xs uppercase tracking-wide italic leading-relaxed max-w-[200px] mx-auto">
+                    <p className="text-slate-400 font-medium text-xs uppercase tracking-wide leading-relaxed max-w-[200px] mx-auto">
                       Nenhum critério definido para este edital.
                     </p>
                   </div>

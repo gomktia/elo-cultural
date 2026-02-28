@@ -70,7 +70,7 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
       .in('projeto_id', projetos.map(p => p.id))
 
     if (fetchError) {
-      toast.error('Erro ao carregar atribuicoes existentes: ' + fetchError.message)
+      toast.error('Erro ao carregar atribuições existentes: ' + fetchError.message)
       setSaving(false)
       return
     }
@@ -92,7 +92,7 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
       const key = `${a.avaliador_id}:${a.projeto_id}`
       if (!desired.has(key)) {
         if (a.status === 'finalizada') {
-          toast.error(`Nao e possivel remover avaliacao ja finalizada de ${a.avaliador_id}`)
+          toast.error(`Não é possível remover avaliação já finalizada de ${a.avaliador_id}`)
           setSaving(false)
           return
         }
@@ -108,7 +108,7 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
         .in('id', toRemoveIds)
 
       if (delError) {
-        toast.error('Erro ao remover atribuicoes: ' + delError.message)
+        toast.error('Erro ao remover atribuições: ' + delError.message)
         setSaving(false)
         return
       }
@@ -118,13 +118,13 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
     if (toAdd.length > 0) {
       const { error: insError } = await supabase.from('avaliacoes').insert(toAdd)
       if (insError) {
-        toast.error('Erro ao salvar atribuicoes: ' + insError.message)
+        toast.error('Erro ao salvar atribuições: ' + insError.message)
         setSaving(false)
         return
       }
     }
 
-    toast.success(`Atribuicoes salvas (${toAdd.length} adicionadas, ${toRemoveIds.length} removidas)`)
+    toast.success(`Atribuições salvas (${toAdd.length} adicionadas, ${toRemoveIds.length} removidas)`)
     setSaving(false)
   }
 

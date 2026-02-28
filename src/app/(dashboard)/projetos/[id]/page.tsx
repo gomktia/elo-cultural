@@ -38,9 +38,9 @@ export default async function ProjetoDetailPage({
   const editalStatus = projeto.editais?.status
 
   const timelineEvents = [
-    { label: 'Inscricao enviada', date: format(new Date(projeto.data_envio), "dd/MM/yyyy 'as' HH:mm", { locale: ptBR }), done: true },
-    { label: 'Habilitacao', done: projeto.status_habilitacao !== 'pendente', current: projeto.status_habilitacao === 'pendente' && editalStatus === 'habilitacao' },
-    { label: 'Avaliacao tecnica', done: projeto.nota_final !== null, current: editalStatus === 'avaliacao_tecnica' },
+    { label: 'Inscrição enviada', date: format(new Date(projeto.data_envio), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }), done: true },
+    { label: 'Habilitação', done: projeto.status_habilitacao !== 'pendente', current: projeto.status_habilitacao === 'pendente' && editalStatus === 'habilitacao' },
+    { label: 'Avaliação técnica', done: projeto.nota_final !== null, current: editalStatus === 'avaliacao_tecnica' },
     { label: 'Resultado', done: editalStatus ? ['resultado_final', 'homologacao', 'arquivamento'].includes(editalStatus) : false },
   ]
 

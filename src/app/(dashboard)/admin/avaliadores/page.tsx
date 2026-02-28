@@ -80,11 +80,11 @@ export default async function AvaliadoresPage() {
                   <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50/50 rounded-2xl">
                     <div className="text-center">
                       <p className="text-lg font-semibold text-slate-900">{stats?.total || 0}</p>
-                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Atribuidas</p>
+                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Atribuídas</p>
                     </div>
                     <div className="text-center border-x border-slate-200">
                       <p className="text-lg font-semibold text-[var(--brand-success)]">{stats?.finalizadas || 0}</p>
-                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Concluidas</p>
+                      <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Concluídas</p>
                     </div>
                     <div className="text-center">
                       <p className="text-lg font-semibold text-amber-600">{stats?.em_andamento || 0}</p>
@@ -127,7 +127,7 @@ export default async function AvaliadoresPage() {
           </div>
           <h3 className="text-lg font-bold text-slate-900 mb-1">Nenhum avaliador cadastrado</h3>
           <p className="text-sm text-slate-500 max-w-xs font-normal">
-            Promova usuarios ao perfil de avaliador na pagina de Usuarios.
+            Promova usuários ao perfil de avaliador na página de Usuários.
           </p>
         </div>
       )}

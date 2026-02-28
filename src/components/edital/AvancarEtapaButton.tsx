@@ -8,21 +8,21 @@ import { toast } from 'sonner'
 import { Loader2, ChevronRight } from 'lucide-react'
 
 const FASE_LABELS: Record<string, string> = {
-  criacao: 'Criacao',
-  publicacao: 'Publicacao',
-  inscricao: 'Inscricao',
-  inscricao_encerrada: 'Inscricao Encerrada',
-  divulgacao_inscritos: 'Divulgacao de Inscritos',
-  recurso_divulgacao_inscritos: 'Recurso da Divulgacao',
-  avaliacao_tecnica: 'Avaliacao Tecnica',
-  resultado_preliminar_avaliacao: 'Resultado Preliminar (Avaliacao)',
-  recurso_avaliacao: 'Recurso da Avaliacao',
-  habilitacao: 'Habilitacao',
-  resultado_preliminar_habilitacao: 'Resultado Preliminar (Habilitacao)',
-  recurso_habilitacao: 'Recurso da Habilitacao',
-  resultado_definitivo_habilitacao: 'Resultado Definitivo (Habilitacao)',
+  criacao: 'Criação',
+  publicacao: 'Publicação',
+  inscricao: 'Inscrição',
+  inscricao_encerrada: 'Inscrição Encerrada',
+  divulgacao_inscritos: 'Divulgação de Inscritos',
+  recurso_divulgacao_inscritos: 'Recurso da Divulgação',
+  avaliacao_tecnica: 'Avaliação Técnica',
+  resultado_preliminar_avaliacao: 'Resultado Preliminar (Avaliação)',
+  recurso_avaliacao: 'Recurso da Avaliação',
+  habilitacao: 'Habilitação',
+  resultado_preliminar_habilitacao: 'Resultado Preliminar (Habilitação)',
+  recurso_habilitacao: 'Recurso da Habilitação',
+  resultado_definitivo_habilitacao: 'Resultado Definitivo (Habilitação)',
   resultado_final: 'Resultado Final',
-  homologacao: 'Homologacao',
+  homologacao: 'Homologação',
   arquivamento: 'Arquivamento',
 }
 
@@ -38,7 +38,7 @@ export function AvancarEtapaButton({ editalId, currentStatus }: AvancarEtapaButt
   if (currentStatus === 'arquivamento') return null
 
   async function handleClick() {
-    if (!confirm('Tem certeza que deseja avancar para a proxima etapa?')) return
+    if (!confirm('Tem certeza que deseja avançar para a próxima etapa?')) return
 
     setLoading(true)
     const result = await avancarEtapa(editalId)
@@ -47,7 +47,7 @@ export function AvancarEtapaButton({ editalId, currentStatus }: AvancarEtapaButt
     if (result.error) {
       toast.error(result.error)
     } else {
-      toast.success(`Etapa avancada para: ${FASE_LABELS[result.newPhase!] || result.newPhase}`)
+      toast.success(`Etapa avançada para: ${FASE_LABELS[result.newPhase!] || result.newPhase}`)
       router.refresh()
     }
   }
@@ -63,7 +63,7 @@ export function AvancarEtapaButton({ editalId, currentStatus }: AvancarEtapaButt
       ) : (
         <ChevronRight className="mr-2 h-4 w-4" />
       )}
-      Avancar Etapa
+      Avançar Etapa
     </Button>
   )
 }

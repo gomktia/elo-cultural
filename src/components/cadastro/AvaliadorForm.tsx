@@ -6,11 +6,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { FileText, Link2, Briefcase } from 'lucide-react'
 
 const AREAS_AVALIACAO = [
-  'Artes Visuais', 'Audiovisual', 'Circo', 'Danca', 'Design',
-  'Fotografia', 'Literatura', 'Musica', 'Patrimonio Cultural',
-  'Teatro', 'Culturas Populares', 'Culturas Indigenas',
-  'Culturas Afro-brasileiras', 'Artesanato', 'Gestao Cultural',
-  'Politicas Culturais', 'Economia Criativa',
+  'Artes Visuais', 'Audiovisual', 'Circo', 'Dança', 'Design',
+  'Fotografia', 'Literatura', 'Música', 'Patrimônio Cultural',
+  'Teatro', 'Culturas Populares', 'Culturas Indígenas',
+  'Culturas Afro-brasileiras', 'Artesanato', 'Gestão Cultural',
+  'Políticas Culturais', 'Economia Criativa',
 ]
 
 interface AvaliadorFormProps {
@@ -37,10 +37,10 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
       {/* Curriculo */}
       <div className="space-y-2">
         <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
-          <FileText className="h-3 w-3" /> Descricao do Curriculo
+          <FileText className="h-3 w-3" /> Descrição do Currículo
         </Label>
         <Textarea
-          placeholder="Descreva sua experiencia e formacao na area cultural..."
+          placeholder="Descreva sua experiência e formação na área cultural..."
           value={form.curriculo_descricao}
           onChange={e => onChange('curriculo_descricao', e.target.value)}
           rows={4}
@@ -51,7 +51,7 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
       {/* Areas de Avaliacao */}
       <div className="space-y-2">
         <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
-          <Briefcase className="h-3 w-3" /> Areas de Atuacao / Avaliacao
+          <Briefcase className="h-3 w-3" /> Áreas de Atuação / Avaliação
         </Label>
         <div className="flex flex-wrap gap-2">
           {AREAS_AVALIACAO.map(area => (
@@ -75,7 +75,7 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
       {/* Lattes */}
       <div className="space-y-2">
         <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
-          <Link2 className="h-3 w-3" /> Link do Curriculo Lattes
+          <Link2 className="h-3 w-3" /> Link do Currículo Lattes
         </Label>
         <Input
           placeholder="http://lattes.cnpq.br/..."

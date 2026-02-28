@@ -51,9 +51,9 @@ export default async function SuperTenantsPage() {
       <div className="border-b border-slate-100 pb-6">
         <div className="flex items-center gap-3 mb-2">
           <Building2 className="h-5 w-5 text-[var(--brand-primary)]" />
-          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Gestao de Tenants</span>
+          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Gestão de Tenants</span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Prefeituras e Municipios</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Prefeituras e Municípios</h1>
         <p className="text-sm text-slate-500 font-normal">
           {tenants?.length || 0} tenant{(tenants?.length || 0) !== 1 ? 's' : ''} cadastrado{(tenants?.length || 0) !== 1 ? 's' : ''}
         </p>
@@ -94,7 +94,7 @@ export default async function SuperTenantsPage() {
                 <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50/50 rounded-2xl">
                   <div className="text-center">
                     <p className="text-lg font-semibold text-slate-900">{usersByTenant.get(t.id) || 0}</p>
-                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Usuarios</p>
+                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Usuários</p>
                   </div>
                   <div className="text-center border-x border-slate-100">
                     <p className="text-lg font-semibold text-slate-900">{editaisByTenant.get(t.id) || 0}</p>

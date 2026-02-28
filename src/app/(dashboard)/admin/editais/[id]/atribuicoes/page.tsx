@@ -63,11 +63,11 @@ export default async function AtribuicoesPage({
       <div className="flex items-center gap-4 bg-amber-50 border border-amber-100 rounded-2xl p-4">
         <Users className="h-5 w-5 text-amber-600 flex-shrink-0" />
         <p className="text-sm text-amber-800 font-medium flex-1">
-          Precisa adicionar novos avaliadores? Altere o perfil de um usuario para "Avaliador" na pagina de usuarios.
+          Precisa adicionar novos avaliadores? Altere o perfil de um usuário para "Avaliador" na página de usuários.
         </p>
         <Link href="/admin/usuarios">
           <Button variant="outline" className="rounded-xl border-amber-200 text-amber-700 hover:bg-amber-100 font-bold text-xs uppercase tracking-wide">
-            Gerenciar Usuarios
+            Gerenciar Usuários
           </Button>
         </Link>
       </div>

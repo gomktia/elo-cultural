@@ -46,7 +46,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
 
   async function handleSubmit() {
     if (!aceitaTermos) {
-      toast.error('Voce deve aceitar os termos para enviar.')
+      toast.error('Você deve aceitar os termos para enviar.')
       return
     }
 
@@ -74,7 +74,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       .single()
 
     if (error) {
-      toast.error('Erro ao enviar inscricao: ' + error.message)
+      toast.error('Erro ao enviar inscrição: ' + error.message)
       setLoading(false)
       return
     }
@@ -93,7 +93,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       )
     }
 
-    toast.success(`Inscricao enviada! Protocolo: ${protocolo}`)
+    toast.success(`Inscrição enviada! Protocolo: ${protocolo}`)
     router.push('/projetos')
   }
 
@@ -111,7 +111,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               {s < step ? <Check className="h-4 w-4" /> : s}
             </div>
             <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'}`}>
-              {s === 1 ? 'Dados' : s === 2 ? 'Documentos' : 'Revisao'}
+              {s === 1 ? 'Dados' : s === 2 ? 'Documentos' : 'Revisão'}
             </span>
             {s < 3 && <div className="h-px w-8 bg-border" />}
           </div>
@@ -126,7 +126,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="titulo">Titulo do Projeto *</Label>
+              <Label htmlFor="titulo">Título do Projeto *</Label>
               <Input
                 id="titulo"
                 value={form.titulo}
@@ -141,23 +141,23 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 id="resumo"
                 value={form.resumo}
                 onChange={e => updateForm('resumo', e.target.value)}
-                placeholder="Breve descricao do projeto"
+                placeholder="Breve descrição do projeto"
                 rows={3}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="descricao_tecnica">Descricao Tecnica</Label>
+              <Label htmlFor="descricao_tecnica">Descrição Técnica</Label>
               <Textarea
                 id="descricao_tecnica"
                 value={form.descricao_tecnica}
                 onChange={e => updateForm('descricao_tecnica', e.target.value)}
-                placeholder="Detalhamento tecnico do projeto"
+                placeholder="Detalhamento técnico do projeto"
                 rows={5}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="orcamento">Orcamento Total (R$)</Label>
+                <Label htmlFor="orcamento">Orçamento Total (R$)</Label>
                 <Input
                   id="orcamento"
                   type="number"
@@ -169,7 +169,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cronograma">Cronograma de Execucao</Label>
+              <Label htmlFor="cronograma">Cronograma de Execução</Label>
               <Textarea
                 id="cronograma"
                 value={form.cronograma_execucao}
@@ -180,7 +180,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             </div>
             <div className="flex justify-end">
               <Button onClick={() => setStep(2)} disabled={!form.titulo}>
-                Proximo
+                Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -197,7 +197,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           <CardContent className="space-y-6">
             <DocumentUpload tipo="identidade" label="Documento de Identidade" tenantId={tenantId} onUpload={handleDocUpload} />
             <DocumentUpload tipo="proposta" label="Proposta do Projeto" tenantId={tenantId} onUpload={handleDocUpload} />
-            <DocumentUpload tipo="orcamento" label="Planilha Orcamentaria" tenantId={tenantId} onUpload={handleDocUpload} />
+            <DocumentUpload tipo="orcamento" label="Planilha Orçamentária" tenantId={tenantId} onUpload={handleDocUpload} />
             <DocumentUpload tipo="complementar" label="Documentos Complementares" tenantId={tenantId} onUpload={handleDocUpload} />
             <div className="flex justify-between">
               <Button variant="outline" onClick={() => setStep(1)}>
@@ -205,7 +205,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 Voltar
               </Button>
               <Button onClick={() => setStep(3)}>
-                Proximo
+                Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -217,14 +217,14 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       {step === 3 && (
         <Card>
           <CardHeader>
-            <CardTitle>Revisao e Envio</CardTitle>
+            <CardTitle>Revisão e Envio</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="rounded-md border p-4 space-y-2">
               <h4 className="font-medium">Dados do Projeto</h4>
-              <p className="text-sm"><strong>Titulo:</strong> {form.titulo}</p>
+              <p className="text-sm"><strong>Título:</strong> {form.titulo}</p>
               {form.resumo && <p className="text-sm"><strong>Resumo:</strong> {form.resumo}</p>}
-              {form.orcamento_total && <p className="text-sm"><strong>Orcamento:</strong> R$ {parseFloat(form.orcamento_total).toFixed(2)}</p>}
+              {form.orcamento_total && <p className="text-sm"><strong>Orçamento:</strong> R$ {parseFloat(form.orcamento_total).toFixed(2)}</p>}
             </div>
             <div className="rounded-md border p-4 space-y-2">
               <h4 className="font-medium">Documentos ({documents.length})</h4>
@@ -244,7 +244,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="mt-1"
               />
               <label htmlFor="termos" className="text-sm text-muted-foreground leading-snug">
-                Declaro que as informacoes prestadas sao verdadeiras e que estou ciente das regras do edital.
+                Declaro que as informações prestadas são verdadeiras e que estou ciente das regras do edital.
               </label>
             </div>
             <div className="flex justify-between pt-4">
@@ -254,7 +254,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               </Button>
               <Button onClick={handleSubmit} disabled={loading || !aceitaTermos}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Enviar Inscricao
+                Enviar Inscrição
               </Button>
             </div>
           </CardContent>

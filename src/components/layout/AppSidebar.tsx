@@ -32,39 +32,39 @@ interface NavItem {
 
 const navByRole: Record<UserRole, NavItem[]> = {
   proponente: [
-    { title: 'Inicio', url: '/', icon: Home },
+    { title: 'Início', url: '/', icon: Home },
     { title: 'Meus Projetos', url: '/projetos', icon: FolderOpen },
     { title: 'Editais Abertos', url: '/editais', icon: Search },
     { title: 'Meu Perfil', url: '/perfil', icon: Users },
   ],
   avaliador: [
-    { title: 'Inicio', url: '/', icon: Home },
-    { title: 'Projetos Atribuidos', url: '/avaliacao', icon: ClipboardList },
+    { title: 'Início', url: '/', icon: Home },
+    { title: 'Projetos Atribuídos', url: '/avaliacao', icon: ClipboardList },
     { title: 'Meu Perfil', url: '/perfil', icon: Users },
   ],
   gestor: [
-    { title: 'Inicio', url: '/', icon: Home },
+    { title: 'Início', url: '/', icon: Home },
     { title: 'Dashboard', url: '/gestor', icon: BarChart3 },
-    { title: 'Relatorios', url: '/gestor/relatorios', icon: FileText },
+    { title: 'Relatórios', url: '/gestor/relatorios', icon: FileText },
     { title: 'Rankings', url: '/gestor/rankings', icon: Trophy },
-    { title: 'Prestacao Contas', url: '/gestor/prestacao-contas', icon: FileCheck },
+    { title: 'Prestação Contas', url: '/gestor/prestacao-contas', icon: FileCheck },
   ],
   admin: [
-    { title: 'Inicio', url: '/', icon: Home },
+    { title: 'Início', url: '/', icon: Home },
     { title: 'Editais', url: '/admin/editais', icon: FileText },
-    { title: 'Usuarios', url: '/admin/usuarios', icon: Users },
+    { title: 'Usuários', url: '/admin/usuarios', icon: Users },
     { title: 'Avaliadores', url: '/admin/avaliadores', icon: ClipboardList },
-    { title: 'Relatorios', url: '/gestor/relatorios', icon: BarChart3 },
+    { title: 'Relatórios', url: '/gestor/relatorios', icon: BarChart3 },
     { title: 'Auditoria', url: '/admin/auditoria', icon: Shield },
-    { title: 'Configuracoes', url: '/admin/configuracoes', icon: Settings },
+    { title: 'Configurações', url: '/admin/configuracoes', icon: Settings },
   ],
   super_admin: [
-    { title: 'Inicio', url: '/', icon: Home },
+    { title: 'Início', url: '/', icon: Home },
     { title: 'Tenants', url: '/super/tenants', icon: Building2 },
-    { title: 'Visao Global', url: '/super/dashboard', icon: Globe },
-    { title: 'Todos Usuarios', url: '/super/usuarios', icon: Users },
+    { title: 'Visão Global', url: '/super/dashboard', icon: Globe },
+    { title: 'Todos Usuários', url: '/super/usuarios', icon: Users },
     { title: 'Auditoria', url: '/admin/auditoria', icon: Shield },
-    { title: 'Configuracoes', url: '/admin/configuracoes', icon: Settings },
+    { title: 'Configurações', url: '/admin/configuracoes', icon: Settings },
   ],
 }
 

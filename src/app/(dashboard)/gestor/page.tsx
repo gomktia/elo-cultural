@@ -38,9 +38,9 @@ export default async function GestorDashboardPage() {
 
   const stats = [
     { label: 'Editais Ativos', value: totalEditais ?? 0, icon: FileText },
-    { label: 'Inscricoes', value: totalProjetos ?? 0, icon: FolderOpen },
-    { label: 'Usuarios', value: totalUsuarios ?? 0, icon: Users },
-    { label: 'Avaliacoes Concluidas', value: totalAvaliacoes ?? 0, icon: BarChart3 },
+    { label: 'Inscrições', value: totalProjetos ?? 0, icon: FolderOpen },
+    { label: 'Usuários', value: totalUsuarios ?? 0, icon: Users },
+    { label: 'Avaliações Concluídas', value: totalAvaliacoes ?? 0, icon: BarChart3 },
   ]
 
   const hour = new Date().getHours()

@@ -125,13 +125,13 @@ export default function PerfilPage() {
       })
       const data = await response.json()
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao enviar solicitacao')
+        throw new Error(data.error || 'Erro ao enviar solicitação')
       }
       setProtocoloExclusao(data.protocolo)
-      toast.success('Solicitacao registrada com sucesso')
+      toast.success('Solicitação registrada com sucesso')
       setMotivoExclusao('')
     } catch (err: any) {
-      toast.error(err.message || 'Erro ao enviar solicitacao')
+      toast.error(err.message || 'Erro ao enviar solicitação')
     }
     setEnviandoExclusao(false)
   }
@@ -329,22 +329,22 @@ export default function PerfilPage() {
           <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
             <Trash2 className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-slate-900">Solicitar exclusao dos meus dados</h3>
+              <h3 className="text-sm font-semibold text-slate-900">Solicitar exclusão dos meus dados</h3>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Solicite a eliminacao dos seus dados pessoais. Conforme o Art. 18, VI da LGPD, dados vinculados a processos administrativos em andamento podem ser retidos ate o arquivamento, conforme obrigacao legal.
+                Solicite a eliminação dos seus dados pessoais. Conforme o Art. 18, VI da LGPD, dados vinculados a processos administrativos em andamento podem ser retidos até o arquivamento, conforme obrigação legal.
               </p>
 
               {protocoloExclusao ? (
                 <div className="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-100">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0" />
-                    <p className="text-xs text-amber-700 font-medium">Solicitacao registrada</p>
+                    <p className="text-xs text-amber-700 font-medium">Solicitação registrada</p>
                   </div>
                   <p className="text-xs text-amber-600 mt-1">
                     Protocolo: <span className="font-mono font-semibold">{protocoloExclusao}</span>
                   </p>
                   <p className="text-xs text-amber-600 mt-0.5">
-                    A administracao analisara seu pedido e entrara em contato.
+                    A administração analisará seu pedido e entrará em contato.
                   </p>
                 </div>
               ) : !mostrarExclusao ? (
@@ -354,28 +354,28 @@ export default function PerfilPage() {
                   className="mt-3 h-9 px-4 rounded-xl border-red-200 font-semibold text-xs text-red-600 uppercase tracking-wider hover:bg-red-50 transition-all active:scale-[0.98]"
                 >
                   <Trash2 className="mr-2 h-3.5 w-3.5" />
-                  Solicitar exclusao
+                  Solicitar exclusão
                 </Button>
               ) : (
                 <form onSubmit={solicitarExclusao} className="mt-3 space-y-3">
                   <div className="p-3 bg-red-50 rounded-xl border border-red-100">
                     <div className="flex items-center gap-2 mb-2">
                       <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0" />
-                      <p className="text-xs text-red-700 font-semibold">Atencao: esta acao e irreversivel</p>
+                      <p className="text-xs text-red-700 font-semibold">Atenção: esta ação é irreversível</p>
                     </div>
                     <p className="text-xs text-red-600 leading-relaxed">
-                      Ao solicitar a exclusao, seus dados pessoais serao removidos apos analise administrativa. Dados vinculados a processos seletivos em andamento serao anonimizados apos o arquivamento do edital.
+                      Ao solicitar a exclusão, seus dados pessoais serão removidos após análise administrativa. Dados vinculados a processos seletivos em andamento serão anonimizados após o arquivamento do edital.
                     </p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="motivo" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
-                      Motivo da solicitacao
+                      Motivo da solicitação
                     </Label>
                     <Textarea
                       id="motivo"
                       value={motivoExclusao}
                       onChange={e => setMotivoExclusao(e.target.value)}
-                      placeholder="Descreva o motivo da sua solicitacao de exclusao de dados..."
+                      placeholder="Descreva o motivo da sua solicitação de exclusão de dados..."
                       required
                       minLength={10}
                       rows={3}
@@ -393,7 +393,7 @@ export default function PerfilPage() {
                       ) : (
                         <Trash2 className="mr-2 h-3.5 w-3.5" />
                       )}
-                      {enviandoExclusao ? 'Enviando...' : 'Confirmar solicitacao'}
+                      {enviandoExclusao ? 'Enviando...' : 'Confirmar solicitação'}
                     </Button>
                     <Button
                       type="button"

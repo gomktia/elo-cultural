@@ -4,7 +4,7 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "Elo Cultura - Processos Seletivos Culturais",
-  description: "Plataforma de gestao de processos seletivos culturais para prefeituras brasileiras",
+  description: "Plataforma de gestão de processos seletivos culturais para prefeituras brasileiras",
   icons: {
     icon: [
       { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },

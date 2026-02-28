@@ -32,10 +32,10 @@ export default async function SuperDashboardPage() {
 
   const stats = [
     { label: 'Tenants', value: totalTenants || 0, icon: Building2, color: '#0047AB' },
-    { label: 'Usuarios', value: totalUsers || 0, icon: Users, color: '#7C3AED' },
+    { label: 'Usuários', value: totalUsers || 0, icon: Users, color: '#7C3AED' },
     { label: 'Editais', value: totalEditais || 0, icon: FileText, color: '#059669' },
     { label: 'Projetos', value: totalProjetos || 0, icon: FolderOpen, color: '#D97706' },
-    { label: 'Avaliacoes', value: totalAvaliacoes || 0, icon: ClipboardList, color: '#DC2626' },
+    { label: 'Avaliações', value: totalAvaliacoes || 0, icon: ClipboardList, color: '#DC2626' },
   ]
 
   return (
@@ -45,8 +45,8 @@ export default async function SuperDashboardPage() {
           <Globe className="h-5 w-5 text-[var(--brand-primary)]" />
           <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Super Admin</span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Visao Global</h1>
-        <p className="text-sm text-slate-500 font-normal">Metricas consolidadas de toda a plataforma Elo Cultura.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Visão Global</h1>
+        <p className="text-sm text-slate-500 font-normal">Métricas consolidadas de toda a plataforma Elo Cultura.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">

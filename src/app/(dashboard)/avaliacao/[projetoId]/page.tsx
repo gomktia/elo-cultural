@@ -150,7 +150,7 @@ export default function AvaliacaoPage() {
     const supabase = createClient()
 
     if (!avaliacao) {
-      toast.error('Avaliacao nao encontrada.')
+      toast.error('Avaliação não encontrada.')
       setSaving(false)
       return
     }
@@ -197,7 +197,7 @@ export default function AvaliacaoPage() {
     await supabase.from('avaliacoes').update(updateData).eq('id', avaliacao.id)
 
     if (finalizar) {
-      toast.success('Avaliacao finalizada com sucesso')
+      toast.success('Avaliação finalizada com sucesso')
       router.push('/avaliacao')
     } else {
       toast.success('Notas salvas')
@@ -214,7 +214,7 @@ export default function AvaliacaoPage() {
   }
 
   if (!projeto || !avaliacao) {
-    return <div className="text-center py-12 text-muted-foreground">Avaliacao nao encontrada.</div>
+    return <div className="text-center py-12 text-muted-foreground">Avaliação não encontrada.</div>
   }
 
   const isFinalizada = avaliacao.status === 'finalizada'
@@ -228,7 +228,7 @@ export default function AvaliacaoPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Avaliacao</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Avaliação</h1>
           <p className="text-muted-foreground font-mono">{projeto.numero_protocolo}</p>
         </div>
       </div>
@@ -236,7 +236,7 @@ export default function AvaliacaoPage() {
       <div className="rounded-md bg-yellow-50 border border-yellow-200 p-3 flex items-start gap-2">
         <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
         <p className="text-sm text-yellow-800">
-          Avaliacao cega: o nome do proponente nao e exibido.
+          Avaliação cega: o nome do proponente não é exibido.
         </p>
       </div>
 
@@ -247,8 +247,8 @@ export default function AvaliacaoPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           {projeto.resumo && <div><strong>Resumo:</strong> {projeto.resumo}</div>}
-          {projeto.descricao_tecnica && <div><strong>Descricao Tecnica:</strong> {projeto.descricao_tecnica}</div>}
-          {projeto.orcamento_total && <div><strong>Orcamento:</strong> R$ {Number(projeto.orcamento_total).toFixed(2)}</div>}
+          {projeto.descricao_tecnica && <div><strong>Descrição Técnica:</strong> {projeto.descricao_tecnica}</div>}
+          {projeto.orcamento_total && <div><strong>Orçamento:</strong> R$ {Number(projeto.orcamento_total).toFixed(2)}</div>}
           {projeto.cronograma_execucao && <div><strong>Cronograma:</strong> {projeto.cronograma_execucao}</div>}
         </CardContent>
       </Card>
@@ -256,7 +256,7 @@ export default function AvaliacaoPage() {
       {/* Criterios */}
       <Card>
         <CardHeader>
-          <CardTitle>Notas por Criterio</CardTitle>
+          <CardTitle>Notas por Critério</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {criterios.map((c, idx) => (
@@ -284,14 +284,14 @@ export default function AvaliacaoPage() {
               {expandedAiHint === c.criterio_id && aiSugestoes[c.criterio_id] && (
                 <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-3 space-y-2 animate-in fade-in duration-300">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-[var(--brand-primary)]">Sugestao IA</span>
+                    <span className="text-xs font-medium text-[var(--brand-primary)]">Sugestão IA</span>
                     <span className="text-sm font-bold text-[var(--brand-primary)]">
                       {aiSugestoes[c.criterio_id].nota.toFixed(1)} / {c.nota_maxima}
                     </span>
                   </div>
                   <p className="text-xs text-slate-600">{aiSugestoes[c.criterio_id].justificativa}</p>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-slate-400">Confianca:</span>
+                    <span className="text-[11px] text-slate-400">Confiança:</span>
                     <div className="flex-1 h-1.5 bg-blue-100 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-[var(--brand-primary)] rounded-full"
@@ -300,7 +300,7 @@ export default function AvaliacaoPage() {
                     </div>
                     <span className="text-[11px] text-slate-500">{Math.round(aiSugestoes[c.criterio_id].confianca * 100)}%</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 italic">Apenas sugestao — sua avaliacao independente e o que conta.</p>
+                  <p className="text-[11px] text-slate-400 italic">Apenas sugestão — sua avaliação independente é o que conta.</p>
                 </div>
               )}
               <div className="grid grid-cols-4 gap-3">
@@ -318,7 +318,7 @@ export default function AvaliacaoPage() {
                   className="col-span-3"
                   value={c.comentario}
                   onChange={e => updateCriterio(idx, 'comentario', e.target.value)}
-                  placeholder="Comentario (opcional)"
+                  placeholder="Comentário (opcional)"
                   rows={1}
                   disabled={isFinalizada}
                 />
@@ -338,7 +338,7 @@ export default function AvaliacaoPage() {
           <Textarea
             value={justificativa}
             onChange={e => setJustificativa(e.target.value)}
-            placeholder="Justificativa geral da avaliacao (opcional)"
+            placeholder="Justificativa geral da avaliação (opcional)"
             rows={4}
             disabled={isFinalizada}
           />
@@ -352,7 +352,7 @@ export default function AvaliacaoPage() {
           </Button>
           <Button onClick={() => salvarNotas(true)} disabled={saving}>
             {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Finalizar Avaliacao
+            Finalizar Avaliação
           </Button>
         </div>
       )}

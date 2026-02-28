@@ -70,9 +70,9 @@ export default function PublicacoesAdminPage() {
     })
 
     if (error) {
-      toast.error('Erro ao criar publicacao: ' + error.message)
+      toast.error('Erro ao criar publicação: ' + error.message)
     } else {
-      toast.success('Publicacao criada com sucesso')
+      toast.success('Publicação criada com sucesso')
       setDialogOpen(false)
       setForm({ tipo: '', titulo: '', conteudo: '' })
       loadData()
@@ -84,7 +84,7 @@ export default function PublicacoesAdminPage() {
     resultado_preliminar: 'Resultado Preliminar',
     resultado_final: 'Resultado Final',
     ata: 'Ata',
-    homologacao: 'Homologacao',
+    homologacao: 'Homologação',
   }
 
   return (
