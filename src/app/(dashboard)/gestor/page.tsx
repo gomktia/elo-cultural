@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
-import { FileText, FolderOpen, Users, BarChart3, TrendingUp, ArrowRight, Plus } from 'lucide-react'
+import { FileText, FolderOpen, Users, BarChart3, ArrowRight, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import type { Edital } from '@/types/database.types'
@@ -12,10 +12,12 @@ export default async function GestorDashboardPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('tenant_id, nome')
-    .eq('id', user!.id)
+    .eq('id', user.id)
     .single()
 
   const tenantId = profile?.tenant_id
@@ -50,10 +52,6 @@ export default async function GestorDashboardPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-slate-400 mb-1">
-            <TrendingUp className="h-3 w-3" />
-            <span className="text-[11px] font-medium uppercase tracking-wider">Visão Geral</span>
-          </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
             {greeting}, <span className="text-[var(--brand-primary)]">{firstName}</span>
           </h1>
@@ -78,10 +76,6 @@ export default async function GestorDashboardPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors duration-500">
                   <stat.icon className="h-5 w-5" />
-                </div>
-                <div className="text-xs font-medium text-[var(--brand-success)] bg-green-50 px-2 py-0.5 rounded-lg flex items-center gap-1 transition-transform">
-                  <TrendingUp className="h-3 w-3" />
-                  +12%
                 </div>
               </div>
               <div className="space-y-0.5">

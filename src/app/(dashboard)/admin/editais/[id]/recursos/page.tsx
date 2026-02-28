@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { RecursoActions } from '@/components/admin/RecursoActions'
 import { ArrowLeft, Scale } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -93,7 +94,8 @@ export default async function RecursosAdminPage({
                   <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto / Proponente</TableHead>
                   <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tipo / Fase</TableHead>
                   <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Status</TableHead>
-                  <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Data</TableHead>
+                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Data</TableHead>
+                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -116,8 +118,8 @@ export default async function RecursosAdminPage({
                     </TableCell>
                     <TableCell className="py-6 px-4">
                       <div className="flex flex-col gap-1">
-                        <span className="text-xs font-semibold text-slate-600 capitalize">{rec.tipo}</span>
-                        <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Original</span>
+                        <span className="text-xs font-semibold text-slate-600">{rec.tipo === 'habilitacao' ? 'Habilitação' : rec.tipo === 'avaliacao' ? 'Avaliação' : rec.tipo}</span>
+                        <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Recurso</span>
                       </div>
                     </TableCell>
                     <TableCell className="py-6 px-4">
@@ -131,14 +133,22 @@ export default async function RecursosAdminPage({
                         {rec.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="py-6 px-8 text-right font-medium text-xs text-slate-400 uppercase tracking-wide">
+                    <TableCell className="py-6 px-4 font-medium text-xs text-slate-400 uppercase tracking-wide">
                       {format(new Date(rec.created_at), 'dd MMM yyyy', { locale: ptBR })}
+                    </TableCell>
+                    <TableCell className="py-6 px-4 text-right">
+                      <RecursoActions
+                        recursoId={rec.id}
+                        editalId={id}
+                        status={rec.status}
+                        fundamentacao={rec.fundamentacao}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
                 {(!recursos || recursos.length === 0) && (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-64 text-center">
+                    <TableCell colSpan={6} className="h-64 text-center">
                       <div className="flex flex-col items-center justify-center space-y-4">
                         <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                           <Scale className="h-8 w-8" />
