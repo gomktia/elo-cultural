@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { Building2, Users, FileText, Globe } from 'lucide-react'
+import { Building2, Users, FileText, Globe, Plus } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function SuperTenantsPage() {
   const supabase = await createClient()
@@ -52,11 +53,19 @@ export default async function SuperTenantsPage() {
       <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
         <div className="h-1 w-full bg-[var(--brand-primary)]" />
         <CardContent className="p-4">
-          <div className="space-y-1">
-            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Prefeituras e Municípios</h1>
-            <p className="text-sm text-slate-500">
-              {tenants?.length || 0} tenant{(tenants?.length || 0) !== 1 ? 's' : ''} cadastrado{(tenants?.length || 0) !== 1 ? 's' : ''}
-            </p>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Prefeituras e Municipios</h1>
+              <p className="text-sm text-slate-500">
+                {tenants?.length || 0} tenant{(tenants?.length || 0) !== 1 ? 's' : ''} cadastrado{(tenants?.length || 0) !== 1 ? 's' : ''}
+              </p>
+            </div>
+            <Link href="/super/tenants/novo">
+              <button className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-xs uppercase tracking-wide shadow-lg shadow-[#0047AB]/20 transition-all active:scale-95">
+                <Plus className="h-4 w-4" />
+                Nova Prefeitura
+              </button>
+            </Link>
           </div>
         </CardContent>
       </Card>
