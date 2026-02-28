@@ -71,6 +71,14 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
 
     const labels = { aprovada: 'aprovada', reprovada: 'reprovada', com_pendencias: 'devolvida com pendências' }
     toast.success(`Prestação ${labels[decision]}`)
+
+    // Fire-and-forget: notify proponente
+    fetch('/api/email/notify-prestacao', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prestacaoId: prestacao.id, status: decision, parecer }),
+    }).catch(() => {})
+
     setSubmitting(false)
     router.refresh()
   }

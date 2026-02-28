@@ -2,7 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 
-const ALLOWED_KEYS = ['ia_enabled', 'ia_model', 'ia_embedding_model', 'openai_api_key']
+const ALLOWED_KEYS = [
+  'ia_enabled', 'ia_model', 'ia_embedding_model', 'openai_api_key',
+  'email_enabled', 'resend_api_key', 'sender_email', 'sender_name',
+]
+
+const MASKED_KEYS = ['openai_api_key', 'resend_api_key']
 
 async function checkSuperAdmin() {
   const supabase = await createClient()
@@ -35,10 +40,10 @@ export async function GET() {
     return NextResponse.json({ error: 'Erro ao buscar configuracoes' }, { status: 500 })
   }
 
-  // Build a key-value map, masking the API key
+  // Build a key-value map, masking sensitive keys
   const settings: Record<string, string> = {}
   for (const row of data || []) {
-    if (row.key === 'openai_api_key' && row.value) {
+    if (MASKED_KEYS.includes(row.key) && row.value) {
       settings[row.key] = row.value.slice(0, 7) + '...' + row.value.slice(-4)
     } else {
       settings[row.key] = row.value
@@ -67,8 +72,8 @@ export async function PUT(request: NextRequest) {
     if (!ALLOWED_KEYS.includes(key)) continue
     if (typeof value !== 'string') continue
 
-    // Skip empty API key updates (masked value from frontend)
-    if (key === 'openai_api_key' && (value === '' || value.includes('...'))) continue
+    // Skip empty or masked API key updates
+    if (MASKED_KEYS.includes(key) && (value === '' || value.includes('...'))) continue
 
     await supabase
       .from('platform_settings')

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { Loader2, Server, Database, HardDrive, Shield, Globe, Building2, Palette, Brain, Eye, EyeOff, Save, CheckCircle2, XCircle } from 'lucide-react'
+import { Loader2, Server, Database, HardDrive, Shield, Globe, Building2, Palette, Brain, Eye, EyeOff, Save, CheckCircle2, XCircle, Mail, Send } from 'lucide-react'
 import Link from 'next/link'
 
 export default function SuperConfiguracoesPage() {
@@ -31,6 +31,16 @@ export default function SuperConfiguracoesPage() {
   const [showApiKey, setShowApiKey] = useState(false)
   const [iaSaving, setIaSaving] = useState(false)
   const [iaLoaded, setIaLoaded] = useState(false)
+
+  // Email settings state
+  const [emailEnabled, setEmailEnabled] = useState(false)
+  const [resendApiKey, setResendApiKey] = useState('')
+  const [newResendKey, setNewResendKey] = useState('')
+  const [showResendKey, setShowResendKey] = useState(false)
+  const [senderEmail, setSenderEmail] = useState('noreply@elocultura.com.br')
+  const [senderName, setSenderName] = useState('Elo Cultura Digital')
+  const [emailSaving, setEmailSaving] = useState(false)
+  const [emailTesting, setEmailTesting] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -71,6 +81,11 @@ export default function SuperConfiguracoesPage() {
           setIaEmbeddingModel(settings.ia_embedding_model || 'text-embedding-3-small')
           setOpenaiApiKey(settings.openai_api_key || '')
           setIaLoaded(true)
+          // Email settings
+          setEmailEnabled(settings.email_enabled === 'true')
+          setResendApiKey(settings.resend_api_key || '')
+          setSenderEmail(settings.sender_email || 'noreply@elocultura.com.br')
+          setSenderName(settings.sender_name || 'Elo Cultura Digital')
         }
       } catch {
         // Settings table may not exist yet
@@ -115,6 +130,58 @@ export default function SuperConfiguracoesPage() {
       toast.error('Erro ao salvar configuracoes de IA.')
     } finally {
       setIaSaving(false)
+    }
+  }
+
+  async function handleSaveEmail() {
+    setEmailSaving(true)
+    try {
+      const body: Record<string, string> = {
+        email_enabled: emailEnabled ? 'true' : 'false',
+        sender_email: senderEmail,
+        sender_name: senderName,
+      }
+      if (newResendKey.trim()) {
+        body.resend_api_key = newResendKey.trim()
+      }
+
+      const res = await fetch('/api/platform-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+
+      if (!res.ok) throw new Error()
+
+      toast.success('Configuracoes de email salvas com sucesso!')
+      setNewResendKey('')
+
+      const reload = await fetch('/api/platform-settings')
+      if (reload.ok) {
+        const { settings } = await reload.json()
+        setResendApiKey(settings.resend_api_key || '')
+      }
+    } catch {
+      toast.error('Erro ao salvar configuracoes de email.')
+    } finally {
+      setEmailSaving(false)
+    }
+  }
+
+  async function handleTestEmail() {
+    setEmailTesting(true)
+    try {
+      const res = await fetch('/api/email/test', { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success('Email de teste enviado! Verifique sua caixa de entrada.')
+      } else {
+        toast.error(data.error || 'Falha ao enviar email de teste.')
+      }
+    } catch {
+      toast.error('Erro ao enviar email de teste.')
+    } finally {
+      setEmailTesting(false)
     }
   }
 
@@ -354,6 +421,167 @@ export default function SuperConfiguracoesPage() {
                 <>
                   <Save className="h-4 w-4 mr-2" />
                   Salvar Configuracoes IA
+                </>
+              )}
+            </Button>
+          </div>
+
+        </CardContent>
+      </Card>
+
+      {/* Integracoes — Email */}
+      <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+        <CardHeader className="bg-[var(--brand-primary)] p-4">
+          <CardTitle className="text-xs font-medium uppercase tracking-wide text-white flex items-center gap-2">
+            <Mail className="h-4 w-4" />
+            Integracoes — Email (Resend)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-5 space-y-5">
+
+          {/* Email Enabled toggle */}
+          <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-xl border border-slate-100">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Notificacoes por Email</p>
+              <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                Envia emails automaticos para proponentes sobre inscricoes, habilitacao, recursos e resultados.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setEmailEnabled(!emailEnabled)}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${emailEnabled ? 'bg-[var(--brand-primary)]' : 'bg-slate-300'}`}
+            >
+              <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${emailEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+          </div>
+
+          {/* Status indicator */}
+          <div className="flex items-center gap-2 px-1">
+            {emailEnabled ? (
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+            ) : (
+              <XCircle className="h-4 w-4 text-slate-400" />
+            )}
+            <span className={`text-xs font-medium ${emailEnabled ? 'text-green-600' : 'text-slate-400'}`}>
+              {emailEnabled ? 'Email ativado' : 'Email desativado'}
+            </span>
+            {resendApiKey && resendApiKey !== '' ? (
+              <Badge className="bg-green-50 text-green-600 border-none text-[10px] ml-2">API Key configurada</Badge>
+            ) : (
+              <Badge className="bg-amber-50 text-amber-600 border-none text-[10px] ml-2">API Key nao configurada</Badge>
+            )}
+          </div>
+
+          {/* Resend API Key */}
+          <div className="space-y-2">
+            <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+              Chave da API Resend
+            </Label>
+            {resendApiKey && (
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex-1 h-10 px-4 rounded-xl border border-slate-200 bg-slate-50/50 flex items-center">
+                  <code className="text-xs text-slate-500 font-mono">
+                    {showResendKey ? resendApiKey : '••••••••••••••••••••'}
+                  </code>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowResendKey(!showResendKey)}
+                  className="h-10 px-3 rounded-xl border-slate-200"
+                >
+                  {showResendKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+            )}
+            <Input
+              type="password"
+              placeholder={resendApiKey ? 'Digite nova chave para substituir...' : 're_...'}
+              value={newResendKey}
+              onChange={e => setNewResendKey(e.target.value)}
+              className="h-10 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-mono placeholder:text-slate-300"
+            />
+            <p className="text-[10px] text-slate-400 ml-1">
+              Obtenha sua chave em <strong>resend.com/api-keys</strong>. Se vazia, usa a variavel de ambiente RESEND_API_KEY.
+            </p>
+          </div>
+
+          {/* Sender config */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+                Nome do Remetente
+              </Label>
+              <Input
+                value={senderName}
+                onChange={e => setSenderName(e.target.value)}
+                placeholder="Elo Cultura Digital"
+                className="h-10 rounded-xl border-slate-200 bg-slate-50/50 text-sm placeholder:text-slate-300"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+                Email do Remetente
+              </Label>
+              <Input
+                type="email"
+                value={senderEmail}
+                onChange={e => setSenderEmail(e.target.value)}
+                placeholder="noreply@elocultura.com.br"
+                className="h-10 rounded-xl border-slate-200 bg-slate-50/50 text-sm placeholder:text-slate-300"
+              />
+            </div>
+          </div>
+
+          {/* Eventos notificados */}
+          <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-4">
+            <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mb-3">Eventos Notificados</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[
+                'Confirmacao de inscricao',
+                'Resultado da habilitacao',
+                'Decisao de recurso',
+                'Mudanca de fase do edital',
+                'Status da prestacao de contas',
+              ].map(evento => (
+                <div key={evento} className="flex items-center gap-2">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                  <span className="text-xs text-slate-600">{evento}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Save + Test buttons */}
+          <div className="flex justify-between items-center pt-2">
+            <Button
+              onClick={handleTestEmail}
+              disabled={emailTesting || !emailEnabled}
+              variant="outline"
+              className="h-10 px-5 rounded-xl border-slate-200 text-xs font-semibold text-slate-600 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/30 transition-all"
+            >
+              {emailTesting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Send className="h-4 w-4 mr-2" />
+                  Enviar Email de Teste
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleSaveEmail}
+              disabled={emailSaving}
+              className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[#005cdd] text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-[var(--brand-primary)]/20 transition-all"
+            >
+              {emailSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Salvar Configuracoes Email
                 </>
               )}
             </Button>

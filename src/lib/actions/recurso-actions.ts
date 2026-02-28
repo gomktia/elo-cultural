@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { notifyRecursoDecisao } from '@/lib/email/notify'
 
 export async function decidirRecurso(
   recursoId: string,
@@ -35,6 +36,13 @@ export async function decidirRecurso(
     .eq('id', recursoId)
 
   if (error) return { error: error.message }
+
+  // Fire-and-forget: notify proponente
+  notifyRecursoDecisao({
+    recursoId,
+    status: decisaoStatus,
+    decisao: decisaoTexto || '',
+  }).catch(() => {})
 
   revalidatePath(`/admin/editais/${editalId}/recursos`)
   return { success: true }

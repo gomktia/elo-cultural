@@ -94,6 +94,14 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     }
 
     toast.success(`Inscrição enviada! Protocolo: ${protocolo}`)
+
+    // Fire-and-forget: send confirmation email
+    fetch('/api/email/notify-inscricao', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ protocolo, titulo: form.titulo, editalTitulo: '' }),
+    }).catch(() => {})
+
     router.push('/projetos')
   }
 

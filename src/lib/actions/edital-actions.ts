@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { notifyEditalFaseAlterada } from '@/lib/email/notify'
 
 // Order of phases for the edital workflow
 // Note: After fix, seleção (avaliação) comes before habilitação
@@ -60,6 +61,9 @@ export async function avancarEtapa(editalId: string) {
     .eq('id', editalId)
 
   if (updateError) return { error: updateError.message }
+
+  // Fire-and-forget: notify proponentes about phase change
+  notifyEditalFaseAlterada({ editalId, novaFase: nextPhase }).catch(() => {})
 
   return { success: true, newPhase: nextPhase }
 }
