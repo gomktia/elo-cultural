@@ -134,7 +134,7 @@ export default async function EditalPublicoPage({
 
         <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 pt-2 md:pt-4">
           {isOpen && (
-            <Link href={`/projetos/novo?edital=${id}`} className="w-full sm:w-auto">
+            <Link href={`/projetos/novo?edital=${id}&tenant=${e.tenant_id}`} className="w-full sm:w-auto">
               <Button className="w-full h-11 px-8 rounded-xl md:rounded-2xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-lg shadow-brand-primary/20 transition-all active:scale-98 text-xs md:text-sm uppercase tracking-wide">
                 Inscrever meu Projeto
               </Button>
