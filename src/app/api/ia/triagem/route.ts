@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getOpenAIClient } from '@/lib/openai'
+import { getIAConfig } from '@/lib/ia/config'
 import { buildHabilitacaoPrompt, buildAvaliacaoPrompt } from '@/lib/ia/prompts'
 import { detectarIrregularidades } from '@/lib/ia/similaridade'
 import { NextRequest, NextResponse } from 'next/server'
@@ -89,7 +90,18 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const openai = getOpenAIClient()
+    // Check IA config
+    const iaConfig = await getIAConfig()
+    if (!iaConfig.enabled) {
+      await supabase
+        .from('triagem_ia_execucoes')
+        .update({ status: 'erro', erro_mensagem: 'IA desabilitada na plataforma' })
+        .eq('id', execucao.id)
+      return NextResponse.json({ error: 'IA esta desabilitada na plataforma. Ative em Configuracoes.' }, { status: 400 })
+    }
+
+    const openai = await getOpenAIClient()
+    const iaModel = iaConfig.model
 
     // 5. Fetch all projetos for this edital
     const { data: projetos, error: projetosError } = await supabase
@@ -157,7 +169,7 @@ export async function POST(request: NextRequest) {
 
       try {
         const habResponse = await openai.chat.completions.create({
-          model: 'gpt-4',
+          model: iaModel,
           messages: [
             { role: 'system', content: habPrompt.system },
             { role: 'user', content: habPrompt.user },
@@ -202,7 +214,7 @@ export async function POST(request: NextRequest) {
 
         try {
           const avalResponse = await openai.chat.completions.create({
-            model: 'gpt-4',
+            model: iaModel,
             messages: [
               { role: 'system', content: avalPrompt.system },
               { role: 'user', content: avalPrompt.user },

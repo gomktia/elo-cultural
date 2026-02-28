@@ -1,4 +1,5 @@
 import { getOpenAIClient } from '@/lib/openai'
+import { getIAConfig } from '@/lib/ia/config'
 
 interface ProjetoTexto {
   id: string
@@ -22,11 +23,12 @@ export async function detectarIrregularidades(
   if (projetos.length < 2) return flags
 
   // 1. Generate embeddings for all projects
-  const openai = getOpenAIClient()
+  const openai = await getOpenAIClient()
+  const iaConfig = await getIAConfig()
   const textos = projetos.map((p) => p.texto)
 
   const embeddingResponse = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
+    model: iaConfig.embeddingModel,
     input: textos,
   })
 

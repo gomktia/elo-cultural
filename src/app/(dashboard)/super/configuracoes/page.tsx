@@ -5,8 +5,10 @@ import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { Loader2, Server, Database, HardDrive, Shield, Globe, Building2, Palette } from 'lucide-react'
+import { Loader2, Server, Database, HardDrive, Shield, Globe, Building2, Palette, Brain, Eye, EyeOff, Save, CheckCircle2, XCircle } from 'lucide-react'
 import Link from 'next/link'
 
 export default function SuperConfiguracoesPage() {
@@ -19,6 +21,16 @@ export default function SuperConfiguracoesPage() {
     tenantsSuspensos: 0,
   })
   const [tenants, setTenants] = useState<any[]>([])
+
+  // IA settings state
+  const [iaEnabled, setIaEnabled] = useState(true)
+  const [iaModel, setIaModel] = useState('gpt-4')
+  const [iaEmbeddingModel, setIaEmbeddingModel] = useState('text-embedding-3-small')
+  const [openaiApiKey, setOpenaiApiKey] = useState('')
+  const [newApiKey, setNewApiKey] = useState('')
+  const [showApiKey, setShowApiKey] = useState(false)
+  const [iaSaving, setIaSaving] = useState(false)
+  const [iaLoaded, setIaLoaded] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -48,10 +60,63 @@ export default function SuperConfiguracoesPage() {
         tenantsInativos: list.filter(t => t.status === 'inativo').length,
         tenantsSuspensos: list.filter(t => t.status === 'suspenso').length,
       })
+
+      // Load IA settings
+      try {
+        const res = await fetch('/api/platform-settings')
+        if (res.ok) {
+          const { settings } = await res.json()
+          setIaEnabled(settings.ia_enabled !== 'false')
+          setIaModel(settings.ia_model || 'gpt-4')
+          setIaEmbeddingModel(settings.ia_embedding_model || 'text-embedding-3-small')
+          setOpenaiApiKey(settings.openai_api_key || '')
+          setIaLoaded(true)
+        }
+      } catch {
+        // Settings table may not exist yet
+      }
+
       setLoading(false)
     }
     load()
   }, [])
+
+  async function handleSaveIA() {
+    setIaSaving(true)
+    try {
+      const body: Record<string, string> = {
+        ia_enabled: iaEnabled ? 'true' : 'false',
+        ia_model: iaModel,
+        ia_embedding_model: iaEmbeddingModel,
+      }
+      // Only send new API key if user typed one
+      if (newApiKey.trim()) {
+        body.openai_api_key = newApiKey.trim()
+      }
+
+      const res = await fetch('/api/platform-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+
+      if (!res.ok) throw new Error()
+
+      toast.success('Configuracoes de IA salvas com sucesso!')
+      setNewApiKey('')
+
+      // Reload to get masked key
+      const reload = await fetch('/api/platform-settings')
+      if (reload.ok) {
+        const { settings } = await reload.json()
+        setOpenaiApiKey(settings.openai_api_key || '')
+      }
+    } catch {
+      toast.error('Erro ao salvar configuracoes de IA.')
+    } finally {
+      setIaSaving(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -160,6 +225,140 @@ export default function SuperConfiguracoesPage() {
               <p className="text-center text-sm text-slate-400 py-8">Nenhum tenant cadastrado.</p>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Integracoes — IA */}
+      <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+        <CardHeader className="bg-[var(--brand-primary)] p-4">
+          <CardTitle className="text-xs font-medium uppercase tracking-wide text-white flex items-center gap-2">
+            <Brain className="h-4 w-4" />
+            Integracoes — Inteligencia Artificial
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-5 space-y-5">
+
+          {/* IA Enabled toggle */}
+          <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-xl border border-slate-100">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Triagem por IA</p>
+              <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                Habilita analise automatica de projetos e deteccao de irregularidades.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIaEnabled(!iaEnabled)}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${iaEnabled ? 'bg-[var(--brand-primary)]' : 'bg-slate-300'}`}
+            >
+              <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${iaEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+          </div>
+
+          {/* Status indicator */}
+          <div className="flex items-center gap-2 px-1">
+            {iaEnabled ? (
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+            ) : (
+              <XCircle className="h-4 w-4 text-slate-400" />
+            )}
+            <span className={`text-xs font-medium ${iaEnabled ? 'text-green-600' : 'text-slate-400'}`}>
+              {iaEnabled ? 'IA ativada' : 'IA desativada'}
+            </span>
+            {openaiApiKey && openaiApiKey !== '' ? (
+              <Badge className="bg-green-50 text-green-600 border-none text-[10px] ml-2">API Key configurada</Badge>
+            ) : (
+              <Badge className="bg-amber-50 text-amber-600 border-none text-[10px] ml-2">API Key nao configurada</Badge>
+            )}
+          </div>
+
+          {/* API Key */}
+          <div className="space-y-2">
+            <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+              Chave da API OpenAI
+            </Label>
+            {openaiApiKey && (
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex-1 h-10 px-4 rounded-xl border border-slate-200 bg-slate-50/50 flex items-center">
+                  <code className="text-xs text-slate-500 font-mono">
+                    {showApiKey ? openaiApiKey : '••••••••••••••••••••'}
+                  </code>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowApiKey(!showApiKey)}
+                  className="h-10 px-3 rounded-xl border-slate-200"
+                >
+                  {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+            )}
+            <Input
+              type="password"
+              placeholder={openaiApiKey ? 'Digite nova chave para substituir...' : 'sk-...'}
+              value={newApiKey}
+              onChange={e => setNewApiKey(e.target.value)}
+              className="h-10 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-mono placeholder:text-slate-300"
+            />
+            <p className="text-[10px] text-slate-400 ml-1">
+              A chave e armazenada de forma segura no banco de dados. Se vazia, usa a variavel de ambiente OPENAI_API_KEY.
+            </p>
+          </div>
+
+          {/* Model selection */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+                Modelo de Triagem
+              </Label>
+              <select
+                value={iaModel}
+                onChange={e => setIaModel(e.target.value)}
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm text-slate-900 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none"
+              >
+                <option value="gpt-4">GPT-4 (Recomendado)</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4o-mini">GPT-4o Mini (Economico)</option>
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Rapido)</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+                Modelo de Embeddings
+              </Label>
+              <select
+                value={iaEmbeddingModel}
+                onChange={e => setIaEmbeddingModel(e.target.value)}
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm text-slate-900 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none"
+              >
+                <option value="text-embedding-3-small">text-embedding-3-small (Recomendado)</option>
+                <option value="text-embedding-3-large">text-embedding-3-large (Maior precisao)</option>
+                <option value="text-embedding-ada-002">text-embedding-ada-002 (Legado)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Save button */}
+          <div className="flex justify-end pt-2">
+            <Button
+              onClick={handleSaveIA}
+              disabled={iaSaving}
+              className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[#005cdd] text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-[var(--brand-primary)]/20 transition-all"
+            >
+              {iaSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Salvar Configuracoes IA
+                </>
+              )}
+            </Button>
+          </div>
+
         </CardContent>
       </Card>
 
