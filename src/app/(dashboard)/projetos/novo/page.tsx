@@ -15,7 +15,7 @@ function NovoProjetoContent() {
   if (!editalId || !tenantId) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        Parametros invalidos. Selecione um edital para se inscrever.
+        Parâmetros inválidos. Selecione um edital para se inscrever.
       </div>
     )
   }
@@ -33,7 +33,7 @@ export default function NovoProjetoPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Nova Inscricao</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Nova Inscrição</h1>
           <p className="text-muted-foreground">Preencha os dados do seu projeto</p>
         </div>
       </div>

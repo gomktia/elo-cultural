@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   // @ts-ignore
@@ -46,7 +47,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://api.openai.com",
+              "connect-src 'self' https://*.supabase.co https://api.openai.com https://*.sentry.io https://*.ingest.sentry.io",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
@@ -58,4 +59,18 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Suppress source map upload warnings when SENTRY_AUTH_TOKEN is not set
+  silent: true,
+
+  // Upload source maps for better stack traces
+  widenClientFileUpload: true,
+
+  // Disable Sentry telemetry
+  telemetry: false,
+
+  // Hide source maps from users
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
+});
