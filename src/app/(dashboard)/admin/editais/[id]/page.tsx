@@ -110,7 +110,7 @@ export default async function AdminEditalDetailPage({
             <div className="grid sm:grid-cols-2 gap-3">
               {[
                 { title: 'Habilitação Documental', url: 'habilitacao', icon: Scale, desc: 'Análise de documentos e triagem.', color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
-                { title: 'Criterios de Avaliação', url: 'criterios', icon: FileText, desc: 'Gestão de quesitos e pontuações.', color: 'text-indigo-600', bg: 'bg-indigo-100/50' },
+                { title: 'Critérios de Avaliação', url: 'criterios', icon: FileText, desc: 'Gestão de quesitos e pontuações.', color: 'text-indigo-600', bg: 'bg-indigo-100/50' },
                 { title: 'Cronograma', url: 'cronograma', icon: Settings, desc: 'Ajuste de datas e prazos.', color: 'text-slate-600', bg: 'bg-slate-200/50' },
                 { title: 'Atribuições', url: 'atribuicoes', icon: Users, desc: 'Vincular avaliadores aos projetos.', color: 'text-violet-600', bg: 'bg-violet-100/50' },
                 { title: 'Ranking Final', url: 'ranking', icon: BarChart3, desc: 'Visualizar classificação dos projetos.', color: 'text-[var(--brand-success)]', bg: 'bg-green-100/50' },

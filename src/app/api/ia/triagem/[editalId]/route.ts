@@ -13,14 +13,14 @@ export async function GET(
     error: authError,
   } = await supabase.auth.getUser()
   if (authError || !user) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
   // 2. Get editalId from params
   const { editalId } = await params
 
   if (!editalId) {
-    return NextResponse.json({ error: 'editalId e obrigatorio' }, { status: 400 })
+    return NextResponse.json({ error: 'editalId é obrigatório' }, { status: 400 })
   }
 
   try {

@@ -6,17 +6,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MapPin, Briefcase, Heart } from 'lucide-react'
 
 const AREAS_ATUACAO = [
-  'Artes Visuais', 'Audiovisual', 'Circo', 'Danca', 'Design',
-  'Fotografia', 'Literatura', 'Musica', 'Patrimonio Cultural',
-  'Teatro', 'Culturas Populares', 'Culturas Indigenas',
+  'Artes Visuais', 'Audiovisual', 'Circo', 'Dança', 'Design',
+  'Fotografia', 'Literatura', 'Música', 'Patrimônio Cultural',
+  'Teatro', 'Culturas Populares', 'Culturas Indígenas',
   'Culturas Afro-brasileiras', 'Artesanato', 'Moda', 'Gastronomia',
 ]
 
 const TEMPO_OPCOES = ['Menos de 1 ano', '1 a 3 anos', '3 a 5 anos', '5 a 10 anos', 'Mais de 10 anos']
-const RENDA_OPCOES = ['Ate 1 salario minimo', '1 a 2 salarios', '2 a 3 salarios', '3 a 5 salarios', 'Acima de 5 salarios']
-const GENERO_OPCOES = ['Masculino', 'Feminino', 'Nao-binario', 'Transgenero', 'Prefiro nao informar', 'Outro']
-const ORIENTACAO_OPCOES = ['Heterossexual', 'Homossexual', 'Bissexual', 'Pansexual', 'Assexual', 'Prefiro nao informar', 'Outro']
-const RACA_OPCOES = ['Branca', 'Preta', 'Parda', 'Amarela', 'Indigena', 'Prefiro nao informar']
+const RENDA_OPCOES = ['Até 1 salário mínimo', '1 a 2 salários', '2 a 3 salários', '3 a 5 salários', 'Acima de 5 salários']
+const GENERO_OPCOES = ['Masculino', 'Feminino', 'Não-binário', 'Transgênero', 'Prefiro não informar', 'Outro']
+const ORIENTACAO_OPCOES = ['Heterossexual', 'Homossexual', 'Bissexual', 'Pansexual', 'Assexual', 'Prefiro não informar', 'Outro']
+const RACA_OPCOES = ['Branca', 'Preta', 'Parda', 'Amarela', 'Indígena', 'Prefiro não informar']
 const ESTADOS = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
 
 interface ProponenteFormProps {

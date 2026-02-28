@@ -12,7 +12,7 @@ export async function decidirRecurso(
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nao autenticado' }
+  if (!user) return { error: 'Não autenticado' }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -21,7 +21,7 @@ export async function decidirRecurso(
     .single()
 
   if (!profile || !['admin', 'gestor', 'super_admin'].includes(profile.role)) {
-    return { error: 'Sem permissao para decidir recursos' }
+    return { error: 'Sem permissão para decidir recursos' }
   }
 
   const { error } = await supabase

@@ -71,7 +71,7 @@ export default function PerfilPage() {
   async function alterarSenha(e: React.FormEvent) {
     e.preventDefault()
     if (senha.nova !== senha.confirmar) {
-      toast.error('As senhas nao coincidem.')
+      toast.error('As senhas não coincidem.')
       return
     }
     setAlterandoSenha(true)

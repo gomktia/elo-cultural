@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     error: authError,
   } = await supabase.auth.getUser()
   if (authError || !user) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
   const { data: profile } = await supabase
@@ -25,12 +25,12 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (!profile) {
-    return NextResponse.json({ error: 'Perfil nao encontrado' }, { status: 404 })
+    return NextResponse.json({ error: 'Perfil não encontrado' }, { status: 404 })
   }
 
   const rolesPermitidas = ['gestor', 'admin', 'super_admin']
   if (!rolesPermitidas.includes(profile.role)) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 403 })
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
   }
 
   const tenant_id = profile.tenant_id
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     edital_id = body.edital_id
     if (!edital_id) {
-      return NextResponse.json({ error: 'edital_id e obrigatorio' }, { status: 400 })
+      return NextResponse.json({ error: 'edital_id é obrigatório' }, { status: 400 })
     }
   } catch {
     return NextResponse.json({ error: 'Body invalido' }, { status: 400 })
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (!editalCheck) {
-    return NextResponse.json({ error: 'Edital nao encontrado' }, { status: 404 })
+    return NextResponse.json({ error: 'Edital não encontrado' }, { status: 404 })
   }
 
   // 4. Create execution record
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
         } catch {
           habResult = {
             sugestao: 'pendencia',
-            motivo: 'Nao foi possivel interpretar a resposta da IA para habilitacao.',
+            motivo: 'Não foi possível interpretar a resposta da IA para habilitação.',
             docs_completos: false,
             problemas: ['Erro no parse da resposta da IA'],
           }
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
       } catch {
         habResult = {
           sugestao: 'pendencia',
-          motivo: 'Erro ao chamar a IA para analise de habilitacao.',
+          motivo: 'Erro ao chamar a IA para análise de habilitação.',
           docs_completos: false,
           problemas: ['Erro na chamada da API de IA'],
         }
@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
             const notaMedia = (criterio.nota_minima + criterio.nota_maxima) / 2
             avalResult = {
               nota: notaMedia,
-              justificativa: 'Nao foi possivel interpretar a resposta da IA para este criterio.',
+              justificativa: 'Não foi possível interpretar a resposta da IA para este critério.',
               confianca: 0.3,
             }
           }

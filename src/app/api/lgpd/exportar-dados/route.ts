@@ -6,7 +6,7 @@ export async function GET() {
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
   // Buscar perfil completo
@@ -17,7 +17,7 @@ export async function GET() {
     .single()
 
   if (!profile) {
-    return NextResponse.json({ error: 'Perfil nao encontrado' }, { status: 404 })
+    return NextResponse.json({ error: 'Perfil não encontrado' }, { status: 404 })
   }
 
   // Buscar projetos do usuario

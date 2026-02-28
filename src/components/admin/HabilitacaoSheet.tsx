@@ -56,7 +56,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
     async function handleSave() {
         if (!projeto || !status) return
         if (status === 'inabilitado' && !justificativa.trim()) {
-            toast.error('Justificativa e obrigatoria para inabilitacao')
+            toast.error('Justificativa é obrigatória para inabilitação')
             return
         }
 
@@ -64,11 +64,11 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
         const result = await atualizarHabilitacao(projeto.id, status, justificativa)
 
         if (result.success) {
-            toast.success('Habilitacao atualizada com sucesso')
+            toast.success('Habilitação atualizada com sucesso')
             onOpenChange(false)
             onSuccess?.()
         } else {
-            toast.error('Erro ao atualizar habilitacao: ' + result.error)
+            toast.error('Erro ao atualizar habilitação: ' + result.error)
         }
         setSubmitting(false)
     }
@@ -81,7 +81,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                 <div className="px-8 pt-8 pb-6">
                     <SheetHeader className="mb-0">
                         <SheetTitle className="text-2xl font-bold tracking-[-0.02em] text-slate-900 dark:text-white">
-                            Revisao Documental
+                            Revisão Documental
                         </SheetTitle>
                         <SheetDescription className="mt-2">
                             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{projeto.titulo}</span>
@@ -137,7 +137,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                     {/* Decisao */}
                     <section className="space-y-6 pt-6 border-t border-slate-100 dark:border-white/5">
                         <div className="space-y-3">
-                            <Label className="text-xs font-medium uppercase tracking-wide text-slate-400">Decisao da Habilitacao</Label>
+                            <Label className="text-xs font-medium uppercase tracking-wide text-slate-400">Decisão da Habilitação</Label>
                             <div className="grid grid-cols-2 gap-3">
                                 <Button
                                     type="button"
@@ -176,13 +176,13 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                             </Label>
                             <Textarea
                                 id="justificativa"
-                                placeholder="Informe os motivos da decisao..."
+                                placeholder="Informe os motivos da decisão..."
                                 className="min-h-[120px] rounded-2xl border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/3 focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)]/30 transition-all resize-none"
                                 value={justificativa}
                                 onChange={(e) => setJustificativa(e.target.value)}
                             />
                             <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed">
-                                Esta justificativa sera visivel para o proponente no portal da transparencia.
+                                Esta justificativa será visível para o proponente no portal da transparência.
                             </p>
                         </div>
                     </section>
@@ -198,7 +198,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                         className="rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white shadow-glow-primary min-w-[140px] font-bold transition-all"
                     >
                         {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                        Salvar Decisao
+                        Salvar Decisão
                     </Button>
                 </SheetFooter>
             </SheetContent>

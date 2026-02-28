@@ -18,7 +18,7 @@ export function GestorForm({ form, onChange }: GestorFormProps) {
     <div className="space-y-5">
       <div className="space-y-2">
         <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
-          <Building2 className="h-3 w-3" /> Orgao Vinculado
+          <Building2 className="h-3 w-3" /> Órgão Vinculado
         </Label>
         <Input
           placeholder="Ex: Secretaria Municipal de Cultura"
@@ -32,7 +32,7 @@ export function GestorForm({ form, onChange }: GestorFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="space-y-2">
           <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
-            <Briefcase className="h-3 w-3" /> Funcao / Cargo
+            <Briefcase className="h-3 w-3" /> Função / Cargo
           </Label>
           <Input
             placeholder="Ex: Coordenador de Editais"
@@ -45,10 +45,10 @@ export function GestorForm({ form, onChange }: GestorFormProps) {
 
         <div className="space-y-2">
           <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
-            <Hash className="h-3 w-3" /> Matricula
+            <Hash className="h-3 w-3" /> Matrícula
           </Label>
           <Input
-            placeholder="Numero de matricula"
+            placeholder="Número de matrícula"
             value={form.matricula}
             onChange={e => onChange('matricula', e.target.value)}
             className="h-11 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10 focus:ring-2 focus:ring-[#0047AB]/40"

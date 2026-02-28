@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) {
-    return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 })
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
   const body = await request.json()
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (!profile) {
-    return NextResponse.json({ error: 'Perfil nao encontrado' }, { status: 404 })
+    return NextResponse.json({ error: 'Perfil não encontrado' }, { status: 404 })
   }
 
   // Verificar se ja existe solicitacao pendente
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   if (existente && existente.length > 0) {
     // Verificar se a ultima solicitacao foi ha menos de 24h
     return NextResponse.json(
-      { error: 'Voce ja possui uma solicitacao de exclusao registrada. A administracao entrara em contato.' },
+      { error: 'Você já possui uma solicitação de exclusão registrada. A administração entrará em contato.' },
       { status: 409 }
     )
   }
@@ -66,14 +66,14 @@ export async function POST(request: NextRequest) {
         motivo: motivo.trim(),
         data_solicitacao: new Date().toISOString(),
         status: 'pendente',
-        fundamentacao_legal: 'LGPD Art. 18, VI - Eliminacao dos dados pessoais',
+        fundamentacao_legal: 'LGPD Art. 18, VI - Eliminação dos dados pessoais',
       },
       ip_address: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || null,
     })
 
   if (logError) {
     return NextResponse.json(
-      { error: 'Erro ao registrar solicitacao: ' + logError.message },
+      { error: 'Erro ao registrar solicitação: ' + logError.message },
       { status: 500 }
     )
   }
@@ -89,6 +89,6 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     success: true,
     protocolo,
-    mensagem: 'Sua solicitacao de exclusao foi registrada com sucesso. A administracao analisara seu pedido conforme a LGPD (Art. 18, VI). Voce sera notificado sobre o andamento.',
+    mensagem: 'Sua solicitação de exclusão foi registrada com sucesso. A administração analisará seu pedido conforme a LGPD (Art. 18, VI). Você será notificado sobre o andamento.',
   })
 }

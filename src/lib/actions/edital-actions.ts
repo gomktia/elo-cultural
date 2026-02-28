@@ -26,7 +26,7 @@ const FASE_ORDER = [
 export async function avancarEtapa(editalId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Nao autenticado' }
+  if (!user) return { error: 'Não autenticado' }
 
   // Verify user has admin/gestor role
   const { data: profile } = await supabase
@@ -36,7 +36,7 @@ export async function avancarEtapa(editalId: string) {
     .single()
 
   if (!profile || !['admin', 'gestor', 'super_admin'].includes(profile.role)) {
-    return { error: 'Sem permissao para avancar etapa' }
+    return { error: 'Sem permissão para avançar etapa' }
   }
 
   const { data: edital, error: fetchError } = await supabase
@@ -46,11 +46,11 @@ export async function avancarEtapa(editalId: string) {
     .eq('tenant_id', profile.tenant_id)
     .single()
 
-  if (fetchError || !edital) return { error: 'Edital nao encontrado' }
+  if (fetchError || !edital) return { error: 'Edital não encontrado' }
 
   const currentIndex = FASE_ORDER.indexOf(edital.status as any)
-  if (currentIndex === -1) return { error: 'Fase atual invalida' }
-  if (currentIndex >= FASE_ORDER.length - 1) return { error: 'Edital ja esta na ultima fase' }
+  if (currentIndex === -1) return { error: 'Fase atual inválida' }
+  if (currentIndex >= FASE_ORDER.length - 1) return { error: 'Edital já está na última fase' }
 
   const nextPhase = FASE_ORDER[currentIndex + 1]
 
