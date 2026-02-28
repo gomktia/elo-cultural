@@ -45,8 +45,8 @@ export default async function AtribuicoesPage({
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center gap-6 border-b border-slate-200 pb-8">
         <Link href={`/admin/editais/${id}`}>
-          <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-slate-200 hover:bg-slate-50 transition-all active:scale-90 shadow-sm">
-            <ArrowLeft className="h-5 w-5 text-slate-500" />
+          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
+            <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div className="space-y-1">

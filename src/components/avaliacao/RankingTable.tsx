@@ -35,15 +35,15 @@ export function RankingTable({ items }: RankingTableProps) {
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="w-24 py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Posição</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Nota Final</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Avaliações</TableHead>
-              <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Status</TableHead>
+          <TableHeader className="bg-[var(--brand-primary)]">
+            <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+              <TableHead className="w-24 py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Posicao</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Projeto</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Nota Final</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">Avaliacoes</TableHead>
+              <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -55,9 +55,13 @@ export function RankingTable({ items }: RankingTableProps) {
                 'text-amber-600 drop-shadow-[0_0_8px_rgba(180,83,9,0.4)]'
               ]
 
+              const statusBarColor = item.status === 'selecionado' ? 'bg-[var(--brand-success)]' :
+                item.status === 'suplente' ? 'bg-amber-400' : 'bg-slate-300'
+
               return (
-                <TableRow key={item.protocolo} className="hover:bg-slate-50/50 transition-all duration-300 border-slate-50 group">
-                  <TableCell className="py-6 px-8">
+                <TableRow key={item.protocolo} className="relative even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100 group">
+                  <TableCell className="py-6 px-8 relative">
+                    <div className={`absolute left-0 top-2 bottom-2 w-1 rounded-full ${statusBarColor}`} />
                     <div className="flex items-center gap-3">
                       {isTop3 ? (
                         <div className={`h-10 w-10 rounded-xl bg-white shadow-md flex items-center justify-center ${trophyColors[item.posicao - 1]}`}>

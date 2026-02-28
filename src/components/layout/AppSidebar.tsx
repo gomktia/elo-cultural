@@ -15,13 +15,14 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import { UserMenu } from './UserMenu'
 import type { UserRole } from '@/types/database.types'
 import {
   Home, FolderOpen, FileText, Users, BarChart3,
   ClipboardList, Shield, Settings, Trophy, Search,
-  Building2, Globe, FileCheck,
+  Building2, Globe, FileCheck, ChevronsLeft,
 } from 'lucide-react'
 
 interface NavItem {
@@ -76,6 +77,24 @@ interface AppSidebarProps {
   tenantLogoUrl?: string | null
 }
 
+function CollapseButton() {
+  const { toggleSidebar, state } = useSidebar()
+  const isCollapsed = state === 'collapsed'
+
+  return (
+    <div className="relative mx-4 my-2 group-data-[collapsible=icon]:mx-2">
+      <div className="h-px bg-slate-200/80" />
+      <button
+        onClick={toggleSidebar}
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 rounded-md bg-white border border-slate-200 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/10 hover:border-[var(--brand-primary)]/30 transition-all shadow-sm flex items-center justify-center"
+        title={isCollapsed ? 'Expandir menu' : 'Colapsar menu'}
+      >
+        <ChevronsLeft className={`h-3.5 w-3.5 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} />
+      </button>
+    </div>
+  )
+}
+
 export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, tenantLogoUrl }: AppSidebarProps) {
   const pathname = usePathname()
   const items = navByRole[role] || navByRole.proponente
@@ -84,31 +103,31 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
     <Sidebar collapsible="icon" className="border-none bg-transparent">
       <div className="flex h-full flex-col sidebar-light">
         {/* Header with Logo */}
-        <SidebarHeader className="flex items-center px-5 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:justify-center" style={{ height: 64 }}>
-          <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
-            <div className="flex-shrink-0 flex items-center justify-center">
+        <SidebarHeader className="px-5 pt-5 pb-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pt-4">
+          <div className="flex flex-col items-center group-data-[collapsible=icon]:items-center">
+            {/* Logo + Sistema Ativo */}
+            <div className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center">
               <Image
                 src={tenantLogoUrl || '/icon-192.png'}
                 alt="Elo Cultura"
-                width={36}
-                height={36}
+                width={40}
+                height={40}
                 className="rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200 object-contain transition-all group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
               />
-            </div>
-            <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-              <p className="truncate text-sm font-bold tracking-tight text-slate-900 leading-tight">
-                {tenantName || 'Elo Cultura'}
-              </p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                <p className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Sistema Ativo</p>
+              <div className="flex items-center gap-1.5 group-data-[collapsible=icon]:hidden">
+                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Ativo</span>
               </div>
             </div>
+            {/* Tenant name below */}
+            <p className="truncate text-xs font-semibold tracking-tight text-slate-500 mt-2 text-center max-w-full group-data-[collapsible=icon]:hidden">
+              {tenantName || 'Elo Cultura'}
+            </p>
           </div>
         </SidebarHeader>
 
-        {/* Separator */}
-        <div className="mx-4 h-px bg-slate-100 group-data-[collapsible=icon]:mx-2" />
+        {/* Separator with Collapse trigger centered on line */}
+        <CollapseButton />
 
         {/* Navigation */}
         <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-1.5">

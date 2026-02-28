@@ -62,26 +62,26 @@ export default async function GestorRankingsPage() {
         <div className="space-y-8">
           {editaisComResultado.map(edital => (
             <Card key={edital.id} className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
-              <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
+              <CardHeader className="bg-[var(--brand-primary)] p-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <CardTitle className="text-base font-semibold text-slate-900 leading-none">{edital.titulo}</CardTitle>
-                    <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">{edital.numero_edital}</p>
+                    <CardTitle className="text-base font-semibold text-white leading-none">{edital.titulo}</CardTitle>
+                    <p className="text-xs text-white/70 font-medium uppercase tracking-wide">{edital.numero_edital}</p>
                   </div>
-                  <Badge variant="outline" className="border-slate-200 text-[11px] font-medium uppercase tracking-wide bg-white">
+                  <Badge className="border-none text-[11px] font-medium uppercase tracking-wide bg-white/20 text-white">
                     {edital.status}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="p-1">
+              <CardContent className="p-0">
                 <Table>
-                  <TableHeader className="bg-slate-50/30">
+                  <TableHeader className="bg-slate-50/50">
                     <TableRow className="hover:bg-transparent border-slate-200">
-                      <TableHead className="w-16 py-3 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Pos.</TableHead>
-                      <TableHead className="py-3 px-2 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto</TableHead>
-                      <TableHead className="py-3 px-2 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
-                      <TableHead className="py-3 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Nota</TableHead>
-                      <TableHead className="py-3 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Status</TableHead>
+                      <TableHead className="w-16 py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500 text-center">Pos.</TableHead>
+                      <TableHead className="py-3 px-2 font-semibold text-xs uppercase tracking-wide text-slate-500">Projeto</TableHead>
+                      <TableHead className="py-3 px-2 font-semibold text-xs uppercase tracking-wide text-slate-500">Protocolo</TableHead>
+                      <TableHead className="py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500 text-right">Nota</TableHead>
+                      <TableHead className="py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500 text-right">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -90,7 +90,7 @@ export default async function GestorRankingsPage() {
                       const colors = ['text-yellow-500', 'text-slate-400', 'text-amber-600']
 
                       return (
-                        <TableRow key={p.id} className="hover:bg-white transition-all duration-300 border-slate-50 group">
+                        <TableRow key={p.id} className="even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-50 group">
                           <TableCell className="py-3 px-4">
                             <div className="flex items-center justify-center">
                               {isTop3 ? (

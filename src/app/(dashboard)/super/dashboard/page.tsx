@@ -54,7 +54,7 @@ export default async function SuperDashboardPage() {
           const Icon = stat.icon
           return (
             <div key={stat.label} className="group relative">
-              <div className="relative p-6 bg-white border border-slate-100 rounded-[28px] shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5 text-center">
+              <div className="relative p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5 text-center">
                 <div
                   className="h-12 w-12 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-110"
                   style={{ backgroundColor: `${stat.color}10` }}

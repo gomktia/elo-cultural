@@ -55,58 +55,67 @@ export function HabilitacaoTable({ projetos, aiSugestoes }: HabilitacaoTableProp
         }
     }
 
+    function getStatusBarColor(status: string) {
+        switch (status) {
+            case 'habilitado': return 'bg-[var(--brand-success)]'
+            case 'inabilitado': return 'bg-[var(--brand-secondary)]'
+            default: return 'bg-amber-400'
+        }
+    }
+
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-6 bg-white/60 backdrop-blur-md p-6 rounded-[32px] border border-slate-100 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-6 bg-white/60 backdrop-blur-md p-6 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--brand-primary)]" />
                     <Input
-                        placeholder="Filtrar por título ou protocolo..."
-                        className="h-12 pl-12 bg-white/50 border-slate-100 rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-primary/10 font-bold transition-all"
+                        placeholder="Filtrar por titulo ou protocolo..."
+                        className="h-12 pl-12 bg-white/50 border-slate-100 rounded-2xl focus:bg-white focus:ring-2 focus:ring-brand-primary/10 font-medium transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <Button variant="outline" className="h-12 w-12 rounded-2xl border-slate-100 bg-white/50 hover:bg-white shadow-sm">
-                    <Filter className="h-5 w-5 text-slate-400" />
+                <Button variant="outline" className="h-12 w-12 rounded-2xl border-[var(--brand-primary)]/20 bg-white/50 hover:bg-[var(--brand-primary)]/5 shadow-sm">
+                    <Filter className="h-5 w-5 text-[var(--brand-primary)]" />
                 </Button>
             </div>
 
-            <div className="relative overflow-x-auto rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+            <div className="relative overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
                 <Table>
-                    <TableHeader className="bg-slate-50/50">
-                        <TableRow className="hover:bg-transparent border-slate-100">
-                            <TableHead className="min-w-[140px] py-6 px-4 md:px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
-                            <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Título do Projeto</TableHead>
-                            <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Status</TableHead>
-                            <TableHead className="min-w-[120px] py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Sugestão IA</TableHead>
-                            <TableHead className="min-w-[80px] py-6 px-4 md:px-8 text-right font-medium text-xs uppercase tracking-wide text-slate-400">Ações</TableHead>
+                    <TableHeader className="bg-[var(--brand-primary)]">
+                        <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+                            <TableHead className="min-w-[140px] py-4 px-4 md:px-8 font-semibold text-xs uppercase tracking-wide text-white">Protocolo</TableHead>
+                            <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Titulo do Projeto</TableHead>
+                            <TableHead className="min-w-[120px] py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Status</TableHead>
+                            <TableHead className="min-w-[120px] py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Sugestao IA</TableHead>
+                            <TableHead className="min-w-[80px] py-4 px-4 md:px-8 text-right font-semibold text-xs uppercase tracking-wide text-white">Acoes</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {filteredProjetos.map((p) => (
                             <TableRow
                                 key={p.id}
-                                className="hover:bg-slate-50/50 transition-all duration-300 border-slate-50 cursor-pointer group"
+                                className="relative even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100 cursor-pointer group"
                                 onClick={() => {
                                     setSelectedProjeto(p)
                                     setIsSheetOpen(true)
                                 }}
                             >
-                                <TableCell className="py-6 px-8">
+                                <TableCell className="py-5 px-8 relative">
+                                    <div className={`absolute left-0 top-2 bottom-2 w-1 rounded-full ${getStatusBarColor(p.status_habilitacao)}`} />
                                     <code className="text-[11px] font-medium text-slate-900 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-wide">
                                         {p.numero_protocolo}
                                     </code>
                                 </TableCell>
-                                <TableCell className="py-6 px-4">
-                                    <div className="text-base font-semibold text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
+                                <TableCell className="py-5 px-4">
+                                    <div className="text-sm font-semibold text-slate-900 leading-none group-hover:text-[var(--brand-primary)] transition-colors">
                                         {p.titulo}
                                     </div>
                                 </TableCell>
-                                <TableCell className="py-6 px-4">
+                                <TableCell className="py-5 px-4">
                                     {getStatusBadge(p.status_habilitacao)}
                                 </TableCell>
-                                <TableCell className="py-6 px-4">
+                                <TableCell className="py-5 px-4">
                                     {aiSugestoes?.[p.id] ? (
                                         <div className="flex flex-col gap-1">
                                             {getAiBadge(aiSugestoes[p.id].sugestao)}
@@ -118,7 +127,7 @@ export function HabilitacaoTable({ projetos, aiSugestoes }: HabilitacaoTableProp
                                         <span className="text-slate-300 text-xs">&mdash;</span>
                                     )}
                                 </TableCell>
-                                <TableCell className="py-6 px-8 text-right">
+                                <TableCell className="py-5 px-8 text-right">
                                     <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all border border-transparent group-hover:shadow-lg group-hover:shadow-brand-primary/20">
                                         <Eye className="h-5 w-5" />
                                     </Button>

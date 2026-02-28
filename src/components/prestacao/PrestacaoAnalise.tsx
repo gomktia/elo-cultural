@@ -89,7 +89,7 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
           setExpanded(!expanded)
           if (!expanded && prestacao.status === 'enviada') marcarEmAnalise()
         }}
-        className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors text-left"
+        className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-100/60 transition-colors text-left"
       >
         <div className="flex items-center gap-4 min-w-0">
           <div className="h-9 w-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 flex-shrink-0">

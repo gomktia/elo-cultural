@@ -149,20 +149,20 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
         </Button>
       </div>
 
-      <div className="relative overflow-x-auto rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="relative overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="sticky left-0 bg-slate-50/90 backdrop-blur-md z-20 w-[280px] py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">
+          <TableHeader className="bg-[var(--brand-primary)]">
+            <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+              <TableHead className="sticky left-0 bg-[var(--brand-primary)] backdrop-blur-md z-20 w-[280px] py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">
                 Avaliador
               </TableHead>
               {projetos.map(p => (
-                <TableHead key={p.id} className="text-center min-w-[200px] py-6 px-4">
+                <TableHead key={p.id} className="text-center min-w-[200px] py-4 px-4">
                   <div className="space-y-1">
-                    <div className="text-sm font-semibold text-slate-900 tracking-tight truncate max-w-[180px] mx-auto" title={p.titulo}>
+                    <div className="text-sm font-semibold text-white tracking-tight truncate max-w-[180px] mx-auto" title={p.titulo}>
                       {p.titulo}
                     </div>
-                    <div className="text-[11px] font-medium text-[var(--brand-primary)] uppercase tracking-wide bg-brand-primary/5 inline-block px-2 py-0.5 rounded-md">
+                    <div className="text-[11px] font-medium text-white/70 uppercase tracking-wide bg-white/10 inline-block px-2 py-0.5 rounded-md">
                       {p.numero_protocolo}
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
           </TableHeader>
           <TableBody>
             {avaliadores.map(av => (
-              <TableRow key={av.id} className="hover:bg-slate-50/50 transition-colors border-slate-50 group">
+              <TableRow key={av.id} className="even:bg-slate-50/40 hover:bg-slate-100/60 transition-colors border-slate-100 group">
                 <TableCell className="sticky left-0 bg-white/95 backdrop-blur-md z-20 py-5 px-8 group-hover:bg-slate-50/95 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-semibold text-sm group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-colors">

@@ -116,8 +116,8 @@ export default function NovoEditalPage() {
     <div className="space-y-6 max-w-2xl pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center gap-4 border-b border-slate-200 pb-6">
         <Link href="/admin/editais">
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
-            <ArrowLeft className="h-4 w-4 text-slate-500" />
+          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
+            <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div>

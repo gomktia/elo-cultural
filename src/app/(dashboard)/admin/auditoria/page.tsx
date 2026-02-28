@@ -35,20 +35,20 @@ export default async function AuditoriaPage() {
         <p className="text-sm text-slate-500 font-normal">Registro de todas as acoes do sistema</p>
       </div>
 
-      <div className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-200">
-              <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Data/Hora</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Acao</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tabela</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Usuario</TableHead>
-              <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">IP</TableHead>
+          <TableHeader className="bg-[var(--brand-primary)]">
+            <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+              <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Data/Hora</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Acao</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Tabela</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Usuario</TableHead>
+              <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">IP</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {typedLogs.map((log) => (
-              <TableRow key={log.id} className="hover:bg-slate-50/50 transition-all duration-300 border-slate-50 group">
+              <TableRow key={log.id} className="even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100 group">
                 <TableCell className="py-5 px-8 font-mono text-xs text-slate-500 whitespace-nowrap">
                   {format(new Date(log.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR })}
                 </TableCell>

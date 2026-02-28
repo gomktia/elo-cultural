@@ -18,15 +18,15 @@ export function RankingTableSkeleton() {
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="w-24 py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Posicao</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Nota Final</TableHead>
-              <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">Avaliacoes</TableHead>
-              <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Status</TableHead>
+          <TableHeader className="bg-[var(--brand-primary)]">
+            <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+              <TableHead className="w-24 py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Posicao</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Projeto</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Nota Final</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">Avaliacoes</TableHead>
+              <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

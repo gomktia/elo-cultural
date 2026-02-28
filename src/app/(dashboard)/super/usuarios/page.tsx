@@ -57,7 +57,7 @@ export default async function SuperUsuariosPage() {
 
           return (
             <div key={u.id} className="group relative">
-              <div className="relative p-5 bg-white border border-slate-100 rounded-[28px] shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
+              <div className="relative p-5 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex gap-4">
                     <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 font-semibold text-sm flex-shrink-0">

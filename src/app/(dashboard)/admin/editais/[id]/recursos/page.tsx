@@ -60,8 +60,8 @@ export default async function RecursosAdminPage({
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center gap-6 border-b border-slate-200 pb-8">
         <Link href={`/admin/editais/${id}`}>
-          <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-slate-200 hover:bg-slate-50 transition-all active:scale-90 shadow-sm">
-            <ArrowLeft className="h-5 w-5 text-slate-500" />
+          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
+            <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div className="space-y-1">
@@ -86,22 +86,27 @@ export default async function RecursosAdminPage({
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <Table>
-              <TableHeader className="bg-slate-50/50">
-                <TableRow className="hover:bg-transparent border-slate-200">
-                  <TableHead className="py-6 px-8 font-medium text-xs uppercase tracking-wide text-slate-400">Protocolo</TableHead>
-                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Projeto / Proponente</TableHead>
-                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tipo / Fase</TableHead>
-                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Status</TableHead>
-                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Data</TableHead>
-                  <TableHead className="py-6 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Ações</TableHead>
+              <TableHeader className="bg-[var(--brand-primary)]">
+                <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+                  <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Protocolo</TableHead>
+                  <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Projeto / Proponente</TableHead>
+                  <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Tipo / Fase</TableHead>
+                  <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Status</TableHead>
+                  <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Data</TableHead>
+                  <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-right">Acoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(recursos || []).map((rec: any) => (
-                  <TableRow key={rec.id} className="hover:bg-slate-50/50 transition-all duration-300 border-slate-50 group">
-                    <TableCell className="py-6 px-8">
+                {(recursos || []).map((rec: any) => {
+                  const statusBarColor = rec.status === 'deferido' ? 'bg-[var(--brand-success)]' :
+                    rec.status === 'indeferido' ? 'bg-[var(--brand-secondary)]' :
+                      rec.status === 'em_analise' ? 'bg-blue-500' : 'bg-amber-400'
+                  return (
+                  <TableRow key={rec.id} className="relative even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100 group">
+                    <TableCell className="py-6 px-8 relative">
+                      <div className={`absolute left-0 top-2 bottom-2 w-1 rounded-full ${statusBarColor}`} />
                       <code className="text-xs font-medium text-slate-900 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-wide">
                         {rec.numero_protocolo}
                       </code>
@@ -145,7 +150,8 @@ export default async function RecursosAdminPage({
                       />
                     </TableCell>
                   </TableRow>
-                ))}
+                  )
+                })}
                 {(!recursos || recursos.length === 0) && (
                   <TableRow>
                     <TableCell colSpan={6} className="h-64 text-center">

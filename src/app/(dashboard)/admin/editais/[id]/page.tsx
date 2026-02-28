@@ -36,25 +36,30 @@ export default async function AdminEditalDetailPage({
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-6">
-        <div className="flex items-center gap-6">
-          <Link href="/admin/editais">
-            <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
-              <ArrowLeft className="h-4 w-4 text-slate-500" />
-            </Button>
-          </Link>
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">{e.titulo}</h1>
-              <EditalStatusBadge status={e.status} />
+      {/* Header Card */}
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="flex items-start gap-5">
+              <Link href="/admin/editais">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              </Link>
+              <div className="space-y-2">
+                <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">{e.titulo}</h1>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <code className="text-[11px] font-semibold text-[var(--brand-primary)] bg-[var(--brand-primary)]/8 px-2.5 py-1 rounded-md uppercase tracking-wide">
+                    {e.numero_edital}
+                  </code>
+                  <EditalStatusBadge status={e.status} />
+                </div>
+              </div>
             </div>
-            <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">
-              Protocolo: <span className="text-slate-600 ml-1">{e.numero_edital}</span>
-            </p>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Quick Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

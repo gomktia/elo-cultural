@@ -59,7 +59,7 @@ export default async function ResultadosPublicosPage({
         </div>
 
         {!hasResults ? (
-          <div className="bg-white/60 backdrop-blur-md rounded-2xl md:rounded-[32px] p-8 md:p-10 border border-slate-100 shadow-premium text-center">
+          <div className="bg-white/60 backdrop-blur-md rounded-2xl md:rounded-2xl p-8 md:p-10 border border-slate-100 shadow-premium text-center">
             <div className="h-14 w-14 md:h-16 md:w-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-5 md:mb-6">
               <Calendar className="h-7 w-7 md:h-8 md:w-8 text-slate-200" />
             </div>
@@ -68,14 +68,14 @@ export default async function ResultadosPublicosPage({
             </p>
           </div>
         ) : (
-          <div className="bg-white/60 backdrop-blur-md border border-slate-100 rounded-2xl md:rounded-[32px] p-0.5 md:p-1 overflow-hidden shadow-lg overflow-x-auto">
+          <div className="bg-white/60 backdrop-blur-md border border-slate-100 rounded-2xl md:rounded-2xl p-0.5 md:p-1 overflow-hidden shadow-lg overflow-x-auto">
             <Table>
-              <TableHeader className="bg-slate-50/50">
-                <TableRow className="hover:bg-transparent border-slate-100">
-                  <TableHead className="w-16 md:w-24 py-3 md:py-4 px-4 md:px-8 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-slate-400 text-center">Class.</TableHead>
-                  <TableHead className="py-3 md:py-4 px-3 md:px-4 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-slate-400">Projeto</TableHead>
-                  <TableHead className="py-3 md:py-4 px-3 md:px-4 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-slate-400">Nota</TableHead>
-                  <TableHead className="py-3 md:py-4 px-4 md:px-8 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-slate-400 text-right">Status</TableHead>
+              <TableHeader className="bg-[var(--brand-primary)]">
+                <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+                  <TableHead className="w-16 md:w-24 py-3 md:py-4 px-4 md:px-8 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-white text-center">Class.</TableHead>
+                  <TableHead className="py-3 md:py-4 px-3 md:px-4 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-white">Projeto</TableHead>
+                  <TableHead className="py-3 md:py-4 px-3 md:px-4 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-white">Nota</TableHead>
+                  <TableHead className="py-3 md:py-4 px-4 md:px-8 font-semibold text-[11px] md:text-xs uppercase tracking-wider text-white text-right">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -84,7 +84,7 @@ export default async function ResultadosPublicosPage({
                   const colors = ['text-yellow-500', 'text-slate-400', 'text-amber-600']
 
                   return (
-                    <TableRow key={projeto.id} className="hover:bg-white transition-all duration-300 border-slate-50 group">
+                    <TableRow key={projeto.id} className="even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100 group">
                       <TableCell className="py-3 md:py-4 px-4 md:px-8">
                         <div className="flex items-center justify-center">
                           {isTop3 ? (

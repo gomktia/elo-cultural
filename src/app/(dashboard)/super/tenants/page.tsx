@@ -66,8 +66,8 @@ export default async function SuperTenantsPage() {
 
           return (
             <div key={t.id} className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] opacity-0 group-hover:opacity-[0.02] transition-opacity duration-500 rounded-[28px]" />
-              <div className="relative p-6 bg-white border border-slate-100 rounded-[28px] shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] opacity-0 group-hover:opacity-[0.02] transition-opacity duration-500 rounded-2xl" />
+              <div className="relative p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-500 hover:-translate-y-0.5">
                 <div className="flex items-start justify-between gap-4 mb-5">
                   <div className="flex items-center gap-4">
                     <div

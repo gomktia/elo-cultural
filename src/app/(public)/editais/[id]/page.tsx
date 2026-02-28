@@ -61,7 +61,7 @@ export default async function EditalPublicoPage({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {(e.inicio_inscricao || e.fim_inscricao) && (
-            <div className="bg-white rounded-2xl md:rounded-[32px] p-5 md:p-6 border border-slate-100 shadow-premium flex flex-col justify-center gap-4">
+            <div className="bg-white rounded-2xl md:rounded-2xl p-5 md:p-6 border border-slate-100 shadow-premium flex flex-col justify-center gap-4">
               <div className="flex items-center gap-4">
                 <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500">
                   <Calendar className="h-4 w-4 md:h-5 md:w-5" />
@@ -88,7 +88,7 @@ export default async function EditalPublicoPage({
           )}
 
           {e.descricao && (
-            <div className="bg-[var(--brand-primary)] rounded-2xl md:rounded-[32px] p-5 md:p-6 text-white shadow-xl relative overflow-hidden group">
+            <div className="bg-[var(--brand-primary)] rounded-2xl md:rounded-2xl p-5 md:p-6 text-white shadow-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform duration-500">
                 <FileText className="h-16 w-16 md:h-20 md:w-20" />
               </div>
@@ -101,7 +101,7 @@ export default async function EditalPublicoPage({
         </div>
 
         {criterios && criterios.length > 0 && (
-          <div className="bg-white/60 backdrop-blur-md border border-slate-100 rounded-2xl md:rounded-[32px] p-5 md:p-8 shadow-premium">
+          <div className="bg-white/60 backdrop-blur-md border border-slate-100 rounded-2xl md:rounded-2xl p-5 md:p-8 shadow-premium">
             <h2 className="text-base md:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-3 mb-5 md:mb-6">
               <div className="h-5 md:h-6 w-1 md:w-1.5 bg-purple-500 rounded-full" />
               Regras de Avaliação

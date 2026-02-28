@@ -16,15 +16,15 @@ export default function Loading() {
         <Skeleton className="h-4 w-72 rounded-lg" />
       </div>
 
-      <div className="relative overflow-hidden rounded-[32px] border border-slate-100 bg-white shadow-sm ring-1 ring-slate-100">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-100">
-              <TableHead className="py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Data/Hora</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Acao</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Tabela</TableHead>
-              <TableHead className="py-6 px-4 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Usuario</TableHead>
-              <TableHead className="py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 text-right">IP</TableHead>
+          <TableHeader className="bg-[var(--brand-primary)]">
+            <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+              <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Data/Hora</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Acao</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Tabela</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Usuario</TableHead>
+              <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">IP</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

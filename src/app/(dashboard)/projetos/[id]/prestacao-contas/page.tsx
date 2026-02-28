@@ -57,7 +57,7 @@ export default async function PrestacaoContasPage({
     <div className="space-y-6 max-w-3xl animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center gap-4">
         <Link href={`/projetos/${id}`}>
-          <Button variant="ghost" size="icon">
+          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>

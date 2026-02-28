@@ -85,8 +85,8 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-200 pb-6">
         <div className="flex items-center gap-6">
           <Link href={backHref}>
-            <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
-              <ArrowLeft className="h-4 w-4 text-slate-500" />
+            <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
+              <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
           <div className="space-y-0.5">
@@ -102,7 +102,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
               Nova Publicação
             </Button>
           </DialogTrigger>
-          <DialogContent className="rounded-[32px] p-6 border-slate-200 shadow-2xl overflow-hidden max-w-md">
+          <DialogContent className="rounded-2xl p-6 border-slate-200 shadow-2xl overflow-hidden max-w-md">
             <div className="absolute top-0 left-0 w-full h-1.5 bg-[var(--brand-primary)]" />
             <DialogHeader className="mb-4">
               <DialogTitle className="text-xl font-bold tracking-tight text-slate-900 text-left">Criar Comunicado</DialogTitle>
@@ -153,19 +153,19 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
         </Dialog>
       </div>
 
-      <div className="bg-white rounded-[32px] border border-slate-200 p-1 overflow-hidden shadow-lg">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-slate-200">
-              <TableHead className="w-16 py-4 px-6 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">#</TableHead>
-              <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Título</TableHead>
-              <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">Tipo</TableHead>
-              <TableHead className="py-4 px-8 font-medium text-xs uppercase tracking-wide text-slate-400 text-right">Data</TableHead>
+          <TableHeader className="bg-[var(--brand-primary)]">
+            <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+              <TableHead className="w-16 py-4 px-6 font-semibold text-xs uppercase tracking-wide text-white text-center">#</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Titulo</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Tipo</TableHead>
+              <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">Data</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {publicacoes.map((pub) => (
-              <TableRow key={pub.id} className="hover:bg-white transition-all duration-300 border-slate-50 group">
+              <TableRow key={pub.id} className="even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-50 group">
                 <TableCell className="py-3.5 px-6">
                   <div className="h-8 w-8 flex items-center justify-center font-semibold text-slate-300 text-sm bg-slate-50 rounded-lg mx-auto">
                     {pub.numero_publicacao}

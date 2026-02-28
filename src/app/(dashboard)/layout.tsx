@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/AppSidebar'
-import { TenantHeader } from '@/components/layout/TenantHeader'
 import { Toaster } from '@/components/ui/sonner'
 import type { UserRole, TenantTemaCores } from '@/types/database.types'
 
@@ -68,7 +67,6 @@ export default async function DashboardLayout({
           tenantLogoUrl={tenantLogoUrl}
         />
         <SidebarInset className="bg-transparent">
-          <TenantHeader tenantName={tenantName} />
           <main className="flex-1 px-4 py-6 md:px-8 lg:px-10 md:py-8">
             <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
               {children}

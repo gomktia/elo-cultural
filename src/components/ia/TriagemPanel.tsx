@@ -346,7 +346,7 @@ export function TriagemPanel({ editalId, execucao, resultados }: TriagemPanelPro
 
             {/* ---- Progress bar ---- */}
             {isRunning && progress.total > 0 && (
-                <div className="rounded-[32px] border border-slate-100 bg-white shadow-sm p-6 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 space-y-3">
                     <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-slate-700">
                             Analisando projeto {progress.current} de {progress.total}...
@@ -375,7 +375,7 @@ export function TriagemPanel({ editalId, execucao, resultados }: TriagemPanelPro
 
             {/* ---- Empty state ---- */}
             {!execucao && !isRunning && (
-                <div className="rounded-[32px] border border-slate-100 bg-white shadow-sm p-16 flex flex-col items-center justify-center text-center space-y-4">
+                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-16 flex flex-col items-center justify-center text-center space-y-4">
                     <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center">
                         <Brain className="h-8 w-8 text-slate-300" />
                     </div>
@@ -391,7 +391,7 @@ export function TriagemPanel({ editalId, execucao, resultados }: TriagemPanelPro
 
             {/* ---- Main content with tabs ---- */}
             {execucao && (
-                <div className="rounded-[32px] border border-slate-100 bg-white shadow-sm overflow-hidden">
+                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                     {/* Tab bar */}
                     <div className="border-b border-slate-100 px-6">
                         <div className="flex gap-6">
@@ -469,21 +469,21 @@ function HabilitacaoTab({ resultados }: { resultados: Resultado[] }) {
 
     return (
         <Table>
-            <TableHeader>
-                <TableRow className="border-slate-50">
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">
+            <TableHeader className="bg-[var(--brand-primary)]">
+                <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">
                         Protocolo
                     </TableHead>
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">
-                        Título
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">
+                        Titulo
                     </TableHead>
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">
-                        Sugestão IA
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">
+                        Sugestao IA
                     </TableHead>
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">
                         Motivo
                     </TableHead>
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">
                         Documentos
                     </TableHead>
                 </TableRow>
@@ -492,7 +492,7 @@ function HabilitacaoTab({ resultados }: { resultados: Resultado[] }) {
                 {resultados.map((r) => (
                     <TableRow
                         key={r.id}
-                        className="hover:bg-slate-50/50 transition-all duration-300 border-slate-50"
+                        className="even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100"
                     >
                         <TableCell className="py-4 px-4">
                             <span className="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-mono">
@@ -548,20 +548,20 @@ function AvaliacaoTab({
 
     return (
         <Table>
-            <TableHeader>
-                <TableRow className="border-slate-50">
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 w-8" />
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">
+            <TableHeader className="bg-[var(--brand-primary)]">
+                <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white w-8" />
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">
                         Protocolo
                     </TableHead>
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400">
-                        Título
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">
+                        Titulo
                     </TableHead>
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">
-                        Nota Média
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">
+                        Nota Media
                     </TableHead>
-                    <TableHead className="py-4 px-4 font-medium text-xs uppercase tracking-wide text-slate-400 text-center">
-                        Confiança Média
+                    <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">
+                        Confianca Media
                     </TableHead>
                 </TableRow>
             </TableHeader>
@@ -577,7 +577,7 @@ function AvaliacaoTab({
                     return (
                         <Fragment key={r.id}>
                             <TableRow
-                                className="hover:bg-slate-50/50 transition-all duration-300 border-slate-50 cursor-pointer"
+                                className="even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100 cursor-pointer"
                                 onClick={() => toggleRow(r.id)}
                             >
                                 <TableCell className="py-4 px-4">
