@@ -113,23 +113,28 @@ export default function NovoEditalPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-4 border-b border-slate-200 pb-6">
-        <Link href="/admin/editais">
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Novo Edital</h1>
-          <p className="text-sm text-slate-500 font-normal">Configure os detalhes e prazos para o novo processo seletivo.</p>
-        </div>
-      </div>
+    <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-start gap-5">
+            <Link href="/admin/editais">
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Novo Edital</h1>
+              <p className="text-sm text-slate-500">Configure os detalhes e prazos para o novo processo seletivo.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <form onSubmit={handleSubmit}>
         <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
-            <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Dados Estruturais</CardTitle>
+          <CardHeader className="bg-[var(--brand-primary)] p-4">
+            <CardTitle className="text-xs font-medium uppercase tracking-wide text-white">Dados Estruturais</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -242,7 +247,7 @@ export default function NovoEditalPage() {
               <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Prazos de Recurso</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Inicio Recurso da Lista de Inscritos</Label>
+                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início Recurso da Lista de Inscritos</Label>
                   <Input
                     type="datetime-local"
                     value={form.inicio_recurso_inscricao}
@@ -260,7 +265,7 @@ export default function NovoEditalPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Inicio Recurso da Selecao</Label>
+                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início Recurso da Seleção</Label>
                   <Input
                     type="datetime-local"
                     value={form.inicio_recurso_selecao}
@@ -269,7 +274,7 @@ export default function NovoEditalPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim Recurso da Selecao</Label>
+                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim Recurso da Seleção</Label>
                   <Input
                     type="datetime-local"
                     value={form.fim_recurso_selecao}
@@ -278,7 +283,7 @@ export default function NovoEditalPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Inicio Recurso da Habilitacao</Label>
+                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início Recurso da Habilitação</Label>
                   <Input
                     type="datetime-local"
                     value={form.inicio_recurso_habilitacao}
@@ -287,7 +292,7 @@ export default function NovoEditalPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim Recurso da Habilitacao</Label>
+                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim Recurso da Habilitação</Label>
                   <Input
                     type="datetime-local"
                     value={form.fim_recurso_habilitacao}

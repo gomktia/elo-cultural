@@ -76,18 +76,23 @@ export default function RecursoPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center gap-4">
-        <Link href={`/projetos/${projetoId}`}>
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Interpor Recurso</h1>
-          <p className="text-muted-foreground">Fundamentacao obrigatoria</p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-start gap-5">
+            <Link href={`/projetos/${projetoId}`}>
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Interpor Recurso</h1>
+              <p className="text-sm text-slate-500">Fundamentação obrigatória</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <form onSubmit={handleSubmit}>
         <Card>
@@ -102,14 +107,14 @@ export default function RecursoPage() {
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="habilitacao">Habilitacao</SelectItem>
-                  <SelectItem value="avaliacao">Avaliacao</SelectItem>
+                  <SelectItem value="habilitacao">Habilitação</SelectItem>
+                  <SelectItem value="avaliacao">Avaliação</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fundamentacao">Fundamentacao *</Label>
+              <Label htmlFor="fundamentacao">Fundamentação *</Label>
               <Textarea
                 id="fundamentacao"
                 value={fundamentacao}

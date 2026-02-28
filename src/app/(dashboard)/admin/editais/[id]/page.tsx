@@ -39,7 +39,7 @@ export default async function AdminEditalDetailPage({
       {/* Header Card */}
       <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
         <div className="h-1 w-full bg-[var(--brand-primary)]" />
-        <CardContent className="p-6">
+        <CardContent className="p-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="flex items-start gap-5">
               <Link href="/admin/editais">
@@ -163,7 +163,7 @@ export default async function AdminEditalDetailPage({
             </div>
           </Card>
 
-          <Card className="border border-slate-200 shadow-sm bg-slate-50 rounded-2xl p-6 space-y-6">
+          <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl p-6 space-y-6">
             <h3 className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none mb-2">Linha do Tempo</h3>
             <div className="space-y-5">
               {(() => {

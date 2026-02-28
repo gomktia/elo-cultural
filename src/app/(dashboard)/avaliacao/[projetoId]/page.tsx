@@ -220,18 +220,25 @@ export default function AvaliacaoPage() {
   const isFinalizada = avaliacao.status === 'finalizada'
 
   return (
-    <div className="space-y-6 max-w-3xl">
-      <div className="flex items-center gap-4">
-        <Link href="/avaliacao">
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Avaliação</h1>
-          <p className="text-muted-foreground font-mono">{projeto.numero_protocolo}</p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-start gap-5">
+            <Link href="/avaliacao">
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Avaliação</h1>
+              <code className="text-[11px] font-semibold text-[var(--brand-primary)] bg-[var(--brand-primary)]/8 px-2.5 py-1 rounded-md uppercase tracking-wide">
+                {projeto.numero_protocolo}
+              </code>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="rounded-md bg-yellow-50 border border-yellow-200 p-3 flex items-start gap-2">
         <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />

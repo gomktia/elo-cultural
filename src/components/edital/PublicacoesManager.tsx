@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -82,26 +83,29 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-slate-200 pb-6">
-        <div className="flex items-center gap-6">
-          <Link href={backHref}>
-            <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div className="space-y-0.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">Publicações</h1>
-            <p className="text-base text-slate-400 font-normal">{editalTitulo}</p>
-          </div>
-        </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="flex items-start gap-5">
+              <Link href={backHref}>
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              </Link>
+              <div className="space-y-2">
+                <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Publicações</h1>
+                <p className="text-sm text-slate-500">{editalTitulo}</p>
+              </div>
+            </div>
 
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95 group text-sm">
-              <Plus className="mr-2 h-4 w-4 text-white transition-transform duration-500" />
-              Nova Publicação
-            </Button>
-          </DialogTrigger>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95 group text-sm">
+                  <Plus className="mr-2 h-4 w-4 text-white transition-transform duration-500" />
+                  Nova Publicação
+                </Button>
+              </DialogTrigger>
           <DialogContent className="rounded-2xl p-6 border-slate-200 shadow-2xl overflow-hidden max-w-md">
             <div className="absolute top-0 left-0 w-full h-1.5 bg-[var(--brand-primary)]" />
             <DialogHeader className="mb-4">
@@ -150,8 +154,10 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
               </Button>
             </div>
           </DialogContent>
-        </Dialog>
-      </div>
+            </Dialog>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <Table>

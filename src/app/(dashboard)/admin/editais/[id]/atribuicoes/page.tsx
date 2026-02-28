@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { AtribuicaoMatrix } from '@/components/avaliacao/AtribuicaoMatrix'
 import { ArrowLeft, Users } from 'lucide-react'
 import type { Profile, Projeto } from '@/types/database.types'
@@ -43,21 +44,27 @@ export default async function AtribuicoesPage({
 
   return (
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-6 border-b border-slate-200 pb-8">
-        <Link href={`/admin/editais/${id}`}>
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-slate-400 mb-1">
-            <Users className="h-4 w-4" />
-            <span className="text-xs font-medium uppercase tracking-wide">{edital.numero_edital}</span>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-start gap-5">
+            <Link href={`/admin/editais/${id}`}>
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Atribuição de Avaliadores</h1>
+              <div className="flex items-center gap-3 flex-wrap">
+                <code className="text-[11px] font-semibold text-[var(--brand-primary)] bg-[var(--brand-primary)]/8 px-2.5 py-1 rounded-md uppercase tracking-wide">
+                  {edital.numero_edital}
+                </code>
+                <span className="text-sm text-slate-500">{edital.titulo}</span>
+              </div>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">Atribuição de Avaliadores</h1>
-          <p className="text-lg text-slate-400 font-medium">{edital.titulo}</p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Quick action: add evaluators */}
       <div className="flex items-center gap-4 bg-amber-50 border border-amber-100 rounded-2xl p-4">
@@ -72,7 +79,7 @@ export default async function AtribuicoesPage({
         </Link>
       </div>
 
-      <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-premium">
+      <div className="bg-white rounded-2xl border border-slate-200 p-10 shadow-sm">
         <AtribuicaoMatrix
           editalId={id}
           tenantId={edital.tenant_id}

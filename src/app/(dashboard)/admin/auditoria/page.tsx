@@ -8,6 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -27,13 +28,15 @@ export default async function AuditoriaPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none flex items-center gap-3">
-          <div className="h-2 w-8 bg-[var(--brand-primary)] rounded-full" />
-          Log de Auditoria
-        </h1>
-        <p className="text-sm text-slate-500 font-normal">Registro de todas as acoes do sistema</p>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="space-y-2">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Log de Auditoria</h1>
+            <p className="text-sm text-slate-500">Registro de todas as ações do sistema</p>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Table>

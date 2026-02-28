@@ -5,6 +5,7 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { InscricaoForm } from '@/components/projeto/InscricaoForm'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft } from 'lucide-react'
 
 function NovoProjetoContent() {
@@ -26,17 +27,22 @@ function NovoProjetoContent() {
 export default function NovoProjetoPage() {
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center gap-4">
-        <Link href="/projetos">
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Nova Inscrição</h1>
-          <p className="text-muted-foreground">Preencha os dados do seu projeto</p>
-        </div>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-start gap-5">
+            <Link href="/projetos">
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Nova Inscrição</h1>
+              <p className="text-sm text-slate-500">Preencha os dados do seu projeto</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       <Suspense>
         <NovoProjetoContent />
       </Suspense>

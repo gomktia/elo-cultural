@@ -61,34 +61,37 @@ export default async function AdminUsuarioDetailPage({
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-6">
-        <div className="flex items-center gap-6">
-          <Link href="/admin/usuarios">
-            <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xl">
-              {p.nome?.charAt(0).toUpperCase()}
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">{p.nome}</h1>
-                <Badge variant={roleBadgeVariant[p.role] || 'outline'} className="rounded-lg px-3 py-1 text-[11px] font-medium uppercase tracking-wide">
-                  {roleLabels[p.role] || p.role}
-                </Badge>
-                <Badge className={`${p.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
-                  {p.active ? 'Ativo' : 'Inativo'}
-                </Badge>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-start gap-5">
+            <Link href="/admin/usuarios">
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xl">
+                {p.nome?.charAt(0).toUpperCase()}
               </div>
-              <p className="text-xs font-medium text-slate-400">
-                CPF/CNPJ: <span className="text-slate-600 ml-1">{p.cpf_cnpj || '—'}</span>
-              </p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">{p.nome}</h1>
+                  <Badge variant={roleBadgeVariant[p.role] || 'outline'} className="rounded-lg px-3 py-1 text-[11px] font-medium uppercase tracking-wide">
+                    {roleLabels[p.role] || p.role}
+                  </Badge>
+                  <Badge className={`${p.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
+                    {p.active ? 'Ativo' : 'Inativo'}
+                  </Badge>
+                </div>
+                <p className="text-xs font-medium text-slate-400">
+                  CPF/CNPJ: <span className="text-slate-600 ml-1">{p.cpf_cnpj || '—'}</span>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

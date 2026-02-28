@@ -93,23 +93,26 @@ export function FaseManager({ editalId, currentStatus, fases, onStatusChange }: 
         )}
       </div>
 
-      <div className="relative">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="absolute left-[31px] top-4 bottom-4 w-px bg-slate-100 hidden sm:block" />
-        <div className="space-y-3">
+        <div className="divide-y divide-slate-100">
           {faseOrder.map((fase, idx) => {
             const faseData = getFaseData(fase)
             const isCurrent = fase === currentStatus
             const isPast = idx < currentIndex
             const isFuture = idx > currentIndex
 
+            const statusBarColor = isCurrent ? 'bg-white' : isPast ? 'bg-[var(--brand-success)]' : 'bg-slate-200'
+
             return (
               <div
                 key={fase}
                 className={[
-                  'group relative flex items-center gap-4 p-3.5 rounded-[24px] transition-all duration-500',
-                  isCurrent ? 'bg-[var(--brand-primary)] text-white shadow-xl shadow-brand-primary/20 scale-[1.01] z-10' : 'bg-transparent hover:bg-slate-50'
+                  'group relative flex items-center gap-4 py-3.5 pr-3.5 pl-6 transition-all duration-500',
+                  isCurrent ? 'bg-[var(--brand-primary)] text-white shadow-xl shadow-brand-primary/20 z-10' : idx % 2 === 1 ? 'bg-slate-50/40 hover:bg-slate-100/60' : 'bg-white hover:bg-slate-100/60'
                 ].join(' ')}
               >
+                <div className={`absolute left-0 top-2 bottom-2 w-1 rounded-full ${statusBarColor}`} />
                 <div className="relative flex items-center justify-center flex-shrink-0 order-1 sm:order-none">
                   {isCurrent && (
                     <div className="absolute inset-0 animate-ping rounded-full bg-white/20" />
@@ -154,8 +157,14 @@ export function FaseManager({ editalId, currentStatus, fases, onStatusChange }: 
                   </p>
                 </div>
 
-                <div className="sm:flex hidden flex-col items-end gap-1 opacity-20 group-hover:opacity-100 transition-opacity">
-                  <div className="h-8 w-8 rounded-lg bg-slate-50/50 flex items-center justify-center text-slate-300">
+                <div className={[
+                  'sm:flex hidden flex-col items-end gap-1 transition-opacity',
+                  isCurrent ? 'opacity-60 group-hover:opacity-100' : 'opacity-20 group-hover:opacity-100'
+                ].join(' ')}>
+                  <div className={[
+                    'h-8 w-8 rounded-lg flex items-center justify-center transition-all',
+                    isCurrent ? 'bg-white/20 text-white group-hover:bg-white/30' : 'bg-slate-50/50 text-slate-300 group-hover:bg-slate-100'
+                  ].join(' ')}>
                     <ChevronRight className="h-4 w-4" />
                   </div>
                 </div>

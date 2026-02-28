@@ -22,10 +22,10 @@ export function RankingTableSkeleton() {
         <Table>
           <TableHeader className="bg-[var(--brand-primary)]">
             <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
-              <TableHead className="w-24 py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Posicao</TableHead>
+              <TableHead className="w-24 py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Posição</TableHead>
               <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Projeto</TableHead>
               <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Nota Final</TableHead>
-              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">Avaliacoes</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">Avaliações</TableHead>
               <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">Status</TableHead>
             </TableRow>
           </TableHeader>

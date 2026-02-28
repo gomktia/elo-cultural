@@ -89,7 +89,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                 <div className="bg-[var(--brand-primary)] px-8 pt-8 pb-6">
                     <SheetHeader className="mb-0">
                         <SheetTitle className="text-xl font-bold tracking-[-0.02em] text-white">
-                            Revisao Documental
+                            Revisão Documental
                         </SheetTitle>
                         <SheetDescription className="mt-3 space-y-2">
                             <span className="text-sm font-medium text-white/80 block">{projeto.titulo}</span>
@@ -167,7 +167,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                     {/* Decisao */}
                     <section className="space-y-5 pt-5 border-t border-slate-100">
                         <div className="space-y-3">
-                            <Label className="text-xs font-medium uppercase tracking-wide text-slate-400">Decisao da Habilitacao</Label>
+                            <Label className="text-xs font-medium uppercase tracking-wide text-slate-400">Decisão da Habilitação</Label>
                             <div className="grid grid-cols-2 gap-3">
                                 <Button
                                     type="button"
@@ -206,13 +206,13 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                             </Label>
                             <Textarea
                                 id="justificativa"
-                                placeholder="Informe os motivos da decisao..."
+                                placeholder="Informe os motivos da decisão..."
                                 className="min-h-[100px] rounded-xl border-slate-200 bg-white focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)]/30 transition-all resize-none"
                                 value={justificativa}
                                 onChange={(e) => setJustificativa(e.target.value)}
                             />
                             <p className="text-[11px] text-slate-400 leading-relaxed">
-                                Esta justificativa sera visivel para o proponente no portal da transparencia.
+                                Esta justificativa será visível para o proponente no portal da transparência.
                             </p>
                         </div>
                     </section>

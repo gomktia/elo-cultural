@@ -58,23 +58,29 @@ export default async function RecursosAdminPage({
 
   return (
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-6 border-b border-slate-200 pb-8">
-        <Link href={`/admin/editais/${id}`}>
-          <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-slate-400 mb-1">
-            <Scale className="h-4 w-4" />
-            <span className="text-xs font-medium uppercase tracking-wide">{edital.numero_edital}</span>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-start gap-5">
+            <Link href={`/admin/editais/${id}`}>
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Recursos Impetrados</h1>
+              <div className="flex items-center gap-3 flex-wrap">
+                <code className="text-[11px] font-semibold text-[var(--brand-primary)] bg-[var(--brand-primary)]/8 px-2.5 py-1 rounded-md uppercase tracking-wide">
+                  {edital.numero_edital}
+                </code>
+                <span className="text-sm text-slate-500">{edital.titulo}</span>
+              </div>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">Recursos Impetrados</h1>
-          <p className="text-lg text-slate-400 font-medium">{edital.titulo}</p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-premium">
+      <div className="bg-white rounded-2xl border border-slate-200 p-10 shadow-sm">
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
             <div className="space-y-1">
@@ -95,7 +101,7 @@ export default async function RecursosAdminPage({
                   <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Tipo / Fase</TableHead>
                   <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Status</TableHead>
                   <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Data</TableHead>
-                  <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-right">Acoes</TableHead>
+                  <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -77,28 +77,29 @@ export default async function GestorRelatoriosPage() {
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">
-          Relatórios
-        </h1>
-        <p className="text-sm text-slate-500 font-normal max-w-xl">
-          Extração de atas, rankings e homologações oficiais. Gestão documental automatizada para prestação de contas.
-        </p>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Relatórios</h1>
+            <p className="text-sm text-slate-500">Extração de atas, rankings e homologações oficiais.</p>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6">
         {relatorios.map(rel => (
           <Card key={rel.id} className="relative group border-slate-200/50 hover:shadow-md transition-all duration-500 rounded-2xl overflow-hidden">
-            <CardHeader className="border-b border-slate-200 p-5 bg-slate-50/50">
+            <CardHeader className="bg-[var(--brand-primary)] p-5">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <div className="px-2 py-0.5 rounded-md bg-[var(--brand-primary)] text-white text-[11px] font-semibold tracking-wide uppercase">
-                      ID {rel.numero_edital}
+                    <div className="px-2 py-0.5 rounded-md bg-white/20 text-white text-[11px] font-semibold tracking-wide uppercase">
+                      {rel.numero_edital}
                     </div>
                     <EditalStatusBadge status={rel.status as FaseEdital} />
                   </div>
-                  <CardTitle className="text-xl font-bold text-slate-900 leading-tight tracking-tight group-hover:text-[var(--brand-primary)] transition-colors">
+                  <CardTitle className="text-lg font-bold text-white leading-tight tracking-tight">
                     {rel.titulo}
                   </CardTitle>
                 </div>

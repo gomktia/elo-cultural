@@ -103,26 +103,24 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
     <Sidebar collapsible="icon" className="border-none bg-transparent">
       <div className="flex h-full flex-col sidebar-light">
         {/* Header with Logo */}
-        <SidebarHeader className="px-5 pt-5 pb-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pt-4">
-          <div className="flex flex-col items-center group-data-[collapsible=icon]:items-center">
-            {/* Logo + Sistema Ativo */}
-            <div className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center">
-              <Image
-                src={tenantLogoUrl || '/icon-192.png'}
-                alt="Elo Cultura"
-                width={40}
-                height={40}
-                className="rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200 object-contain transition-all group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
-              />
-              <div className="flex items-center gap-1.5 group-data-[collapsible=icon]:hidden">
-                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+        <SidebarHeader className="px-4 pt-5 pb-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pt-4">
+          <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
+            <Image
+              src={tenantLogoUrl || '/icon-192.png'}
+              alt="Elo Cultura"
+              width={40}
+              height={40}
+              className="rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200 object-contain transition-all flex-shrink-0 aspect-square w-10 h-10 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
+            />
+            <div className="flex flex-col min-w-0 group-data-[collapsible=icon]:hidden">
+              <p className="truncate text-sm font-semibold tracking-tight text-slate-700">
+                {tenantName || 'Elo Cultura'}
+              </p>
+              <div className="flex items-center gap-1.5">
+                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Ativo</span>
               </div>
             </div>
-            {/* Tenant name below */}
-            <p className="truncate text-xs font-semibold tracking-tight text-slate-500 mt-2 text-center max-w-full group-data-[collapsible=icon]:hidden">
-              {tenantName || 'Elo Cultura'}
-            </p>
           </div>
         </SidebarHeader>
 

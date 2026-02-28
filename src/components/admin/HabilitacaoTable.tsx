@@ -85,10 +85,10 @@ export function HabilitacaoTable({ projetos, aiSugestoes }: HabilitacaoTableProp
                     <TableHeader className="bg-[var(--brand-primary)]">
                         <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
                             <TableHead className="min-w-[140px] py-4 px-4 md:px-8 font-semibold text-xs uppercase tracking-wide text-white">Protocolo</TableHead>
-                            <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Titulo do Projeto</TableHead>
+                            <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Título do Projeto</TableHead>
                             <TableHead className="min-w-[120px] py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Status</TableHead>
-                            <TableHead className="min-w-[120px] py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Sugestao IA</TableHead>
-                            <TableHead className="min-w-[80px] py-4 px-4 md:px-8 text-right font-semibold text-xs uppercase tracking-wide text-white">Acoes</TableHead>
+                            <TableHead className="min-w-[120px] py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Sugestão IA</TableHead>
+                            <TableHead className="min-w-[80px] py-4 px-4 md:px-8 text-right font-semibold text-xs uppercase tracking-wide text-white">Ações</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

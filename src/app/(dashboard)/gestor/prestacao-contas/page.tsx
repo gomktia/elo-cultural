@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { Card, CardContent } from '@/components/ui/card'
 import { FileCheck, Clock, CheckCircle2, AlertTriangle, XCircle, Inbox } from 'lucide-react'
 import { PrestacaoStatusBadge } from '@/components/prestacao/PrestacaoStatusBadge'
 import { PrestacaoAnalise } from '@/components/prestacao/PrestacaoAnalise'
@@ -47,16 +48,15 @@ export default async function GestorPrestacaoContasPage() {
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 text-slate-400 mb-1">
-          <FileCheck className="h-3 w-3" />
-          <span className="text-[11px] font-medium uppercase tracking-wider">Gestão</span>
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Prestação de Contas</h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Analise e aprove as prestações de contas dos projetos aprovados.
-        </p>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Prestação de Contas</h1>
+            <p className="text-sm text-slate-500">Analise e aprove as prestações de contas dos projetos aprovados.</p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
@@ -75,9 +75,9 @@ export default async function GestorPrestacaoContasPage() {
 
       {/* Lista de prestações */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200">
-          <h2 className="text-base font-semibold text-slate-900">Prestações Recebidas</h2>
-          <p className="text-xs text-slate-400 mt-0.5">Clique em uma prestação para analisar</p>
+        <div className="px-6 py-4 bg-[var(--brand-primary)]">
+          <h2 className="text-base font-semibold text-white">Prestações Recebidas</h2>
+          <p className="text-xs text-white/60 mt-0.5">Clique em uma prestação para analisar</p>
         </div>
 
         {(!prestacoes || prestacoes.length === 0) ? (
