@@ -7,28 +7,59 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2, Mail, Lock } from 'lucide-react'
+import { Loader2, Mail, Lock, User } from 'lucide-react'
 import { motion } from 'framer-motion'
+
+function isCpfOrCnpj(value: string): boolean {
+  const digits = value.replace(/\D/g, '')
+  return digits.length >= 11 && /^[\d.\-/]+$/.test(value.trim())
+}
 
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/dashboard'
-  const [email, setEmail] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const isCpf = isCpfOrCnpj(identifier)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     setLoading(true)
 
+    let emailToLogin = identifier.trim()
+
+    // Se parece CPF/CNPJ, buscar o email correspondente
+    if (isCpfOrCnpj(emailToLogin)) {
+      try {
+        const res = await fetch('/api/auth/cpf-lookup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cpf: emailToLogin }),
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          setError(data.error || 'CPF/CNPJ nao encontrado no sistema.')
+          setLoading(false)
+          return
+        }
+        emailToLogin = data.email
+      } catch {
+        setError('Erro ao buscar CPF. Tente novamente.')
+        setLoading(false)
+        return
+      }
+    }
+
     const supabase = createClient()
-    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password })
+    const { error: loginError } = await supabase.auth.signInWithPassword({ email: emailToLogin, password })
 
     if (loginError) {
-      setError('Credenciais inválidas ou acesso não autorizado.')
+      setError('Credenciais invalidas ou acesso nao autorizado.')
       setLoading(false)
       return
     }
@@ -75,15 +106,22 @@ function LoginForm() {
               )}
 
               <div className="space-y-2 group">
-                <Label htmlFor="email" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">E-mail</Label>
+                <Label htmlFor="identifier" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+                  {isCpf ? 'CPF / CNPJ' : 'E-mail ou CPF'}
+                </Label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
+                  {isCpf ? (
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
+                  ) : (
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
+                  )}
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    id="identifier"
+                    type="text"
+                    inputMode={isCpf ? 'numeric' : 'email'}
+                    placeholder="seu@email.com ou 000.000.000-00"
+                    value={identifier}
+                    onChange={e => setIdentifier(e.target.value)}
                     required
                     className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
                   />
