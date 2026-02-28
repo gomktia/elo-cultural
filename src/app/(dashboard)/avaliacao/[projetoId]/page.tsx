@@ -176,9 +176,23 @@ export default function AvaliacaoPage() {
       }
     }
 
-    // Update avaliacao status
+    // Update avaliacao status + calculate pontuacao_total on finalize
     const updateData: any = { justificativa }
-    if (finalizar) updateData.status = 'finalizada'
+    if (finalizar) {
+      updateData.status = 'finalizada'
+      const notasPreenchidas = criterios.filter(c => c.nota !== '')
+      if (notasPreenchidas.length > 0) {
+        let somaNotasPeso = 0
+        let somaPesos = 0
+        for (const c of notasPreenchidas) {
+          somaNotasPeso += parseFloat(c.nota) * c.peso
+          somaPesos += c.peso
+        }
+        updateData.pontuacao_total = somaPesos > 0
+          ? Math.round((somaNotasPeso / somaPesos) * 100) / 100
+          : 0
+      }
+    }
 
     await supabase.from('avaliacoes').update(updateData).eq('id', avaliacao.id)
 

@@ -10,9 +10,19 @@ export async function atualizarHabilitacao(
 ) {
     const supabase = await createClient()
 
+    // Fetch the project's edital_id for proper revalidation
+    const { data: projeto } = await supabase
+        .from('projetos')
+        .select('edital_id')
+        .eq('id', projetoId)
+        .single()
+
     const { error } = await supabase
         .from('projetos')
-        .update({ status_habilitacao: status })
+        .update({
+            status_habilitacao: status,
+            justificativa_habilitacao: justificativa || null,
+        })
         .eq('id', projetoId)
 
     if (error) {
@@ -20,6 +30,10 @@ export async function atualizarHabilitacao(
         return { success: false, error: error.message }
     }
 
+    // Revalidate the specific habilitacao page
+    if (projeto?.edital_id) {
+        revalidatePath(`/admin/editais/${projeto.edital_id}/habilitacao`)
+    }
     revalidatePath(`/admin/editais`, 'layout')
     return { success: true }
 }

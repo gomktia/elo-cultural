@@ -9,10 +9,9 @@ export type { FaseEdital }
 const faseOrder: FaseEdital[] = [
   'criacao', 'publicacao', 'inscricao', 'inscricao_encerrada',
   'divulgacao_inscritos', 'recurso_divulgacao_inscritos',
+  'avaliacao_tecnica', 'resultado_preliminar_avaliacao', 'recurso_avaliacao',
   'habilitacao', 'resultado_preliminar_habilitacao', 'recurso_habilitacao',
-  'resultado_definitivo_habilitacao', 'avaliacao_tecnica',
-  'resultado_preliminar_avaliacao', 'recurso_avaliacao',
-  'resultado_final', 'homologacao', 'arquivamento',
+  'resultado_definitivo_habilitacao', 'resultado_final', 'homologacao', 'arquivamento',
 ]
 
 const faseLabels: Record<FaseEdital, string> = {

@@ -33,6 +33,7 @@ export default async function AtribuicoesPage({
     .from('projetos')
     .select('*')
     .eq('edital_id', id)
+    .eq('status_habilitacao', 'habilitado')
 
   const { data: existingAvals } = await supabase
     .from('avaliacoes')

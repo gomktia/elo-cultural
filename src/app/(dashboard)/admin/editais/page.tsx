@@ -9,10 +9,21 @@ import { ptBR } from 'date-fns/locale'
 
 export default async function AdminEditaisPage() {
   const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('tenant_id')
+    .eq('id', user.id)
+    .single()
+
   const { data: editais } = await supabase
     .from('editais')
     .select('*')
     .eq('active', true)
+    .eq('tenant_id', profile?.tenant_id)
     .order('created_at', { ascending: false })
 
   return (

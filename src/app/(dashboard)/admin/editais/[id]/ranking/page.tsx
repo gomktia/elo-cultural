@@ -5,7 +5,9 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { RankingTable } from '@/components/avaliacao/RankingTable'
 import { RankingTableSkeleton } from '@/components/avaliacao/RankingTableSkeleton'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, RefreshCw } from 'lucide-react'
+import { consolidarRanking } from '@/lib/actions/consolidar-ranking'
+import { revalidatePath } from 'next/cache'
 import type { RankingItem } from '@/components/avaliacao/RankingTable'
 
 export default async function RankingPage({
@@ -24,11 +26,12 @@ export default async function RankingPage({
 
   if (!edital) notFound()
 
-  // Single query: fetch projetos with evaluation count via join (eliminates N+1)
+  // Only habilitado projects should appear in ranking
   const { data: projetos } = await supabase
     .from('projetos')
     .select('id, titulo, numero_protocolo, status_atual, nota_final, avaliacoes(id)')
     .eq('edital_id', id)
+    .eq('status_habilitacao', 'habilitado')
     .eq('avaliacoes.status', 'finalizada')
     .order('nota_final', { ascending: false, nullsFirst: false })
 
@@ -41,18 +44,32 @@ export default async function RankingPage({
     status: p.status_atual,
   }))
 
+  async function handleConsolidar() {
+    'use server'
+    await consolidarRanking(id)
+    revalidatePath(`/admin/editais/${id}/ranking`)
+  }
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href={`/admin/editais/${id}`}>
-          <Button variant="ghost" size="icon" className="rounded-xl hover:bg-slate-100 transition-colors">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Ranking</h1>
-          <p className="text-sm text-slate-500 font-medium">{edital.titulo} — {edital.numero_edital}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href={`/admin/editais/${id}`}>
+            <Button variant="ghost" size="icon" className="rounded-xl hover:bg-slate-100 transition-colors">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Ranking</h1>
+            <p className="text-sm text-slate-500 font-medium">{edital.titulo} — {edital.numero_edital}</p>
+          </div>
         </div>
+        <form action={handleConsolidar}>
+          <Button type="submit" variant="outline" className="rounded-xl border-slate-200 font-semibold text-xs uppercase tracking-wide gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Consolidar Ranking
+          </Button>
+        </form>
       </div>
 
       <Suspense fallback={<RankingTableSkeleton />}>

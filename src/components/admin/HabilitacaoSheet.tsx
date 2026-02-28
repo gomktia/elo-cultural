@@ -22,9 +22,10 @@ interface HabilitacaoSheetProps {
     projeto: Projeto | null
     open: boolean
     onOpenChange: (open: boolean) => void
+    onSuccess?: () => void
 }
 
-export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoSheetProps) {
+export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: HabilitacaoSheetProps) {
     const [documentos, setDocumentos] = useState<ProjetoDocumento[]>([])
     const [loading, setLoading] = useState(false)
     const [submitting, setSubmitting] = useState(false)
@@ -65,6 +66,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange }: HabilitacaoShe
         if (result.success) {
             toast.success('Habilitacao atualizada com sucesso')
             onOpenChange(false)
+            onSuccess?.()
         } else {
             toast.error('Erro ao atualizar habilitacao: ' + result.error)
         }

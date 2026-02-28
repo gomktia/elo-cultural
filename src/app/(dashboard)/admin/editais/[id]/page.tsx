@@ -144,12 +144,16 @@ export default async function AdminEditalDetailPage({
               <h3 className="text-sm font-semibold tracking-wide leading-none uppercase">Ações Rápidas</h3>
               <div className="space-y-2.5">
                 <AvancarEtapaButton editalId={id} currentStatus={e.status} />
-                <Button className="w-full h-10 rounded-xl bg-white text-[var(--brand-primary)] font-semibold hover:bg-slate-50 transition-all text-xs uppercase tracking-wide shadow-sm">
-                  Publicar Resultado
-                </Button>
-                <Button variant="outline" className="w-full h-10 rounded-xl border-white/40 bg-white/15 hover:bg-white/25 text-white font-semibold transition-all text-xs uppercase tracking-wide">
-                  Editar Edital
-                </Button>
+                <Link href={`/admin/editais/${id}/publicacoes`} className="w-full">
+                  <Button className="w-full h-10 rounded-xl bg-white text-[var(--brand-primary)] font-semibold hover:bg-slate-50 transition-all text-xs uppercase tracking-wide shadow-sm">
+                    Publicar Resultado
+                  </Button>
+                </Link>
+                <Link href={`/admin/editais/${id}/cronograma`} className="w-full">
+                  <Button variant="outline" className="w-full h-10 rounded-xl border-white/40 bg-white/15 hover:bg-white/25 text-white font-semibold transition-all text-xs uppercase tracking-wide">
+                    Editar Edital
+                  </Button>
+                </Link>
               </div>
             </div>
           </Card>
@@ -157,20 +161,44 @@ export default async function AdminEditalDetailPage({
           <Card className="border border-slate-200 shadow-sm bg-slate-50 rounded-2xl p-6 space-y-6">
             <h3 className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none mb-2">Linha do Tempo</h3>
             <div className="space-y-5">
-              {[
-                { label: 'Criação', date: format(new Date(e.created_at), 'dd MMM, yyyy', { locale: ptBR }), active: true },
-                { label: 'Publicação', date: 'Pendente', active: false },
-                { label: 'Homologação', date: 'Pendente', active: false },
-              ].map((step, i) => (
-                <div key={i} className="flex gap-4 items-start relative pb-4 last:pb-0">
-                  {i !== 2 && <div className="absolute left-2 top-5 bottom-0 w-0.5 bg-slate-200/50" />}
-                  <div className={`h-4 w-4 rounded-full flex-shrink-0 border-[3px] border-white shadow-sm ${step.active ? 'bg-[var(--brand-primary)]' : 'bg-slate-200'}`} />
-                  <div className="space-y-1">
-                    <p className={`text-xs font-semibold leading-none ${step.active ? 'text-slate-900' : 'text-slate-400'}`}>{step.label}</p>
-                    <p className="text-xs text-slate-400 font-normal tracking-wide lowercase">{step.date}</p>
-                  </div>
-                </div>
-              ))}
+              {(() => {
+                const faseOrder = [
+                  'criacao', 'publicacao', 'inscricao', 'inscricao_encerrada',
+                  'divulgacao_inscritos', 'recurso_divulgacao_inscritos',
+                  'avaliacao_tecnica', 'resultado_preliminar_avaliacao', 'recurso_avaliacao',
+                  'habilitacao', 'resultado_preliminar_habilitacao', 'recurso_habilitacao',
+                  'resultado_definitivo_habilitacao', 'resultado_final', 'homologacao', 'arquivamento',
+                ]
+                const currentIdx = faseOrder.indexOf(e.status)
+                const milestones = [
+                  { label: 'Criação', fase: 'criacao' },
+                  { label: 'Publicação', fase: 'publicacao' },
+                  { label: 'Inscrição', fase: 'inscricao' },
+                  { label: 'Avaliação', fase: 'avaliacao_tecnica' },
+                  { label: 'Habilitação', fase: 'habilitacao' },
+                  { label: 'Resultado Final', fase: 'resultado_final' },
+                  { label: 'Homologação', fase: 'homologacao' },
+                ]
+                return milestones.map((step, i) => {
+                  const stepIdx = faseOrder.indexOf(step.fase)
+                  const isDone = currentIdx > stepIdx
+                  const isCurrent = currentIdx === stepIdx
+                  return (
+                    <div key={i} className="flex gap-4 items-start relative pb-4 last:pb-0">
+                      {i !== milestones.length - 1 && <div className="absolute left-2 top-5 bottom-0 w-0.5 bg-slate-200/50" />}
+                      <div className={`h-4 w-4 rounded-full flex-shrink-0 border-[3px] border-white shadow-sm ${
+                        isCurrent ? 'bg-[var(--brand-primary)]' : isDone ? 'bg-[var(--brand-success)]' : 'bg-slate-200'
+                      }`} />
+                      <div className="space-y-1">
+                        <p className={`text-xs font-semibold leading-none ${isDone || isCurrent ? 'text-slate-900' : 'text-slate-400'}`}>{step.label}</p>
+                        <p className="text-xs text-slate-400 font-normal tracking-wide lowercase">
+                          {isCurrent ? 'Em andamento' : isDone ? 'Concluída' : 'Pendente'}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })
+              })()}
             </div>
           </Card>
         </div>

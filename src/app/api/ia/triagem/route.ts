@@ -254,11 +254,11 @@ export async function POST(request: NextRequest) {
         .insert({
           execucao_id: execucao.id,
           projeto_id: projeto.id,
-          sugestao_habilitacao: habResult.sugestao,
-          motivo_habilitacao: habResult.motivo,
+          tenant_id,
+          habilitacao_sugerida: habResult.sugestao,
+          habilitacao_motivo: habResult.motivo,
           docs_completos: habResult.docs_completos,
-          problemas_habilitacao: habResult.problemas,
-          nota_final_ia: notaFinal,
+          docs_problemas: habResult.problemas || [],
           irregularidades_flags: [],
         })
         .select('id')
@@ -273,7 +273,7 @@ export async function POST(request: NextRequest) {
         const notasInsert = notasResults.map((nr) => ({
           resultado_id: resultado.id,
           criterio_id: nr.criterio_id,
-          nota: nr.nota,
+          nota_sugerida: nr.nota,
           justificativa: nr.justificativa,
           confianca: nr.confianca,
         }))

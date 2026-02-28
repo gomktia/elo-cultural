@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
     Table,
     TableBody,
@@ -33,6 +34,7 @@ function getAiBadge(sugestao: string) {
 }
 
 export function HabilitacaoTable({ projetos, aiSugestoes }: HabilitacaoTableProps) {
+    const router = useRouter()
     const [selectedProjeto, setSelectedProjeto] = useState<Projeto | null>(null)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
@@ -143,6 +145,7 @@ export function HabilitacaoTable({ projetos, aiSugestoes }: HabilitacaoTableProp
                 projeto={selectedProjeto}
                 open={isSheetOpen}
                 onOpenChange={setIsSheetOpen}
+                onSuccess={() => router.refresh()}
             />
         </div>
     )
