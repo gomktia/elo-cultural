@@ -28,7 +28,7 @@ export default async function HabilitacaoPage({
         .from('projetos')
         .select('*')
         .eq('edital_id', id)
-        .order('created_at', { ascending: false })
+        .order('data_envio', { ascending: false })
 
     // 3. Fetch latest AI triagem results
     const { data: latestExec } = await supabase

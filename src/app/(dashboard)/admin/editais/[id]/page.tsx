@@ -142,14 +142,14 @@ export default async function AdminEditalDetailPage({
             </div>
             <div className="relative z-10 space-y-5">
               <h3 className="text-sm font-semibold tracking-wide leading-none uppercase">Ações Rápidas</h3>
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 <AvancarEtapaButton editalId={id} currentStatus={e.status} />
-                <Link href={`/admin/editais/${id}/publicacoes`} className="w-full">
+                <Link href={`/admin/editais/${id}/publicacoes`} className="block w-full">
                   <Button className="w-full h-10 rounded-xl bg-white text-[var(--brand-primary)] font-semibold hover:bg-slate-50 transition-all text-xs uppercase tracking-wide shadow-sm">
                     Publicar Resultado
                   </Button>
                 </Link>
-                <Link href={`/admin/editais/${id}/cronograma`} className="w-full">
+                <Link href={`/admin/editais/${id}/cronograma`} className="block w-full">
                   <Button variant="outline" className="w-full h-10 rounded-xl border-white/40 bg-white/15 hover:bg-white/25 text-white font-semibold transition-all text-xs uppercase tracking-wide">
                     Editar Edital
                   </Button>
