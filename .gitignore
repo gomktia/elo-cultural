@@ -45,3 +45,14 @@ supabase/.temp/
 
 # claude local settings
 .claude/
+
+# playwright MCP logs
+.playwright-mcp/
+
+# screenshots and reference images
+*.png
+*.jpg
+*.ogg
+
+# project documents (PDFs)
+*.pdf
