@@ -107,16 +107,21 @@ export default function ConfiguracoesPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Configurações</h1>
-        <p className="text-sm text-slate-500 font-normal">Dados do município e personalização visual da plataforma.</p>
-      </div>
+    <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Configurações</h1>
+            <p className="text-sm text-slate-500">Dados do município e personalização visual da plataforma.</p>
+          </div>
+        </CardContent>
+      </Card>
 
       <form onSubmit={salvar} className="space-y-6">
         <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
-            <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Dados do Município</CardTitle>
+          <CardHeader className="bg-[var(--brand-primary)] p-4 border-b border-[var(--brand-primary)]">
+            <CardTitle className="text-xs font-medium uppercase tracking-wide text-white">Dados do Município</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             <div className="space-y-1.5">
@@ -155,8 +160,8 @@ export default function ConfiguracoesPage() {
         </Card>
 
         <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
-            <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Identidade Visual</CardTitle>
+          <CardHeader className="bg-[var(--brand-primary)] p-4 border-b border-[var(--brand-primary)]">
+            <CardTitle className="text-xs font-medium uppercase tracking-wide text-white">Identidade Visual</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -214,14 +219,14 @@ export default function ConfiguracoesPage() {
 
         {/* Logo Upload */}
         <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
-          <CardHeader className="bg-slate-50/50 p-4 border-b border-slate-200">
-            <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-400">Logotipos</CardTitle>
+          <CardHeader className="bg-[var(--brand-primary)] p-4 border-b border-[var(--brand-primary)]">
+            <CardTitle className="text-xs font-medium uppercase tracking-wide text-white">Logotipos</CardTitle>
           </CardHeader>
           <CardContent className="p-5 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Logo Principal */}
               <div className="space-y-3">
-                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Logo Principal (Cabecalho)</Label>
+                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Logo Principal (Cabeçalho)</Label>
                 {logoUrl ? (
                   <div className="relative inline-block">
                     <img src={logoUrl} alt="Logo" className="h-20 w-auto rounded-xl border border-slate-200 shadow-sm" />

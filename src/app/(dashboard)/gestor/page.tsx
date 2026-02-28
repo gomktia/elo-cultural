@@ -49,23 +49,27 @@ export default async function GestorDashboardPage() {
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
-            {greeting}, <span className="text-[var(--brand-primary)]">{firstName}</span>
-          </h1>
-          <p className="text-slate-500 mt-1.5 text-sm">
-            {format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
-          </p>
-        </div>
-        <Link href="/admin/editais/novo">
-          <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95 text-sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Edital
-          </Button>
-        </Link>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">
+                {greeting}, <span className="text-[var(--brand-primary)]">{firstName}</span>
+              </h1>
+              <p className="text-sm text-slate-500">
+                {format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
+              </p>
+            </div>
+            <Link href="/admin/editais/novo">
+              <Button className="h-11 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95 text-sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Novo Edital
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stats Grid */}
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">

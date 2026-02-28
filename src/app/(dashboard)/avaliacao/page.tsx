@@ -20,10 +20,15 @@ export default async function AvaliacaoListPage() {
 
   return (
     <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Avaliações</h1>
-        <p className="text-sm text-slate-500">Projetos atribuídos ao seu comitê técnico.</p>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Avaliações</h1>
+            <p className="text-sm text-slate-500">Projetos atribuídos ao seu comitê técnico.</p>
+          </div>
+        </CardContent>
+      </Card>
 
       {avaliacoes.length > 0 ? (
         <div className="grid gap-3">

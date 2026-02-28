@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { Users, Building2 } from 'lucide-react'
 
 const roleLabels: Record<string, string> = {
@@ -39,16 +40,17 @@ export default async function SuperUsuariosPage() {
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="border-b border-slate-100 pb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <Users className="h-5 w-5 text-[var(--brand-primary)]" />
-          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Todos os Tenants</span>
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Usuários Globais</h1>
-        <p className="text-sm text-slate-500 font-normal">
-          {usuarios?.length || 0} usuário{(usuarios?.length || 0) !== 1 ? 's' : ''} em toda a plataforma
-        </p>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Usuários Globais</h1>
+            <p className="text-sm text-slate-500">
+              {usuarios?.length || 0} usuário{(usuarios?.length || 0) !== 1 ? 's' : ''} em toda a plataforma
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {(usuarios || []).map((u: any) => {

@@ -19,18 +19,23 @@ export default async function MeusProjetosPage() {
 
   return (
     <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center justify-between border-b border-slate-200 pb-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Meus Projetos</h1>
-          <p className="text-sm text-slate-500">Acompanhe o status das suas propostas culturais.</p>
-        </div>
-        <Link href="/editais">
-          <Button className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95">
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Inscrição
-          </Button>
-        </Link>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Meus Projetos</h1>
+              <p className="text-sm text-slate-500">Acompanhe o status das suas propostas culturais.</p>
+            </div>
+            <Link href="/editais">
+              <Button className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95">
+                <Plus className="mr-2 h-4 w-4" />
+                Nova Inscrição
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       {projetos && projetos.length > 0 ? (
         <div className="grid gap-3">

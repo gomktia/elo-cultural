@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -93,23 +94,26 @@ export default function UsuariosAdminPage() {
 
   return (
     <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none mb-2">Usuários</h1>
-          <p className="text-sm text-slate-500 font-normal">Controle de acessos e permissões do sistema.</p>
-        </div>
-
-        <div className="relative w-full md:w-80 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[var(--brand-primary)] transition-colors" />
-          <input
-            className="w-full h-10 pl-11 pr-4 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] outline-none transition-all"
-            placeholder="Buscar por nome ou CPF..."
-            value={busca}
-            onChange={e => setBusca(e.target.value)}
-          />
-        </div>
-      </div>
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <div className="h-1 w-full bg-[var(--brand-primary)]" />
+        <CardContent className="p-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Usuários</h1>
+              <p className="text-sm text-slate-500">Controle de acessos e permissões do sistema.</p>
+            </div>
+            <div className="relative w-full md:w-80 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[var(--brand-primary)] transition-colors" />
+              <input
+                className="w-full h-10 pl-11 pr-4 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] outline-none transition-all"
+                placeholder="Buscar por nome ou CPF..."
+                value={busca}
+                onChange={e => setBusca(e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* User Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
