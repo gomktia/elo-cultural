@@ -16,6 +16,7 @@ const roleLabels: Record<string, string> = {
   avaliador: 'Avaliador',
   gestor: 'Gestor',
   admin: 'Administrador',
+  super_admin: 'Super Admin',
 }
 
 export default function PerfilPage() {

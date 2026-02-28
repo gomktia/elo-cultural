@@ -64,7 +64,7 @@ const navByRole: Record<UserRole, NavItem[]> = {
     { title: 'Visão Global', url: '/super/dashboard', icon: Globe },
     { title: 'Todos Usuários', url: '/super/usuarios', icon: Users },
     { title: 'Auditoria', url: '/admin/auditoria', icon: Shield },
-    { title: 'Configurações', url: '/admin/configuracoes', icon: Settings },
+    { title: 'Configurações', url: '/super/configuracoes', icon: Settings },
   ],
 }
 

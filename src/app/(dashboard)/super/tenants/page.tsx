@@ -121,7 +121,11 @@ export default async function SuperTenantsPage() {
                   <span className="text-[11px] font-bold text-slate-300">
                     Criado em {new Date(t.created_at).toLocaleDateString('pt-BR')}
                   </span>
-                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: brandColor }} />
+                  <Link href={`/super/tenants/${t.id}`}>
+                    <button className="text-[11px] font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-primary)]/80 uppercase tracking-wide transition-colors">
+                      Editar
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -158,6 +158,9 @@ export default function UsuariosAdminPage() {
                             <SelectItem value="avaliador" className="font-medium text-xs text-indigo-600">Avaliador</SelectItem>
                             <SelectItem value="gestor" className="font-medium text-xs text-[var(--brand-primary)]">Gestor</SelectItem>
                             <SelectItem value="admin" className="font-medium text-xs text-rose-600">Admin</SelectItem>
+                            {myRole === 'super_admin' && (
+                              <SelectItem value="super_admin" className="font-medium text-xs text-purple-600">Super Admin</SelectItem>
+                            )}
                           </SelectContent>
                         </Select>
                       )
