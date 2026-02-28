@@ -34,15 +34,15 @@ export function TenantHeader({ tenantName }: TenantHeaderProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              aria-label="Notificacoes"
-              onClick={() => toast.info('Notificacoes em breve!')}
+              aria-label="Notificações"
+              onClick={() => toast.info('Notificações em breve!')}
               className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
             >
               <Bell className="h-[18px] w-[18px]" />
               <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[var(--brand-secondary)] ring-2 ring-white dark:ring-[#121218]" />
             </button>
           </TooltipTrigger>
-          <TooltipContent>Notificacoes</TooltipContent>
+          <TooltipContent>Notificações</TooltipContent>
         </Tooltip>
 
       </div>
