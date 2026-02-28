@@ -50,12 +50,27 @@ export function DownloadRelatorios({
             return
         }
 
+        // Buscar contagem de avaliacoes finalizadas por projeto
+        const projetoIds = (projetos || []).map(p => p.id)
+        const { data: avaliacoesCounts } = projetoIds.length > 0
+            ? await supabase
+                .from('avaliacoes')
+                .select('projeto_id')
+                .in('projeto_id', projetoIds)
+                .eq('status', 'finalizada')
+            : { data: [] }
+
+        const countByProjeto: Record<string, number> = {}
+        for (const a of avaliacoesCounts || []) {
+            countByProjeto[a.projeto_id] = (countByProjeto[a.projeto_id] || 0) + 1
+        }
+
         const rankingData = (projetos || []).map((p, idx) => ({
             posicao: idx + 1,
             titulo: p.titulo,
             protocolo: p.numero_protocolo,
             nota: p.nota_final,
-            avaliacoes: 0 // Simplificado para o exemplo
+            avaliacoes: countByProjeto[p.id] || 0,
         }))
 
         setData({ ranking: rankingData })
@@ -117,7 +132,7 @@ export function DownloadRelatorios({
                                     editalNumero,
                                     tenantNome,
                                     dataHomologacao: new Date().toLocaleDateString('pt-BR'),
-                                    responsavel: 'Secretaria de Cultura'
+                                    responsavel: tenantNome || 'Secretaria de Cultura'
                                 })}
                                 fileName={`homologacao-${editalNumero.replace('/', '-')}.pdf`}
                                 className="flex items-center gap-2 w-full"

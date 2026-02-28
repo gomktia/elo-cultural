@@ -28,10 +28,22 @@ export async function avancarEtapa(editalId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Nao autenticado' }
 
+  // Verify user has admin/gestor role
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, tenant_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || !['admin', 'gestor', 'super_admin'].includes(profile.role)) {
+    return { error: 'Sem permissao para avancar etapa' }
+  }
+
   const { data: edital, error: fetchError } = await supabase
     .from('editais')
     .select('status, tenant_id')
     .eq('id', editalId)
+    .eq('tenant_id', profile.tenant_id)
     .single()
 
   if (fetchError || !edital) return { error: 'Edital nao encontrado' }

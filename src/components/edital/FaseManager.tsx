@@ -2,14 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
+import { avancarEtapa } from '@/lib/actions/edital-actions'
 import type { FaseEdital, EditalFase } from '@/types/database.types'
 import { Check, Lock, Clock, ChevronRight, Loader2 } from 'lucide-react'
 
@@ -54,20 +50,16 @@ export function FaseManager({ editalId, currentStatus, fases, onStatusChange }: 
 
   async function avancarFase() {
     if (currentIndex >= faseOrder.length - 1) return
+    if (!confirm('Tem certeza que deseja avancar para a proxima fase?')) return
     setLoading(true)
 
-    const nextFase = faseOrder[currentIndex + 1]
-    const supabase = createClient()
+    const result = await avancarEtapa(editalId)
 
-    const { error } = await supabase
-      .from('editais')
-      .update({ status: nextFase })
-      .eq('id', editalId)
-
-    if (error) {
-      toast.error('Erro ao avancar fase: ' + error.message)
+    if (result.error) {
+      toast.error('Erro ao avancar fase: ' + result.error)
     } else {
-      toast.success(`Fase avancada para: ${faseLabels[nextFase]}`)
+      const nextFase = result.newPhase as FaseEdital
+      toast.success(`Fase avancada para: ${faseLabels[nextFase] || nextFase}`)
       onStatusChange?.()
       router.refresh()
     }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, Fragment } from 'react'
+import { useState, useCallback, useRef, useEffect, Fragment } from 'react'
 import {
     Brain,
     Sparkles,
@@ -179,6 +179,17 @@ export function TriagemPanel({ editalId, execucao, resultados }: TriagemPanelPro
     const [isRunning, setIsRunning] = useState(false)
     const [progress, setProgress] = useState({ current: 0, total: 0 })
     const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+    const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+    // Cleanup polling interval on unmount
+    useEffect(() => {
+        return () => {
+            if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current)
+                pollIntervalRef.current = null
+            }
+        }
+    }, [])
 
     // Toggle expanded row for avaliação detail
     const toggleRow = useCallback((id: string) => {
@@ -224,6 +235,7 @@ export function TriagemPanel({ editalId, execucao, resultados }: TriagemPanelPro
                         attempts++
                         if (attempts > maxAttempts) {
                             clearInterval(interval)
+                            pollIntervalRef.current = null
                             reject(new Error('Timeout: triagem demorou demais'))
                             return
                         }
@@ -241,15 +253,18 @@ export function TriagemPanel({ editalId, execucao, resultados }: TriagemPanelPro
 
                             if (status.status === 'concluida') {
                                 clearInterval(interval)
+                                pollIntervalRef.current = null
                                 resolve()
                             } else if (status.status === 'erro') {
                                 clearInterval(interval)
+                                pollIntervalRef.current = null
                                 reject(new Error(status.erro_mensagem || 'Erro na triagem'))
                             }
                         } catch {
                             // Keep polling on network errors
                         }
                     }, 3000)
+                    pollIntervalRef.current = interval
                 })
 
             await pollLoop()

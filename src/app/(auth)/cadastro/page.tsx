@@ -92,9 +92,11 @@ export default function CadastroPage() {
       return
     }
 
-    // 2. Update profile with role-specific data
+    // 2. Update profile with role and role-specific data
     if (signUpData.user) {
-      const extraData: Record<string, any> = {}
+      const extraData: Record<string, any> = {
+        role: perfilTipo,
+      }
 
       if (perfilTipo === 'proponente') {
         Object.assign(extraData, {

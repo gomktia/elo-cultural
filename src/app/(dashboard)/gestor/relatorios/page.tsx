@@ -18,10 +18,12 @@ export default async function GestorRelatoriosPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('tenant_id')
-    .eq('id', user!.id)
+    .eq('id', user.id)
     .single()
 
   const tenantId = profile?.tenant_id
@@ -60,7 +62,7 @@ export default async function GestorRelatoriosPage() {
           ),
       ])
 
-      const { data: tenantData } = await supabase.from('tenants').select('nome').eq('id', tenantId!).single()
+      const { data: tenantData } = await supabase.from('tenants').select('nome').eq('id', tenantId).single()
 
       return {
         ...edital,
@@ -106,7 +108,7 @@ export default async function GestorRelatoriosPage() {
                     editalId={rel.id}
                     editalTitulo={rel.titulo}
                     editalNumero={rel.numero_edital}
-                    tenantId={tenantId!}
+                    tenantId={tenantId || ''}
                     tenantNome={rel.tenantNome}
                   />
                 </div>
