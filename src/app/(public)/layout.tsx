@@ -101,10 +101,10 @@ export default async function PublicLayout({
                 </div>
               </div>
               <div className="space-y-3">
-                <h4 className="text-[11px] font-medium text-white/40 uppercase tracking-wider">Suporte</h4>
+                <h4 className="text-[11px] font-medium text-white/40 uppercase tracking-wider">Legal</h4>
                 <div className="flex flex-col gap-2">
-                  <span className="text-sm text-white/50">FAQ</span>
-                  <span className="text-sm text-white/50">Contato</span>
+                  <Link href="/privacidade" className="text-sm text-white/70 hover:text-white transition-colors">Privacidade</Link>
+                  <Link href="/termos" className="text-sm text-white/70 hover:text-white transition-colors">Termos de Uso</Link>
                 </div>
               </div>
             </div>
