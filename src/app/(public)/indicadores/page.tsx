@@ -63,13 +63,22 @@ function normalizeArea(area: string): string {
   // Strip accents (NFD) and try again
   const noAccents = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   if (AREAS_CANONICAS[noAccents]) return AREAS_CANONICAS[noAccents]
-  // Strip all non-ASCII chars and try substring matching (handles broken encoding)
+  // Strip all non-ASCII chars and try fuzzy matching (handles broken encoding)
   const asciiOnly = lower.replace(/[^\x20-\x7E]/g, '')
   for (const [key, val] of Object.entries(AREAS_CANONICAS)) {
     const keyAscii = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\x20-\x7E]/g, '')
     if (keyAscii === asciiOnly) return val
-    // Fuzzy: if the stripped version is a close substring (off by 1 char from encoding loss)
-    if (asciiOnly.length >= 3 && keyAscii.length >= 3 && (keyAscii.includes(asciiOnly) || asciiOnly.includes(keyAscii))) return val
+    // Allow 1-char difference (insertion/deletion from encoding loss, e.g. "msica" vs "musica")
+    if (Math.abs(keyAscii.length - asciiOnly.length) <= 1 && asciiOnly.length >= 3) {
+      const longer = keyAscii.length >= asciiOnly.length ? keyAscii : asciiOnly
+      const shorter = keyAscii.length >= asciiOnly.length ? asciiOnly : keyAscii
+      let diffs = 0, j = 0
+      for (let i = 0; i < longer.length && diffs <= 1; i++) {
+        if (longer[i] === shorter[j]) j++
+        else diffs++
+      }
+      if (diffs <= 1) return val
+    }
   }
   // Fallback: capitalize each word (skip broken chars for word boundaries)
   return trimmed.split(/\s+/).map(w => {
