@@ -63,14 +63,20 @@ function normalizeArea(area: string): string {
   // Strip accents (NFD) and try again
   const noAccents = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   if (AREAS_CANONICAS[noAccents]) return AREAS_CANONICAS[noAccents]
-  // Strip all non-ASCII chars (handles broken encoding like m�sica → msica)
+  // Strip all non-ASCII chars and try substring matching (handles broken encoding)
   const asciiOnly = lower.replace(/[^\x20-\x7E]/g, '')
   for (const [key, val] of Object.entries(AREAS_CANONICAS)) {
-    const keyAscii = key.replace(/[^\x20-\x7E]/g, '')
+    const keyAscii = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\x20-\x7E]/g, '')
     if (keyAscii === asciiOnly) return val
+    // Fuzzy: if the stripped version is a close substring (off by 1 char from encoding loss)
+    if (asciiOnly.length >= 3 && keyAscii.length >= 3 && (keyAscii.includes(asciiOnly) || asciiOnly.includes(keyAscii))) return val
   }
-  // Fallback: capitalize each word
-  return trimmed.replace(/\b\w/g, c => c.toUpperCase())
+  // Fallback: capitalize each word (skip broken chars for word boundaries)
+  return trimmed.split(/\s+/).map(w => {
+    const first = w.match(/[a-zA-ZÀ-ú]/)
+    if (!first) return w
+    return w.slice(0, first.index) + w.charAt(first.index!).toUpperCase() + w.slice(first.index! + 1)
+  }).join(' ')
 }
 
 function groupStatus(status: string): string {
