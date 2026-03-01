@@ -17,8 +17,8 @@ export default async function SuperDashboardPage() {
 
   if (profile?.role !== 'super_admin') redirect('/dashboard')
 
-  // Use service client to bypass RLS for global statistics
-  const serviceClient = createServiceClient()
+  // Use service client to bypass RLS for global statistics, fallback to regular client
+  const client = process.env.SUPABASE_SERVICE_ROLE_KEY ? createServiceClient() : supabase
 
   const [
     { count: totalTenants },
@@ -27,11 +27,11 @@ export default async function SuperDashboardPage() {
     { count: totalProjetos },
     { count: totalAvaliacoes },
   ] = await Promise.all([
-    serviceClient.from('tenants').select('*', { count: 'exact', head: true }),
-    serviceClient.from('profiles').select('*', { count: 'exact', head: true }),
-    serviceClient.from('editais').select('*', { count: 'exact', head: true }),
-    serviceClient.from('projetos').select('*', { count: 'exact', head: true }),
-    serviceClient.from('avaliacoes').select('*', { count: 'exact', head: true }),
+    client.from('tenants').select('*', { count: 'exact', head: true }),
+    client.from('profiles').select('*', { count: 'exact', head: true }),
+    client.from('editais').select('*', { count: 'exact', head: true }),
+    client.from('projetos').select('*', { count: 'exact', head: true }),
+    client.from('avaliacoes').select('*', { count: 'exact', head: true }),
   ])
 
   const stats = [
