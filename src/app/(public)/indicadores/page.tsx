@@ -5,6 +5,8 @@ import { EditaisPorStatusChart, AreasCulturaisChart } from '@/components/indicad
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import type { FaseEdital } from '@/types/database.types'
 
+export const dynamic = 'force-dynamic'
+
 const statusLabels: Record<string, string> = {
   inscricao: 'Inscrições Abertas',
   inscricao_encerrada: 'Inscrições Encerradas',
@@ -54,11 +56,21 @@ const AREAS_CANONICAS: Record<string, string> = {
 }
 
 function normalizeArea(area: string): string {
-  const lower = area.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
-  // Try exact match first, then without accents
-  return AREAS_CANONICAS[area.toLowerCase().trim()]
-    ?? AREAS_CANONICAS[lower]
-    ?? area.trim().replace(/\b\w/g, c => c.toUpperCase())
+  const trimmed = area.trim()
+  const lower = trimmed.toLowerCase()
+  // Try exact lowercase match
+  if (AREAS_CANONICAS[lower]) return AREAS_CANONICAS[lower]
+  // Strip accents (NFD) and try again
+  const noAccents = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  if (AREAS_CANONICAS[noAccents]) return AREAS_CANONICAS[noAccents]
+  // Strip all non-ASCII chars (handles broken encoding like m�sica → msica)
+  const asciiOnly = lower.replace(/[^\x20-\x7E]/g, '')
+  for (const [key, val] of Object.entries(AREAS_CANONICAS)) {
+    const keyAscii = key.replace(/[^\x20-\x7E]/g, '')
+    if (keyAscii === asciiOnly) return val
+  }
+  // Fallback: capitalize each word
+  return trimmed.replace(/\b\w/g, c => c.toUpperCase())
 }
 
 function groupStatus(status: string): string {
