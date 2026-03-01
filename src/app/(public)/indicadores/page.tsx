@@ -225,6 +225,7 @@ export default async function IndicadoresPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Editais por Status */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="h-1 w-full bg-[#0047AB]" />
             <div className="px-6 py-4 border-b border-slate-200">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-xl bg-[#0047AB]/10 flex items-center justify-center">
@@ -243,6 +244,7 @@ export default async function IndicadoresPage() {
 
           {/* Areas Culturais */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="h-1 w-full bg-[#0047AB]" />
             <div className="px-6 py-4 border-b border-slate-200">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-xl bg-[#e32a74]/10 flex items-center justify-center">
@@ -262,6 +264,7 @@ export default async function IndicadoresPage() {
 
         {/* Editais Recentes */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="h-1 w-full bg-[#0047AB]" />
           <div className="px-6 py-4 border-b border-slate-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
