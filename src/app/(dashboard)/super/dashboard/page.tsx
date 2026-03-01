@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Globe, Building2, Users, FileText, ClipboardList, FolderOpen } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function SuperDashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
