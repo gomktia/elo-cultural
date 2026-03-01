@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { notifyHabilitacaoResultado } from '@/lib/email/notify'
+import { notifyInAppHabilitacao } from '@/lib/notifications/notify'
 
 export async function atualizarHabilitacao(
     projetoId: string,
@@ -39,6 +40,11 @@ export async function atualizarHabilitacao(
 
     // Fire-and-forget: notify proponente
     notifyHabilitacaoResultado({
+        projetoId,
+        status,
+        justificativa: justificativa || '',
+    }).catch(() => {})
+    notifyInAppHabilitacao({
         projetoId,
         status,
         justificativa: justificativa || '',

@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { notifyRecursoDecisao } from '@/lib/email/notify'
+import { notifyInAppRecursoDecisao } from '@/lib/notifications/notify'
 import { ADMIN_ROLES } from '@/lib/constants/roles'
 
 export async function decidirRecurso(
@@ -40,6 +41,11 @@ export async function decidirRecurso(
 
   // Fire-and-forget: notify proponente
   notifyRecursoDecisao({
+    recursoId,
+    status: decisaoStatus,
+    decisao: decisaoTexto || '',
+  }).catch(() => {})
+  notifyInAppRecursoDecisao({
     recursoId,
     status: decisaoStatus,
     decisao: decisaoTexto || '',

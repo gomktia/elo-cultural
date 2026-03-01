@@ -18,6 +18,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { UserMenu } from './UserMenu'
+import { NotificationBell } from './NotificationBell'
 import type { UserRole } from '@/types/database.types'
 import {
   Home, FolderOpen, FileText, Users, BarChart3,
@@ -181,9 +182,10 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
           </SidebarGroup>
         </SidebarContent>
 
-        {/* Footer - User Menu */}
+        {/* Footer - Notifications + User Menu */}
         <SidebarFooter className="p-3 group-data-[collapsible=icon]:p-1.5 mt-auto">
-          <div className="border-t border-slate-100 pt-3 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pt-0">
+          <div className="border-t border-slate-100 pt-3 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pt-0 space-y-2">
+            <NotificationBell />
             <UserMenu userName={userName} userEmail={userEmail} role={role} />
           </div>
         </SidebarFooter>
