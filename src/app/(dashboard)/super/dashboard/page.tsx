@@ -17,37 +17,34 @@ export default async function SuperDashboardPage() {
 
   if (profile?.role !== 'super_admin') redirect('/dashboard')
 
-  // Use service client to bypass RLS for global statistics, fallback to regular client
-  const client = process.env.SUPABASE_SERVICE_ROLE_KEY ? createServiceClient() : supabase
+  // Try service client first (bypasses RLS), fallback to regular client
+  async function getCount(table: string): Promise<number> {
+    if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const serviceClient = createServiceClient()
+      const { count, error } = await serviceClient.from(table).select('*', { count: 'exact', head: true })
+      if (!error && count !== null) return count
+      console.error(`[SuperDashboard] Service client error on ${table}:`, error?.message)
+    }
+    // Fallback to authenticated client
+    const { count, error } = await supabase.from(table).select('*', { count: 'exact', head: true })
+    if (error) console.error(`[SuperDashboard] Fallback error on ${table}:`, error.message)
+    return count ?? 0
+  }
 
-  const results = await Promise.all([
-    client.from('tenants').select('*', { count: 'exact', head: true }),
-    client.from('profiles').select('*', { count: 'exact', head: true }),
-    client.from('editais').select('*', { count: 'exact', head: true }),
-    client.from('projetos').select('*', { count: 'exact', head: true }),
-    client.from('avaliacoes').select('*', { count: 'exact', head: true }),
+  const [totalTenants, totalUsers, totalEditais, totalProjetos, totalAvaliacoes] = await Promise.all([
+    getCount('tenants'),
+    getCount('profiles'),
+    getCount('editais'),
+    getCount('projetos'),
+    getCount('avaliacoes'),
   ])
 
-  // Log errors for debugging
-  const tableNames = ['tenants', 'profiles', 'editais', 'projetos', 'avaliacoes']
-  results.forEach((r, i) => {
-    if (r.error) console.error(`[SuperDashboard] Error querying ${tableNames[i]}:`, r.error.message)
-  })
-
-  const [
-    { count: totalTenants },
-    { count: totalUsers },
-    { count: totalEditais },
-    { count: totalProjetos },
-    { count: totalAvaliacoes },
-  ] = results
-
   const stats = [
-    { label: 'Tenants', value: totalTenants || 0, icon: Building2, color: '#0047AB' },
-    { label: 'Usuários', value: totalUsers || 0, icon: Users, color: '#7C3AED' },
-    { label: 'Editais', value: totalEditais || 0, icon: FileText, color: '#059669' },
-    { label: 'Projetos', value: totalProjetos || 0, icon: FolderOpen, color: '#D97706' },
-    { label: 'Avaliações', value: totalAvaliacoes || 0, icon: ClipboardList, color: '#DC2626' },
+    { label: 'Tenants', value: totalTenants, icon: Building2, color: '#0047AB' },
+    { label: 'Usuários', value: totalUsers, icon: Users, color: '#7C3AED' },
+    { label: 'Editais', value: totalEditais, icon: FileText, color: '#059669' },
+    { label: 'Projetos', value: totalProjetos, icon: FolderOpen, color: '#D97706' },
+    { label: 'Avaliações', value: totalAvaliacoes, icon: ClipboardList, color: '#DC2626' },
   ]
 
   return (
