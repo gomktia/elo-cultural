@@ -24,6 +24,43 @@ const statusLabels: Record<string, string> = {
   recurso_divulgacao_inscritos: 'Recursos Divulgação',
 }
 
+const AREAS_CANONICAS: Record<string, string> = {
+  'artes visuais': 'Artes Visuais',
+  'audiovisual': 'Audiovisual',
+  'circo': 'Circo',
+  'dança': 'Dança',
+  'danca': 'Dança',
+  'design': 'Design',
+  'fotografia': 'Fotografia',
+  'literatura': 'Literatura',
+  'música': 'Música',
+  'musica': 'Música',
+  'patrimônio cultural': 'Patrimônio Cultural',
+  'patrimonio cultural': 'Patrimônio Cultural',
+  'teatro': 'Teatro',
+  'culturas populares': 'Culturas Populares',
+  'cultura popular': 'Culturas Populares',
+  'culturas indígenas': 'Culturas Indígenas',
+  'culturas indigenas': 'Culturas Indígenas',
+  'culturas afro-brasileiras': 'Culturas Afro-brasileiras',
+  'artesanato': 'Artesanato',
+  'moda': 'Moda',
+  'gastronomia': 'Gastronomia',
+  'gestão cultural': 'Gestão Cultural',
+  'gestao cultural': 'Gestão Cultural',
+  'políticas culturais': 'Políticas Culturais',
+  'politicas culturais': 'Políticas Culturais',
+  'economia criativa': 'Economia Criativa',
+}
+
+function normalizeArea(area: string): string {
+  const lower = area.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
+  // Try exact match first, then without accents
+  return AREAS_CANONICAS[area.toLowerCase().trim()]
+    ?? AREAS_CANONICAS[lower]
+    ?? area.trim().replace(/\b\w/g, c => c.toUpperCase())
+}
+
 function groupStatus(status: string): string {
   if (['criacao', 'publicacao'].includes(status)) return 'Publicados'
   if (['inscricao', 'inscricao_encerrada'].includes(status)) return 'Inscrições'
@@ -78,7 +115,7 @@ export default async function IndicadoresPage() {
     const areas = p.areas_atuacao as string[] | null
     if (areas) {
       for (const area of areas) {
-        const normalized = area.trim()
+        const normalized = normalizeArea(area)
         if (normalized) {
           areaCounts[normalized] = (areaCounts[normalized] || 0) + 1
         }
