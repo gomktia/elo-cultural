@@ -9,22 +9,42 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Shield } from 'lucide-react'
-import type { LogAuditoriaWithProfile } from '@/types/database.types'
+import type { LogAuditoria } from '@/types/database.types'
+
+type LogWithUserName = LogAuditoria & { user_nome: string | null }
 
 export default async function AuditoriaPage() {
   const supabase = await createClient()
 
+  // Fetch logs and profiles separately (no FK constraint for PostgREST join)
   const { data: logs } = await supabase
     .from('logs_auditoria')
-    .select('*, profiles(nome)')
+    .select('*')
     .order('created_at', { ascending: false })
     .limit(200)
 
-  const typedLogs = (logs || []) as LogAuditoriaWithProfile[]
+  // Collect unique user IDs and fetch their names
+  const userIds = [...new Set((logs || []).map(l => l.usuario_id).filter(Boolean))]
+  const profileMap = new Map<string, string>()
+
+  if (userIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, nome')
+      .in('id', userIds)
+
+    for (const p of (profiles || [])) {
+      profileMap.set(p.id, p.nome)
+    }
+  }
+
+  const typedLogs: LogWithUserName[] = (logs || []).map(log => ({
+    ...log,
+    user_nome: log.usuario_id ? (profileMap.get(log.usuario_id) || null) : null,
+  }))
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -66,7 +86,7 @@ export default async function AuditoriaPage() {
                   </code>
                 </TableCell>
                 <TableCell className="py-5 px-4 text-sm font-bold text-slate-700 group-hover:text-[var(--brand-primary)] transition-colors">
-                  {log.profiles?.nome || '\u2014'}
+                  {log.user_nome || '\u2014'}
                 </TableCell>
                 <TableCell className="py-5 px-8 text-right font-mono text-xs text-slate-400">
                   {log.ip_address || '\u2014'}

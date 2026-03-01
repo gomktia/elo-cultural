@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -25,6 +26,17 @@ export async function OPTIONS() {
 export async function GET() {
   const supabase = await createClient()
 
+  // Get tenant_id from cookies to filter data by tenant
+  const cookieStore = await cookies()
+  const tenantId = cookieStore.get('tenant_id')?.value
+
+  if (!tenantId) {
+    return NextResponse.json(
+      { error: 'Tenant não identificado' },
+      { status: 400, headers: CORS_HEADERS }
+    )
+  }
+
   const [
     { count: totalEditais },
     { count: totalProjetos },
@@ -33,12 +45,12 @@ export async function GET() {
     { data: projetosComOrcamento },
     { data: proponentesAreas },
   ] = await Promise.all([
-    supabase.from('editais').select('id', { count: 'exact', head: true }).eq('active', true),
-    supabase.from('projetos').select('id', { count: 'exact', head: true }),
-    supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('status_habilitacao', 'habilitado'),
-    supabase.from('editais').select('status').eq('active', true),
-    supabase.from('projetos').select('orcamento_total').eq('status_habilitacao', 'habilitado').not('orcamento_total', 'is', null),
-    supabase.from('profiles').select('areas_atuacao').eq('role', 'proponente').eq('active', true).not('areas_atuacao', 'is', null),
+    supabase.from('editais').select('id', { count: 'exact', head: true }).eq('active', true).eq('tenant_id', tenantId),
+    supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+    supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('status_habilitacao', 'habilitado').eq('tenant_id', tenantId),
+    supabase.from('editais').select('status').eq('active', true).eq('tenant_id', tenantId),
+    supabase.from('projetos').select('orcamento_total').eq('status_habilitacao', 'habilitado').not('orcamento_total', 'is', null).eq('tenant_id', tenantId),
+    supabase.from('profiles').select('areas_atuacao').eq('role', 'proponente').eq('active', true).not('areas_atuacao', 'is', null).eq('tenant_id', tenantId),
   ])
 
   // Valor total investido

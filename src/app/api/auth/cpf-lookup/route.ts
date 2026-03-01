@@ -1,7 +1,23 @@
+import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 5 lookups per minute per IP
+  const ip = getClientIp(request.headers)
+  const rl = checkRateLimit(`cpf-lookup:${ip}`, { limit: 5, windowSeconds: 60 })
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Muitas tentativas. Tente novamente em breve.' }, { status: 429 })
+  }
+
+  // Auth check: only authenticated users can look up CPFs
+  const supabaseAuth = await createClient()
+  const { data: { user }, error: authError } = await supabaseAuth.auth.getUser()
+  if (authError || !user) {
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+  }
+
   const { cpf } = await request.json()
 
   if (!cpf || typeof cpf !== 'string') {
@@ -30,13 +46,13 @@ export async function POST(request: NextRequest) {
   }
 
   // Buscar email via auth.admin usando service role
-  const { data: { user } } = await supabase.auth.admin.getUserById(profile.id)
+  const { data: { user: foundUser } } = await supabase.auth.admin.getUserById(profile.id)
 
-  if (!user?.email) {
+  if (!foundUser?.email) {
     return NextResponse.json({ error: 'Email nao encontrado para este CPF' }, { status: 404 })
   }
 
-  return NextResponse.json({ email: user.email })
+  return NextResponse.json({ email: foundUser.email })
 }
 
 function formatCpf(digits: string): string {

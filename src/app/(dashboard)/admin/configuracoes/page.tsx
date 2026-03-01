@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,6 +13,7 @@ import { toast } from 'sonner'
 import { Loader2, Upload, Image, X } from 'lucide-react'
 
 export default function ConfiguracoesPage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [tenant, setTenant] = useState<any>(null)
@@ -31,13 +33,22 @@ export default function ConfiguracoesPage() {
     async function load() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/login'); return }
+
       const { data: profile } = await supabase
         .from('profiles')
-        .select('tenant_id')
-        .eq('id', user!.id)
+        .select('tenant_id, role')
+        .eq('id', user.id)
         .single()
 
-      if (!profile?.tenant_id) {
+      // Role guard: only admin and super_admin can access this page
+      if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
+        toast.error('Acesso não autorizado')
+        router.push('/dashboard')
+        return
+      }
+
+      if (!profile.tenant_id) {
         setLoading(false)
         return
       }

@@ -38,19 +38,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Perfil não encontrado' }, { status: 404 })
   }
 
-  // Verificar se ja existe solicitacao pendente
+  // Verificar se ja existe solicitacao pendente nas ultimas 24h
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
   const { data: existente } = await supabase
     .from('logs_auditoria')
     .select('id')
     .eq('usuario_id', user.id)
     .eq('acao', 'SOLICITACAO_EXCLUSAO_LGPD')
+    .gte('created_at', twentyFourHoursAgo)
     .order('created_at', { ascending: false })
     .limit(1)
 
   if (existente && existente.length > 0) {
-    // Verificar se a ultima solicitacao foi ha menos de 24h
     return NextResponse.json(
-      { error: 'Você já possui uma solicitação de exclusão registrada. A administração entrará em contato.' },
+      { error: 'Você já possui uma solicitação de exclusão nas últimas 24 horas. Tente novamente mais tarde.' },
       { status: 409 }
     )
   }

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Globe, Building2, Users, FileText, ClipboardList, FolderOpen } from 'lucide-react'
@@ -16,7 +17,9 @@ export default async function SuperDashboardPage() {
 
   if (profile?.role !== 'super_admin') redirect('/dashboard')
 
-  // Estatísticas globais
+  // Use service client to bypass RLS for global statistics
+  const serviceClient = createServiceClient()
+
   const [
     { count: totalTenants },
     { count: totalUsers },
@@ -24,11 +27,11 @@ export default async function SuperDashboardPage() {
     { count: totalProjetos },
     { count: totalAvaliacoes },
   ] = await Promise.all([
-    supabase.from('tenants').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('editais').select('*', { count: 'exact', head: true }),
-    supabase.from('projetos').select('*', { count: 'exact', head: true }),
-    supabase.from('avaliacoes').select('*', { count: 'exact', head: true }),
+    serviceClient.from('tenants').select('*', { count: 'exact', head: true }),
+    serviceClient.from('profiles').select('*', { count: 'exact', head: true }),
+    serviceClient.from('editais').select('*', { count: 'exact', head: true }),
+    serviceClient.from('projetos').select('*', { count: 'exact', head: true }),
+    serviceClient.from('avaliacoes').select('*', { count: 'exact', head: true }),
   ])
 
   const stats = [
