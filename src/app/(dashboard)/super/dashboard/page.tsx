@@ -20,19 +20,27 @@ export default async function SuperDashboardPage() {
   // Use service client to bypass RLS for global statistics, fallback to regular client
   const client = process.env.SUPABASE_SERVICE_ROLE_KEY ? createServiceClient() : supabase
 
-  const [
-    { count: totalTenants },
-    { count: totalUsers },
-    { count: totalEditais },
-    { count: totalProjetos },
-    { count: totalAvaliacoes },
-  ] = await Promise.all([
+  const results = await Promise.all([
     client.from('tenants').select('*', { count: 'exact', head: true }),
     client.from('profiles').select('*', { count: 'exact', head: true }),
     client.from('editais').select('*', { count: 'exact', head: true }),
     client.from('projetos').select('*', { count: 'exact', head: true }),
     client.from('avaliacoes').select('*', { count: 'exact', head: true }),
   ])
+
+  // Log errors for debugging
+  const tableNames = ['tenants', 'profiles', 'editais', 'projetos', 'avaliacoes']
+  results.forEach((r, i) => {
+    if (r.error) console.error(`[SuperDashboard] Error querying ${tableNames[i]}:`, r.error.message)
+  })
+
+  const [
+    { count: totalTenants },
+    { count: totalUsers },
+    { count: totalEditais },
+    { count: totalProjetos },
+    { count: totalAvaliacoes },
+  ] = results
 
   const stats = [
     { label: 'Tenants', value: totalTenants || 0, icon: Building2, color: '#0047AB' },
