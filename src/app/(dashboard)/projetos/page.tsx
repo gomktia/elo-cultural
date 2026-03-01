@@ -10,6 +10,7 @@ import { ptBR } from 'date-fns/locale'
 const statusBorderColor: Record<string, string> = {
   enviado: 'border-l-blue-500',
   em_analise: 'border-l-yellow-500',
+  em_avaliacao: 'border-l-purple-500',
   habilitado: 'border-l-green-500',
   inabilitado: 'border-l-red-500',
   aprovado: 'border-l-green-500',
