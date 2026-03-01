@@ -37,13 +37,15 @@ export default async function EditaisPublicosPage() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-24 md:py-40 bg-slate-50/50 rounded-3xl md:rounded-[40px] border-2 border-dashed border-slate-200 text-center px-6">
-          <div className="h-20 w-20 md:h-24 md:w-24 bg-white rounded-2xl md:rounded-3xl shadow-sm flex items-center justify-center mb-6 md:mb-8 border border-slate-100">
-            <Calendar className="h-8 w-8 md:h-10 md:w-10 text-slate-200" />
-          </div>
-          <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-2">Nenhum edital disponível</h3>
-          <p className="text-sm md:text-slate-500 max-w-xs font-medium">No momento não há processos de seleção abertos para novos projetos.</p>
-        </div>
+        <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm">
+          <CardContent className="flex flex-col items-center justify-center py-16 md:py-24 text-center px-6">
+            <div className="h-14 w-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-5 border border-slate-100">
+              <Calendar className="h-6 w-6 text-slate-300" />
+            </div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-1">Nenhum edital disponível</h3>
+            <p className="text-sm text-slate-500 max-w-xs">No momento não há processos de seleção abertos para novos projetos.</p>
+          </CardContent>
+        </Card>
       )}
     </div>
   )
