@@ -46,19 +46,22 @@ export default async function EditalPublicoPage({
       </Link>
 
       <div className="space-y-6 md:space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8 pb-6 border-b border-slate-100">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] md:text-xs font-semibold text-[var(--brand-primary)] uppercase tracking-wide bg-brand-primary/5 px-2 py-1 rounded-lg">
-                Edital {e.numero_edital}
-              </span>
-              <EditalStatusBadge status={e.status} />
+        <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+          <div className="h-1 w-full bg-[var(--brand-primary)]" />
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] md:text-xs font-semibold text-[var(--brand-primary)] uppercase tracking-wide bg-brand-primary/5 px-2 py-1 rounded-lg">
+                  Edital {e.numero_edital}
+                </span>
+                <EditalStatusBadge status={e.status} />
+              </div>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight max-w-2xl">
+                {e.titulo}
+              </h1>
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900 leading-[1.1] max-w-2xl">
-              {e.titulo}
-            </h1>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {(e.inicio_inscricao || e.fim_inscricao) && (
