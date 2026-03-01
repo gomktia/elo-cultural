@@ -52,23 +52,30 @@ export default async function ResultadosPublicosPage({
       </Link>
 
       <div className="space-y-6 md:space-y-8">
-        <div className="space-y-2 pb-6 border-b border-slate-100">
-          <p className="text-[11px] md:text-xs font-semibold text-slate-400 uppercase tracking-wide bg-slate-50 inline-block px-2 py-1 rounded-lg">PROCESSO SELETIVO {e.numero_edital}</p>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 leading-none">Resultados Oficiais</h1>
-          <p className="text-xs md:text-sm text-slate-400 font-medium italic">Confira a classificação final dos projetos submetidos.</p>
-        </div>
+        <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+          <div className="h-1 w-full bg-[var(--brand-primary)]" />
+          <CardContent className="p-4">
+            <div className="space-y-1">
+              <p className="text-[11px] md:text-xs font-semibold text-[var(--brand-primary)] uppercase tracking-wide">Processo Seletivo {e.numero_edital}</p>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Resultados Oficiais</h1>
+              <p className="text-sm text-slate-500">Confira a classificação final dos projetos submetidos.</p>
+            </div>
+          </CardContent>
+        </Card>
 
         {!hasResults ? (
-          <div className="bg-white/60 backdrop-blur-md rounded-2xl md:rounded-2xl p-8 md:p-10 border border-slate-100 shadow-premium text-center">
-            <div className="h-14 w-14 md:h-16 md:w-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-5 md:mb-6">
-              <Calendar className="h-7 w-7 md:h-8 md:w-8 text-slate-200" />
-            </div>
-            <p className="text-slate-400 font-semibold text-[11px] md:text-xs uppercase tracking-wide italic leading-relaxed max-w-[200px] mx-auto">
-              Os resultados ainda não foram homologados para publicação.
-            </p>
-          </div>
+          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm">
+            <CardContent className="flex flex-col items-center justify-center py-16 md:py-24 text-center px-6">
+              <div className="h-14 w-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-5 border border-slate-100">
+                <Calendar className="h-6 w-6 text-slate-300" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-1">Resultados ainda não disponíveis</h3>
+              <p className="text-sm text-slate-500 max-w-xs">Os resultados serão publicados após a conclusão do processo de avaliação.</p>
+            </CardContent>
+          </Card>
         ) : (
-          <div className="bg-white/60 backdrop-blur-md border border-slate-100 rounded-2xl md:rounded-2xl p-0.5 md:p-1 overflow-hidden shadow-lg overflow-x-auto">
+          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
+            <div className="h-1 w-full bg-[var(--brand-primary)]" />
             <Table>
               <TableHeader className="bg-[var(--brand-primary)]">
                 <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
@@ -131,7 +138,7 @@ export default async function ResultadosPublicosPage({
                 })}
               </TableBody>
             </Table>
-          </div>
+          </Card>
         )}
       </div>
     </div>
