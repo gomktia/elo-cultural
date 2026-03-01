@@ -36,7 +36,7 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
     <div className="space-y-6">
       {/* Curriculo */}
       <div className="space-y-2">
-        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1 flex items-center gap-2">
           <FileText className="h-3 w-3" /> Descrição do Currículo
         </Label>
         <Textarea
@@ -44,13 +44,13 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
           value={form.curriculo_descricao}
           onChange={e => onChange('curriculo_descricao', e.target.value)}
           rows={4}
-          className="rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10 focus:ring-2 focus:ring-[#0047AB]/40"
+          className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[#0047AB]/20"
         />
       </div>
 
       {/* Areas de Avaliacao */}
       <div className="space-y-2">
-        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1 flex items-center gap-2">
           <Briefcase className="h-3 w-3" /> Áreas de Atuação / Avaliação
         </Label>
         <div className="flex flex-wrap gap-2">
@@ -62,8 +62,8 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
               className={[
                 'px-3 py-1.5 rounded-xl text-[11px] font-medium uppercase tracking-wider transition-all border',
                 form.areas_avaliacao?.includes(area)
-                  ? 'bg-[#0047AB] text-white border-[#0047AB]'
-                  : 'bg-white/[0.02] text-white/40 border-white/10 hover:border-white/20'
+                  ? 'bg-[#0047AB] text-white border-[#0047AB] shadow-sm'
+                  : 'bg-slate-50 text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
               ].join(' ')}
             >
               {area}
@@ -74,14 +74,14 @@ export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {
 
       {/* Lattes */}
       <div className="space-y-2">
-        <Label className="text-[11px] font-medium text-white/40 uppercase tracking-wide ml-1 flex items-center gap-2">
+        <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1 flex items-center gap-2">
           <Link2 className="h-3 w-3" /> Link do Currículo Lattes
         </Label>
         <Input
           placeholder="http://lattes.cnpq.br/..."
           value={form.lattes_url}
           onChange={e => onChange('lattes_url', e.target.value)}
-          className="h-11 rounded-2xl border-white/5 bg-white/[0.02] text-sm text-white placeholder:text-white/10"
+          className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300"
         />
       </div>
     </div>
