@@ -7,6 +7,17 @@ import { Plus, ArrowRight, FolderOpen } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
+const statusBorderColor: Record<string, string> = {
+  enviado: 'border-l-blue-500',
+  em_analise: 'border-l-yellow-500',
+  habilitado: 'border-l-green-500',
+  inabilitado: 'border-l-red-500',
+  aprovado: 'border-l-green-500',
+  reprovado: 'border-l-red-500',
+  selecionado: 'border-l-emerald-500',
+  suplente: 'border-l-amber-500',
+}
+
 export default async function MeusProjetosPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -41,7 +52,7 @@ export default async function MeusProjetosPage() {
       {projetos && projetos.length > 0 ? (
         <div className="grid gap-3">
           {projetos.map((projeto) => (
-            <Card key={projeto.id} className="border-slate-200 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white">
+            <Card key={projeto.id} className={`border-slate-200 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white border-l-4 ${statusBorderColor[projeto.status_atual] || 'border-l-slate-300'}`}>
               <CardContent className="flex items-center gap-4 p-4">
                 <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
                   <FolderOpen className="h-5 w-5" />
