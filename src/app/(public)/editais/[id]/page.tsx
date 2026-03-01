@@ -9,6 +9,7 @@ import type { Edital, Criterio } from '@/types/database.types'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ArrowLeft, Calendar, FileText } from 'lucide-react'
+import { EditalCountdown } from '@/components/edital/EditalCountdown'
 
 export default async function EditalPublicoPage({
   params,
@@ -99,6 +100,10 @@ export default async function EditalPublicoPage({
             </div>
           )}
         </div>
+
+        {e.fim_inscricao && new Date(e.fim_inscricao).getTime() > Date.now() && (
+          <EditalCountdown deadline={e.fim_inscricao} />
+        )}
 
         {criterios && criterios.length > 0 && (
           <div className="bg-white/60 backdrop-blur-md border border-slate-100 rounded-2xl md:rounded-2xl p-5 md:p-8 shadow-premium">
