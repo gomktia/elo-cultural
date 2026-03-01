@@ -54,32 +54,40 @@ export default async function MeusProjetosPage() {
         <div className="grid gap-3">
           {projetos.map((projeto) => (
             <Card key={projeto.id} className={`border-slate-200 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white border-l-4 ${statusBorderColor[projeto.status_atual] || 'border-l-slate-300'}`}>
-              <CardContent className="flex items-center gap-4 p-4">
-                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
-                  <FolderOpen className="h-5 w-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-slate-900 leading-tight truncate group-hover:text-[var(--brand-primary)] transition-colors">
-                    {projeto.titulo}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <p className="text-xs text-slate-400 font-medium leading-none truncate max-w-[200px]">
-                      {projeto.editais?.titulo}
-                    </p>
-                    <span className="h-1 w-1 rounded-full bg-slate-200" />
-                    <p className="text-xs text-slate-300 font-mono leading-none">
-                      {projeto.numero_protocolo}
-                    </p>
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3 sm:items-center sm:gap-4">
+                  <div className="hidden sm:flex h-10 w-10 rounded-xl bg-slate-50 items-center justify-center text-slate-300 shrink-0">
+                    <FolderOpen className="h-5 w-5" />
                   </div>
-                </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-bold text-slate-900 leading-tight line-clamp-2 sm:truncate group-hover:text-[var(--brand-primary)] transition-colors">
+                      {projeto.titulo}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-1 sm:mt-0.5">
+                      <p className="text-xs text-slate-400 font-medium leading-none truncate">
+                        {projeto.editais?.titulo}
+                      </p>
+                      <span className="h-1 w-1 rounded-full bg-slate-200 shrink-0" />
+                      <p className="text-xs text-slate-300 font-mono leading-none shrink-0">
+                        {projeto.numero_protocolo}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3 mt-2 sm:hidden">
+                      <StatusTracker status={projeto.status_atual} />
+                      <span className="text-[11px] text-slate-400">
+                        {format(new Date(projeto.data_envio), 'dd MMM yyyy', { locale: ptBR })}
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="flex items-center gap-6">
-                  <StatusTracker status={projeto.status_atual} />
-                  <div className="text-xs font-medium text-slate-500 text-right">
-                    <p className="text-[11px] text-slate-400 mb-0.5">Enviado em</p>
-                    {format(new Date(projeto.data_envio), 'dd MMM yyyy', { locale: ptBR })}
+                  <div className="hidden sm:flex items-center gap-6">
+                    <StatusTracker status={projeto.status_atual} />
+                    <div className="text-xs font-medium text-slate-500 text-right">
+                      <p className="text-[11px] text-slate-400 mb-0.5">Enviado em</p>
+                      {format(new Date(projeto.data_envio), 'dd MMM yyyy', { locale: ptBR })}
+                    </div>
                   </div>
-                  <Link href={`/projetos/${projeto.id}`}>
+                  <Link href={`/projetos/${projeto.id}`} className="shrink-0">
                     <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-brand-primary/5 hover:text-brand-primary transition-all">
                       <ArrowRight className="h-4 w-4" />
                     </Button>

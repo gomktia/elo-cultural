@@ -80,7 +80,8 @@ export default async function GestorRankingsPage() {
                 </div>
               </CardHeader>
               <CardContent className="p-0">
-                <Table>
+                <div className="overflow-x-auto">
+                <Table className="min-w-[600px]">
                   <TableHeader className="bg-slate-50 border-b border-slate-200">
                     <TableRow className="hover:bg-transparent">
                       <TableHead className="w-16 py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500 text-center">Posição</TableHead>
@@ -141,6 +142,7 @@ export default async function GestorRankingsPage() {
                     })}
                   </TableBody>
                 </Table>
+                </div>
               </CardContent>
             </Card>
           ))}
