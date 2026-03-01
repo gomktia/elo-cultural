@@ -29,11 +29,15 @@ export async function getIAConfig(): Promise<IAConfig> {
 
     const settings = new Map((data || []).map(r => [r.key, r.value]))
 
+    const apiKey = settings.get('openai_api_key') || process.env.OPENAI_API_KEY || ''
+    const enabledFromDb = (settings.get('ia_enabled') || 'true') === 'true'
+
     return {
-      enabled: (settings.get('ia_enabled') || 'true') === 'true',
+      // Auto-disable if no API key is configured
+      enabled: enabledFromDb && apiKey.length > 0,
       model: settings.get('ia_model') || DEFAULTS.model,
       embeddingModel: settings.get('ia_embedding_model') || DEFAULTS.embeddingModel,
-      apiKey: settings.get('openai_api_key') || process.env.OPENAI_API_KEY || '',
+      apiKey,
     }
   } catch {
     // Fallback to env vars if DB is unreachable

@@ -36,7 +36,8 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
     useEffect(() => {
         if (projeto && open) {
             fetchDocumentos()
-            setStatus(projeto.status_habilitacao === 'pendente' ? null : projeto.status_habilitacao)
+            const sh = projeto.status_habilitacao
+            setStatus(sh === 'habilitado' || sh === 'inabilitado' ? sh : null)
             setJustificativa('')
         }
     }, [projeto, open])
@@ -101,9 +102,11 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
                                     <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md uppercase tracking-wide ${
                                         projeto.status_habilitacao === 'habilitado'
                                             ? 'bg-green-400/20 text-green-100'
+                                            : projeto.status_habilitacao === 'em_analise'
+                                            ? 'bg-yellow-400/20 text-yellow-100'
                                             : 'bg-red-400/20 text-red-100'
                                     }`}>
-                                        {projeto.status_habilitacao}
+                                        {projeto.status_habilitacao === 'em_analise' ? 'Em Análise' : projeto.status_habilitacao}
                                     </span>
                                 )}
                             </div>

@@ -111,7 +111,7 @@ export interface Projeto {
   descricao_tecnica: string | null
   orcamento_total: number | null
   cronograma_execucao: string | null
-  status_habilitacao: 'pendente' | 'habilitado' | 'inabilitado'
+  status_habilitacao: 'pendente' | 'em_analise' | 'habilitado' | 'inabilitado'
   nota_final: number | null
   status_atual: string
   data_envio: string
@@ -122,7 +122,7 @@ export interface ProjetoDocumento {
   id: string
   tenant_id: string
   projeto_id: string
-  tipo: 'identidade' | 'proposta' | 'orcamento' | 'complementar'
+  tipo: 'identidade' | 'proposta' | 'orcamento' | 'complementar' | 'comprovante_despesa' | 'relatorio_atividade' | 'prestacao_contas'
   nome_arquivo: string
   storage_path: string
   tamanho_bytes: number | null
