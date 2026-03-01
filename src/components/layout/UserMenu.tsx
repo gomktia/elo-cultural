@@ -13,14 +13,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { SidebarMenuButton } from '@/components/ui/sidebar'
 import { ChevronsUpDown, LogOut, User } from 'lucide-react'
 import type { UserRole } from '@/types/database.types'
-
-const roleLabels: Record<UserRole, string> = {
-  proponente: 'Proponente',
-  avaliador: 'Avaliador',
-  gestor: 'Gestor',
-  admin: 'Administrador',
-  super_admin: 'Super Admin',
-}
+import { ROLE_LABELS } from '@/lib/constants/roles'
 
 interface UserMenuProps {
   userName: string
@@ -62,7 +55,7 @@ export function UserMenu({ userName, userEmail, role }: UserMenuProps) {
               {userName}
             </span>
             <span className="text-[11px] font-medium text-[var(--brand-primary)] truncate">
-              {roleLabels[role]}
+              {ROLE_LABELS[role]}
             </span>
           </div>
           <ChevronsUpDown className="ml-auto h-4 w-4 text-slate-300 group-data-[collapsible=icon]:hidden" />

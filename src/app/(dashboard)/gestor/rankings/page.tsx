@@ -34,7 +34,7 @@ export default async function GestorRankingsPage() {
 
   // Para cada edital, buscar projetos com nota
   const editaisComProjetos = await Promise.all(
-    (editais || []).map(async (edital: any) => {
+    (editais || []).map(async (edital) => {
       const { data: projetos } = await supabase
         .from('projetos')
         .select('id, titulo, numero_protocolo, nota_final, status_atual')
@@ -91,7 +91,7 @@ export default async function GestorRankingsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {edital.projetos.map((p: any, idx: number) => {
+                    {edital.projetos.map((p, idx) => {
                       const isTop3 = idx < 3
                       const medalColors = ['text-yellow-500 bg-yellow-50 border-yellow-100', 'text-slate-400 bg-slate-50 border-slate-100', 'text-amber-600 bg-amber-50 border-amber-100']
                       const statusBarColor = p.status_atual === 'selecionado' ? 'bg-[var(--brand-success)]' :

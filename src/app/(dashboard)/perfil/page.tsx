@@ -10,14 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { Loader2, User, Lock, Download, Trash2, ShieldCheck, AlertTriangle, Mail, Phone, FileText } from 'lucide-react'
-
-const roleLabels: Record<string, string> = {
-  proponente: 'Proponente',
-  avaliador: 'Avaliador',
-  gestor: 'Gestor',
-  admin: 'Administrador',
-  super_admin: 'Super Admin',
-}
+import { ROLE_LABELS } from '@/lib/constants/roles'
 
 export default function PerfilPage() {
   const [loading, setLoading] = useState(true)
@@ -184,7 +177,7 @@ export default function PerfilPage() {
                 </div>
                 <div className="mt-3">
                   <Badge className="text-[11px] font-semibold uppercase tracking-wide rounded-lg bg-white/20 text-white border-none backdrop-blur-sm px-3 py-1">
-                    {roleLabels[profile?.role] || profile?.role}
+                    {ROLE_LABELS[profile?.role as keyof typeof ROLE_LABELS] || profile?.role}
                   </Badge>
                 </div>
               </div>

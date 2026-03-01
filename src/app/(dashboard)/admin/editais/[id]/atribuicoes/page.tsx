@@ -40,7 +40,7 @@ export default async function AtribuicoesPage({
     .from('avaliacoes')
     .select('avaliador_id, projeto_id')
     .eq('tenant_id', edital.tenant_id)
-    .in('projeto_id', (projetos || []).map((p: any) => p.id))
+    .in('projeto_id', (projetos || []).map((p) => p.id))
 
   return (
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">

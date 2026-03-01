@@ -69,7 +69,6 @@ export async function GET(request: NextRequest) {
 
                     if (!advanceError) {
                         avancados++
-                        console.log(`Edital ${editalId} avancado de ${edital.status} para ${nextPhase}`)
                     }
                 }
             }

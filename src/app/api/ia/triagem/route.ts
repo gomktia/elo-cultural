@@ -5,6 +5,7 @@ import { buildHabilitacaoPrompt, buildAvaliacaoBatchPrompt } from '@/lib/ia/prom
 import { detectarIrregularidades } from '@/lib/ia/similaridade'
 import { NextRequest, NextResponse } from 'next/server'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
+import { ADMIN_ROLES } from '@/lib/constants/roles'
 
 export const maxDuration = 300 // 5 minutes max
 
@@ -37,8 +38,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Perfil não encontrado' }, { status: 404 })
   }
 
-  const rolesPermitidas = ['gestor', 'admin', 'super_admin']
-  if (!rolesPermitidas.includes(profile.role)) {
+  if (!ADMIN_ROLES.includes(profile.role as typeof ADMIN_ROLES[number])) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
   }
 
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
             const avaliacoes = parsed.avaliacoes || []
 
             for (const criterio of criteriosList) {
-              const found = avaliacoes.find((a: any) => a.criterio_id === criterio.id)
+              const found = avaliacoes.find((a: { criterio_id: string; nota: number; justificativa: string; confianca: number }) => a.criterio_id === criterio.id)
               if (found) {
                 // Clamp nota within range
                 let nota = Number(found.nota)

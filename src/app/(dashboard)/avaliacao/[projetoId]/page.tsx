@@ -191,7 +191,7 @@ export default function AvaliacaoPage() {
     }
 
     // Update avaliacao status + calculate pontuacao_total on finalize
-    const updateData: any = { justificativa }
+    const updateData: { justificativa: string; status?: string; pontuacao_total?: number } = { justificativa }
     if (finalizar) {
       updateData.status = 'finalizada'
       const notasPreenchidas = criterios.filter(c => c.nota !== '')

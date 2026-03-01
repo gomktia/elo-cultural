@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { notifyRecursoDecisao } from '@/lib/email/notify'
+import { ADMIN_ROLES } from '@/lib/constants/roles'
 
 export async function decidirRecurso(
   recursoId: string,
@@ -21,7 +22,7 @@ export async function decidirRecurso(
     .eq('id', user.id)
     .single()
 
-  if (!profile || !['admin', 'gestor', 'super_admin'].includes(profile.role)) {
+  if (!profile || !ADMIN_ROLES.includes(profile.role as typeof ADMIN_ROLES[number])) {
     return { error: 'Sem permissão para decidir recursos' }
   }
 

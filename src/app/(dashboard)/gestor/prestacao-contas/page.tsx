@@ -5,6 +5,7 @@ import { FileCheck, Clock, CheckCircle2, AlertTriangle, XCircle, Inbox } from 'l
 import { PrestacaoStatusBadge } from '@/components/prestacao/PrestacaoStatusBadge'
 import { PrestacaoAnalise } from '@/components/prestacao/PrestacaoAnalise'
 import type { StatusPrestacao } from '@/types/database.types'
+import { ADMIN_ROLES } from '@/lib/constants/roles'
 
 export default async function GestorPrestacaoContasPage() {
   const supabase = await createClient()
@@ -18,7 +19,7 @@ export default async function GestorPrestacaoContasPage() {
     .eq('id', user.id)
     .single()
 
-  if (!profile || !['gestor', 'admin', 'super_admin'].includes(profile.role)) {
+  if (!profile || !ADMIN_ROLES.includes(profile.role as typeof ADMIN_ROLES[number])) {
     redirect('/dashboard')
   }
 

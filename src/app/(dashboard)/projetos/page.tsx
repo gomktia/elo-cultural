@@ -40,7 +40,7 @@ export default async function MeusProjetosPage() {
 
       {projetos && projetos.length > 0 ? (
         <div className="grid gap-3">
-          {projetos.map((projeto: any) => (
+          {projetos.map((projeto) => (
             <Card key={projeto.id} className="border-slate-200 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white">
               <CardContent className="flex items-center gap-4 p-4">
                 <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">

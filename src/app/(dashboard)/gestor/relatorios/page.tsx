@@ -37,7 +37,7 @@ export default async function GestorRelatoriosPage() {
 
   // Estatisticas por edital
   const relatorios = await Promise.all(
-    (editais || []).map(async (edital: any) => {
+    (editais || []).map(async (edital) => {
       const [
         { count: totalInscritos },
         { count: habilitados },
@@ -51,14 +51,14 @@ export default async function GestorRelatoriosPage() {
           .select('id', { count: 'exact', head: true })
           .eq('status', 'finalizada')
           .in('projeto_id',
-            (await supabase.from('projetos').select('id').eq('edital_id', edital.id)).data?.map((p: any) => p.id) || []
+            (await supabase.from('projetos').select('id').eq('edital_id', edital.id)).data?.map((p) => p.id) || []
           ),
         supabase
           .from('recursos')
           .select('id', { count: 'exact', head: true })
           .eq('status', 'pendente')
           .in('projeto_id',
-            (await supabase.from('projetos').select('id').eq('edital_id', edital.id)).data?.map((p: any) => p.id) || []
+            (await supabase.from('projetos').select('id').eq('edital_id', edital.id)).data?.map((p) => p.id) || []
           ),
       ])
 

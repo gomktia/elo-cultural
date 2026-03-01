@@ -5,8 +5,7 @@ import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Plus, FileText } from 'lucide-react'
 import type { Edital } from '@/types/database.types'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { formatDateShort, formatDate } from '@/lib/utils/date'
 
 export default async function AdminEditaisPage() {
   const supabase = await createClient()
@@ -66,9 +65,9 @@ export default async function AdminEditaisPage() {
                     {edital.titulo}
                   </h3>
                   <div className="flex items-center gap-4 text-xs text-slate-400 font-medium">
-                    <span>Criado em: {format(new Date(edital.created_at), "dd MMM, yyyy", { locale: ptBR })}</span>
+                    <span>Criado em: {formatDateShort(edital.created_at)}</span>
                     <span className="h-1 w-1 rounded-full bg-slate-200" />
-                    <span>Início: {edital.inicio_inscricao ? format(new Date(edital.inicio_inscricao), "dd/MM/yyyy") : '—'}</span>
+                    <span>Início: {edital.inicio_inscricao ? formatDate(edital.inicio_inscricao) : '—'}</span>
                   </div>
                 </div>
               </div>

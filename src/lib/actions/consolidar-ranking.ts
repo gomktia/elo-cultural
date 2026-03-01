@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { ADMIN_ROLES } from '@/lib/constants/roles'
 
 export async function consolidarRanking(editalId: string) {
   const supabase = await createClient()
@@ -15,7 +16,7 @@ export async function consolidarRanking(editalId: string) {
     .eq('id', user.id)
     .single()
 
-  if (!profile || !['gestor', 'admin', 'super_admin'].includes(profile.role)) {
+  if (!profile || !ADMIN_ROLES.includes(profile.role as typeof ADMIN_ROLES[number])) {
     return { error: 'Sem permissão para consolidar ranking' }
   }
 

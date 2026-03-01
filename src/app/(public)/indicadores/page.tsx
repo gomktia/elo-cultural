@@ -232,7 +232,7 @@ export default async function IndicadoresPage() {
                 <p className="text-sm text-slate-400">Nenhum edital publicado ainda.</p>
               </div>
             ) : (
-              (editaisRecentes || []).map((edital: any) => (
+              (editaisRecentes || []).map((edital) => (
                 <Link key={edital.id} href={`/editais/${edital.id}`} className="group">
                   <div className="flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition-colors">
                     <div className="flex items-center gap-4 min-w-0">

@@ -11,14 +11,7 @@ import { toast } from 'sonner'
 import { Loader2, Search, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import type { UserRole } from '@/types/database.types'
-
-const roleLabels: Record<string, string> = {
-  proponente: 'Proponente',
-  avaliador: 'Avaliador',
-  gestor: 'Gestor',
-  admin: 'Administrador',
-  super_admin: 'Super Admin',
-}
+import { ROLE_LABELS } from '@/lib/constants/roles'
 
 const roleBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   admin: 'destructive',
@@ -170,7 +163,7 @@ export default function UsuariosAdminPage() {
                       )
                     ) : (
                       <Badge variant={roleBadgeVariant[u.role] || 'outline'} className="rounded-lg px-3 py-1 text-[11px] font-medium uppercase tracking-wide">
-                        {roleLabels[u.role] || u.role}
+                        {ROLE_LABELS[u.role as keyof typeof ROLE_LABELS] || u.role}
                       </Badge>
                     )}
                   </div>

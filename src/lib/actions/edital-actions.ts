@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { notifyEditalFaseAlterada } from '@/lib/email/notify'
+import { ADMIN_ROLES } from '@/lib/constants/roles'
 
 // Order of phases for the edital workflow
 // Note: After fix, seleção (avaliação) comes before habilitação
@@ -36,7 +37,7 @@ export async function avancarEtapa(editalId: string) {
     .eq('id', user.id)
     .single()
 
-  if (!profile || !['admin', 'gestor', 'super_admin'].includes(profile.role)) {
+  if (!profile || !ADMIN_ROLES.includes(profile.role as typeof ADMIN_ROLES[number])) {
     return { error: 'Sem permissão para avançar etapa' }
   }
 

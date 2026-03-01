@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-
-const ADMIN_ROLES = ['admin', 'gestor', 'super_admin']
+import { ADMIN_ROLES } from '@/lib/constants/roles'
 
 export default async function AdminLayout({
   children,

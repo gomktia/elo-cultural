@@ -3,14 +3,7 @@ import { redirect } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Users, Building2 } from 'lucide-react'
-
-const roleLabels: Record<string, string> = {
-  proponente: 'Proponente',
-  avaliador: 'Avaliador',
-  gestor: 'Gestor',
-  admin: 'Admin',
-  super_admin: 'Super Admin',
-}
+import { ROLE_LABELS } from '@/lib/constants/roles'
 
 const roleBadgeColor: Record<string, string> = {
   super_admin: 'bg-purple-50 text-purple-600',
@@ -53,7 +46,7 @@ export default async function SuperUsuariosPage() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {(usuarios || []).map((u: any) => {
+        {(usuarios || []).map((u) => {
           const initials = u.nome?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || '?'
           const tenantNome = u.tenants?.nome || 'Sem tenant'
 
@@ -74,7 +67,7 @@ export default async function SuperUsuariosPage() {
                     </div>
                   </div>
                   <Badge className={`${roleBadgeColor[u.role] || roleBadgeColor.proponente} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
-                    {roleLabels[u.role] || u.role}
+                    {ROLE_LABELS[u.role as keyof typeof ROLE_LABELS] || u.role}
                   </Badge>
                 </div>
 

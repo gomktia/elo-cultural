@@ -8,14 +8,7 @@ import { ArrowLeft, FolderOpen, ClipboardCheck, Calendar, ShieldAlert, User, Pho
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { Profile } from '@/types/database.types'
-
-const roleLabels: Record<string, string> = {
-  proponente: 'Proponente',
-  avaliador: 'Avaliador',
-  gestor: 'Gestor',
-  admin: 'Administrador',
-  super_admin: 'Super Admin',
-}
+import { ROLE_LABELS } from '@/lib/constants/roles'
 
 const roleBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   admin: 'destructive',
@@ -78,7 +71,7 @@ export default async function AdminUsuarioDetailPage({
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">{p.nome}</h1>
                   <Badge variant={roleBadgeVariant[p.role] || 'outline'} className="rounded-lg px-3 py-1 text-[11px] font-medium uppercase tracking-wide">
-                    {roleLabels[p.role] || p.role}
+                    {ROLE_LABELS[p.role as keyof typeof ROLE_LABELS] || p.role}
                   </Badge>
                   <Badge className={`${p.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
                     {p.active ? 'Ativo' : 'Inativo'}
@@ -201,7 +194,7 @@ export default async function AdminUsuarioDetailPage({
               </div>
               <div className="space-y-1">
                 <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none">Função</p>
-                <p className="text-sm font-semibold text-slate-900">{roleLabels[p.role] || p.role}</p>
+                <p className="text-sm font-semibold text-slate-900">{ROLE_LABELS[p.role as keyof typeof ROLE_LABELS] || p.role}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide leading-none">Data de cadastro</p>
