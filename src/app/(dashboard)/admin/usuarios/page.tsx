@@ -17,6 +17,7 @@ const roleLabels: Record<string, string> = {
   avaliador: 'Avaliador',
   gestor: 'Gestor',
   admin: 'Administrador',
+  super_admin: 'Super Admin',
 }
 
 const roleBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
@@ -24,6 +25,7 @@ const roleBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'de
   gestor: 'default',
   avaliador: 'secondary',
   proponente: 'outline',
+  super_admin: 'destructive',
 }
 
 export default function UsuariosAdminPage() {
@@ -40,10 +42,12 @@ export default function UsuariosAdminPage() {
   async function loadUsuarios() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
+
     const { data: myProfile } = await supabase
       .from('profiles')
       .select('tenant_id, role')
-      .eq('id', user!.id)
+      .eq('id', user.id)
       .single()
 
     setMyRole(myProfile?.role || 'proponente')

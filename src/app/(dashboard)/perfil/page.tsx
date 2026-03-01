@@ -38,10 +38,11 @@ export default function PerfilPage() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       setUserEmail(user?.email || '')
+      if (!user) { setLoading(false); return }
       const { data: prof } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user!.id)
+        .eq('id', user.id)
         .single()
       setProfile(prof)
       setForm({
@@ -59,10 +60,11 @@ export default function PerfilPage() {
     setSaving(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { toast.error('Sessão expirada'); setSaving(false); return }
     const { error } = await supabase
       .from('profiles')
       .update({ nome: form.nome, telefone: form.telefone || null, cpf_cnpj: form.cpf_cnpj || null })
-      .eq('id', user!.id)
+      .eq('id', user.id)
     if (error) {
       toast.error('Erro ao salvar: ' + error.message)
     } else {

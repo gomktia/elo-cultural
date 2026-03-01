@@ -53,6 +53,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     setLoading(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { toast.error('Sessão expirada'); setLoading(false); return }
 
     const protocolo = `PROT-${Date.now().toString(36).toUpperCase()}`
 
@@ -61,7 +62,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       .insert({
         tenant_id: tenantId,
         edital_id: editalId,
-        proponente_id: user!.id,
+        proponente_id: user.id,
         numero_protocolo: protocolo,
         titulo: form.titulo,
         resumo: form.resumo || null,

@@ -64,14 +64,18 @@ export default function NovoEditalPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
+    if (!user) { toast.error('Sessão expirada'); setLoading(false); return }
+
     const { data: profile } = await supabase
       .from('profiles')
       .select('tenant_id')
-      .eq('id', user!.id)
+      .eq('id', user.id)
       .single()
 
+    if (!profile) { toast.error('Perfil não encontrado'); setLoading(false); return }
+
     const { data: editalData, error } = await supabase.from('editais').insert({
-      tenant_id: profile!.tenant_id,
+      tenant_id: profile.tenant_id,
       numero_edital: form.numero_edital,
       titulo: form.titulo,
       descricao: form.descricao || null,
@@ -85,7 +89,7 @@ export default function NovoEditalPage() {
       fim_recurso_selecao: form.fim_recurso_selecao || null,
       inicio_recurso_habilitacao: form.inicio_recurso_habilitacao || null,
       fim_recurso_habilitacao: form.fim_recurso_habilitacao || null,
-      created_by: user!.id,
+      created_by: user.id,
     }).select('id').single()
 
     if (error) {

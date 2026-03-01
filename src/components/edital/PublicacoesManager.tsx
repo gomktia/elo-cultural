@@ -57,6 +57,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
     setSaving(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { toast.error('Sessão expirada'); setSaving(false); return }
 
     const nextNum = publicacoes.length + 1
 
@@ -67,7 +68,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
       numero_publicacao: nextNum,
       titulo: form.titulo,
       conteudo: form.conteudo || null,
-      publicado_por: user!.id,
+      publicado_por: user.id,
     })
 
     if (error) {

@@ -119,3 +119,56 @@ Responda EXCLUSIVAMENTE em JSON valido, sem texto adicional, no seguinte formato
 
   return { system: SYSTEM_MESSAGE, user }
 }
+
+/**
+ * Batch version: evaluates ALL criteria for a project in a single API call.
+ * Reduces N+1 calls (1 per criteria) to a single call per project.
+ */
+export function buildAvaliacaoBatchPrompt(
+  projeto: ProjetoParaAnalise,
+  criterios: CriterioParaAnalise[],
+  edital: EditalParaAnalise
+): { system: string; user: string } {
+  const criteriosStr = criterios.map((c, i) =>
+    `${i + 1}. ID: ${c.id}\n   Descricao: ${c.descricao}\n   Nota Minima: ${c.nota_minima} | Nota Maxima: ${c.nota_maxima} | Peso: ${c.peso}`
+  ).join('\n')
+
+  const user = `## Tarefa
+Avalie o projeto abaixo com base em TODOS os criterios de avaliacao listados. Para cada criterio, atribua uma nota dentro do intervalo permitido e justifique.
+
+## Edital
+- Titulo: ${edital.titulo}
+- Numero: ${edital.numero_edital}
+- Objeto: ${edital.objeto}
+
+## Projeto
+- Titulo: ${projeto.titulo}
+- Resumo: ${projeto.resumo}
+- Descricao Tecnica: ${projeto.descricao_tecnica}
+- Orcamento Total: R$ ${Number(projeto.orcamento_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+- Cronograma de Execucao: ${projeto.cronograma_execucao}
+
+## Criterios de Avaliacao
+${criteriosStr}
+
+## Instrucoes
+- Para CADA criterio, a nota deve estar entre a nota minima e maxima do criterio
+- Considere o resumo, descricao tecnica, orcamento e cronograma do projeto
+- Avalie o alinhamento do projeto com cada criterio descrito
+- Indique seu nivel de confianca na avaliacao de cada criterio (0 a 1)
+
+## Formato de Resposta
+Responda EXCLUSIVAMENTE em JSON valido, sem texto adicional, no seguinte formato:
+{
+  "avaliacoes": [
+    {
+      "criterio_id": "uuid-do-criterio",
+      "nota": 8.5,
+      "justificativa": "Justificativa detalhada em portugues",
+      "confianca": 0.75
+    }
+  ]
+}`
+
+  return { system: SYSTEM_MESSAGE, user }
+}

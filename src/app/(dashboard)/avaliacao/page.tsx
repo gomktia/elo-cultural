@@ -9,11 +9,12 @@ import type { AvaliacaoWithProjeto } from '@/types/database.types'
 export default async function AvaliacaoListPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
 
   const { data: rawAvaliacoes } = await supabase
     .from('avaliacoes')
     .select('*, projetos(titulo, numero_protocolo, editais(titulo, numero_edital))')
-    .eq('avaliador_id', user!.id)
+    .eq('avaliador_id', user.id)
     .order('created_at', { ascending: false })
 
   const avaliacoes = (rawAvaliacoes || []) as AvaliacaoWithProjeto[]

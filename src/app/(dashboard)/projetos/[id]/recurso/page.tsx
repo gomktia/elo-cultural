@@ -33,20 +33,24 @@ export default function RecursoPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
+    if (!user) { toast.error('Sessão expirada'); setLoading(false); return }
+
     const { data: profile } = await supabase
       .from('profiles')
       .select('tenant_id')
-      .eq('id', user!.id)
+      .eq('id', user.id)
       .single()
+
+    if (!profile) { toast.error('Perfil não encontrado'); setLoading(false); return }
 
     const protocolo = `REC-${Date.now().toString(36).toUpperCase()}`
 
     const { data: recurso, error } = await supabase
       .from('recursos')
       .insert({
-        tenant_id: profile!.tenant_id,
+        tenant_id: profile.tenant_id,
         projeto_id: projetoId,
-        proponente_id: user!.id,
+        proponente_id: user.id,
         tipo,
         numero_protocolo: protocolo,
         fundamentacao,

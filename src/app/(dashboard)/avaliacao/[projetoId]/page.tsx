@@ -40,6 +40,7 @@ export default function AvaliacaoPage() {
     async function load() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setLoading(false); return }
 
       // Load projeto (AVALIACAO CEGA - sem nome do proponente)
       const { data: proj } = await supabase
@@ -55,7 +56,7 @@ export default function AvaliacaoPage() {
         .from('avaliacoes')
         .select('*')
         .eq('projeto_id', projetoId)
-        .eq('avaliador_id', user!.id)
+        .eq('avaliador_id', user.id)
         .single()
 
       setAvaliacao(av)
@@ -155,9 +156,7 @@ export default function AvaliacaoPage() {
       return
     }
 
-    // Delete existing notas and re-insert
-    await supabase.from('avaliacao_criterios').delete().eq('avaliacao_id', avaliacao.id)
-
+    // Upsert notas (avoids race condition from separate delete+insert)
     const notas = criterios
       .filter(c => c.nota !== '')
       .map(c => ({
@@ -167,8 +166,23 @@ export default function AvaliacaoPage() {
         comentario: c.comentario || null,
       }))
 
+    // Remove criteria that were cleared (nota is empty)
+    const criteriosLimpos = criterios
+      .filter(c => c.nota === '')
+      .map(c => c.criterio_id)
+
+    if (criteriosLimpos.length > 0) {
+      await supabase
+        .from('avaliacao_criterios')
+        .delete()
+        .eq('avaliacao_id', avaliacao.id)
+        .in('criterio_id', criteriosLimpos)
+    }
+
     if (notas.length > 0) {
-      const { error } = await supabase.from('avaliacao_criterios').insert(notas)
+      const { error } = await supabase
+        .from('avaliacao_criterios')
+        .upsert(notas, { onConflict: 'avaliacao_id,criterio_id' })
       if (error) {
         toast.error('Erro ao salvar notas: ' + error.message)
         setSaving(false)

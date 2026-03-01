@@ -81,7 +81,7 @@ export async function middleware(request: NextRequest) {
 
   // 2. Auth protection for dashboard routes
   const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/cadastro') || pathname.startsWith('/esqueci-senha')
-  const isDashboardRoute = pathname.startsWith('/projetos') || pathname.startsWith('/avaliacao') || pathname.startsWith('/gestor') || pathname.startsWith('/admin') || pathname.startsWith('/perfil') || pathname.startsWith('/super')
+  const isDashboardRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/projetos') || pathname.startsWith('/avaliacao') || pathname.startsWith('/gestor') || pathname.startsWith('/admin') || pathname.startsWith('/perfil') || pathname.startsWith('/super')
 
   if (isDashboardRoute && !user) {
     const url = request.nextUrl.clone()

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getOpenAIClient } from '@/lib/openai'
 import { getIAConfig } from '@/lib/ia/config'
-import { buildHabilitacaoPrompt, buildAvaliacaoPrompt } from '@/lib/ia/prompts'
+import { buildHabilitacaoPrompt, buildAvaliacaoBatchPrompt } from '@/lib/ia/prompts'
 import { detectarIrregularidades } from '@/lib/ia/similaridade'
 import { NextRequest, NextResponse } from 'next/server'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
@@ -199,7 +199,7 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // 9d. For each criterio, call GPT-4 for avaliacao
+      // 9d. Batch: evaluate ALL criterios in a single API call (eliminates N+1)
       const notasResults: Array<{
         criterio_id: string
         nota: number
@@ -207,52 +207,73 @@ export async function POST(request: NextRequest) {
         confianca: number
       }> = []
 
-      for (const criterio of criteriosList) {
-        const avalPrompt = buildAvaliacaoPrompt(projeto, criterio, edital)
-
-        let avalResult: { nota: number; justificativa: string; confianca: number }
+      if (criteriosList.length > 0) {
+        const batchPrompt = buildAvaliacaoBatchPrompt(projeto, criteriosList, edital)
 
         try {
-          const avalResponse = await openai.chat.completions.create({
+          const batchResponse = await openai.chat.completions.create({
             model: iaModel,
             messages: [
-              { role: 'system', content: avalPrompt.system },
-              { role: 'user', content: avalPrompt.user },
+              { role: 'system', content: batchPrompt.system },
+              { role: 'user', content: batchPrompt.user },
             ],
             temperature: 0.3,
             response_format: { type: 'json_object' },
           })
 
-          const avalContent = avalResponse.choices[0]?.message?.content || '{}'
+          const batchContent = batchResponse.choices[0]?.message?.content || '{}'
           try {
-            avalResult = JSON.parse(avalContent)
-            // Clamp nota within range
-            if (avalResult.nota < criterio.nota_minima) avalResult.nota = criterio.nota_minima
-            if (avalResult.nota > criterio.nota_maxima) avalResult.nota = criterio.nota_maxima
+            const parsed = JSON.parse(batchContent)
+            const avaliacoes = parsed.avaliacoes || []
+
+            for (const criterio of criteriosList) {
+              const found = avaliacoes.find((a: any) => a.criterio_id === criterio.id)
+              if (found) {
+                // Clamp nota within range
+                let nota = Number(found.nota)
+                if (nota < criterio.nota_minima) nota = criterio.nota_minima
+                if (nota > criterio.nota_maxima) nota = criterio.nota_maxima
+                notasResults.push({
+                  criterio_id: criterio.id,
+                  nota,
+                  justificativa: found.justificativa || 'Sem justificativa',
+                  confianca: Math.min(1, Math.max(0, Number(found.confianca) || 0.5)),
+                })
+              } else {
+                // Criterio not returned by AI - use middle of range
+                const notaMedia = (criterio.nota_minima + criterio.nota_maxima) / 2
+                notasResults.push({
+                  criterio_id: criterio.id,
+                  nota: notaMedia,
+                  justificativa: 'Criterio nao avaliado pela IA nesta execucao.',
+                  confianca: 0.3,
+                })
+              }
+            }
           } catch {
-            // Fallback: middle of range
-            const notaMedia = (criterio.nota_minima + criterio.nota_maxima) / 2
-            avalResult = {
-              nota: notaMedia,
-              justificativa: 'Não foi possível interpretar a resposta da IA para este critério.',
-              confianca: 0.3,
+            // Parse error - fallback all criteria to middle
+            for (const criterio of criteriosList) {
+              const notaMedia = (criterio.nota_minima + criterio.nota_maxima) / 2
+              notasResults.push({
+                criterio_id: criterio.id,
+                nota: notaMedia,
+                justificativa: 'Não foi possível interpretar a resposta da IA.',
+                confianca: 0.3,
+              })
             }
           }
         } catch {
-          const notaMedia = (criterio.nota_minima + criterio.nota_maxima) / 2
-          avalResult = {
-            nota: notaMedia,
-            justificativa: 'Erro ao chamar a IA para avaliacao deste criterio.',
-            confianca: 0.3,
+          // API error - fallback all criteria
+          for (const criterio of criteriosList) {
+            const notaMedia = (criterio.nota_minima + criterio.nota_maxima) / 2
+            notasResults.push({
+              criterio_id: criterio.id,
+              nota: notaMedia,
+              justificativa: 'Erro ao chamar a IA para avaliacao.',
+              confianca: 0.3,
+            })
           }
         }
-
-        notasResults.push({
-          criterio_id: criterio.id,
-          nota: avalResult.nota,
-          justificativa: avalResult.justificativa,
-          confianca: avalResult.confianca,
-        })
       }
 
       // Calculate nota_final_ia (weighted average)

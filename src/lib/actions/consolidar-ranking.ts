@@ -5,6 +5,20 @@ import { createClient } from '@/lib/supabase/server'
 export async function consolidarRanking(editalId: string) {
   const supabase = await createClient()
 
+  // Auth + role check
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autorizado' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || !['gestor', 'admin', 'super_admin'].includes(profile.role)) {
+    return { error: 'Sem permissão para consolidar ranking' }
+  }
+
   // Single query: fetch all projetos with their finalized avaliacoes (eliminates N+1)
   const { data: projetos } = await supabase
     .from('projetos')

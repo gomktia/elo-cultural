@@ -27,13 +27,14 @@ export function DecisaoForm({ recursoId, onDecisao }: DecisaoFormProps) {
     setLoading(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { toast.error('Sessão expirada'); setLoading(false); return }
 
     const { error } = await supabase
       .from('recursos')
       .update({
         status,
         decisao,
-        decidido_por: user!.id,
+        decidido_por: user.id,
         data_decisao: new Date().toISOString(),
       })
       .eq('id', recursoId)

@@ -10,11 +10,12 @@ import { ptBR } from 'date-fns/locale'
 export default async function MeusProjetosPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
 
   const { data: projetos } = await supabase
     .from('projetos')
     .select('*, editais(titulo, numero_edital)')
-    .eq('proponente_id', user!.id)
+    .eq('proponente_id', user.id)
     .order('data_envio', { ascending: false })
 
   return (
