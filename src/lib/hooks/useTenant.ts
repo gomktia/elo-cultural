@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { extractSubdomain } from '@/lib/utils/domain'
 import type { Tenant } from '@/types/database.types'
 
 export function useTenant() {
@@ -10,18 +11,24 @@ export function useTenant() {
 
   useEffect(() => {
     async function fetchTenant() {
-      const supabase = createClient()
-
-      // Get tenant domain from cookie or hostname
-      const domain = document.cookie
+      // Get slug from cookie or extract from hostname
+      const slug = document.cookie
         .split('; ')
-        .find(row => row.startsWith('tenant_domain='))
-        ?.split('=')[1] || window.location.hostname
+        .find(row => row.startsWith('tenant_slug='))
+        ?.split('=')[1] || extractSubdomain(window.location.hostname)
 
+      // Root domain or no tenant → return null
+      if (!slug) {
+        setTenant(null)
+        setLoading(false)
+        return
+      }
+
+      const supabase = createClient()
       const { data } = await supabase
         .from('tenants')
         .select('*')
-        .eq('dominio', domain)
+        .eq('dominio', slug)
         .eq('status', 'ativo')
         .single()
 

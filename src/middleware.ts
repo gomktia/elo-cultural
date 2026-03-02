@@ -1,12 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
-
-// Known domains that should skip tenant validation (use first active tenant)
-const SKIP_DOMAINS = ['localhost', '127.0.0.1']
-const isPreviewDomain = (domain: string) => domain.endsWith('.vercel.app')
+import { extractSubdomain, getCookieDomain, isDevEnvironment, isRootDomain } from '@/lib/utils/domain'
 
 export async function middleware(request: NextRequest) {
-  const { supabase, user, supabaseResponse } = await updateSession(request)
   const { pathname } = request.nextUrl
 
   // Skip tenant resolution for static assets, API routes, and error pages
@@ -16,21 +12,48 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/api/') ||
     pathname === '/tenant-nao-encontrado'
   ) {
+    const { supabaseResponse } = await updateSession(request)
     return supabaseResponse
   }
 
-  // 1. Resolve tenant from hostname
-  const hostname = request.headers.get('x-tenant-domain') || request.headers.get('host') || ''
-  const domain = hostname.split(':')[0] // Remove port for localhost
+  // 1. Extract hostname info
+  const hostname = request.headers.get('host') || ''
+  const cookieDomain = getCookieDomain(hostname)
+  const subdomain = extractSubdomain(hostname)
+  const isDev = isDevEnvironment(hostname)
+  const isRoot = isRootDomain(hostname)
+
+  // 2. Create Supabase session with shared cookie domain
+  const { supabase, user, supabaseResponse } = await updateSession(request, cookieDomain)
+
+  const cookieOptions = {
+    path: '/',
+    httpOnly: false,
+    sameSite: 'lax' as const,
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
+  }
 
   const existingTenantId = request.cookies.get('tenant_id')?.value
-  const existingTenantDomain = request.cookies.get('tenant_domain')?.value
-  const isLocalhost = SKIP_DOMAINS.includes(domain) || isPreviewDomain(domain)
+  const existingTenantSlug = request.cookies.get('tenant_slug')?.value
 
-  // Resolve tenant if we don't have it cached in cookie yet
-  if (!existingTenantId || existingTenantDomain !== domain) {
-    if (isLocalhost) {
-      // Dev: use first active tenant
+  // 3. Root domain → landing page, no tenant
+  if (isRoot) {
+    // Clear any lingering tenant cookies on root domain
+    if (existingTenantId) {
+      supabaseResponse.cookies.set('tenant_id', '', { ...cookieOptions, maxAge: 0 })
+      supabaseResponse.cookies.set('tenant_slug', '', { ...cookieOptions, maxAge: 0 })
+    }
+    // Also clear legacy cookie
+    if (request.cookies.get('tenant_domain')?.value) {
+      supabaseResponse.cookies.set('tenant_domain', '', { ...cookieOptions, maxAge: 0 })
+    }
+
+    return applyAuthProtection(request, user, supabaseResponse, pathname)
+  }
+
+  // 4. Dev/preview → use first active tenant (current behavior)
+  if (isDev) {
+    if (!existingTenantId) {
       const { data: firstTenant } = await supabase
         .from('tenants')
         .select('id, dominio')
@@ -40,49 +63,63 @@ export async function middleware(request: NextRequest) {
         .single()
 
       if (firstTenant) {
-        supabaseResponse.cookies.set('tenant_id', firstTenant.id, {
-          path: '/',
-          httpOnly: false,
-          sameSite: 'lax',
-        })
-        supabaseResponse.cookies.set('tenant_domain', firstTenant.dominio, {
-          path: '/',
-          httpOnly: false,
-          sameSite: 'lax',
-        })
+        supabaseResponse.cookies.set('tenant_id', firstTenant.id, cookieOptions)
+        supabaseResponse.cookies.set('tenant_slug', firstTenant.dominio, cookieOptions)
       }
-    } else {
-      // Production: resolve tenant by domain
+    }
+
+    return applyAuthProtection(request, user, supabaseResponse, pathname)
+  }
+
+  // 5. Subdomain → resolve tenant by slug
+  if (subdomain) {
+    // Only re-resolve if slug changed
+    if (!existingTenantId || existingTenantSlug !== subdomain) {
       const { data: tenant } = await supabase
         .from('tenants')
         .select('id, dominio, status')
-        .eq('dominio', domain)
+        .eq('dominio', subdomain)
         .single()
 
       if (!tenant || tenant.status !== 'ativo') {
-        // Domain not found or tenant inactive — redirect to error page
         const url = request.nextUrl.clone()
         url.pathname = '/tenant-nao-encontrado'
         url.search = ''
         return NextResponse.redirect(url)
       }
 
-      supabaseResponse.cookies.set('tenant_id', tenant.id, {
-        path: '/',
-        httpOnly: false,
-        sameSite: 'lax',
-      })
-      supabaseResponse.cookies.set('tenant_domain', domain, {
-        path: '/',
-        httpOnly: false,
-        sameSite: 'lax',
-      })
+      supabaseResponse.cookies.set('tenant_id', tenant.id, cookieOptions)
+      supabaseResponse.cookies.set('tenant_slug', subdomain, cookieOptions)
     }
+
+    return applyAuthProtection(request, user, supabaseResponse, pathname)
   }
 
-  // 2. Auth protection for dashboard routes
-  const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/cadastro') || pathname.startsWith('/esqueci-senha')
-  const isDashboardRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/projetos') || pathname.startsWith('/avaliacao') || pathname.startsWith('/gestor') || pathname.startsWith('/admin') || pathname.startsWith('/perfil') || pathname.startsWith('/super')
+  // 6. Unknown domain → error page
+  const url = request.nextUrl.clone()
+  url.pathname = '/tenant-nao-encontrado'
+  url.search = ''
+  return NextResponse.redirect(url)
+}
+
+function applyAuthProtection(
+  request: NextRequest,
+  user: any,
+  supabaseResponse: NextResponse,
+  pathname: string
+) {
+  const isAuthRoute =
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/cadastro') ||
+    pathname.startsWith('/esqueci-senha')
+  const isDashboardRoute =
+    pathname.startsWith('/dashboard') ||
+    pathname.startsWith('/projetos') ||
+    pathname.startsWith('/avaliacao') ||
+    pathname.startsWith('/gestor') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/perfil') ||
+    pathname.startsWith('/super')
 
   if (isDashboardRoute && !user) {
     const url = request.nextUrl.clone()
