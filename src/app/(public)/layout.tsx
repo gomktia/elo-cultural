@@ -148,7 +148,7 @@ export default async function PublicLayout({
                 </span>
               </div>
               <p className="text-sm text-white/60 max-w-xs text-center md:text-left">
-                Plataforma de gestão de editais culturais. Transparência e eficiência no fomento à cultura.
+                Gestão de editais culturais. Transparência e eficiência no fomento à cultura.
               </p>
             </div>
 
@@ -175,7 +175,7 @@ export default async function PublicLayout({
 
           <div className="border-t border-white/10 py-6 flex items-center justify-center">
             <p className="text-xs text-white/40 text-center">
-              Elo Cultural &copy; {new Date().getFullYear()} &mdash; Plataforma de Editais Culturais
+              {brandName} &copy; {new Date().getFullYear()} &mdash; Plataforma de Editais Culturais
             </p>
           </div>
         </div>

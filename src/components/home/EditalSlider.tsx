@@ -11,9 +11,10 @@ import { ptBR } from 'date-fns/locale'
 
 interface EditalSliderProps {
   editais: Edital[]
+  brandName?: string
 }
 
-export function EditalSlider({ editais }: EditalSliderProps) {
+export function EditalSlider({ editais, brandName }: EditalSliderProps) {
   const [current, setCurrent] = useState(0)
   const total = editais.length
 
@@ -36,7 +37,7 @@ export function EditalSlider({ editais }: EditalSliderProps) {
       <div className="bg-white rounded-2xl border border-slate-200 p-8 md:p-12 text-center max-w-2xl mx-auto">
         <div className="h-1 w-full rounded-full bg-gradient-to-r from-[#0047AB] via-[#e32a74] via-[#eeb513] to-[#77a80b] mb-8" />
         <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">
-          Bem-vindo ao Elo Cultural
+          {brandName ? `Bem-vindo — ${brandName}` : 'Bem-vindo ao Elo Cultural'}
         </h2>
         <p className="text-sm text-slate-500 mb-6">
           Nenhum edital publicado no momento. Acompanhe esta página para novidades.

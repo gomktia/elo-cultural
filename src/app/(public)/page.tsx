@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { EditalCard } from '@/components/edital/EditalCard'
@@ -8,6 +9,14 @@ import { ArrowRight, FileText, Upload, BarChart3 } from 'lucide-react'
 
 export default async function HomePage() {
   const supabase = await createClient()
+
+  const cookieStore = await cookies()
+  const tenantId = cookieStore.get('tenant_id')?.value
+  let tenantName: string | null = null
+  if (tenantId) {
+    const { data: t } = await supabase.from('tenants').select('nome').eq('id', tenantId).single()
+    tenantName = t?.nome || null
+  }
 
   const { data: editais } = await supabase
     .from('editais')
@@ -27,14 +36,14 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 py-12 md:py-20">
           <div className="text-center mb-8">
             <h1 className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight font-[Sora,sans-serif]">
-              Plataforma de Editais Culturais
+              {tenantName ? `${tenantName} — Editais Culturais` : 'Plataforma de Editais Culturais'}
             </h1>
             <p className="mt-3 text-sm md:text-base text-slate-500 max-w-xl mx-auto">
               Descubra oportunidades, envie seus projetos e acompanhe resultados de forma transparente.
             </p>
           </div>
 
-          <EditalSlider editais={(editais as Edital[]) || []} />
+          <EditalSlider editais={(editais as Edital[]) || []} brandName={tenantName || undefined} />
         </div>
       </section>
 
