@@ -27,11 +27,12 @@ export default async function PublicLayout({
   let brandColor = '#0047AB'
   let brandSecondary = '#E91E63'
   let tenantLogoUrl: string | null = null
+  let tenantName: string | null = null
 
   if (tenantId) {
     const { data: tenant } = await supabase
       .from('tenants')
-      .select('tema_cores, logo_url')
+      .select('nome, tema_cores, logo_url')
       .eq('id', tenantId)
       .single()
 
@@ -40,11 +41,13 @@ export default async function PublicLayout({
       brandColor = temaCores?.primary || '#0047AB'
       brandSecondary = temaCores?.secondary || '#E91E63'
       tenantLogoUrl = (tenant as any)?.logo_url || null
+      tenantName = tenant.nome || null
     }
   }
 
   const brandRgb = hexToRgb(brandColor)
   const logoSrc = tenantLogoUrl || '/icon-192.png'
+  const brandName = tenantName || 'EloCultural'
 
   return (
     <div
@@ -61,11 +64,11 @@ export default async function PublicLayout({
           <Link href="/" className="flex items-center gap-2.5 group">
             <img
               src={logoSrc}
-              alt="Elo Cultural"
+              alt={brandName}
               className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-white p-1 shadow-sm object-contain transition-all group-hover:scale-105"
             />
             <span className="font-[Sora,sans-serif] font-bold text-lg md:text-xl tracking-tight text-white leading-none">
-              EloCultural
+              {brandName}
             </span>
           </Link>
 
@@ -128,9 +131,9 @@ export default async function PublicLayout({
           <div className="py-10 md:py-12 flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
             <div className="flex flex-col items-center md:items-start gap-3">
               <div className="flex items-center gap-2.5">
-                <img src={logoSrc} alt="Elo Cultural" className="h-8 w-8 rounded-xl bg-white p-1 shadow-sm object-contain" />
+                <img src={logoSrc} alt={brandName} className="h-8 w-8 rounded-xl bg-white p-1 shadow-sm object-contain" />
                 <span className="font-[Sora,sans-serif] font-bold text-lg tracking-tight text-white">
-                  EloCultural
+                  {brandName}
                 </span>
               </div>
               <p className="text-sm text-white/60 max-w-xs text-center md:text-left">
