@@ -75,14 +75,19 @@ export async function PUT(request: NextRequest) {
     // Skip empty or masked API key updates
     if (MASKED_KEYS.includes(key) && (value === '' || value.includes('...'))) continue
 
-    await supabase
+    const { error } = await supabase
       .from('platform_settings')
-      .upsert({
+      .upsert([{
         key,
         value,
         updated_at: new Date().toISOString(),
         updated_by: user.id,
-      }, { onConflict: 'key' })
+      }], { onConflict: 'key' })
+
+    if (error) {
+      console.error(`[platform-settings] Erro ao salvar ${key}:`, error.message)
+      return NextResponse.json({ error: `Erro ao salvar ${key}: ${error.message}` }, { status: 500 })
+    }
   }
 
   return NextResponse.json({ success: true })
