@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/AppSidebar'
 import { Toaster } from '@/components/ui/sonner'
+import { FooterLogo } from '@/components/layout/FooterLogo'
 import type { UserRole, TenantTemaCores } from '@/types/database.types'
 
 function hexToRgb(hex: string) {
@@ -38,11 +39,12 @@ export default async function DashboardLayout({
     : { data: null }
 
   const role = (profile?.role as UserRole) || 'proponente'
+  const isSuperAdmin = role === 'super_admin'
   const userName = profile?.nome || user.email || 'Usuario'
   const userEmail = user.email || ''
-  const tenantName = tenant?.nome
-  const tenantLogoUrl = (tenant as any)?.logo_url || null
-  const tenantRodapeUrl = (tenant as any)?.logo_rodape_url || null
+  const tenantName = isSuperAdmin ? 'Elo Cultural' : tenant?.nome
+  const tenantLogoUrl = isSuperAdmin ? null : (tenant as any)?.logo_url || null
+  const tenantRodapeUrl = isSuperAdmin ? null : (tenant as any)?.logo_rodape_url || null
   const temaCores = tenant?.tema_cores as TenantTemaCores | null
   const brandColor = temaCores?.primary || '#0047AB'
   const brandSecondary = temaCores?.secondary || '#E91E63'
@@ -74,13 +76,7 @@ export default async function DashboardLayout({
           </main>
           {tenantRodapeUrl && (
             <footer className="border-t border-slate-100 dark:border-white/5 px-5 py-4 flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={tenantRodapeUrl}
-                alt="Governo"
-                className="h-10 w-auto opacity-60"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
+              <FooterLogo src={tenantRodapeUrl} />
             </footer>
           )}
         </SidebarInset>
