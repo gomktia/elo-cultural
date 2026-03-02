@@ -42,7 +42,7 @@ export function EditalSlider({ editais }: EditalSliderProps) {
           Nenhum edital publicado no momento. Acompanhe esta página para novidades.
         </p>
         <div className="flex gap-3 justify-center">
-          <Button asChild className="rounded-xl bg-[#0047AB] hover:bg-[#003d91]">
+          <Button asChild className="rounded-xl" style={{ backgroundColor: 'var(--brand-primary, #0047AB)' }}>
             <Link href="/editais">Ver Editais</Link>
           </Button>
           <Button asChild variant="outline" className="rounded-xl">
@@ -62,7 +62,7 @@ export function EditalSlider({ editais }: EditalSliderProps) {
           {editais.map((edital) => (
             <div key={edital.id} className="slider-slide p-6 md:p-10">
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-xs font-semibold text-[#0047AB] bg-[#0047AB]/[0.06] px-2.5 py-1 rounded-lg uppercase tracking-wide">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-lg uppercase tracking-wide" style={{ color: 'var(--brand-primary, #0047AB)', backgroundColor: 'rgba(var(--brand-rgb, 0,71,171), 0.06)' }}>
                   {edital.numero_edital}
                 </span>
                 <EditalStatusBadge status={edital.status} />
@@ -86,7 +86,7 @@ export function EditalSlider({ editais }: EditalSliderProps) {
               )}
 
               <div className="flex gap-3">
-                <Button asChild className="rounded-xl bg-[#0047AB] hover:bg-[#003d91] text-sm">
+                <Button asChild className="rounded-xl text-sm" style={{ backgroundColor: 'var(--brand-primary, #0047AB)' }}>
                   <Link href={`/editais/${edital.id}`}>Ver Edital</Link>
                 </Button>
                 <Button asChild variant="outline" className="rounded-xl text-sm">
@@ -121,8 +121,9 @@ export function EditalSlider({ editais }: EditalSliderProps) {
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`h-2 rounded-full transition-all ${
-                  i === current ? 'w-6 bg-[#0047AB]' : 'w-2 bg-slate-300 hover:bg-slate-400'
+                  i === current ? 'w-6' : 'w-2 bg-slate-300 hover:bg-slate-400'
                 }`}
+                style={i === current ? { backgroundColor: 'var(--brand-primary, #0047AB)' } : undefined}
                 aria-label={`Ir para edital ${i + 1}`}
               />
             ))}

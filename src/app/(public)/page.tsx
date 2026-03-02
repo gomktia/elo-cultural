@@ -52,7 +52,7 @@ export default async function HomePage() {
                 icon: FileText,
                 title: 'Consulte Editais',
                 description: 'Navegue pelos editais abertos e encontre oportunidades para seu projeto cultural.',
-                color: '#0047AB',
+                color: 'var(--brand-primary, #0047AB)',
               },
               {
                 icon: Upload,
@@ -110,7 +110,7 @@ export default async function HomePage() {
             </div>
           ) : (
             <div className="text-center py-16 bg-white border border-slate-200 rounded-2xl">
-              <div className="h-14 w-14 rounded-xl bg-[#0047AB]/[0.06] flex items-center justify-center mx-auto mb-4">
+              <div className="h-14 w-14 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'rgba(var(--brand-rgb, 0,71,171), 0.06)' }}>
                 <FileText className="h-6 w-6 text-[var(--brand-primary)]" />
               </div>
               <p className="text-base font-semibold text-slate-700 mb-1">Nenhum edital aberto no momento</p>

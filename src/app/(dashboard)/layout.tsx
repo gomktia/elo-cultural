@@ -45,7 +45,7 @@ export default async function DashboardLayout({
   const tenantName = isSuperAdmin ? 'Elo Cultural' : tenant?.nome
   const tenantLogoUrl = isSuperAdmin ? null : (tenant as any)?.logo_url || null
   const tenantRodapeUrl = isSuperAdmin ? null : (tenant as any)?.logo_rodape_url || null
-  const temaCores = tenant?.tema_cores as TenantTemaCores | null
+  const temaCores = isSuperAdmin ? null : (tenant?.tema_cores as TenantTemaCores | null)
   const brandColor = temaCores?.primary || '#0047AB'
   const brandSecondary = temaCores?.secondary || '#E91E63'
   const brandRgb = hexToRgb(brandColor)

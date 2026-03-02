@@ -5,7 +5,7 @@ function getBrowserCookieDomain(): string | undefined {
   if (!rootDomain) return undefined
 
   const host = typeof window !== 'undefined' ? window.location.hostname : ''
-  if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')) {
+  if (!host || host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')) {
     return undefined
   }
   if (host === rootDomain || host.endsWith(`.${rootDomain}`)) {
@@ -17,15 +17,20 @@ function getBrowserCookieDomain(): string | undefined {
 export function createClient() {
   const cookieDomain = getBrowserCookieDomain()
 
+  if (cookieDomain) {
+    return createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookieOptions: {
+          domain: cookieDomain,
+        },
+      }
+    )
+  }
+
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    cookieDomain
-      ? {
-          cookieOptions: {
-            domain: cookieDomain,
-          },
-        }
-      : undefined
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 }

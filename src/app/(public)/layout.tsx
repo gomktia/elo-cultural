@@ -1,6 +1,16 @@
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/server'
+import type { TenantTemaCores } from '@/types/database.types'
+
+function hexToRgb(hex: string) {
+  const clean = hex.replace('#', '')
+  const r = parseInt(clean.slice(0, 2), 16)
+  const g = parseInt(clean.slice(2, 4), 16)
+  const b = parseInt(clean.slice(4, 6), 16)
+  return `${r}, ${g}, ${b}`
+}
 
 export default async function PublicLayout({
   children,
@@ -10,14 +20,47 @@ export default async function PublicLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Read tenant from cookie (set by middleware for subdomains)
+  const cookieStore = await cookies()
+  const tenantId = cookieStore.get('tenant_id')?.value
+
+  let brandColor = '#0047AB'
+  let brandSecondary = '#E91E63'
+  let tenantLogoUrl: string | null = null
+
+  if (tenantId) {
+    const { data: tenant } = await supabase
+      .from('tenants')
+      .select('tema_cores, logo_url')
+      .eq('id', tenantId)
+      .single()
+
+    if (tenant) {
+      const temaCores = tenant.tema_cores as TenantTemaCores | null
+      brandColor = temaCores?.primary || '#0047AB'
+      brandSecondary = temaCores?.secondary || '#E91E63'
+      tenantLogoUrl = (tenant as any)?.logo_url || null
+    }
+  }
+
+  const brandRgb = hexToRgb(brandColor)
+  const logoSrc = tenantLogoUrl || '/icon-192.png'
+
   return (
-    <div className="min-h-screen flex flex-col font-sans">
-      {/* ── Navbar: Glass over hero ── */}
-      <header className="sticky top-0 z-50 bg-[#0047AB] shadow-sm">
+    <div
+      className="min-h-screen flex flex-col font-sans"
+      style={{
+        ['--brand-primary' as string]: brandColor,
+        ['--brand-secondary' as string]: brandSecondary,
+        ['--brand-rgb' as string]: brandRgb,
+      }}
+    >
+      {/* ── Navbar ── */}
+      <header className="sticky top-0 z-50 shadow-sm" style={{ backgroundColor: brandColor }}>
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
           <Link href="/" className="flex items-center gap-2.5 group">
             <img
-              src="/icon-192.png"
+              src={logoSrc}
               alt="Elo Cultural"
               className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-white p-1 shadow-sm object-contain transition-all group-hover:scale-105"
             />
@@ -54,13 +97,19 @@ export default async function PublicLayout({
 
             {user ? (
               <Link href="/dashboard">
-                <Button className="h-9 px-5 rounded-xl bg-white text-[#0047AB] font-semibold hover:bg-white/90 transition-all text-sm shadow-sm">
+                <Button
+                  className="h-9 px-5 rounded-xl bg-white font-semibold hover:bg-white/90 transition-all text-sm shadow-sm"
+                  style={{ color: brandColor }}
+                >
                   Meu Painel
                 </Button>
               </Link>
             ) : (
               <Link href="/login">
-                <Button className="h-9 px-6 rounded-xl bg-white text-[#0047AB] font-semibold hover:bg-white/90 transition-all text-sm shadow-sm">
+                <Button
+                  className="h-9 px-6 rounded-xl bg-white font-semibold hover:bg-white/90 transition-all text-sm shadow-sm"
+                  style={{ color: brandColor }}
+                >
                   Entrar
                 </Button>
               </Link>
@@ -73,13 +122,13 @@ export default async function PublicLayout({
         {children}
       </main>
 
-      {/* ── Footer: Brand blue ── */}
-      <footer className="bg-[#0047AB]">
+      {/* ── Footer: Brand color ── */}
+      <footer style={{ backgroundColor: brandColor }}>
         <div className="container mx-auto px-6 md:px-8">
           <div className="py-10 md:py-12 flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
             <div className="flex flex-col items-center md:items-start gap-3">
               <div className="flex items-center gap-2.5">
-                <img src="/icon-192.png" alt="Elo Cultural" className="h-8 w-8 rounded-xl bg-white p-1 shadow-sm object-contain" />
+                <img src={logoSrc} alt="Elo Cultural" className="h-8 w-8 rounded-xl bg-white p-1 shadow-sm object-contain" />
                 <span className="font-[Sora,sans-serif] font-bold text-lg tracking-tight text-white">
                   EloCultural
                 </span>
