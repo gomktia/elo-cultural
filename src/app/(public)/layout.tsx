@@ -1,35 +1,12 @@
 import Link from 'next/link'
-import { cookies } from 'next/headers'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/server'
+import { getTenantFromCookie, getTenantBrand, brandCssVars } from '@/lib/tenant'
 import type { Metadata } from 'next'
-import type { TenantTemaCores } from '@/types/database.types'
-
-function hexToRgb(hex: string) {
-  const clean = hex.replace('#', '')
-  const r = parseInt(clean.slice(0, 2), 16)
-  const g = parseInt(clean.slice(2, 4), 16)
-  const b = parseInt(clean.slice(4, 6), 16)
-  return `${r}, ${g}, ${b}`
-}
-
-async function getTenant() {
-  const cookieStore = await cookies()
-  const tenantId = cookieStore.get('tenant_id')?.value
-  if (!tenantId) return null
-
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('tenants')
-    .select('nome, tema_cores, logo_url')
-    .eq('id', tenantId)
-    .single()
-  return data
-}
 
 export async function generateMetadata(): Promise<Metadata> {
-  const tenant = await getTenant()
-  if (!tenant?.logo_url) return {}
+  const tenant = await getTenantFromCookie()
+  if (!tenant) return {}
 
   const title = tenant.nome
     ? `${tenant.nome} — Editais Culturais`
@@ -37,10 +14,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     ...(title && { title }),
-    icons: {
-      icon: tenant.logo_url,
-      apple: tenant.logo_url,
-    },
+    ...((tenant as any)?.logo_url && {
+      icons: {
+        icon: (tenant as any).logo_url,
+        apple: (tenant as any).logo_url,
+      },
+    }),
   }
 }
 
@@ -52,22 +31,14 @@ export default async function PublicLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const tenant = await getTenant()
-  const temaCores = tenant?.tema_cores as TenantTemaCores | null
-  const brandColor = temaCores?.primary || '#0047AB'
-  const brandSecondary = temaCores?.secondary || '#E91E63'
-  const brandRgb = hexToRgb(brandColor)
-  const logoSrc = (tenant as any)?.logo_url || '/icon-192.png'
-  const brandName = tenant?.nome || 'EloCultural'
+  const tenant = await getTenantFromCookie()
+  const { brandColor, logoSrc, brandName } = getTenantBrand(tenant)
+  const cssVars = brandCssVars(getTenantBrand(tenant))
 
   return (
     <div
       className="min-h-screen flex flex-col font-sans"
-      style={{
-        ['--brand-primary' as string]: brandColor,
-        ['--brand-secondary' as string]: brandSecondary,
-        ['--brand-rgb' as string]: brandRgb,
-      }}
+      style={cssVars}
     >
       {/* ── Navbar ── */}
       <header className="sticky top-0 z-50 shadow-sm" style={{ backgroundColor: brandColor }}>

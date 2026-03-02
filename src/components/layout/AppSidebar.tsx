@@ -108,14 +108,14 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
           <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
             <Image
               src={tenantLogoUrl || '/icon-192.png'}
-              alt="Elo Cultura"
+              alt={tenantName || 'Elo Cultural'}
               width={40}
               height={40}
               className="rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200 object-contain transition-all flex-shrink-0 aspect-square w-10 h-10 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8"
             />
             <div className="flex flex-col min-w-0 group-data-[collapsible=icon]:hidden">
               <p className="truncate text-sm font-semibold tracking-tight text-slate-700">
-                {tenantName || 'Elo Cultura'}
+                {tenantName || 'Elo Cultural'}
               </p>
               <div className="flex items-center gap-1.5">
                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />

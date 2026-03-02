@@ -8,7 +8,7 @@
   /* ── Typography ── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* ── Brand tokens (Elo Cultural Logo Colors) ── */
+  /* ── Brand tokens (defaults, overridden per-tenant) ── */
   --brand-primary: #0047AB;       /* Azul Royal — actions, links, navigation */
   --brand-secondary: #e32a74;     /* Rosa/Pink — alerts, emphasis, CTAs */
   --brand-success: #77a80b;       /* Verde — success states, approvals */

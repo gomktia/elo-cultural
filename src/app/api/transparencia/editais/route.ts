@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
         limite: limit,
         total_paginas: totalPages,
         gerado_em: new Date().toISOString(),
-        fonte: 'Elo Cultural - Portal da Transparência',
+        fonte: 'Portal da Transparência',
       },
     },
     { status: 200, headers: CORS_HEADERS }

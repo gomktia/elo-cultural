@@ -21,7 +21,7 @@ export async function POST() {
 
   const success = await sendEmail({
     to: user.email,
-    subject: 'Teste de Email — Elo Cultura Digital',
+    subject: 'Teste de Email — Plataforma de Editais Culturais',
     html: `<!DOCTYPE html>
 <html lang="pt-BR">
 <head><meta charset="UTF-8"></head>
@@ -30,7 +30,7 @@ export async function POST() {
 <tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
   <tr><td style="background:#0047AB;padding:24px 32px;text-align:center">
-    <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:700">Elo<span style="color:#eeb513">Cultural</span></h1>
+    <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:700">Editais Culturais</h1>
   </td></tr>
   <tr><td style="padding:32px">
     <h2 style="margin:0 0 16px;color:#0f172a;font-size:18px;font-weight:600">Email de Teste</h2>
@@ -45,7 +45,7 @@ export async function POST() {
     </div>
   </td></tr>
   <tr><td style="background:#f8fafc;padding:16px 32px;border-top:1px solid #e2e8f0;text-align:center">
-    <p style="margin:0;color:#94a3b8;font-size:11px">Elo Cultura Digital — Plataforma de Processos Seletivos Culturais</p>
+    <p style="margin:0;color:#94a3b8;font-size:11px">Plataforma de Processos Seletivos Culturais</p>
   </td></tr>
 </table>
 </td></tr>

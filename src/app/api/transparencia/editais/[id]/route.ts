@@ -135,7 +135,7 @@ export async function GET(
       },
       meta: {
         gerado_em: new Date().toISOString(),
-        fonte: 'Elo Cultural - Portal da Transparência',
+        fonte: 'Portal da Transparência',
       },
     },
     { status: 200, headers: CORS_HEADERS }

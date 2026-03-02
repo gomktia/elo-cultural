@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2, Mail, Lock, User } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTenant } from '@/components/TenantProvider'
 
 function isCpfOrCnpj(value: string): boolean {
   const digits = value.replace(/\D/g, '')
@@ -18,6 +19,8 @@ function isCpfOrCnpj(value: string): boolean {
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { name: tenantName, logoUrl: tenantLogoUrl } = useTenant()
+  const logoSrc = tenantLogoUrl || '/icon-192.png'
   const redirect = searchParams.get('redirect') || '/dashboard'
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
@@ -82,12 +85,12 @@ function LoginForm() {
             {/* Branding */}
             <div className="flex flex-col items-center mb-8">
               <img
-                src="/icon-192.png"
-                alt="Elo Cultura"
+                src={logoSrc}
+                alt={tenantName || 'Elo Cultural'}
                 className="h-14 w-14 mb-4 rounded-2xl bg-white p-2 object-contain shadow-md ring-1 ring-slate-100"
               />
               <h1 className="text-3xl font-bold tracking-tight text-slate-900 leading-none mb-2">
-                Elo<span className="text-[var(--brand-primary)]">Cultural</span>
+                {tenantName || (<>Elo<span className="text-[var(--brand-primary)]">Cultural</span></>)}
               </h1>
               <p className="text-[11px] uppercase font-semibold tracking-wider text-slate-400">
                 Acesse sua conta para continuar
@@ -111,9 +114,9 @@ function LoginForm() {
                 </Label>
                 <div className="relative">
                   {isCpf ? (
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[var(--brand-primary)] transition-colors" />
                   ) : (
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[var(--brand-primary)] transition-colors" />
                   )}
                   <Input
                     id="identifier"
@@ -136,7 +139,7 @@ function LoginForm() {
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[var(--brand-primary)] transition-colors" />
                   <Input
                     id="password"
                     type="password"
@@ -151,7 +154,7 @@ function LoginForm() {
 
               <Button
                 type="submit"
-                className="w-full h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-semibold uppercase text-xs tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98] disabled:opacity-50"
+                className="w-full h-12 rounded-2xl bg-[var(--brand-primary)] hover:brightness-110 text-white font-semibold uppercase text-xs tracking-wider shadow-xl shadow-[var(--brand-primary)]/20 transition-all active:scale-[0.98] disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? (

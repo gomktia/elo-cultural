@@ -21,7 +21,7 @@ export default function TenantNaoEncontradoPage() {
 
           <p className="text-sm text-slate-500 mb-6 leading-relaxed">
             O dominio <strong className="text-slate-700">{domain}</strong> nao esta
-            vinculado a nenhuma instancia ativa na plataforma Elo Cultura Digital.
+            vinculado a nenhuma instancia ativa na plataforma.
           </p>
 
           <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 text-left space-y-2">

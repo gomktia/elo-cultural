@@ -70,7 +70,7 @@ export default async function GestorRelatoriosPage() {
         habilitados: habilitados ?? 0,
         avaliacoesFinalizadas: avaliacoesFinalizadas ?? 0,
         recursosAbertos: recursosAbertos ?? 0,
-        tenantNome: tenantData?.nome || 'Elo Cultura'
+        tenantNome: tenantData?.nome || 'Editais Culturais'
       }
     })
   )

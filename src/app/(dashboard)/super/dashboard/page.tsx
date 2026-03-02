@@ -56,7 +56,7 @@ export default async function SuperDashboardPage() {
         <CardContent className="p-4">
           <div className="space-y-1">
             <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Visão Global</h1>
-            <p className="text-sm text-slate-500">Métricas consolidadas de toda a plataforma Elo Cultura.</p>
+            <p className="text-sm text-slate-500">Métricas consolidadas de toda a plataforma.</p>
           </div>
         </CardContent>
       </Card>

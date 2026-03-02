@@ -107,7 +107,7 @@ export async function GET() {
       meta: {
         total_registros: (totalEditais ?? 0) + (totalProjetos ?? 0),
         gerado_em: new Date().toISOString(),
-        fonte: 'Elo Cultural - Portal da Transparência',
+        fonte: 'Portal da Transparência',
         lei_referencia: 'Lei nº 12.527/2011 - Lei de Acesso à Informação',
       },
     },

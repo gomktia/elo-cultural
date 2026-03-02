@@ -1,9 +1,16 @@
 /**
- * Email templates for Elo Cultura Digital.
+ * Email templates — white-label ready.
  * Uses inline CSS for maximum email client compatibility.
  */
 
-function baseLayout(title: string, content: string): string {
+export interface BrandOptions {
+  brandName?: string
+  brandColor?: string
+}
+
+function baseLayout(title: string, content: string, brand?: BrandOptions): string {
+  const name = brand?.brandName || 'Elo Cultural'
+  const color = brand?.brandColor || '#0047AB'
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -11,15 +18,15 @@ function baseLayout(title: string, content: string): string {
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:32px 16px">
 <tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
-  <tr><td style="background:#0047AB;padding:24px 32px;text-align:center">
-    <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.5px">Elo<span style="color:#eeb513">Cultural</span></h1>
+  <tr><td style="background:${color};padding:24px 32px;text-align:center">
+    <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.5px">${name}</h1>
   </td></tr>
   <tr><td style="padding:32px">
     <h2 style="margin:0 0 16px;color:#0f172a;font-size:18px;font-weight:600">${title}</h2>
     ${content}
   </td></tr>
   <tr><td style="background:#f8fafc;padding:16px 32px;border-top:1px solid #e2e8f0;text-align:center">
-    <p style="margin:0;color:#94a3b8;font-size:11px">Elo Cultura Digital — Plataforma de Processos Seletivos Culturais</p>
+    <p style="margin:0;color:#94a3b8;font-size:11px">${name} — Plataforma de Processos Seletivos Culturais</p>
   </td></tr>
 </table>
 </td></tr>
@@ -56,6 +63,7 @@ export function inscricaoConfirmada(params: {
   titulo: string
   editalTitulo: string
   dataEnvio: string
+  brand?: BrandOptions
 }): { subject: string; html: string } {
   return {
     subject: `Inscricao confirmada — ${params.protocolo}`,
@@ -67,7 +75,7 @@ export function inscricaoConfirmada(params: {
       ${highlight('Edital', params.editalTitulo)}
       ${highlight('Data de Envio', params.dataEnvio)}
       ${p('Acompanhe o andamento pelo painel do proponente.')}
-    `),
+    `, params.brand),
   }
 }
 
@@ -77,6 +85,7 @@ export function habilitacaoResultado(params: {
   editalTitulo: string
   status: 'habilitado' | 'inabilitado'
   justificativa: string
+  brand?: BrandOptions
 }): { subject: string; html: string } {
   const isHabilitado = params.status === 'habilitado'
   return {
@@ -89,7 +98,7 @@ export function habilitacaoResultado(params: {
       <div style="margin:16px 0">${statusBadge(params.status, isHabilitado ? 'green' : 'red')}</div>
       ${params.justificativa ? highlight('Justificativa', params.justificativa) : ''}
       ${!isHabilitado ? p('Caso discorde, voce podera interpor recurso no prazo previsto no edital.') : p('Parabens! Seu projeto segue para a proxima etapa.')}
-    `),
+    `, params.brand),
   }
 }
 
@@ -100,6 +109,7 @@ export function recursoDecisao(params: {
   tipo: string
   status: 'deferido' | 'indeferido'
   decisao: string
+  brand?: BrandOptions
 }): { subject: string; html: string } {
   const isDeferido = params.status === 'deferido'
   return {
@@ -111,7 +121,7 @@ export function recursoDecisao(params: {
       ${highlight('Edital', params.editalTitulo)}
       <div style="margin:16px 0">${statusBadge(params.status, isDeferido ? 'green' : 'red')}</div>
       ${params.decisao ? highlight('Decisao', params.decisao) : ''}
-    `),
+    `, params.brand),
   }
 }
 
@@ -120,6 +130,7 @@ export function editalFaseAlterada(params: {
   editalTitulo: string
   editalNumero: string
   novaFase: string
+  brand?: BrandOptions
 }): { subject: string; html: string } {
   const faseLabels: Record<string, string> = {
     inscricao: 'Inscricoes Abertas',
@@ -141,7 +152,7 @@ export function editalFaseAlterada(params: {
       ${highlight('Edital', `${params.editalNumero} — ${params.editalTitulo}`)}
       <div style="margin:16px 0">${statusBadge(faseTexto, 'blue')}</div>
       ${p('Acesse a plataforma para mais detalhes.')}
-    `),
+    `, params.brand),
   }
 }
 
@@ -151,6 +162,7 @@ export function prestacaoStatus(params: {
   protocolo: string
   status: string
   parecer: string
+  brand?: BrandOptions
 }): { subject: string; html: string } {
   const statusLabels: Record<string, { label: string; color: string }> = {
     aprovada: { label: 'Aprovada', color: 'green' },
@@ -170,6 +182,6 @@ export function prestacaoStatus(params: {
       <div style="margin:16px 0">${statusBadge(info.label, info.color)}</div>
       ${params.parecer ? highlight('Parecer', params.parecer) : ''}
       ${p('Acesse a plataforma para mais detalhes.')}
-    `),
+    `, params.brand),
   }
 }

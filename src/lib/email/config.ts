@@ -11,7 +11,7 @@ const DEFAULTS: EmailConfig = {
   enabled: false,
   apiKey: '',
   senderEmail: 'noreply@elocultura.com.br',
-  senderName: 'Elo Cultura Digital',
+  senderName: 'Editais Culturais',
 }
 
 export async function getEmailConfig(): Promise<EmailConfig> {

@@ -3,7 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Elo Cultura - Processos Seletivos Culturais",
+  title: "Editais Culturais",
   description: "Plataforma de gestão de processos seletivos culturais para prefeituras brasileiras",
   icons: {
     icon: [

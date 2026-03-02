@@ -70,7 +70,7 @@ export function gerarAtaResultado({ editalTitulo, editalNumero, tipo, ranking, d
       React.createElement(
         View,
         { style: styles.footer },
-        React.createElement(Text, null, `Documento gerado eletronicamente - ${tenantNome} - Elo Cultura`)
+        React.createElement(Text, null, `Documento gerado eletronicamente - ${tenantNome}`)
       )
     )
   )

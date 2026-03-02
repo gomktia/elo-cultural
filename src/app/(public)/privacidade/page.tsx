@@ -1,15 +1,22 @@
 import { Shield, Lock, Eye, FileText, Trash2, Download, Mail } from 'lucide-react'
+import { getTenantFromCookie, getTenantBrand } from '@/lib/tenant'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'Política de Privacidade | Elo Cultural',
-  description: 'Política de Privacidade e proteção de dados pessoais da plataforma Elo Cultural, em conformidade com a LGPD.',
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await getTenantFromCookie()
+  const name = tenant?.nome || 'Elo Cultural'
+  return {
+    title: `Política de Privacidade | ${name}`,
+    description: `Política de Privacidade e proteção de dados pessoais da plataforma ${name}, em conformidade com a LGPD.`,
+  }
 }
 
-const sections = [
-  {
-    icon: Eye,
-    title: '1. Dados Coletados',
-    content: `A plataforma Elo Cultural coleta os seguintes dados pessoais para viabilizar a participação em editais culturais:
+function getSections(platformName: string) {
+  return [
+    {
+      icon: Eye,
+      title: '1. Dados Coletados',
+      content: `A plataforma ${platformName} coleta os seguintes dados pessoais para viabilizar a participação em editais culturais:
 
 • Dados de identificação: nome completo, CPF/CNPJ, e-mail, telefone
 • Dados demográficos (opcional): gênero, orientação sexual, raça/etnia, pessoa com deficiência, renda
@@ -18,11 +25,11 @@ const sections = [
 • Dados técnicos: endereço IP no momento de submissão, registros de acesso (logs de auditoria)
 
 Todos os dados demográficos são de preenchimento voluntário e utilizados exclusivamente para fins estatísticos e de políticas de ação afirmativa, conforme legislação vigente.`,
-  },
-  {
-    icon: FileText,
-    title: '2. Finalidade do Tratamento',
-    content: `Os dados pessoais são tratados para as seguintes finalidades:
+    },
+    {
+      icon: FileText,
+      title: '2. Finalidade do Tratamento',
+      content: `Os dados pessoais são tratados para as seguintes finalidades:
 
 • Cadastro e autenticação de usuários na plataforma
 • Inscrição e gestão de projetos em editais de fomento cultural
@@ -32,22 +39,22 @@ Todos os dados demográficos são de preenchimento voluntário e utilizados excl
 • Prestação de contas e transparência pública
 • Produção de indicadores culturais e relatórios estatísticos agregados
 • Cumprimento de obrigações legais e regulatórias`,
-  },
-  {
-    icon: Lock,
-    title: '3. Base Legal (LGPD)',
-    content: `O tratamento dos dados pessoais pela plataforma Elo Cultural está fundamentado nas seguintes bases legais da Lei Geral de Proteção de Dados (Lei nº 13.709/2018):
+    },
+    {
+      icon: Lock,
+      title: '3. Base Legal (LGPD)',
+      content: `O tratamento dos dados pessoais pela plataforma ${platformName} está fundamentado nas seguintes bases legais da Lei Geral de Proteção de Dados (Lei nº 13.709/2018):
 
 • Art. 7º, I — Consentimento do titular: para dados demográficos opcionais
 • Art. 7º, II — Cumprimento de obrigação legal: para registros de auditoria e prestação de contas
 • Art. 7º, III — Execução de políticas públicas: para gestão de editais culturais pela administração pública
 • Art. 7º, V — Execução de contrato: para viabilizar a participação do proponente no processo seletivo
 • Art. 11, II, "b" — Tratamento de dados sensíveis para execução de políticas públicas de ação afirmativa`,
-  },
-  {
-    icon: Shield,
-    title: '4. Compartilhamento de Dados',
-    content: `Os dados pessoais poderão ser compartilhados nas seguintes situações:
+    },
+    {
+      icon: Shield,
+      title: '4. Compartilhamento de Dados',
+      content: `Os dados pessoais poderão ser compartilhados nas seguintes situações:
 
 • Com avaliadores designados: apenas dados do projeto (sem dados pessoais do proponente) para garantir imparcialidade na avaliação
 • Com a administração pública contratante: para fins de prestação de contas e transparência
@@ -55,11 +62,11 @@ Todos os dados demográficos são de preenchimento voluntário e utilizados excl
 • Órgãos de controle: quando solicitado por determinação legal ou judicial
 
 Os dados NÃO são compartilhados com terceiros para fins comerciais, publicitários ou de marketing.`,
-  },
-  {
-    icon: Download,
-    title: '5. Direitos do Titular',
-    content: `Em conformidade com o Art. 18 da LGPD, você possui os seguintes direitos:
+    },
+    {
+      icon: Download,
+      title: '5. Direitos do Titular',
+      content: `Em conformidade com o Art. 18 da LGPD, você possui os seguintes direitos:
 
 • Confirmação da existência de tratamento dos seus dados
 • Acesso aos dados pessoais armazenados
@@ -71,11 +78,11 @@ Os dados NÃO são compartilhados com terceiros para fins comerciais, publicitá
 • Revogação do consentimento a qualquer momento
 
 Para exercer esses direitos, acesse a seção "LGPD" no seu perfil ou entre em contato pelo e-mail indicado abaixo.`,
-  },
-  {
-    icon: Trash2,
-    title: '6. Retenção e Exclusão',
-    content: `Os dados pessoais são retidos pelos seguintes períodos:
+    },
+    {
+      icon: Trash2,
+      title: '6. Retenção e Exclusão',
+      content: `Os dados pessoais são retidos pelos seguintes períodos:
 
 • Dados de cadastro: enquanto a conta estiver ativa
 • Dados de projetos e editais: pelo período exigido pela legislação de prestação de contas públicas (mínimo 5 anos)
@@ -83,11 +90,11 @@ Para exercer esses direitos, acesse a seção "LGPD" no seu perfil ou entre em c
 • Dados demográficos: enquanto houver consentimento ativo
 
 Após solicitação de exclusão, os dados serão eliminados no prazo de até 15 dias úteis, exceto aqueles cuja retenção seja obrigatória por lei. Os registros de auditoria são mantidos de forma anonimizada.`,
-  },
-  {
-    icon: Lock,
-    title: '7. Segurança dos Dados',
-    content: `A plataforma adota as seguintes medidas de segurança:
+    },
+    {
+      icon: Lock,
+      title: '7. Segurança dos Dados',
+      content: `A plataforma adota as seguintes medidas de segurança:
 
 • Criptografia em trânsito (HTTPS/TLS) para todas as comunicações
 • Autenticação segura com hash de senhas (bcrypt)
@@ -96,24 +103,29 @@ Após solicitação de exclusão, os dados serão eliminados no prazo de até 15
 • Registros imutáveis de auditoria para rastreabilidade
 • Backups regulares com criptografia
 • Hospedagem em infraestrutura com certificações de segurança (SOC 2)`,
-  },
-  {
-    icon: Mail,
-    title: '8. Contato e Encarregado (DPO)',
-    content: `Para dúvidas, solicitações ou reclamações relacionadas ao tratamento de dados pessoais, entre em contato:
+    },
+    {
+      icon: Mail,
+      title: '8. Contato e Encarregado (DPO)',
+      content: `Para dúvidas, solicitações ou reclamações relacionadas ao tratamento de dados pessoais, entre em contato:
 
 • E-mail: privacidade@elocultura.com.br
 • Encarregado de Proteção de Dados (DPO): definido pela administração pública contratante
 
 Você também pode registrar uma reclamação junto à Autoridade Nacional de Proteção de Dados (ANPD) pelo site: https://www.gov.br/anpd`,
-  },
-]
+    },
+  ]
+}
 
-export default function PrivacidadePage() {
+export default async function PrivacidadePage() {
+  const tenant = await getTenantFromCookie()
+  const { brandColor, brandName } = getTenantBrand(tenant)
+  const sections = getSections(brandName)
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#0047AB] to-[#003080] text-white">
+      <div className="text-white" style={{ background: `linear-gradient(to bottom right, ${brandColor}, ${brandColor}dd)` }}>
         <div className="container mx-auto px-4 md:px-8 py-14 md:py-20 max-w-4xl">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 rounded-2xl bg-white/10">
@@ -125,7 +137,7 @@ export default function PrivacidadePage() {
           </div>
           <p className="text-sm md:text-base text-white/70 max-w-2xl">
             Em conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD — Lei nº 13.709/2018),
-            esta política descreve como seus dados são coletados, utilizados e protegidos na plataforma Elo Cultural.
+            esta política descreve como seus dados são coletados, utilizados e protegidos na plataforma {brandName}.
           </p>
           <p className="text-xs text-white/40 mt-4">
             Última atualização: 28 de fevereiro de 2026
@@ -143,7 +155,10 @@ export default function PrivacidadePage() {
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="flex items-start gap-4 mb-4">
-                <div className="p-2.5 rounded-xl bg-[#0047AB]/5 text-[#0047AB] flex-shrink-0">
+                <div
+                  className="p-2.5 rounded-xl flex-shrink-0"
+                  style={{ backgroundColor: `${brandColor}0d`, color: brandColor }}
+                >
                   <section.icon className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-semibold text-slate-900 tracking-tight pt-1">

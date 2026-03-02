@@ -62,7 +62,7 @@ export function gerarRanking({ editalTitulo, editalNumero, ranking, tenantNome }
       React.createElement(
         View,
         { style: styles.footer },
-        React.createElement(Text, null, `${tenantNome} - Elo Cultura`)
+        React.createElement(Text, null, `${tenantNome}`)
       )
     )
   )
