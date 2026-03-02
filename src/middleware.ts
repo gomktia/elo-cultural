@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-// Known domains that should skip tenant validation
+// Known domains that should skip tenant validation (use first active tenant)
 const SKIP_DOMAINS = ['localhost', '127.0.0.1']
+const isPreviewDomain = (domain: string) => domain.endsWith('.vercel.app')
 
 export async function middleware(request: NextRequest) {
   const { supabase, user, supabaseResponse } = await updateSession(request)
@@ -24,7 +25,7 @@ export async function middleware(request: NextRequest) {
 
   const existingTenantId = request.cookies.get('tenant_id')?.value
   const existingTenantDomain = request.cookies.get('tenant_domain')?.value
-  const isLocalhost = SKIP_DOMAINS.includes(domain)
+  const isLocalhost = SKIP_DOMAINS.includes(domain) || isPreviewDomain(domain)
 
   // Resolve tenant if we don't have it cached in cookie yet
   if (!existingTenantId || existingTenantDomain !== domain) {
