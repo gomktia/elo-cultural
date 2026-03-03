@@ -10,7 +10,7 @@ export interface EmailConfig {
 const DEFAULTS: EmailConfig = {
   enabled: false,
   apiKey: '',
-  senderEmail: 'noreply@elocultura.com.br',
+  senderEmail: 'noreply@eloculturas.com.br',
   senderName: 'Editais Culturais',
 }
 
@@ -31,7 +31,8 @@ export async function getEmailConfig(): Promise<EmailConfig> {
       senderEmail: settings.get('sender_email') || DEFAULTS.senderEmail,
       senderName: settings.get('sender_name') || DEFAULTS.senderName,
     }
-  } catch {
+  } catch (err) {
+    console.error('[EmailConfig] Falha ao ler configuracoes do banco:', err instanceof Error ? err.message : err)
     return {
       ...DEFAULTS,
       apiKey: process.env.RESEND_API_KEY || '',

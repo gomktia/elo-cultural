@@ -37,7 +37,7 @@ export default function SuperConfiguracoesPage() {
   const [resendApiKey, setResendApiKey] = useState('')
   const [newResendKey, setNewResendKey] = useState('')
   const [showResendKey, setShowResendKey] = useState(false)
-  const [senderEmail, setSenderEmail] = useState('noreply@elocultura.com.br')
+  const [senderEmail, setSenderEmail] = useState('noreply@eloculturas.com.br')
   const [senderName, setSenderName] = useState('Elo Cultura Digital')
   const [emailSaving, setEmailSaving] = useState(false)
   const [emailTesting, setEmailTesting] = useState(false)
@@ -84,7 +84,7 @@ export default function SuperConfiguracoesPage() {
           // Email settings
           setEmailEnabled(settings.email_enabled === 'true')
           setResendApiKey(settings.resend_api_key || '')
-          setSenderEmail(settings.sender_email || 'noreply@elocultura.com.br')
+          setSenderEmail(settings.sender_email || 'noreply@eloculturas.com.br')
           setSenderName(settings.sender_name || 'Elo Cultura Digital')
         }
       } catch {
@@ -529,7 +529,7 @@ export default function SuperConfiguracoesPage() {
                 type="email"
                 value={senderEmail}
                 onChange={e => setSenderEmail(e.target.value)}
-                placeholder="noreply@elocultura.com.br"
+                placeholder="noreply@eloculturas.com.br"
                 className="h-10 rounded-xl border-slate-200 bg-slate-50/50 text-sm placeholder:text-slate-300"
               />
             </div>

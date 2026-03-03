@@ -19,7 +19,7 @@ export async function POST() {
     return NextResponse.json({ error: 'Nao autorizado' }, { status: 403 })
   }
 
-  const success = await sendEmail({
+  const result = await sendEmail({
     to: user.email,
     subject: 'Teste de Email — Plataforma de Editais Culturais',
     html: `<!DOCTYPE html>
@@ -53,9 +53,9 @@ export async function POST() {
 </body></html>`,
   })
 
-  if (success) {
+  if (result.success) {
     return NextResponse.json({ success: true })
   }
 
-  return NextResponse.json({ error: 'Falha ao enviar. Verifique a API key e o email remetente.' }, { status: 500 })
+  return NextResponse.json({ error: result.error || 'Falha ao enviar. Verifique a API key e o email remetente.' }, { status: 500 })
 }
