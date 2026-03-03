@@ -3,7 +3,7 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 
 const ALLOWED_KEYS = [
-  'ia_enabled', 'ia_model', 'ia_embedding_model', 'openai_api_key',
+  'ia_enabled', 'ia_provider', 'ia_model', 'ia_embedding_model', 'openai_api_key',
   'email_enabled', 'resend_api_key', 'sender_email', 'sender_name',
 ]
 

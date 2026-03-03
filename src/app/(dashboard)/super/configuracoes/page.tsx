@@ -24,8 +24,9 @@ export default function SuperConfiguracoesPage() {
 
   // IA settings state
   const [iaEnabled, setIaEnabled] = useState(true)
-  const [iaModel, setIaModel] = useState('gpt-4')
-  const [iaEmbeddingModel, setIaEmbeddingModel] = useState('text-embedding-3-small')
+  const [iaProvider, setIaProvider] = useState<'openai' | 'gemini'>('gemini')
+  const [iaModel, setIaModel] = useState('gemini-2.5-flash')
+  const [iaEmbeddingModel, setIaEmbeddingModel] = useState('gemini-embedding-001')
   const [openaiApiKey, setOpenaiApiKey] = useState('')
   const [newApiKey, setNewApiKey] = useState('')
   const [showApiKey, setShowApiKey] = useState(false)
@@ -77,8 +78,10 @@ export default function SuperConfiguracoesPage() {
         if (res.ok) {
           const { settings } = await res.json()
           setIaEnabled(settings.ia_enabled !== 'false')
-          setIaModel(settings.ia_model || 'gpt-4')
-          setIaEmbeddingModel(settings.ia_embedding_model || 'text-embedding-3-small')
+          const provider = (settings.ia_provider || 'gemini') as 'openai' | 'gemini'
+          setIaProvider(provider)
+          setIaModel(settings.ia_model || (provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4'))
+          setIaEmbeddingModel(settings.ia_embedding_model || (provider === 'gemini' ? 'gemini-embedding-001' : 'text-embedding-3-small'))
           setOpenaiApiKey(settings.openai_api_key || '')
           setIaLoaded(true)
           // Email settings
@@ -101,6 +104,7 @@ export default function SuperConfiguracoesPage() {
     try {
       const body: Record<string, string> = {
         ia_enabled: iaEnabled ? 'true' : 'false',
+        ia_provider: iaProvider,
         ia_model: iaModel,
         ia_embedding_model: iaEmbeddingModel,
       }
@@ -339,10 +343,35 @@ export default function SuperConfiguracoesPage() {
             )}
           </div>
 
+          {/* Provider selection */}
+          <div className="space-y-2">
+            <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+              Provedor de IA
+            </Label>
+            <select
+              value={iaProvider}
+              onChange={e => {
+                const p = e.target.value as 'openai' | 'gemini'
+                setIaProvider(p)
+                if (p === 'gemini') {
+                  setIaModel('gemini-2.5-flash')
+                  setIaEmbeddingModel('gemini-embedding-001')
+                } else {
+                  setIaModel('gpt-4')
+                  setIaEmbeddingModel('text-embedding-3-small')
+                }
+              }}
+              className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm text-slate-900 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none"
+            >
+              <option value="gemini">Google Gemini (Gratuito)</option>
+              <option value="openai">OpenAI (Pago)</option>
+            </select>
+          </div>
+
           {/* API Key */}
           <div className="space-y-2">
             <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
-              Chave da API OpenAI
+              {iaProvider === 'gemini' ? 'Chave da API Google Gemini' : 'Chave da API OpenAI'}
             </Label>
             {openaiApiKey && (
               <div className="flex items-center gap-2 mb-2">
@@ -364,13 +393,15 @@ export default function SuperConfiguracoesPage() {
             )}
             <Input
               type="password"
-              placeholder={openaiApiKey ? 'Digite nova chave para substituir...' : 'sk-...'}
+              placeholder={openaiApiKey ? 'Digite nova chave para substituir...' : (iaProvider === 'gemini' ? 'AIza...' : 'sk-...')}
               value={newApiKey}
               onChange={e => setNewApiKey(e.target.value)}
               className="h-10 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-mono placeholder:text-slate-300"
             />
             <p className="text-[10px] text-slate-400 ml-1">
-              A chave e armazenada de forma segura no banco de dados. Se vazia, usa a variavel de ambiente OPENAI_API_KEY.
+              {iaProvider === 'gemini'
+                ? 'Obtenha sua chave gratuita em aistudio.google.com/apikeys'
+                : 'A chave e armazenada de forma segura no banco de dados. Se vazia, usa a variavel de ambiente OPENAI_API_KEY.'}
             </p>
           </div>
 
@@ -385,11 +416,22 @@ export default function SuperConfiguracoesPage() {
                 onChange={e => setIaModel(e.target.value)}
                 className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm text-slate-900 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none"
               >
-                <option value="gpt-4">GPT-4 (Recomendado)</option>
-                <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                <option value="gpt-4o">GPT-4o</option>
-                <option value="gpt-4o-mini">GPT-4o Mini (Economico)</option>
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Rapido)</option>
+                {iaProvider === 'gemini' ? (
+                  <>
+                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Recomendado)</option>
+                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (Maior precisao)</option>
+                    <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                    <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Economico)</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="gpt-4">GPT-4 (Recomendado)</option>
+                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                    <option value="gpt-4o">GPT-4o</option>
+                    <option value="gpt-4o-mini">GPT-4o Mini (Economico)</option>
+                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Rapido)</option>
+                  </>
+                )}
               </select>
             </div>
             <div className="space-y-2">
@@ -401,9 +443,15 @@ export default function SuperConfiguracoesPage() {
                 onChange={e => setIaEmbeddingModel(e.target.value)}
                 className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm text-slate-900 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none"
               >
-                <option value="text-embedding-3-small">text-embedding-3-small (Recomendado)</option>
-                <option value="text-embedding-3-large">text-embedding-3-large (Maior precisao)</option>
-                <option value="text-embedding-ada-002">text-embedding-ada-002 (Legado)</option>
+                {iaProvider === 'gemini' ? (
+                  <option value="gemini-embedding-001">gemini-embedding-001 (Recomendado)</option>
+                ) : (
+                  <>
+                    <option value="text-embedding-3-small">text-embedding-3-small (Recomendado)</option>
+                    <option value="text-embedding-3-large">text-embedding-3-large (Maior precisao)</option>
+                    <option value="text-embedding-ada-002">text-embedding-ada-002 (Legado)</option>
+                  </>
+                )}
               </select>
             </div>
           </div>
