@@ -9,8 +9,12 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { Loader2, User, Lock, Download, Trash2, ShieldCheck, AlertTriangle, Mail, Phone, FileText } from 'lucide-react'
+import { Loader2, User, Lock, Download, Trash2, ShieldCheck, AlertTriangle, Mail, Phone, FileText, Briefcase } from 'lucide-react'
+import { translateAuthError } from '@/lib/utils/translate-auth-error'
 import { ROLE_LABELS } from '@/lib/constants/roles'
+import { ProponenteForm } from '@/components/cadastro/ProponenteForm'
+import { AvaliadorForm } from '@/components/cadastro/AvaliadorForm'
+import { GestorForm } from '@/components/cadastro/GestorForm'
 
 export default function PerfilPage() {
   const [loading, setLoading] = useState(true)
@@ -18,6 +22,17 @@ export default function PerfilPage() {
   const [profile, setProfile] = useState<any>(null)
   const [userEmail, setUserEmail] = useState('')
   const [form, setForm] = useState({ nome: '', telefone: '', cpf_cnpj: '' })
+  const [proponenteData, setProponenteData] = useState({
+    areas_atuacao: [] as string[], tempo_atuacao: '', renda: '', genero: '',
+    orientacao_sexual: '', raca_etnia: '', pcd: false, endereco_completo: '', municipio: '', estado: '',
+  })
+  const [avaliadorData, setAvaliadorData] = useState({
+    curriculo_descricao: '', areas_avaliacao: [] as string[], lattes_url: '',
+  })
+  const [gestorData, setGestorData] = useState({
+    orgao_vinculado: '', funcao_cargo: '', matricula: '',
+  })
+  const [savingExtra, setSavingExtra] = useState(false)
   const [senha, setSenha] = useState({ nova: '', confirmar: '' })
   const [alterandoSenha, setAlterandoSenha] = useState(false)
   const [exportando, setExportando] = useState(false)
@@ -43,6 +58,33 @@ export default function PerfilPage() {
         telefone: prof?.telefone || '',
         cpf_cnpj: prof?.cpf_cnpj || '',
       })
+      // Populate role-specific data
+      if (prof?.role === 'proponente') {
+        setProponenteData({
+          areas_atuacao: prof.areas_atuacao || [],
+          tempo_atuacao: prof.tempo_atuacao || '',
+          renda: prof.renda || '',
+          genero: prof.genero || '',
+          orientacao_sexual: prof.orientacao_sexual || '',
+          raca_etnia: prof.raca_etnia || '',
+          pcd: prof.pcd || false,
+          endereco_completo: prof.endereco_completo || '',
+          municipio: prof.municipio || '',
+          estado: prof.estado || '',
+        })
+      } else if (prof?.role === 'avaliador') {
+        setAvaliadorData({
+          curriculo_descricao: prof.curriculo_descricao || '',
+          areas_avaliacao: prof.areas_avaliacao || [],
+          lattes_url: prof.lattes_url || '',
+        })
+      } else if (prof?.role === 'gestor') {
+        setGestorData({
+          orgao_vinculado: prof.orgao_vinculado || '',
+          funcao_cargo: prof.funcao_cargo || '',
+          matricula: prof.matricula || '',
+        })
+      }
       setLoading(false)
     }
     load()
@@ -66,6 +108,60 @@ export default function PerfilPage() {
     setSaving(false)
   }
 
+  function updateProponente(field: string, value: any) {
+    setProponenteData(prev => ({ ...prev, [field]: value }))
+  }
+  function updateAvaliador(field: string, value: any) {
+    setAvaliadorData(prev => ({ ...prev, [field]: value }))
+  }
+  function updateGestor(field: string, value: any) {
+    setGestorData(prev => ({ ...prev, [field]: value }))
+  }
+
+  async function salvarDadosPerfil(e: React.FormEvent) {
+    e.preventDefault()
+    setSavingExtra(true)
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { toast.error('Sessão expirada'); setSavingExtra(false); return }
+
+    let extraData: Record<string, any> = {}
+    if (profile?.role === 'proponente') {
+      extraData = {
+        areas_atuacao: proponenteData.areas_atuacao.length > 0 ? proponenteData.areas_atuacao : null,
+        tempo_atuacao: proponenteData.tempo_atuacao || null,
+        renda: proponenteData.renda || null,
+        genero: proponenteData.genero || null,
+        orientacao_sexual: proponenteData.orientacao_sexual || null,
+        raca_etnia: proponenteData.raca_etnia || null,
+        pcd: proponenteData.pcd,
+        endereco_completo: proponenteData.endereco_completo || null,
+        municipio: proponenteData.municipio || null,
+        estado: proponenteData.estado || null,
+      }
+    } else if (profile?.role === 'avaliador') {
+      extraData = {
+        curriculo_descricao: avaliadorData.curriculo_descricao || null,
+        areas_avaliacao: avaliadorData.areas_avaliacao.length > 0 ? avaliadorData.areas_avaliacao : null,
+        lattes_url: avaliadorData.lattes_url || null,
+      }
+    } else if (profile?.role === 'gestor') {
+      extraData = {
+        orgao_vinculado: gestorData.orgao_vinculado || null,
+        funcao_cargo: gestorData.funcao_cargo || null,
+        matricula: gestorData.matricula || null,
+      }
+    }
+
+    const { error } = await supabase.from('profiles').update(extraData).eq('id', user.id)
+    if (error) {
+      toast.error('Erro ao salvar: ' + error.message)
+    } else {
+      toast.success('Dados do perfil atualizados com sucesso')
+    }
+    setSavingExtra(false)
+  }
+
   async function alterarSenha(e: React.FormEvent) {
     e.preventDefault()
     if (senha.nova !== senha.confirmar) {
@@ -76,7 +172,7 @@ export default function PerfilPage() {
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password: senha.nova })
     if (error) {
-      toast.error('Erro ao alterar senha: ' + error.message)
+      toast.error(translateAuthError(error.message))
     } else {
       toast.success('Senha alterada com sucesso')
       setSenha({ nova: '', confirmar: '' })
@@ -312,6 +408,48 @@ export default function PerfilPage() {
           </div>
         </div>
       </div>
+
+      {/* Dados do Perfil (Role-specific) */}
+      {profile?.role && ['proponente', 'avaliador', 'gestor'].includes(profile.role) && (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-[var(--brand-primary)] px-6 py-3.5">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-xl bg-white/20 flex items-center justify-center">
+                <Briefcase className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-white uppercase tracking-wide">
+                  Dados do Perfil — {ROLE_LABELS[profile.role as keyof typeof ROLE_LABELS] || profile.role}
+                </h2>
+                <p className="text-[11px] text-white/60 mt-0.5">Informações específicas do seu tipo de cadastro</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6">
+            <form onSubmit={salvarDadosPerfil} className="space-y-6">
+              {profile.role === 'proponente' && (
+                <ProponenteForm form={proponenteData} onChange={updateProponente} />
+              )}
+              {profile.role === 'avaliador' && (
+                <AvaliadorForm form={avaliadorData} onChange={updateAvaliador} />
+              )}
+              {profile.role === 'gestor' && (
+                <GestorForm form={gestorData} onChange={updateGestor} />
+              )}
+              <div className="flex justify-end pt-2 border-t border-slate-100">
+                <Button
+                  type="submit"
+                  disabled={savingExtra}
+                  className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[#005cdd] text-white font-semibold text-xs uppercase tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]"
+                >
+                  {savingExtra && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Salvar Dados do Perfil
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Privacidade e Dados (LGPD) */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

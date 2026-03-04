@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2, ArrowLeft, Mail, CheckCircle2 } from 'lucide-react'
+import { translateAuthError } from '@/lib/utils/translate-auth-error'
 import { motion } from 'framer-motion'
 
 export default function EsqueciSenhaPage() {
@@ -26,7 +27,7 @@ export default function EsqueciSenhaPage() {
     })
 
     if (resetError) {
-      setError(resetError.message)
+      setError(translateAuthError(resetError.message))
       setLoading(false)
       return
     }

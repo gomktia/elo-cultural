@@ -151,10 +151,10 @@ export default async function AdminEditalDetailPage({
                 <AvancarEtapaButton editalId={id} currentStatus={e.status} />
                 <Link href={`/admin/editais/${id}/publicacoes`} className="block w-full">
                   <Button className="w-full h-10 rounded-xl bg-white text-[var(--brand-primary)] font-semibold hover:bg-slate-50 transition-all text-xs uppercase tracking-wide shadow-sm">
-                    Publicar Resultado
+                    Gerenciar Publicações
                   </Button>
                 </Link>
-                <Link href={`/admin/editais/${id}/cronograma`} className="block w-full">
+                <Link href={`/admin/editais/${id}/editar`} className="block w-full">
                   <Button variant="outline" className="w-full h-10 rounded-xl border-white/40 bg-white/15 hover:bg-white/25 text-white font-semibold transition-all text-xs uppercase tracking-wide">
                     Editar Edital
                   </Button>

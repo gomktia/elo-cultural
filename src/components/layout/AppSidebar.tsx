@@ -140,7 +140,7 @@ export function AppSidebar({ role, userName, userEmail, tenantName, brandColor, 
                   const isActive = pathname === item.url ||
                     (item.url !== '/' && pathname.startsWith(item.url))
 
-                  const isExactlyActive = (item.title === 'Dashboard' || item.title === 'Inicio' ? pathname === item.url : isActive)
+                  const isExactlyActive = (item.title === 'Dashboard' || item.title === 'Início' ? pathname === item.url : isActive)
 
                   return (
                     <SidebarMenuItem key={item.url}>

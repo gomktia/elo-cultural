@@ -51,22 +51,31 @@ export async function middleware(request: NextRequest) {
     return applyAuthProtection(request, user, supabaseResponse, pathname)
   }
 
-  // 4. Dev/preview → use first active tenant (current behavior)
+  // 4. Dev/preview → only assign tenant via ?tenant=slug query param
+  //    localhost:3000           → generic EloCultural homepage (no tenant)
+  //    localhost:3000?tenant=pinhais → switches to Pinhais tenant
+  //    localhost:3000?tenant=clear   → clears tenant cookie
   if (isDev) {
-    if (!existingTenantId) {
-      const { data: firstTenant } = await supabase
+    const tenantSlug = request.nextUrl.searchParams.get('tenant')
+
+    if (tenantSlug === 'clear') {
+      // Clear tenant cookies → return to generic platform view
+      supabaseResponse.cookies.set('tenant_id', '', { ...cookieOptions, maxAge: 0 })
+      supabaseResponse.cookies.set('tenant_slug', '', { ...cookieOptions, maxAge: 0 })
+    } else if (tenantSlug) {
+      // Explicit tenant switch (e.g. ?tenant=pinhais)
+      const { data: tenant } = await supabase
         .from('tenants')
-        .select('id, dominio')
-        .eq('status', 'ativo')
-        .order('created_at', { ascending: true })
-        .limit(1)
+        .select('id, dominio, status')
+        .eq('dominio', tenantSlug)
         .single()
 
-      if (firstTenant) {
-        supabaseResponse.cookies.set('tenant_id', firstTenant.id, cookieOptions)
-        supabaseResponse.cookies.set('tenant_slug', firstTenant.dominio, cookieOptions)
+      if (tenant && tenant.status === 'ativo') {
+        supabaseResponse.cookies.set('tenant_id', tenant.id, cookieOptions)
+        supabaseResponse.cookies.set('tenant_slug', tenant.dominio, cookieOptions)
       }
     }
+    // If no ?tenant param → keep existing cookie (or no cookie = generic platform)
 
     return applyAuthProtection(request, user, supabaseResponse, pathname)
   }

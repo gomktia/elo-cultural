@@ -11,6 +11,7 @@ import { ProponenteForm } from '@/components/cadastro/ProponenteForm'
 import { AvaliadorForm } from '@/components/cadastro/AvaliadorForm'
 import { GestorForm } from '@/components/cadastro/GestorForm'
 import { Loader2, User, Mail, Lock, Phone, CreditCard, ArrowRight, ArrowLeft } from 'lucide-react'
+import { translateAuthError } from '@/lib/utils/translate-auth-error'
 import { motion, AnimatePresence } from 'framer-motion'
 
 type PerfilTipo = 'proponente' | 'avaliador' | 'gestor'
@@ -94,7 +95,7 @@ export default function CadastroPage() {
     })
 
     if (signUpError) {
-      setError(signUpError.message)
+      setError(translateAuthError(signUpError.message))
       setLoading(false)
       return
     }
