@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
 export function GovBrButton() {
   const [loading, setLoading] = useState(false)
@@ -40,20 +40,29 @@ export function GovBrButton() {
         </div>
       </div>
 
-      <Button
+      <button
         type="button"
-        variant="outline"
         onClick={handleGovBr}
         disabled={loading}
-        className="w-full h-12 rounded-2xl border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs tracking-wide transition-all gap-3"
+        className="w-full h-12 flex items-center justify-center gap-3 rounded-2xl bg-[#1351B4] hover:bg-[#0C326F] text-white font-semibold text-sm tracking-wide transition-all active:scale-[0.98] disabled:opacity-60 cursor-pointer"
       >
-        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-          <rect width="48" height="48" rx="8" fill="#1351B4"/>
-          <path d="M24 10L38 24L24 38L10 24L24 10Z" fill="#FFCD07"/>
-          <circle cx="24" cy="24" r="6" fill="#1351B4"/>
-        </svg>
-        Entrar com <strong className="ml-1">gov.br</strong>
-      </Button>
+        {loading ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <>
+            {/* Gov.br official logo mark */}
+            <svg width="28" height="16" viewBox="0 0 100 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+              {/* Yellow diamond */}
+              <path d="M28 0L56 28L28 56L0 28L28 0Z" fill="#FFCD07"/>
+              {/* Blue circle inside diamond */}
+              <circle cx="28" cy="28" r="10" fill="#1351B4"/>
+              {/* "gov.br" text */}
+              <text x="62" y="36" fill="white" fontFamily="Arial, sans-serif" fontSize="22" fontWeight="bold">gov.br</text>
+            </svg>
+            <span>Entrar com <strong>gov.br</strong></span>
+          </>
+        )}
+      </button>
     </>
   )
 }
