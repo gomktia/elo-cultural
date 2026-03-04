@@ -25,8 +25,23 @@ function LoginForm() {
   const redirect = searchParams.get('redirect') || '/dashboard'
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Gov.br and other redirect error/message handling
+  const govbrErrors: Record<string, string> = {
+    govbr_unavailable: 'Login Gov.br não está disponível no momento.',
+    govbr_token_failed: 'Erro na autenticação com Gov.br. Tente novamente.',
+    govbr_userinfo_failed: 'Não foi possível obter seus dados do Gov.br.',
+    govbr_no_cpf: 'CPF não encontrado nos dados do Gov.br.',
+    govbr_signup_failed: 'Erro ao criar conta via Gov.br. Tente novamente.',
+    govbr_session_failed: 'Erro ao iniciar sessão via Gov.br. Tente novamente.',
+    govbr_error: 'Erro inesperado ao conectar com Gov.br.',
+  }
+  const urlError = searchParams.get('error')
+  const urlMsg = searchParams.get('msg')
+  const initialError = urlError ? (govbrErrors[urlError] || '') : ''
+  const initialMsg = urlMsg === 'govbr_em_breve' ? 'Integração Gov.br em breve. Use e-mail e senha por enquanto.' : ''
+  const [error, setError] = useState(initialError)
 
   const isCpf = isCpfOrCnpj(identifier)
 
@@ -153,6 +168,16 @@ function LoginForm() {
                   className="rounded-2xl bg-rose-50 border border-rose-200/60 p-4 text-xs font-bold text-rose-600 text-center"
                 >
                   {error}
+                </motion.div>
+              )}
+
+              {initialMsg && !error && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="rounded-2xl bg-blue-50 border border-blue-200/60 p-4 text-xs font-bold text-blue-600 text-center"
+                >
+                  {initialMsg}
                 </motion.div>
               )}
 
