@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { Loader2, ArrowLeft, AlertTriangle, Sparkles } from 'lucide-react'
+import { Loader2, ArrowLeft, AlertTriangle, Sparkles, FileDown, CheckCircle2, Circle } from 'lucide-react'
 import Link from 'next/link'
 
 interface CriterioAvaliacao {
@@ -33,6 +33,8 @@ export default function AvaliacaoPage() {
   const [avaliacao, setAvaliacao] = useState<any>(null)
   const [criterios, setCriterios] = useState<CriterioAvaliacao[]>([])
   const [justificativa, setJustificativa] = useState('')
+  const [documentos, setDocumentos] = useState<{ nome_arquivo: string; storage_path: string; tipo: string }[]>([])
+  const [checklistDocs, setChecklistDocs] = useState<Record<string, boolean>>({})
   const [aiSugestoes, setAiSugestoes] = useState<Record<string, { nota: number; justificativa: string; confianca: number }>>({})
   const [expandedAiHint, setExpandedAiHint] = useState<string | null>(null)
 
@@ -51,6 +53,15 @@ export default function AvaliacaoPage() {
 
       setProjeto(proj)
 
+      // Load project documents
+      if (proj) {
+        const { data: docs } = await supabase
+          .from('projeto_documentos')
+          .select('nome_arquivo, storage_path, tipo')
+          .eq('projeto_id', projetoId)
+        setDocumentos(docs || [])
+      }
+
       // Load avaliacao
       const { data: av } = await supabase
         .from('avaliacoes')
@@ -61,6 +72,13 @@ export default function AvaliacaoPage() {
 
       setAvaliacao(av)
       if (av?.justificativa) setJustificativa(av.justificativa)
+      if (av?.checklist_documentos) {
+        const cl: Record<string, boolean> = {}
+        for (const [key, val] of Object.entries(av.checklist_documentos as Record<string, any>)) {
+          cl[key] = val?.verificado ?? false
+        }
+        setChecklistDocs(cl)
+      }
 
       // Load criterios do edital
       if (proj) {
@@ -156,6 +174,35 @@ export default function AvaliacaoPage() {
       return
     }
 
+    // Validation on finalize
+    if (finalizar) {
+      // All criteria must have scores
+      const semNota = criterios.filter(c => c.nota === '')
+      if (semNota.length > 0) {
+        toast.error(`Preencha a nota de todos os critérios antes de finalizar. Faltam ${semNota.length} critério(s).`)
+        setSaving(false)
+        return
+      }
+
+      // Scores below 6 require a comment
+      const semComentario = criterios.filter(c => {
+        const nota = parseFloat(c.nota)
+        return nota < 6 && !c.comentario.trim()
+      })
+      if (semComentario.length > 0) {
+        toast.error(`Notas abaixo de 6 exigem justificativa no comentário. Preencha o comentário em ${semComentario.length} critério(s).`)
+        setSaving(false)
+        return
+      }
+
+      // General justification is required
+      if (!justificativa.trim()) {
+        toast.error('O comentário geral é obrigatório para finalizar a avaliação.')
+        setSaving(false)
+        return
+      }
+    }
+
     // Upsert notas (avoids race condition from separate delete+insert)
     const notas = criterios
       .filter(c => c.nota !== '')
@@ -191,7 +238,13 @@ export default function AvaliacaoPage() {
     }
 
     // Update avaliacao status + calculate pontuacao_total on finalize
-    const updateData: { justificativa: string; status?: string; pontuacao_total?: number } = { justificativa }
+    // Build checklist JSON
+    const checklistJson: Record<string, { verificado: boolean }> = {}
+    for (const doc of documentos) {
+      checklistJson[doc.storage_path] = { verificado: checklistDocs[doc.storage_path] ?? false }
+    }
+
+    const updateData: { justificativa: string; checklist_documentos: typeof checklistJson; status?: string; pontuacao_total?: number } = { justificativa, checklist_documentos: checklistJson }
     if (finalizar) {
       updateData.status = 'finalizada'
       const notasPreenchidas = criterios.filter(c => c.nota !== '')
@@ -274,6 +327,62 @@ export default function AvaliacaoPage() {
         </CardContent>
       </Card>
 
+      {/* Documentos do projeto + checklist */}
+      {documentos.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Documentos do Projeto</span>
+              <span className="text-xs font-normal text-slate-400">
+                {Object.values(checklistDocs).filter(Boolean).length}/{documentos.length} verificados
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {documentos.map((doc, idx) => {
+                const checked = checklistDocs[doc.storage_path] ?? false
+                return (
+                  <div key={idx} className={`flex items-center justify-between rounded-lg border px-3 py-2 transition-colors ${checked ? 'border-green-200 bg-green-50/50' : 'border-slate-200'}`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <button
+                        type="button"
+                        onClick={() => !isFinalizada && setChecklistDocs(prev => ({ ...prev, [doc.storage_path]: !checked }))}
+                        className="shrink-0"
+                        disabled={isFinalizada}
+                      >
+                        {checked ? (
+                          <CheckCircle2 className="h-5 w-5 text-[var(--brand-success)]" />
+                        ) : (
+                          <Circle className="h-5 w-5 text-slate-300 hover:text-slate-400 transition-colors" />
+                        )}
+                      </button>
+                      <span className={`text-sm truncate ${checked ? 'text-slate-500 line-through' : ''}`}>{doc.nome_arquivo}</span>
+                      {doc.tipo && (
+                        <span className="text-[11px] font-medium text-slate-400 uppercase shrink-0">{doc.tipo}</span>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 shrink-0"
+                      onClick={async () => {
+                        const supabase = createClient()
+                        const { data } = await supabase.storage.from('documentos').createSignedUrl(doc.storage_path, 300)
+                        if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+                        else toast.error('Erro ao gerar link do documento.')
+                      }}
+                    >
+                      Visualizar
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Criterios */}
       <Card>
         <CardHeader>
@@ -339,7 +448,7 @@ export default function AvaliacaoPage() {
                   className="col-span-3"
                   value={c.comentario}
                   onChange={e => updateCriterio(idx, 'comentario', e.target.value)}
-                  placeholder="Comentário (opcional)"
+                  placeholder={parseFloat(c.nota) < 6 && c.nota !== '' ? 'Comentário (obrigatório para nota < 6)' : 'Comentário'}
                   rows={1}
                   disabled={isFinalizada}
                 />
@@ -353,13 +462,13 @@ export default function AvaliacaoPage() {
       {/* Justificativa geral */}
       <Card>
         <CardHeader>
-          <CardTitle>Justificativa Geral</CardTitle>
+          <CardTitle>Comentário Geral <span className="text-xs font-normal text-red-500 ml-1">*obrigatório</span></CardTitle>
         </CardHeader>
         <CardContent>
           <Textarea
             value={justificativa}
             onChange={e => setJustificativa(e.target.value)}
-            placeholder="Justificativa geral da avaliação (opcional)"
+            placeholder="Justificativa geral da avaliação (obrigatório)"
             rows={4}
             disabled={isFinalizada}
           />

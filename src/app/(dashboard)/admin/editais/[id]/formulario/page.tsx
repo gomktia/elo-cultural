@@ -3,11 +3,10 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { FaseManager } from '@/components/edital/FaseManager'
+import { FormBuilderManager } from '@/components/edital/FormBuilderManager'
 import { ArrowLeft } from 'lucide-react'
-import type { Edital, EditalFase } from '@/types/database.types'
 
-export default async function CronogramaPage({
+export default async function FormularioPage({
   params,
 }: {
   params: Promise<{ id: string }>
@@ -17,19 +16,11 @@ export default async function CronogramaPage({
 
   const { data: edital } = await supabase
     .from('editais')
-    .select('*')
+    .select('id, numero_edital, titulo, tenant_id')
     .eq('id', id)
     .single()
 
   if (!edital) notFound()
-
-  const e = edital as Edital
-
-  const { data: fases } = await supabase
-    .from('edital_fases')
-    .select('*')
-    .eq('edital_id', id)
-    .order('created_at', { ascending: true })
 
   return (
     <div className="space-y-6">
@@ -43,25 +34,27 @@ export default async function CronogramaPage({
               </Button>
             </Link>
             <div className="space-y-2">
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Cronograma</h1>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Formulário de Inscrição</h1>
               <div className="flex items-center gap-3 flex-wrap">
                 <code className="text-[11px] font-semibold text-[var(--brand-primary)] bg-[var(--brand-primary)]/8 px-2.5 py-1 rounded-md uppercase tracking-wide">
-                  {e.numero_edital}
+                  {edital.numero_edital}
                 </code>
-                <span className="text-sm text-slate-500">{e.titulo}</span>
+                <span className="text-sm text-slate-500">{edital.titulo}</span>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <FaseManager
-        editalId={id}
-        currentStatus={e.status}
-        fases={(fases as EditalFase[]) || []}
-        cancelado={(edital as any).cancelado ?? false}
-        justificativaCancelamento={(edital as any).justificativa_cancelamento}
-      />
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+        <CardContent className="p-5">
+          <div className="space-y-1 mb-6">
+            <h2 className="text-base font-semibold text-slate-900">Campos Customizados</h2>
+            <p className="text-xs text-slate-500">Configure campos adicionais que os proponentes deverão preencher durante a inscrição.</p>
+          </div>
+          <FormBuilderManager editalId={id} tenantId={edital.tenant_id} />
+        </CardContent>
+      </Card>
     </div>
   )
 }

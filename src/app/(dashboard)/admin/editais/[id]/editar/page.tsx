@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { EditalFileUpload } from '@/components/edital/EditalFileUpload'
+import { EditalConfigManager, type EditalConfig, type CategoriaItem } from '@/components/edital/EditalConfigManager'
 import { toast } from 'sonner'
 import { Loader2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -58,6 +59,14 @@ export default function EditarEditalPage() {
   })
   const [editalFiles, setEditalFiles] = useState<UploadedFile[]>([])
   const [anexoFiles, setAnexoFiles] = useState<UploadedFile[]>([])
+  const [editalConfig, setEditalConfig] = useState<EditalConfig>({
+    tipo_edital: 'fomento',
+    categorias: [],
+    config_cotas: [],
+    config_desempate: [],
+    config_pontuacao_extra: [],
+    config_reserva_vagas: [],
+  })
 
   useEffect(() => {
     async function load() {
@@ -102,6 +111,22 @@ export default function EditarEditalPage() {
         setAnexoFiles(docs.filter(d => d.tipo !== 'edital_pdf'))
       }
 
+      // Load categorias
+      const { data: cats } = await supabase
+        .from('edital_categorias')
+        .select('id, nome, vagas')
+        .eq('edital_id', id)
+        .order('created_at')
+
+      setEditalConfig({
+        tipo_edital: edital.tipo_edital || 'fomento',
+        categorias: (cats || []).map((c: any) => ({ id: c.id, nome: c.nome, vagas: c.vagas || 0 })),
+        config_cotas: edital.config_cotas || [],
+        config_desempate: edital.config_desempate || [],
+        config_pontuacao_extra: edital.config_pontuacao_extra || [],
+        config_reserva_vagas: edital.config_reserva_vagas || [],
+      })
+
       setLoading(false)
     }
     load()
@@ -133,6 +158,11 @@ export default function EditarEditalPage() {
         fim_recurso_selecao: form.fim_recurso_selecao || null,
         inicio_recurso_habilitacao: form.inicio_recurso_habilitacao || null,
         fim_recurso_habilitacao: form.fim_recurso_habilitacao || null,
+        tipo_edital: editalConfig.tipo_edital,
+        config_cotas: editalConfig.config_cotas,
+        config_desempate: editalConfig.config_desempate,
+        config_pontuacao_extra: editalConfig.config_pontuacao_extra,
+        config_reserva_vagas: editalConfig.config_reserva_vagas,
       })
       .eq('id', id)
 
@@ -140,6 +170,18 @@ export default function EditarEditalPage() {
       toast.error('Erro ao salvar: ' + error.message)
       setSaving(false)
       return
+    }
+
+    // Sync categorias: delete old, insert current
+    await supabase.from('edital_categorias').delete().eq('edital_id', id)
+    const catsToInsert = editalConfig.categorias.filter(c => c.nome.trim()).map(c => ({
+      edital_id: id,
+      tenant_id: tenantId,
+      nome: c.nome,
+      vagas: c.vagas,
+    }))
+    if (catsToInsert.length > 0) {
+      await supabase.from('edital_categorias').insert(catsToInsert)
     }
 
     // Sync documents: delete old ones, insert current ones
@@ -264,6 +306,12 @@ export default function EditarEditalPage() {
                 </div>
               </div>
             )}
+
+            {/* Configuração do Edital */}
+            <div className="pt-4 border-t border-slate-200 mt-2">
+              <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Configuração do Edital</h3>
+              <EditalConfigManager config={editalConfig} onChange={setEditalConfig} />
+            </div>
 
             {/* Prazos de Recurso */}
             <div className="pt-4 border-t border-slate-200 mt-2">

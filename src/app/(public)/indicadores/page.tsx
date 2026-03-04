@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { FileText, FolderOpen, CheckCircle2, Banknote, BarChart3, PieChart, ArrowRight } from 'lucide-react'
+import { FileText, FolderOpen, CheckCircle2, Banknote, BarChart3, PieChart, ArrowRight, MapPin, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import { EditaisPorStatusChart, AreasCulturaisChart } from '@/components/indicadores/IndicadoresCharts'
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
@@ -110,6 +110,7 @@ export default async function IndicadoresPage() {
     { data: projetosComOrcamento },
     { data: proponentesAreas },
     { data: editaisRecentes },
+    { data: projetosAprovados },
   ] = await Promise.all([
     supabase.from('editais').select('id', { count: 'exact', head: true }).eq('active', true),
     supabase.from('projetos').select('id', { count: 'exact', head: true }),
@@ -118,6 +119,7 @@ export default async function IndicadoresPage() {
     supabase.from('projetos').select('orcamento_total').eq('status_habilitacao', 'habilitado').not('orcamento_total', 'is', null),
     supabase.from('profiles').select('areas_atuacao').eq('role', 'proponente').eq('active', true).not('areas_atuacao', 'is', null),
     supabase.from('editais').select('id, titulo, numero_edital, status, created_at').eq('active', true).order('created_at', { ascending: false }).limit(10),
+    supabase.from('projetos').select('id, titulo, numero_protocolo, nota_final, edital_id, editais!inner(titulo, numero_edital)').eq('status_habilitacao', 'habilitado').not('nota_final', 'is', null).order('nota_final', { ascending: false }).limit(20),
   ])
 
   // Calcular valor total investido
@@ -270,6 +272,57 @@ export default async function IndicadoresPage() {
             </div>
           </div>
         </div>
+
+        {/* Projetos Aprovados */}
+        {(projetosAprovados || []).length > 0 && (
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="h-1 w-full bg-[#77a80b]" />
+            <div className="px-6 py-4 border-b border-slate-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-xl bg-[#77a80b]/10 flex items-center justify-center">
+                    <Trophy className="h-4 w-4 text-[#77a80b]" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-semibold text-slate-900">Projetos Aprovados</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">Projetos habilitados com melhor avaliação</p>
+                  </div>
+                </div>
+                <Link
+                  href="/mapa"
+                  className="text-xs font-medium text-[#0047AB] hover:underline flex items-center gap-1"
+                >
+                  <MapPin className="h-3 w-3" />
+                  Ver no Mapa
+                </Link>
+              </div>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {(projetosAprovados || []).map((proj: any, idx: number) => {
+                const edital = proj.editais
+                return (
+                  <div key={proj.id} className="flex items-center justify-between px-6 py-3.5 hover:bg-slate-50/50 transition-colors">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-300 text-xs font-semibold flex-shrink-0">
+                        {idx + 1}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{proj.titulo}</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          {proj.numero_protocolo} &middot; {edital?.titulo || ''}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0 ml-4">
+                      <p className="text-sm font-bold text-slate-900">{Number(proj.nota_final).toFixed(2)}</p>
+                      <p className="text-[11px] text-slate-400">nota</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Editais Recentes */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

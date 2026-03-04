@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useMemo } from 'react'
 import {
   Table,
   TableBody,
@@ -7,7 +10,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Trophy } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Trophy, Search, Download } from 'lucide-react'
 
 export interface RankingItem {
   posicao: number
@@ -22,7 +27,69 @@ interface RankingTableProps {
   items: RankingItem[]
 }
 
+function exportToXLS(items: RankingItem[]) {
+  const header = ['Posição', 'Título', 'Protocolo', 'Nota Final', 'Avaliações', 'Status']
+  const rows = items.map(item => [
+    item.posicao,
+    item.titulo,
+    item.protocolo,
+    item.nota_media?.toFixed(2) ?? '',
+    item.num_avaliacoes,
+    item.status,
+  ])
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Styles>
+ <Style ss:ID="header"><Font ss:Bold="1"/><Interior ss:Color="#0047AB" ss:Pattern="Solid"/><Font ss:Color="#FFFFFF" ss:Bold="1"/></Style>
+ <Style ss:ID="num"><NumberFormat ss:Format="0.00"/></Style>
+</Styles>
+<Worksheet ss:Name="Ranking">
+<Table>
+<Row>${header.map(h => `<Cell ss:StyleID="header"><Data ss:Type="String">${h}</Data></Cell>`).join('')}</Row>
+${rows.map(row => `<Row>${row.map((cell, i) => {
+    const type = typeof cell === 'number' ? 'Number' : 'String'
+    const style = i === 3 ? ' ss:StyleID="num"' : ''
+    return `<Cell${style}><Data ss:Type="${type}">${cell}</Data></Cell>`
+  }).join('')}</Row>`).join('\n')}
+</Table>
+</Worksheet>
+</Workbook>`
+
+  const blob = new Blob([xml], { type: 'application/vnd.ms-excel' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `ranking-${new Date().toISOString().slice(0, 10)}.xls`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export function RankingTable({ items }: RankingTableProps) {
+  const [busca, setBusca] = useState('')
+  const [filtroStatus, setFiltroStatus] = useState<string>('todos')
+
+  const statusOptions = useMemo(() => {
+    const unique = new Set(items.map(i => i.status))
+    return Array.from(unique).sort()
+  }, [items])
+
+  const filteredItems = useMemo(() => {
+    let result = items
+    if (filtroStatus !== 'todos') {
+      result = result.filter(i => i.status === filtroStatus)
+    }
+    if (busca.trim()) {
+      const q = busca.toLowerCase()
+      result = result.filter(i =>
+        i.titulo.toLowerCase().includes(q) || i.protocolo.toLowerCase().includes(q)
+      )
+    }
+    return result
+  }, [items, filtroStatus, busca])
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
@@ -31,7 +98,52 @@ export function RankingTable({ items }: RankingTableProps) {
             <div className="h-2 w-8 bg-[var(--brand-primary)] rounded-full" />
             Classificação Geral
           </h3>
-          <p className="text-slate-500 font-medium italic text-sm">Os projetos mais bem avaliados aparecem no topo.</p>
+          <p className="text-slate-500 font-medium text-sm">Os projetos mais bem avaliados aparecem no topo.</p>
+        </div>
+        <Button
+          variant="outline"
+          className="rounded-xl border-slate-200 font-semibold text-xs uppercase tracking-wide gap-2"
+          onClick={() => exportToXLS(filteredItems)}
+          disabled={filteredItems.length === 0}
+        >
+          <Download className="h-4 w-4" />
+          Exportar XLS
+        </Button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Input
+            placeholder="Buscar por título ou protocolo..."
+            value={busca}
+            onChange={e => setBusca(e.target.value)}
+            className="pl-9 h-10 rounded-xl border-slate-200"
+          />
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant={filtroStatus === 'todos' ? 'default' : 'outline'}
+            size="sm"
+            className="rounded-xl text-xs"
+            onClick={() => setFiltroStatus('todos')}
+          >
+            Todos ({items.length})
+          </Button>
+          {statusOptions.map(s => {
+            const count = items.filter(i => i.status === s).length
+            return (
+              <Button
+                key={s}
+                variant={filtroStatus === s ? 'default' : 'outline'}
+                size="sm"
+                className="rounded-xl text-xs capitalize"
+                onClick={() => setFiltroStatus(s)}
+              >
+                {s} ({count})
+              </Button>
+            )
+          })}
         </div>
       </div>
 
@@ -47,7 +159,7 @@ export function RankingTable({ items }: RankingTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map((item, idx) => {
+            {filteredItems.map((item) => {
               const isTop3 = item.posicao <= 3
               const trophyColors = [
                 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.4)]',
@@ -110,14 +222,16 @@ export function RankingTable({ items }: RankingTableProps) {
                 </TableRow>
               )
             })}
-            {items.length === 0 && (
+            {filteredItems.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="h-64 text-center">
                   <div className="flex flex-col items-center justify-center space-y-4">
                     <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <Trophy className="h-8 w-8" />
                     </div>
-                    <p className="text-slate-400 font-medium text-xs uppercase tracking-wide">Nenhum resultado processado</p>
+                    <p className="text-slate-400 font-medium text-xs uppercase tracking-wide">
+                      {items.length > 0 ? 'Nenhum resultado para os filtros aplicados' : 'Nenhum resultado processado'}
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>

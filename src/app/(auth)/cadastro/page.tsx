@@ -104,6 +104,8 @@ export default function CadastroPage() {
     if (signUpData.user) {
       const extraData: Record<string, any> = {
         role: perfilTipo,
+        // Avaliador/gestor precisam de aprovação do admin
+        ...(perfilTipo !== 'proponente' ? { aprovado: false } : {}),
       }
 
       if (perfilTipo === 'proponente') {
@@ -141,7 +143,8 @@ export default function CadastroPage() {
       }
     }
 
-    router.push('/login?msg=cadastro-sucesso')
+    const msg = perfilTipo !== 'proponente' ? 'cadastro-pendente' : 'cadastro-sucesso'
+    router.push(`/login?msg=${msg}`)
   }
 
   function updateProponente(field: string, value: any) {

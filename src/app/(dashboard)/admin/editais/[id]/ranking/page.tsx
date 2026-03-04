@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { RankingTable } from '@/components/avaliacao/RankingTable'
 import { RankingTableSkeleton } from '@/components/avaliacao/RankingTableSkeleton'
-import { ArrowLeft, RefreshCw } from 'lucide-react'
+import { ArrowLeft, RefreshCw, ShieldCheck, Star, GripVertical } from 'lucide-react'
 import { consolidarRanking } from '@/lib/actions/consolidar-ranking'
 import { revalidatePath } from 'next/cache'
 import type { RankingItem } from '@/components/avaliacao/RankingTable'
@@ -21,20 +22,32 @@ export default async function RankingPage({
 
   const { data: edital } = await supabase
     .from('editais')
-    .select('id, titulo, numero_edital')
+    .select('id, titulo, numero_edital, config_pontuacao_extra, config_cotas, config_desempate')
     .eq('id', id)
     .single()
 
   if (!edital) notFound()
 
+  const hasAdvancedConfig = (edital.config_pontuacao_extra as unknown[])?.length > 0 ||
+    (edital.config_cotas as unknown[])?.length > 0 ||
+    (edital.config_desempate as unknown[])?.length > 0
+
   // Only habilitado projects should appear in ranking
   const { data: projetos } = await supabase
     .from('projetos')
-    .select('id, titulo, numero_protocolo, status_atual, nota_final, avaliacoes(id)')
+    .select('id, titulo, numero_protocolo, status_atual, nota_final, categoria_id, avaliacoes(id)')
     .eq('edital_id', id)
     .eq('status_habilitacao', 'habilitado')
     .eq('avaliacoes.status', 'finalizada')
     .order('nota_final', { ascending: false, nullsFirst: false })
+
+  // Load categorias
+  const { data: categorias } = await supabase
+    .from('edital_categorias')
+    .select('id, nome, vagas')
+    .eq('edital_id', id)
+
+  const catMap = new Map((categorias || []).map(c => [c.id, c.nome]))
 
   const items: RankingItem[] = (projetos || []).map((p, idx) => ({
     posicao: idx + 1,
@@ -44,6 +57,9 @@ export default async function RankingPage({
     num_avaliacoes: Array.isArray(p.avaliacoes) ? p.avaliacoes.length : 0,
     status: p.status_atual,
   }))
+
+  const countSelecionados = (projetos || []).filter(p => p.status_atual === 'selecionado').length
+  const countSuplentes = (projetos || []).filter(p => p.status_atual === 'suplente').length
 
   async function handleConsolidar() {
     'use server'
@@ -82,6 +98,28 @@ export default async function RankingPage({
           </div>
         </CardContent>
       </Card>
+
+      {/* Stats & Config Info */}
+      {(countSelecionados > 0 || countSuplentes > 0 || hasAdvancedConfig) && (
+        <div className="flex items-center gap-3 flex-wrap">
+          {countSelecionados > 0 && (
+            <Badge className="bg-green-50 text-green-700 border-none text-xs font-medium px-2.5 py-1 rounded-lg">
+              {countSelecionados} selecionado{countSelecionados !== 1 ? 's' : ''}
+            </Badge>
+          )}
+          {countSuplentes > 0 && (
+            <Badge className="bg-orange-50 text-orange-600 border-none text-xs font-medium px-2.5 py-1 rounded-lg">
+              {countSuplentes} suplente{countSuplentes !== 1 ? 's' : ''}
+            </Badge>
+          )}
+          {hasAdvancedConfig && (
+            <Badge className="bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] border-none text-[11px] font-medium px-2 py-0.5 rounded-md gap-1">
+              <ShieldCheck className="h-3 w-3" />
+              Config avançada ativa
+            </Badge>
+          )}
+        </div>
+      )}
 
       <Suspense fallback={<RankingTableSkeleton />}>
         <RankingTable items={items} />

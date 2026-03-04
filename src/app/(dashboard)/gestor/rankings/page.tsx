@@ -32,18 +32,24 @@ export default async function GestorRankingsPage() {
     .eq('active', true)
     .order('created_at', { ascending: false })
 
-  // Para cada edital, buscar projetos com nota
+  // Para cada edital, buscar projetos com nota + categorias
   const editaisComProjetos = await Promise.all(
     (editais || []).map(async (edital) => {
-      const { data: projetos } = await supabase
-        .from('projetos')
-        .select('id, titulo, numero_protocolo, nota_final, status_atual')
-        .eq('edital_id', edital.id)
-        .not('nota_final', 'is', null)
-        .order('nota_final', { ascending: false })
-        .limit(10)
+      const [{ data: projetos }, { data: categorias }] = await Promise.all([
+        supabase
+          .from('projetos')
+          .select('id, titulo, numero_protocolo, nota_final, status_atual, categoria_id')
+          .eq('edital_id', edital.id)
+          .not('nota_final', 'is', null)
+          .order('nota_final', { ascending: false }),
+        supabase
+          .from('edital_categorias')
+          .select('id, nome, vagas')
+          .eq('edital_id', edital.id)
+          .order('created_at'),
+      ])
 
-      return { ...edital, projetos: projetos || [] }
+      return { ...edital, projetos: projetos || [], categorias: categorias || [] }
     })
   )
 
@@ -79,6 +85,19 @@ export default async function GestorRankingsPage() {
                   <EditalStatusBadge status={edital.status as FaseEdital} />
                 </div>
               </CardHeader>
+              {edital.categorias.length > 0 && (
+                <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Categorias:</span>
+                  {edital.categorias.map((cat: any) => {
+                    const count = edital.projetos.filter((p: any) => p.categoria_id === cat.id).length
+                    return (
+                      <Badge key={cat.id} className="bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] border-none text-[11px] font-medium px-2 py-0.5 rounded-md">
+                        {cat.nome} ({count}{cat.vagas > 0 ? `/${cat.vagas}` : ''})
+                      </Badge>
+                    )
+                  })}
+                </div>
+              )}
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                 <Table className="min-w-[600px]">
@@ -86,6 +105,9 @@ export default async function GestorRankingsPage() {
                     <TableRow className="hover:bg-transparent">
                       <TableHead className="w-16 py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500 text-center">Posição</TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500">Projeto</TableHead>
+                      {edital.categorias.length > 0 && (
+                        <TableHead className="py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500">Categoria</TableHead>
+                      )}
                       <TableHead className="py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500">Protocolo</TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500 text-right">Nota</TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-xs uppercase tracking-wide text-slate-500 text-right">Status</TableHead>
@@ -119,6 +141,13 @@ export default async function GestorRankingsPage() {
                               </div>
                             </div>
                           </TableCell>
+                          {edital.categorias.length > 0 && (
+                            <TableCell className="py-5 px-4">
+                              <span className="text-xs text-slate-500">
+                                {edital.categorias.find((c: any) => c.id === p.categoria_id)?.nome || '—'}
+                              </span>
+                            </TableCell>
+                          )}
                           <TableCell className="py-5 px-4">
                             <code className="text-xs font-medium text-slate-900 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-wide">{p.numero_protocolo}</code>
                           </TableCell>

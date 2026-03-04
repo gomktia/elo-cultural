@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -17,10 +17,30 @@ interface InscricaoFormProps {
   tenantId: string
 }
 
+interface Categoria {
+  id: string
+  nome: string
+  vagas: number
+}
+
+interface CampoExtra {
+  id: string
+  label: string
+  tipo: string
+  obrigatorio: boolean
+  opcoes: string[]
+  placeholder: string | null
+  ordem: number
+}
+
 export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [categorias, setCategorias] = useState<Categoria[]>([])
+  const [categoriaId, setCategoriaId] = useState<string>('')
+  const [camposExtras, setCamposExtras] = useState<CampoExtra[]>([])
+  const [camposValues, setCamposValues] = useState<Record<string, string>>({})
   const [form, setForm] = useState({
     titulo: '',
     resumo: '',
@@ -28,6 +48,26 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     orcamento_total: '',
     cronograma_execucao: '',
   })
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase
+      .from('edital_categorias')
+      .select('id, nome, vagas')
+      .eq('edital_id', editalId)
+      .order('created_at')
+      .then(({ data }) => {
+        if (data && data.length > 0) setCategorias(data)
+      })
+    supabase
+      .from('edital_campos_inscricao')
+      .select('*')
+      .eq('edital_id', editalId)
+      .order('ordem')
+      .then(({ data }) => {
+        if (data && data.length > 0) setCamposExtras(data)
+      })
+  }, [editalId])
   const [documents, setDocuments] = useState<Array<{
     nome_arquivo: string
     storage_path: string
@@ -63,12 +103,16 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         tenant_id: tenantId,
         edital_id: editalId,
         proponente_id: user.id,
+        categoria_id: categoriaId || null,
         numero_protocolo: protocolo,
         titulo: form.titulo,
         resumo: form.resumo || null,
         descricao_tecnica: form.descricao_tecnica || null,
         orcamento_total: form.orcamento_total ? parseFloat(form.orcamento_total) : null,
         cronograma_execucao: form.cronograma_execucao || null,
+        campos_extras: camposExtras.length > 0 ? Object.fromEntries(
+          camposExtras.map(c => [c.label, camposValues[c.id] || ''])
+        ) : {},
         ip_submissao: null,
       })
       .select('id')
@@ -144,6 +188,24 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 required
               />
             </div>
+            {categorias.length > 0 && (
+              <div className="space-y-2">
+                <Label htmlFor="categoria">Categoria de Seleção *</Label>
+                <select
+                  id="categoria"
+                  value={categoriaId}
+                  onChange={e => setCategoriaId(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">Selecione uma categoria</option>
+                  {categorias.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.nome}{c.vagas > 0 ? ` (${c.vagas} vagas)` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="resumo">Resumo</Label>
               <Textarea
@@ -187,8 +249,90 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 rows={3}
               />
             </div>
+
+            {/* Campos extras do edital */}
+            {camposExtras.length > 0 && (
+              <div className="border-t pt-4 mt-4 space-y-4">
+                <h4 className="text-sm font-semibold text-slate-700">Informações Adicionais</h4>
+                {camposExtras.map(campo => (
+                  <div key={campo.id} className="space-y-2">
+                    <Label htmlFor={`campo-${campo.id}`}>
+                      {campo.label}{campo.obrigatorio ? ' *' : ''}
+                    </Label>
+                    {campo.tipo === 'text' && (
+                      <Input
+                        id={`campo-${campo.id}`}
+                        value={camposValues[campo.id] || ''}
+                        onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
+                        placeholder={campo.placeholder || ''}
+                      />
+                    )}
+                    {campo.tipo === 'textarea' && (
+                      <Textarea
+                        id={`campo-${campo.id}`}
+                        value={camposValues[campo.id] || ''}
+                        onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
+                        placeholder={campo.placeholder || ''}
+                        rows={3}
+                      />
+                    )}
+                    {campo.tipo === 'number' && (
+                      <Input
+                        id={`campo-${campo.id}`}
+                        type="number"
+                        value={camposValues[campo.id] || ''}
+                        onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
+                        placeholder={campo.placeholder || ''}
+                      />
+                    )}
+                    {campo.tipo === 'select' && (
+                      <select
+                        id={`campo-${campo.id}`}
+                        value={camposValues[campo.id] || ''}
+                        onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      >
+                        <option value="">Selecione...</option>
+                        {campo.opcoes?.map(op => (
+                          <option key={op} value={op}>{op}</option>
+                        ))}
+                      </select>
+                    )}
+                    {campo.tipo === 'checkbox' && (
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={camposValues[campo.id] === 'true'}
+                          onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.checked ? 'true' : 'false' }))}
+                          className="rounded"
+                        />
+                        <span className="text-sm text-muted-foreground">{campo.placeholder || campo.label}</span>
+                      </label>
+                    )}
+                    {campo.tipo === 'file' && (
+                      <DocumentUpload
+                        tipo="complementar"
+                        label=""
+                        tenantId={tenantId}
+                        onUpload={(doc) => {
+                          setCamposValues(prev => ({ ...prev, [campo.id]: doc.storage_path }))
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="flex justify-end">
-              <Button onClick={() => setStep(2)} disabled={!form.titulo}>
+              <Button onClick={() => {
+                const missingRequired = camposExtras.filter(c => c.obrigatorio && !camposValues[c.id]?.trim())
+                if (missingRequired.length > 0) {
+                  toast.error(`Preencha: ${missingRequired.map(c => c.label).join(', ')}`)
+                  return
+                }
+                setStep(2)
+              }} disabled={!form.titulo || (categorias.length > 0 && !categoriaId)}>
                 Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -232,8 +376,14 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             <div className="rounded-md border p-4 space-y-2">
               <h4 className="font-medium">Dados do Projeto</h4>
               <p className="text-sm"><strong>Título:</strong> {form.titulo}</p>
+              {categoriaId && (
+                <p className="text-sm"><strong>Categoria:</strong> {categorias.find(c => c.id === categoriaId)?.nome}</p>
+              )}
               {form.resumo && <p className="text-sm"><strong>Resumo:</strong> {form.resumo}</p>}
               {form.orcamento_total && <p className="text-sm"><strong>Orçamento:</strong> R$ {parseFloat(form.orcamento_total).toFixed(2)}</p>}
+              {camposExtras.filter(c => camposValues[c.id]?.trim()).map(c => (
+                <p key={c.id} className="text-sm"><strong>{c.label}:</strong> {camposValues[c.id]}</p>
+              ))}
             </div>
             <div className="rounded-md border p-4 space-y-2">
               <h4 className="font-medium">Documentos ({documents.length})</h4>

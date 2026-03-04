@@ -30,6 +30,7 @@ interface Publicacao {
   conteudo: string | null
   numero_publicacao: number
   data_publicacao: string
+  etapa: string | null
 }
 
 interface PublicacoesManagerProps {
@@ -45,13 +46,27 @@ const tipoLabels: Record<string, string> = {
   resultado_final: 'Resultado Final',
   ata: 'Ata',
   homologacao: 'Homologação',
+  errata: 'Errata',
+  comunicado: 'Comunicado',
+  outro: 'Outro',
 }
+
+const etapaOptions = [
+  { value: '', label: 'Sem etapa específica' },
+  { value: 'inscricao', label: 'Inscrição' },
+  { value: 'habilitacao', label: 'Habilitação' },
+  { value: 'avaliacao', label: 'Avaliação Técnica' },
+  { value: 'selecao', label: 'Seleção' },
+  { value: 'recurso', label: 'Recurso' },
+  { value: 'resultado', label: 'Resultado' },
+  { value: 'homologacao', label: 'Homologação' },
+]
 
 export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicacoes, backHref }: PublicacoesManagerProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [form, setForm] = useState({ tipo: '', titulo: '', conteudo: '' })
+  const [form, setForm] = useState({ tipo: '', tipoCustom: '', etapa: '', titulo: '', conteudo: '' })
 
   async function criarPublicacao() {
     setSaving(true)
@@ -61,10 +76,13 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
 
     const nextNum = publicacoes.length + 1
 
+    const tipoFinal = form.tipo === 'outro' ? (form.tipoCustom || 'outro') : form.tipo
+
     const { error } = await supabase.from('publicacoes').insert({
       tenant_id: tenantId,
       edital_id: editalId,
-      tipo: form.tipo,
+      tipo: tipoFinal,
+      etapa: form.etapa || null,
       numero_publicacao: nextNum,
       titulo: form.titulo,
       conteudo: form.conteudo || null,
@@ -76,7 +94,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
     } else {
       toast.success('Publicação criada com sucesso')
       setDialogOpen(false)
-      setForm({ tipo: '', titulo: '', conteudo: '' })
+      setForm({ tipo: '', tipoCustom: '', etapa: '', titulo: '', conteudo: '' })
       router.refresh()
     }
     setSaving(false)
@@ -115,7 +133,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label className="text-[11px] font-medium text-slate-400 uppercase tracking-wide ml-1">Tipo de Documento</Label>
-                <Select value={form.tipo} onValueChange={v => setForm(p => ({ ...p, tipo: v }))}>
+                <Select value={form.tipo} onValueChange={v => setForm(p => ({ ...p, tipo: v, tipoCustom: '' }))}>
                   <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50 font-bold focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm">
                     <SelectValue placeholder="Selecione o tipo..." />
                   </SelectTrigger>
@@ -124,6 +142,30 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
                     <SelectItem value="resultado_final">Resultado Final</SelectItem>
                     <SelectItem value="ata">Ata de Reunião</SelectItem>
                     <SelectItem value="homologacao">Termo de Homologação</SelectItem>
+                    <SelectItem value="errata">Errata</SelectItem>
+                    <SelectItem value="comunicado">Comunicado</SelectItem>
+                    <SelectItem value="outro">Outro (digitar)</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.tipo === 'outro' && (
+                  <Input
+                    value={form.tipoCustom}
+                    onChange={e => setForm(p => ({ ...p, tipoCustom: e.target.value }))}
+                    className="h-10 rounded-xl border-slate-200 bg-slate-50 font-medium text-sm mt-1.5"
+                    placeholder="Ex: Convocação, Retificação..."
+                  />
+                )}
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-[11px] font-medium text-slate-400 uppercase tracking-wide ml-1">Etapa do Edital <span className="text-slate-300">(opcional)</span></Label>
+                <Select value={form.etapa} onValueChange={v => setForm(p => ({ ...p, etapa: v }))}>
+                  <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50 font-bold focus:ring-2 focus:ring-brand-primary/20 transition-all text-sm">
+                    <SelectValue placeholder="Vincular a uma etapa..." />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl shadow-xl border-slate-200">
+                    {etapaOptions.map(opt => (
+                      <SelectItem key={opt.value || '_none'} value={opt.value || '_none'}>{opt.label}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -148,7 +190,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
               </div>
               <Button
                 onClick={criarPublicacao}
-                disabled={saving || !form.tipo || !form.titulo}
+                disabled={saving || !form.tipo || !form.titulo || (form.tipo === 'outro' && !form.tipoCustom.trim())}
                 className="h-11 w-full rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold shadow-xl shadow-[#0047AB]/20 transition-all active:scale-98 text-sm mt-2"
               >
                 {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Confirmar Publicação'}
@@ -167,6 +209,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
               <TableHead className="w-16 py-4 px-6 font-semibold text-xs uppercase tracking-wide text-white text-center">#</TableHead>
               <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Titulo</TableHead>
               <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Tipo</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Etapa</TableHead>
               <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">Data</TableHead>
             </TableRow>
           </TableHeader>
@@ -188,6 +231,15 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
                     {tipoLabels[pub.tipo] || pub.tipo}
                   </Badge>
                 </TableCell>
+                <TableCell className="py-3.5 px-4">
+                  {pub.etapa ? (
+                    <Badge className="bg-blue-50 text-[var(--brand-primary)] border-none font-medium text-[11px] uppercase tracking-wide px-2 py-0.5 rounded-md">
+                      {etapaOptions.find(e => e.value === pub.etapa)?.label || pub.etapa}
+                    </Badge>
+                  ) : (
+                    <span className="text-xs text-slate-300">—</span>
+                  )}
+                </TableCell>
                 <TableCell className="py-3.5 px-8 text-right font-medium text-[11px] text-slate-400 uppercase tracking-wide">
                   {new Date(pub.data_publicacao).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
                 </TableCell>
@@ -195,7 +247,7 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
             ))}
             {publicacoes.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="h-64 text-center">
+                <TableCell colSpan={5} className="h-64 text-center">
                   <div className="flex flex-col items-center justify-center space-y-3">
                     <div className="h-12 w-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <FileText className="h-6 w-6" />

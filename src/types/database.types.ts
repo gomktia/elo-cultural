@@ -62,6 +62,7 @@ export interface Edital {
   titulo: string
   descricao: string | null
   status: FaseEdital
+  tipo_edital: string | null
   inicio_inscricao: string | null
   fim_inscricao: string | null
   inicio_recurso: string | null
@@ -72,10 +73,25 @@ export interface Edital {
   fim_recurso_selecao: string | null
   inicio_recurso_habilitacao: string | null
   fim_recurso_habilitacao: string | null
+  config_cotas: Record<string, unknown>[] | null
+  config_desempate: string[] | null
+  config_pontuacao_extra: Record<string, unknown>[] | null
+  config_reserva_vagas: Record<string, unknown>[] | null
+  cancelado: boolean
+  justificativa_cancelamento: string | null
   versao: number
   active: boolean
   created_at: string
   created_by: string | null
+}
+
+export interface EditalCategoria {
+  id: string
+  edital_id: string
+  tenant_id: string
+  nome: string
+  vagas: number
+  created_at: string
 }
 
 export interface Criterio {
@@ -105,6 +121,7 @@ export interface Projeto {
   tenant_id: string
   edital_id: string
   proponente_id: string
+  categoria_id: string | null
   numero_protocolo: string
   titulo: string
   resumo: string | null
@@ -113,6 +130,7 @@ export interface Projeto {
   cronograma_execucao: string | null
   status_habilitacao: 'pendente' | 'em_analise' | 'habilitado' | 'inabilitado'
   nota_final: number | null
+  campos_extras: Record<string, string> | null
   status_atual: string
   data_envio: string
   ip_submissao: string | null

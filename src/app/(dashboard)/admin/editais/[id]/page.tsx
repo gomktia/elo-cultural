@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import { AvancarEtapaButton } from '@/components/edital/AvancarEtapaButton'
-import { ArrowLeft, FileText, Settings, Users, BarChart3, Scale, Calendar, Brain } from 'lucide-react'
+import { ArrowLeft, FileText, Settings, Users, BarChart3, Scale, Calendar, Brain, ClipboardList } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { Edital } from '@/types/database.types'
@@ -53,6 +53,11 @@ export default async function AdminEditalDetailPage({
                   <code className="text-[11px] font-semibold text-[var(--brand-primary)] bg-[var(--brand-primary)]/8 px-2.5 py-1 rounded-md uppercase tracking-wide">
                     {e.numero_edital}
                   </code>
+                  {e.tipo_edital && e.tipo_edital !== 'fomento' && (
+                    <span className="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md capitalize">
+                      {e.tipo_edital.replace(/_/g, ' ')}
+                    </span>
+                  )}
                   <EditalStatusBadge status={e.status} />
                 </div>
               </div>
@@ -121,6 +126,7 @@ export default async function AdminEditalDetailPage({
                 { title: 'Ranking Final', url: 'ranking', icon: BarChart3, desc: 'Visualizar classificação dos projetos.', color: 'text-[var(--brand-success)]', bg: 'bg-green-100/50' },
                 { title: 'Recursos', url: 'recursos', icon: Scale, desc: 'Gestão de contestações enviadas.', color: 'text-brand-secondary', bg: 'bg-brand-secondary/10' },
                 { title: 'Publicações', url: 'publicacoes', icon: FileText, desc: 'Atas e documentos oficiais.', color: 'text-slate-900', bg: 'bg-slate-900/5' },
+                { title: 'Formulário Inscrição', url: 'formulario', icon: ClipboardList, desc: 'Campos customizados do formulário.', color: 'text-amber-600', bg: 'bg-amber-100/50' },
                 { title: 'Triagem por IA', url: 'triagem-ia', icon: Brain, desc: 'Análise automatizada dos projetos.', color: 'text-purple-600', bg: 'bg-purple-100/50' },
               ].map((nav, i) => (
                 <Link key={i} href={`/admin/editais/${id}/${nav.url}`} className="group p-0.5">

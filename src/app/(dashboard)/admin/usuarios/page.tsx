@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-import { Loader2, Search, ArrowRight } from 'lucide-react'
+import { Loader2, Search, ArrowRight, ShieldCheck, Clock } from 'lucide-react'
 import Link from 'next/link'
 import type { UserRole } from '@/types/database.types'
 import { ROLE_LABELS } from '@/lib/constants/roles'
@@ -27,6 +27,7 @@ export default function UsuariosAdminPage() {
   const [busca, setBusca] = useState('')
   const [atualizando, setAtualizando] = useState<string | null>(null)
   const [myRole, setMyRole] = useState<string>('proponente')
+  const [filtroPendente, setFiltroPendente] = useState(false)
 
   useEffect(() => {
     loadUsuarios()
@@ -76,10 +77,33 @@ export default function UsuariosAdminPage() {
     setAtualizando(null)
   }
 
-  const filtrados = usuarios.filter(u =>
-    u.nome?.toLowerCase().includes(busca.toLowerCase()) ||
-    u.cpf_cnpj?.includes(busca)
-  )
+  async function aprovarUsuario(userId: string) {
+    setAtualizando(userId)
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    const { error } = await supabase
+      .from('profiles')
+      .update({ aprovado: true, aprovado_por: user?.id, aprovado_em: new Date().toISOString() })
+      .eq('id', userId)
+
+    if (error) {
+      toast.error('Erro ao aprovar: ' + error.message)
+    } else {
+      toast.success('Usuário aprovado com sucesso')
+      setUsuarios(prev =>
+        prev.map(u => u.id === userId ? { ...u, aprovado: true } : u)
+      )
+    }
+    setAtualizando(null)
+  }
+
+  const pendentes = usuarios.filter(u => u.aprovado === false && (u.role === 'avaliador' || u.role === 'gestor'))
+
+  const filtrados = usuarios.filter(u => {
+    if (filtroPendente && u.aprovado !== false) return false
+    return u.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+      u.cpf_cnpj?.includes(busca)
+  })
 
   if (loading) {
     return (
@@ -99,14 +123,27 @@ export default function UsuariosAdminPage() {
               <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Usuários</h1>
               <p className="text-sm text-slate-500">Controle de acessos e permissões do sistema.</p>
             </div>
-            <div className="relative w-full md:w-80 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[var(--brand-primary)] transition-colors" />
-              <input
-                className="w-full h-10 pl-11 pr-4 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] outline-none transition-all"
-                placeholder="Buscar por nome ou CPF..."
-                value={busca}
-                onChange={e => setBusca(e.target.value)}
-              />
+            <div className="flex items-center gap-3">
+              {pendentes.length > 0 && (
+                <Button
+                  variant={filtroPendente ? 'default' : 'outline'}
+                  size="sm"
+                  className="rounded-xl text-xs gap-1.5 shrink-0"
+                  onClick={() => setFiltroPendente(!filtroPendente)}
+                >
+                  <Clock className="h-3.5 w-3.5" />
+                  Pendentes ({pendentes.length})
+                </Button>
+              )}
+              <div className="relative w-full md:w-80 group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[var(--brand-primary)] transition-colors" />
+                <input
+                  className="w-full h-10 pl-11 pr-4 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)] outline-none transition-all"
+                  placeholder="Buscar por nome ou CPF..."
+                  value={busca}
+                  onChange={e => setBusca(e.target.value)}
+                />
+              </div>
             </div>
           </div>
         </CardContent>
@@ -133,6 +170,11 @@ export default function UsuariosAdminPage() {
                       <Badge className={`${u.active ? 'bg-green-50 text-[var(--brand-success)]' : 'bg-slate-50 text-slate-400'} border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5`}>
                         {u.active ? 'Ativo' : 'Inativo'}
                       </Badge>
+                      {u.aprovado === false && (u.role === 'avaliador' || u.role === 'gestor') && (
+                        <Badge className="bg-amber-50 text-amber-600 border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-0.5">
+                          Pendente
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -183,11 +225,24 @@ export default function UsuariosAdminPage() {
                   </div>
                 </div>
 
-                <Link href={`/admin/usuarios/${u.id}`}>
-                  <Button variant="ghost" className="h-8 w-8 p-0 rounded-lg text-slate-300 hover:text-[var(--brand-primary)] hover:bg-brand-primary/5 transition-all">
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+                <div className="flex items-center gap-2">
+                  {canEditRoles && u.aprovado === false && (u.role === 'avaliador' || u.role === 'gestor') && (
+                    <Button
+                      size="sm"
+                      className="h-7 px-3 rounded-lg bg-[var(--brand-success)] hover:bg-[var(--brand-success)]/90 text-white text-[11px] font-semibold uppercase tracking-wide gap-1"
+                      onClick={() => aprovarUsuario(u.id)}
+                      disabled={atualizando === u.id}
+                    >
+                      {atualizando === u.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <ShieldCheck className="h-3 w-3" />}
+                      Aprovar
+                    </Button>
+                  )}
+                  <Link href={`/admin/usuarios/${u.id}`}>
+                    <Button variant="ghost" className="h-8 w-8 p-0 rounded-lg text-slate-300 hover:text-[var(--brand-primary)] hover:bg-brand-primary/5 transition-all">
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

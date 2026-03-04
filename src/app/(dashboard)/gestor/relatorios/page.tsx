@@ -12,6 +12,7 @@ import {
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import type { FaseEdital } from '@/types/database.types'
 import { DownloadRelatorios } from '@/components/gestor/RelatorioButtons'
+import { RelatorioDetalhado } from '@/components/gestor/RelatorioDetalhado'
 import { FileText } from 'lucide-react'
 
 export default async function GestorRelatoriosPage() {
@@ -159,6 +160,7 @@ export default async function GestorRelatoriosPage() {
                 <span className="text-[11px] font-medium text-slate-300 uppercase tracking-wide">Gestão {rel.tenantNome}</span>
               </div>
             </CardContent>
+            <RelatorioDetalhado editalId={rel.id} />
           </Card>
         ))}
 

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { EditalFileUpload } from '@/components/edital/EditalFileUpload'
+import { EditalConfigManager, type EditalConfig, type CategoriaItem } from '@/components/edital/EditalConfigManager'
 import { toast } from 'sonner'
 import { Loader2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -52,6 +53,14 @@ export default function NovoEditalPage() {
   })
   const [editalFiles, setEditalFiles] = useState<UploadedFile[]>([])
   const [anexoFiles, setAnexoFiles] = useState<UploadedFile[]>([])
+  const [editalConfig, setEditalConfig] = useState<EditalConfig>({
+    tipo_edital: 'fomento',
+    categorias: [],
+    config_cotas: [],
+    config_desempate: [],
+    config_pontuacao_extra: [],
+    config_reserva_vagas: [],
+  })
 
   function updateForm(field: string, value: string) {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -89,6 +98,11 @@ export default function NovoEditalPage() {
       fim_recurso_selecao: form.fim_recurso_selecao || null,
       inicio_recurso_habilitacao: form.inicio_recurso_habilitacao || null,
       fim_recurso_habilitacao: form.fim_recurso_habilitacao || null,
+      tipo_edital: editalConfig.tipo_edital,
+      config_cotas: editalConfig.config_cotas,
+      config_desempate: editalConfig.config_desempate,
+      config_pontuacao_extra: editalConfig.config_pontuacao_extra,
+      config_reserva_vagas: editalConfig.config_reserva_vagas,
       created_by: user.id,
     }).select('id').single()
 
@@ -96,6 +110,17 @@ export default function NovoEditalPage() {
       toast.error('Erro ao criar edital: ' + error.message)
       setLoading(false)
       return
+    }
+
+    // Save categorias
+    if (editalConfig.categorias.length > 0 && editalData?.id) {
+      const cats = editalConfig.categorias.filter(c => c.nome.trim()).map(c => ({
+        edital_id: editalData.id,
+        tenant_id: profile.tenant_id,
+        nome: c.nome,
+        vagas: c.vagas,
+      }))
+      if (cats.length > 0) await supabase.from('edital_categorias').insert(cats)
     }
 
     // Save uploaded documents linked to the new edital
@@ -245,6 +270,12 @@ export default function NovoEditalPage() {
                 </div>
               </div>
             )}
+
+            {/* Configuração do Edital */}
+            <div className="pt-4 border-t border-slate-200 mt-2">
+              <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Configuração do Edital</h3>
+              <EditalConfigManager config={editalConfig} onChange={setEditalConfig} />
+            </div>
 
             {/* Prazos de Recurso */}
             <div className="pt-4 border-t border-slate-200 mt-2">

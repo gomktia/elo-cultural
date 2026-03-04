@@ -40,6 +40,7 @@ export default async function DashboardLayout({
 
   const role = (profile?.role as UserRole) || 'proponente'
   const isSuperAdmin = role === 'super_admin'
+  const pendingApproval = !isSuperAdmin && (role === 'avaliador' || role === 'gestor') && profile?.aprovado === false
   const userName = profile?.nome || user.email || 'Usuario'
   const userEmail = user.email || ''
   const tenantName = isSuperAdmin ? 'Elo Cultural' : tenant?.nome
@@ -71,6 +72,15 @@ export default async function DashboardLayout({
         <SidebarInset className="bg-transparent">
           <main className="flex-1 px-4 py-4 md:px-8 lg:px-10 md:py-6">
             <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
+              {pendingApproval && (
+                <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 flex items-start gap-3">
+                  <svg className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div>
+                    <p className="text-sm font-semibold text-amber-800">Conta pendente de aprovação</p>
+                    <p className="text-xs text-amber-600 mt-0.5">Seu cadastro como <strong>{role}</strong> está aguardando aprovação de um administrador. Você poderá acessar todas as funcionalidades após a aprovação.</p>
+                  </div>
+                </div>
+              )}
               {children}
             </div>
           </main>
