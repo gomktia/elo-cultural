@@ -1,6 +1,6 @@
-# Pending Features Implementation Plan
+# Pending Features Implementation Plan — COMPLETED
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> All 8 tasks completed and deployed as of 2026-03-04.
 
 **Goal:** Implement all remaining features requested for the elo-cultural platform: role-specific registration forms, edital enhancements (recurso deadlines, file upload, inscription form builder), evaluator assignment fixes, permission restrictions, logo upload in settings, and flow improvements.
 
@@ -10,7 +10,7 @@
 
 ---
 
-### Task 1: Role-Specific Registration Form (after personal data)
+### Task 1: Role-Specific Registration Form (after personal data) — DONE
 
 **Files:**
 - Create: `src/components/cadastro/ProponenteForm.tsx`
@@ -74,7 +74,7 @@ Step 1: Personal data (existing form). Step 2: Role-specific form based on selec
 
 ---
 
-### Task 2: Edital Recurso Deadlines Configuration
+### Task 2: Edital Recurso Deadlines Configuration — DONE
 
 **Files:**
 - Modify: `src/app/(dashboard)/admin/editais/novo/page.tsx`
@@ -112,7 +112,7 @@ Insert these values along with the existing edital data on submit.
 
 ---
 
-### Task 3: Edital File Upload (Documents & Attachments)
+### Task 3: Edital File Upload (Documents & Attachments) — DONE
 
 **Files:**
 - Create: `src/components/edital/EditalFileUpload.tsx`
@@ -158,7 +158,7 @@ Since the edital doesn't have an ID yet at creation time, store files temporaril
 
 ---
 
-### Task 4: Add "Divulgação de Inscritos" Phase to Flow
+### Task 4: Add "Divulgação de Inscritos" Phase to Flow — DONE
 
 **Files:**
 - Modify: `src/types/database.types.ts`
@@ -186,7 +186,7 @@ ALTER TYPE fase_edital ADD VALUE IF NOT EXISTS 'recurso_divulgacao_inscritos' AF
 
 ---
 
-### Task 5: Fix Evaluator Assignment (Can't Edit/Add)
+### Task 5: Fix Evaluator Assignment (Can't Edit/Add) — DONE
 
 **Files:**
 - Modify: `src/components/avaliacao/AtribuicaoMatrix.tsx`
@@ -209,7 +209,7 @@ Add a button that links to `/admin/usuarios` with a hint to change a user's role
 
 ---
 
-### Task 6: Restrict Gestor from Changing Other Profiles
+### Task 6: Restrict Gestor from Changing Other Profiles — DONE
 
 **Files:**
 - Modify: `src/app/(dashboard)/admin/usuarios/page.tsx`
@@ -224,7 +224,7 @@ Fetch the current user's role. If role is `gestor`, hide the role selector dropd
 
 ---
 
-### Task 7: Logo Upload in Settings (Header + Footer)
+### Task 7: Logo Upload in Settings (Header + Footer) — DONE
 
 **Files:**
 - Modify: `src/app/(dashboard)/admin/configuracoes/page.tsx`
@@ -260,7 +260,7 @@ Replace the hardcoded `/icon-192.png` with the tenant's `logo_url` if available,
 
 ---
 
-### Task 8: Confirm Auto-Advance After Deadline
+### Task 8: Confirm Auto-Advance After Deadline — DONE
 
 **Files:**
 - Modify: `src/app/api/cron/bloqueio-fases/route.ts`
