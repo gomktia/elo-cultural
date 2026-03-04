@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -12,18 +13,23 @@ import {
 import { Trophy } from 'lucide-react'
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import type { Edital, FaseEdital } from '@/types/database.types'
+import { GESTAO_ROLES } from '@/lib/constants/roles'
 
 export default async function GestorRankingsPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) redirect('/login')
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('tenant_id')
+    .select('tenant_id, role')
     .eq('id', user.id)
     .single()
+
+  if (!profile || !GESTAO_ROLES.includes(profile.role as typeof GESTAO_ROLES[number])) {
+    redirect('/dashboard')
+  }
 
   const { data: editais } = await supabase
     .from('editais')

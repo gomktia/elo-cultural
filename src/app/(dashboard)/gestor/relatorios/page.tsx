@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -14,18 +15,23 @@ import type { FaseEdital } from '@/types/database.types'
 import { DownloadRelatorios } from '@/components/gestor/RelatorioButtons'
 import { RelatorioDetalhado } from '@/components/gestor/RelatorioDetalhado'
 import { FileText } from 'lucide-react'
+import { GESTAO_ROLES } from '@/lib/constants/roles'
 
 export default async function GestorRelatoriosPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) redirect('/login')
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('tenant_id')
+    .select('tenant_id, role')
     .eq('id', user.id)
     .single()
+
+  if (!profile || !GESTAO_ROLES.includes(profile.role as typeof GESTAO_ROLES[number])) {
+    redirect('/dashboard')
+  }
 
   const tenantId = profile?.tenant_id
 

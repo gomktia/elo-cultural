@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import { FileText, FolderOpen, Users, BarChart3, ArrowRight, Plus } from 'lucide-react'
@@ -7,18 +8,23 @@ import { Button } from '@/components/ui/button'
 import type { Edital } from '@/types/database.types'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { GESTAO_ROLES } from '@/lib/constants/roles'
 
 export default async function GestorDashboardPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) redirect('/login')
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('tenant_id, nome')
+    .select('tenant_id, nome, role')
     .eq('id', user.id)
     .single()
+
+  if (!profile || !GESTAO_ROLES.includes(profile.role as typeof GESTAO_ROLES[number])) {
+    redirect('/dashboard')
+  }
 
   const tenantId = profile?.tenant_id
 

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notifyPrestacaoStatus } from '@/lib/email/notify'
 import { NextRequest, NextResponse } from 'next/server'
-import { ADMIN_ROLES } from '@/lib/constants/roles'
+import { GESTAO_ROLES } from '@/lib/constants/roles'
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     .eq('id', user.id)
     .single()
 
-  if (!profile || !ADMIN_ROLES.includes(profile.role as typeof ADMIN_ROLES[number])) {
+  if (!profile || !GESTAO_ROLES.includes(profile.role as typeof GESTAO_ROLES[number])) {
     return NextResponse.json({ error: 'Nao autorizado' }, { status: 403 })
   }
 

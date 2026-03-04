@@ -50,6 +50,7 @@ const navByRole: Record<UserRole, NavItem[]> = {
     { title: 'Relatórios', url: '/gestor/relatorios', icon: FileText },
     { title: 'Rankings', url: '/gestor/rankings', icon: Trophy },
     { title: 'Prestação Contas', url: '/gestor/prestacao-contas', icon: FileCheck },
+    { title: 'Meu Perfil', url: '/perfil', icon: Users },
   ],
   admin: [
     { title: 'Início', url: '/', icon: Home },

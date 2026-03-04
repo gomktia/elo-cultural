@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Elo Cultural — Permissões por Perfil</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; padding: 40px; background: #fff; color: #1e293b; }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: #0047AB; }
+  .subtitle { font-size: 12px; color: #94a3b8; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { padding: 7px 10px; text-align: center; border: 1px solid #e2e8f0; }
+  th { background: #0047AB; color: #fff; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  th:first-child { text-align: left; min-width: 260px; }
+  td:first-child { text-align: left; font-weight: 500; color: #334155; }
+  tr:nth-child(even) { background: #f8fafc; }
+  .section-row td { background: #f1f5f9; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #0047AB; border-top: 2px solid #cbd5e1; }
+  .check { color: #16a34a; font-weight: 700; font-size: 14px; }
+  .no { color: #cbd5e1; font-size: 12px; }
+  .footer { margin-top: 20px; font-size: 10px; color: #94a3b8; text-align: right; }
+  .legend { margin-top: 16px; font-size: 10px; color: #64748b; line-height: 1.6; }
+  .legend strong { color: #0047AB; }
+</style>
+</head>
+<body>
+  <h1>Elo Cultural — Matriz de Permissões por Perfil</h1>
+  <p class="subtitle">Documento de referência • Março 2026</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Capacidade</th>
+        <th>Super Admin</th>
+        <th>Admin</th>
+        <th>Gestor</th>
+        <th>Avaliador</th>
+        <th>Proponente</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- EDITAIS -->
+      <tr class="section-row"><td colspan="6">Editais</td></tr>
+      <tr><td>Criar / editar editais</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Config edital (tipo, categorias, cotas, desempate)</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Form builder (campos de inscrição)</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Critérios de avaliação</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Cronograma (avançar / reverter fase)</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Cancelar edital com justificativa</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Publicações (atas, resultados, erratas)</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Triagem por IA</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+
+      <!-- PROJETOS -->
+      <tr class="section-row"><td colspan="6">Projetos</td></tr>
+      <tr><td>Inscrever projeto em edital</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td></tr>
+      <tr><td>Ver meus projetos</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td></tr>
+      <tr><td>Enviar recurso</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td></tr>
+      <tr><td>Prestação de contas (enviar)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td></tr>
+      <tr><td>Gerar recibo de inscrição</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td></tr>
+
+      <!-- AVALIAÇÃO -->
+      <tr class="section-row"><td colspan="6">Avaliação</td></tr>
+      <tr><td>Atribuir avaliadores a projetos</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Avaliar projetos (dar notas)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td><td class="no">—</td></tr>
+      <tr><td>Ver documentos do projeto</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td><td class="no">—</td></tr>
+      <tr><td>Checklist de documentos</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="check">✔</td><td class="no">—</td></tr>
+
+      <!-- HABILITAÇÃO -->
+      <tr class="section-row"><td colspan="6">Habilitação</td></tr>
+      <tr><td>Habilitar / inabilitar projetos</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Analisar recursos</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+
+      <!-- RANKING -->
+      <tr class="section-row"><td colspan="6">Ranking</td></tr>
+      <tr><td>Consolidar ranking</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Ver rankings</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Exportar XLS</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td></tr>
+
+      <!-- RELATÓRIOS -->
+      <tr class="section-row"><td colspan="6">Relatórios</td></tr>
+      <tr><td>Ver relatórios</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Filtros + exportar CSV</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Download PDFs (atas, ranking, homologação)</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td></tr>
+
+      <!-- PRESTAÇÃO DE CONTAS -->
+      <tr class="section-row"><td colspan="6">Prestação de Contas</td></tr>
+      <tr><td>Analisar prestações enviadas</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td></tr>
+
+      <!-- ADMINISTRAÇÃO -->
+      <tr class="section-row"><td colspan="6">Administração</td></tr>
+      <tr><td>Gerenciar usuários</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Aprovar avaliadores / gestores</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Gerenciar avaliadores</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Configuração do tenant (logo, cores)</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Auditoria (logs)</td><td class="check">✔</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+
+      <!-- PLATAFORMA -->
+      <tr class="section-row"><td colspan="6">Plataforma (Super Admin)</td></tr>
+      <tr><td>Gerenciar tenants (municípios)</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Configurações da plataforma (IA, SMTP)</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Visão global (todos os tenants)</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Testar configuração de e-mail</td><td class="check">✔</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+
+      <!-- ACESSO GERAL -->
+      <tr class="section-row"><td colspan="6">Acesso Geral</td></tr>
+      <tr><td>Ver indicadores públicos</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td></tr>
+      <tr><td>Ver editais abertos</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td></tr>
+      <tr><td>Meu perfil</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td></tr>
+      <tr><td>Notificações</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td></tr>
+      <tr><td>Exportar dados pessoais (LGPD)</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td></tr>
+      <tr><td>Solicitar exclusão de conta (LGPD)</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td><td class="check">✔</td></tr>
+    </tbody>
+  </table>
+
+  <div class="legend">
+    <strong>Super Admin</strong> — Equipe técnica da plataforma. Acesso global a todos os tenants.<br>
+    <strong>Admin</strong> — Secretário de cultura / diretor. Gerencia editais, usuários e configuração do município.<br>
+    <strong>Gestor</strong> — Servidor público designado. Acompanha execução, analisa prestação de contas e visualiza relatórios.<br>
+    <strong>Avaliador</strong> — Parecerista externo. Avalia apenas os projetos atribuídos.<br>
+    <strong>Proponente</strong> — Artista / produtor cultural. Inscreve e acompanha seus projetos.
+  </div>
+
+  <p class="footer">Elo Cultural • Gerado em Março 2026</p>
+</body>
+</html>
