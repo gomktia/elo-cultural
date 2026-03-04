@@ -15,6 +15,21 @@ const GOVBR_USERINFO_URL = isProduction
   ? 'https://sso.acesso.gov.br/userinfo'
   : 'https://sso.staging.acesso.gov.br/userinfo'
 
+/**
+ * Decode JWT payload without verifying signature.
+ * For id_token claims extraction — signature should be verified
+ * against Gov.br JWK in production for full security.
+ */
+function decodeJwtPayload(token: string): Record<string, unknown> {
+  const parts = token.split('.')
+  if (parts.length !== 3) throw new Error('Invalid JWT')
+  const payload = parts[1]
+  // Base64url decode
+  const padded = payload.replace(/-/g, '+').replace(/_/g, '/')
+  const json = Buffer.from(padded, 'base64').toString('utf-8')
+  return JSON.parse(json)
+}
+
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code')
   const state = request.nextUrl.searchParams.get('state')
@@ -23,10 +38,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=govbr_unavailable', request.url))
   }
 
-  // Validate state to prevent CSRF
+  // Validate state (CSRF protection)
   const cookieStore = await cookies()
   const savedState = cookieStore.get('govbr_state')?.value
   const codeVerifier = cookieStore.get('govbr_code_verifier')?.value
+  const savedNonce = cookieStore.get('govbr_nonce')?.value
 
   if (!savedState || savedState !== state) {
     return NextResponse.redirect(new URL('/login?error=govbr_error', request.url))
@@ -39,9 +55,10 @@ export async function GET(request: NextRequest) {
   // Clean up PKCE cookies
   cookieStore.delete('govbr_state')
   cookieStore.delete('govbr_code_verifier')
+  cookieStore.delete('govbr_nonce')
 
   try {
-    // 1. Exchange code for token using Basic auth + PKCE
+    // 1. Exchange code for tokens (access_token + id_token)
     const basicAuth = Buffer.from(`${GOVBR_CLIENT_ID}:${GOVBR_CLIENT_SECRET}`).toString('base64')
 
     const tokenRes = await fetch(GOVBR_TOKEN_URL, {
@@ -63,27 +80,69 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=govbr_token_failed', request.url))
     }
 
-    const { access_token } = await tokenRes.json()
+    const tokenData = await tokenRes.json()
+    const { access_token, id_token } = tokenData
 
-    // 2. Fetch user info from gov.br (use access_token, never id_token)
-    const userRes = await fetch(GOVBR_USERINFO_URL, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    })
+    // 2. Extract user data from id_token (preferred) or fallback to userinfo
+    let cpf = ''
+    let email = ''
+    let nome = ''
+    let telefone: string | null = null
 
-    if (!userRes.ok) {
-      return NextResponse.redirect(new URL('/login?error=govbr_userinfo_failed', request.url))
+    if (id_token) {
+      try {
+        const claims = decodeJwtPayload(id_token)
+
+        // Validate id_token claims per OpenID Connect spec
+        if (claims.aud !== GOVBR_CLIENT_ID) {
+          console.error('Gov.br id_token: aud mismatch', claims.aud)
+          return NextResponse.redirect(new URL('/login?error=govbr_token_failed', request.url))
+        }
+
+        if (savedNonce && claims.nonce !== savedNonce) {
+          console.error('Gov.br id_token: nonce mismatch')
+          return NextResponse.redirect(new URL('/login?error=govbr_token_failed', request.url))
+        }
+
+        const exp = claims.exp as number
+        if (exp && Date.now() / 1000 > exp) {
+          console.error('Gov.br id_token: expired')
+          // id_token expires in 60s per Gov.br spec — fallback to userinfo
+        } else {
+          cpf = ((claims.sub as string) || '').replace(/\D/g, '')
+          email = (claims.email as string) || ''
+          nome = (claims.name as string) || (claims.social_name as string) || ''
+          telefone = (claims.phone_number as string) || null
+        }
+      } catch (e) {
+        console.error('Gov.br id_token decode error:', e)
+      }
     }
 
-    const govUser = await userRes.json()
-    // govUser: { sub: CPF, name, email, phone_number, picture }
+    // Fallback: fetch from userinfo endpoint if id_token didn't provide data
+    if (!cpf && access_token) {
+      const userRes = await fetch(GOVBR_USERINFO_URL, {
+        headers: { Authorization: `Bearer ${access_token}` },
+      })
 
-    const cpf = govUser.sub?.replace(/\D/g, '') || ''
-    const email = govUser.email || `${cpf}@govbr.local`
-    const nome = govUser.name || ''
-    const telefone = govUser.phone_number || null
+      if (!userRes.ok) {
+        return NextResponse.redirect(new URL('/login?error=govbr_userinfo_failed', request.url))
+      }
+
+      const govUser = await userRes.json()
+      cpf = (govUser.sub || '').replace(/\D/g, '')
+      email = govUser.email || ''
+      nome = govUser.name || govUser.social_name || ''
+      telefone = govUser.phone_number || null
+    }
 
     if (!cpf) {
       return NextResponse.redirect(new URL('/login?error=govbr_no_cpf', request.url))
+    }
+
+    // Use CPF-based email fallback if Gov.br didn't provide one
+    if (!email) {
+      email = `${cpf}@govbr.local`
     }
 
     const supabase = createServiceClient()
@@ -95,13 +154,11 @@ export async function GET(request: NextRequest) {
       .eq('cpf_cnpj', cpf)
       .single()
 
-    let userId: string
     let userEmail: string
 
     if (existingProfile) {
-      // User already exists — get their auth email
-      userId = existingProfile.id
-      const { data: authUser } = await supabase.auth.admin.getUserById(userId)
+      // User already exists — get their auth email for magic link
+      const { data: authUser } = await supabase.auth.admin.getUserById(existingProfile.id)
       userEmail = authUser?.user?.email || email
     } else {
       // 4. Create new auth user + profile (global proponente)
@@ -125,7 +182,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(new URL('/login?error=govbr_signup_failed', request.url))
       }
 
-      userId = newUser.user.id
       userEmail = email
 
       // Update profile with Gov.br data
@@ -138,10 +194,10 @@ export async function GET(request: NextRequest) {
           consentimento_lgpd: true,
           data_consentimento: new Date().toISOString(),
         })
-        .eq('id', userId)
+        .eq('id', newUser.user.id)
     }
 
-    // 5. Generate a magic link to sign the user in
+    // 5. Generate a magic link to establish Supabase session
     const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
       type: 'magiclink',
       email: userEmail,
@@ -152,7 +208,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=govbr_session_failed', request.url))
     }
 
-    // Redirect to Supabase verify endpoint to establish session
+    // Redirect to Supabase verify endpoint to set session cookie
     const linkUrl = new URL(linkData.properties.action_link)
     const token = linkUrl.searchParams.get('token')
     const type = linkUrl.searchParams.get('type') || 'magiclink'

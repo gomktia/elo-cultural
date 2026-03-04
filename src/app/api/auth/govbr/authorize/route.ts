@@ -42,27 +42,27 @@ export async function GET() {
   const state = crypto.randomUUID()
   const nonce = crypto.randomUUID()
 
-  // Store code_verifier and state in httpOnly cookies for the callback
+  // Store PKCE values in httpOnly cookies for the callback
   const cookieStore = await cookies()
-  cookieStore.set('govbr_code_verifier', codeVerifier, {
+  const cookieOpts = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'lax' as const,
     maxAge: 600, // 10 minutes
     path: '/',
-  })
-  cookieStore.set('govbr_state', state, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 600,
-    path: '/',
-  })
+  }
+  cookieStore.set('govbr_code_verifier', codeVerifier, cookieOpts)
+  cookieStore.set('govbr_state', state, cookieOpts)
+  cookieStore.set('govbr_nonce', nonce, cookieOpts)
 
+  // Scopes per Gov.br spec:
+  // openid, email, phone, profile = user data
+  // govbr_confiabilidades = trust level via API
+  // govbr_confiabilidades_idtoken = embed reliability_info in id_token
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: GOVBR_CLIENT_ID,
-    scope: 'openid email phone profile govbr_confiabilidades',
+    scope: 'openid email phone profile govbr_confiabilidades govbr_confiabilidades_idtoken',
     redirect_uri: GOVBR_REDIRECT_URI,
     state,
     nonce,
