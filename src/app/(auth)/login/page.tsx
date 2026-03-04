@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Loader2, Mail, Lock, User } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTenant } from '@/components/TenantProvider'
+import { GovBrButton } from '@/components/auth/GovBrButton'
 
 function isCpfOrCnpj(value: string): boolean {
   const digits = value.replace(/\D/g, '')
@@ -59,7 +60,7 @@ function LoginForm() {
     }
 
     const supabase = createClient()
-    const { error: loginError } = await supabase.auth.signInWithPassword({ email: emailToLogin, password })
+    const { data: authData, error: loginError } = await supabase.auth.signInWithPassword({ email: emailToLogin, password })
 
     if (loginError) {
       if (loginError.status === 429 || loginError.message?.includes('rate limit')) {
@@ -71,6 +72,47 @@ function LoginForm() {
       }
       setLoading(false)
       return
+    }
+
+    // Validate staff role vs domain tenant
+    if (authData.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, tenant_id')
+        .eq('id', authData.user.id)
+        .single()
+
+      const cookieTenantId = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('tenant_id='))
+        ?.split('=')[1] || null
+
+      const role = profile?.role || 'proponente'
+      const isStaff = ['admin', 'gestor', 'avaliador'].includes(role)
+      const isRootDomain = !cookieTenantId
+
+      if (isStaff) {
+        if (isRootDomain) {
+          await supabase.auth.signOut()
+          setError('Acesse pelo domínio do seu município para fazer login.')
+          setLoading(false)
+          return
+        }
+        if (profile?.tenant_id && profile.tenant_id !== cookieTenantId) {
+          const { data: correctTenant } = await supabase
+            .from('tenants')
+            .select('nome, dominio')
+            .eq('id', profile.tenant_id)
+            .single()
+          await supabase.auth.signOut()
+          const tenantUrl = correctTenant?.dominio
+            ? `${correctTenant.dominio}.eloculturas.com.br`
+            : 'o domínio correto'
+          setError(`Sua conta pertence a ${correctTenant?.nome || 'outro município'}. Acesse em ${tenantUrl}.`)
+          setLoading(false)
+          return
+        }
+      }
     }
 
     router.push(redirect)
@@ -177,6 +219,8 @@ function LoginForm() {
                 </Link>
               </p>
             </form>
+
+            <GovBrButton />
 
           </div>
         </div>

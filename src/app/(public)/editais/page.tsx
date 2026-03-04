@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { EditalCard } from '@/components/edital/EditalCard'
 import type { Edital } from '@/types/database.types'
@@ -6,12 +7,21 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export default async function EditaisPublicosPage() {
   const supabase = await createClient()
+  const cookieStore = await cookies()
+  const tenantId = cookieStore.get('tenant_id')?.value
 
-  const { data: editais } = await supabase
+  let query = supabase
     .from('editais')
     .select('*')
     .eq('active', true)
     .order('created_at', { ascending: false })
+
+  // On subdomain: filter by tenant. On root domain: show all.
+  if (tenantId) {
+    query = query.eq('tenant_id', tenantId)
+  }
+
+  const { data: editais } = await query
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-16 max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-700">

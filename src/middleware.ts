@@ -130,6 +130,21 @@ function applyAuthProtection(
     pathname.startsWith('/perfil') ||
     pathname.startsWith('/super')
 
+  // Staff-only routes (not accessible on root domain without tenant)
+  const isStaffRoute =
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/gestor') ||
+    pathname.startsWith('/avaliacao')
+
+  const hasTenant = !!request.cookies.get('tenant_id')?.value
+
+  // Block staff routes on root domain (no tenant context)
+  if (isStaffRoute && !hasTenant && user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
+
   if (isDashboardRoute && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'

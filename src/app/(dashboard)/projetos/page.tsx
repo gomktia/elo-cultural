@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -6,6 +7,7 @@ import { StatusTracker } from '@/components/projeto/StatusTracker'
 import { Plus, ArrowRight, FolderOpen } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { UnifiedProjects } from './UnifiedProjects'
 
 const statusBorderColor: Record<string, string> = {
   enviado: 'border-l-blue-500',
@@ -23,6 +25,62 @@ export default async function MeusProjetosPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
+
+  const cookieStore = await cookies()
+  const cookieTenantId = cookieStore.get('tenant_id')?.value
+  const isRootDomain = !cookieTenantId
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, tenant_id')
+    .eq('id', user.id)
+    .single()
+
+  const isGlobalProponente = profile?.role === 'proponente' && !profile?.tenant_id
+
+  // Unified view: proponente on root domain sees all projects grouped by city
+  if (isRootDomain && isGlobalProponente) {
+    const { data: allProjects } = await supabase
+      .from('projetos')
+      .select('id, titulo, status_atual, data_envio, numero_protocolo, editais!inner(titulo, numero_edital, tenant_id, tenants!inner(nome, dominio, tema_cores))')
+      .eq('proponente_id', user.id)
+      .order('data_envio', { ascending: false })
+
+    const unified = (allProjects || []).map((p: any) => ({
+      id: p.id,
+      titulo: p.titulo,
+      status_atual: p.status_atual,
+      data_envio: p.data_envio,
+      numero_protocolo: p.numero_protocolo,
+      edital_titulo: p.editais.titulo,
+      edital_numero: p.editais.numero_edital,
+      municipio: p.editais.tenants.nome,
+      dominio: p.editais.tenants.dominio,
+      tema_cores: p.editais.tenants.tema_cores as { primary: string } | null,
+    }))
+
+    return (
+      <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+          <div className="h-1 w-full bg-[var(--brand-primary)]" />
+          <CardContent className="p-4">
+            <div className="space-y-1">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Meus Projetos</h1>
+              <p className="text-sm text-slate-500">Visão unificada de todas as suas inscrições culturais.</p>
+            </div>
+          </CardContent>
+        </Card>
+        {unified.length > 0 ? (
+          <UnifiedProjects projects={unified} />
+        ) : (
+          <Card className="border border-slate-200 rounded-2xl p-8 text-center">
+            <p className="text-sm text-slate-500">Você ainda não tem projetos inscritos.</p>
+            <p className="text-xs text-slate-400 mt-2">Acesse o domínio de uma prefeitura para explorar editais abertos.</p>
+          </Card>
+        )}
+      </div>
+    )
+  }
 
   const { data: projetos } = await supabase
     .from('projetos')

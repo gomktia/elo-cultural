@@ -56,6 +56,16 @@ export default function CadastroPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Detect root domain (no tenant cookie = global platform)
+  const [isRootDomain] = useState(() => {
+    if (typeof document === 'undefined') return false
+    const tid = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('tenant_id='))
+      ?.split('=')[1]
+    return !tid
+  })
+
   function handleStep1(e: React.FormEvent) {
     e.preventDefault()
     if (!lgpdConsent) {
@@ -79,6 +89,9 @@ export default function CadastroPage() {
       .find(row => row.startsWith('tenant_id='))
       ?.split('=')[1] || undefined
 
+    // Proponentes are global (no tenant_id). Staff needs tenant_id.
+    const isProponente = perfilTipo === 'proponente'
+
     // 1. Create account
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -89,7 +102,8 @@ export default function CadastroPage() {
           cpf_cnpj: cpfCnpj,
           telefone,
           consentimento_lgpd: true,
-          ...(tenantId ? { tenant_id: tenantId } : {}),
+          // Proponente: no tenant_id (global citizen). Staff: tenant from domain.
+          ...(!isProponente && tenantId ? { tenant_id: tenantId } : {}),
         },
       },
     })
@@ -279,22 +293,34 @@ export default function CadastroPage() {
                         { key: 'proponente' as const, label: 'Proponente' },
                         { key: 'avaliador' as const, label: 'Avaliador' },
                         { key: 'gestor' as const, label: 'Gestor' },
-                      ]).map(tipo => (
-                        <button
-                          key={tipo.key}
-                          type="button"
-                          onClick={() => setPerfilTipo(tipo.key)}
-                          className={[
-                            'py-2.5 rounded-xl text-[11px] font-semibold uppercase tracking-wide transition-all border',
-                            perfilTipo === tipo.key
-                              ? 'bg-[#0047AB] text-white border-[#0047AB] shadow-lg shadow-[#0047AB]/20'
-                              : 'bg-slate-50 text-slate-400 border-slate-200 hover:border-slate-300'
-                          ].join(' ')}
-                        >
-                          {tipo.label}
-                        </button>
-                      ))}
+                      ]).map(tipo => {
+                        const isStaffRole = tipo.key !== 'proponente'
+                        const disabled = isStaffRole && isRootDomain
+                        return (
+                          <button
+                            key={tipo.key}
+                            type="button"
+                            onClick={() => !disabled && setPerfilTipo(tipo.key)}
+                            disabled={disabled}
+                            className={[
+                              'py-2.5 rounded-xl text-[11px] font-semibold uppercase tracking-wide transition-all border',
+                              disabled
+                                ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
+                                : perfilTipo === tipo.key
+                                  ? 'bg-[#0047AB] text-white border-[#0047AB] shadow-lg shadow-[#0047AB]/20'
+                                  : 'bg-slate-50 text-slate-400 border-slate-200 hover:border-slate-300'
+                            ].join(' ')}
+                          >
+                            {tipo.label}
+                          </button>
+                        )
+                      })}
                     </div>
+                    {isRootDomain && (
+                      <p className="text-[11px] text-amber-600 bg-amber-50 rounded-xl p-2.5 border border-amber-200 mt-2">
+                        Para se cadastrar como avaliador ou gestor, acesse o domínio do seu município.
+                      </p>
+                    )}
                   </div>
 
                   <div className="h-px bg-slate-200 my-4" />

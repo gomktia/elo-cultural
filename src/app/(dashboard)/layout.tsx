@@ -30,15 +30,21 @@ export default async function DashboardLayout({
     .eq('id', user.id)
     .single()
 
-  const { data: tenant } = profile?.tenant_id
-    ? await supabase
+  const role = (profile?.role as UserRole) || 'proponente'
+
+  // Staff: use profile.tenant_id. Global proponente: use cookie tenant (domain context).
+  let tenant: any = null
+  if (profile?.tenant_id) {
+    const { data } = await supabase
       .from('tenants')
       .select('nome, tema_cores, logo_url, logo_rodape_url')
       .eq('id', profile.tenant_id)
       .single()
-    : { data: null }
-
-  const role = (profile?.role as UserRole) || 'proponente'
+    tenant = data
+  } else if (role === 'proponente' || role === 'super_admin') {
+    const { getTenantFromCookie } = await import('@/lib/tenant')
+    tenant = await getTenantFromCookie()
+  }
   const isSuperAdmin = role === 'super_admin'
   const pendingApproval = !isSuperAdmin && (role === 'avaliador' || role === 'gestor') && profile?.aprovado === false
   const userName = profile?.nome || user.email || 'Usuario'
