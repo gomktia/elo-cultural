@@ -62,7 +62,13 @@ function LoginForm() {
     const { error: loginError } = await supabase.auth.signInWithPassword({ email: emailToLogin, password })
 
     if (loginError) {
-      setError('Credenciais invalidas ou acesso nao autorizado.')
+      if (loginError.status === 429 || loginError.message?.includes('rate limit')) {
+        setError('Muitas tentativas de login. Aguarde alguns minutos e tente novamente.')
+      } else if (loginError.message?.includes('Email not confirmed')) {
+        setError('E-mail ainda não confirmado. Verifique sua caixa de entrada.')
+      } else {
+        setError('Credenciais inválidas ou acesso não autorizado.')
+      }
       setLoading(false)
       return
     }
