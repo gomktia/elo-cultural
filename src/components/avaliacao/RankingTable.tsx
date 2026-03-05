@@ -21,22 +21,25 @@ export interface RankingItem {
   nota_media: number | null
   num_avaliacoes: number
   status: string
+  categoria_nome?: string
 }
 
 interface RankingTableProps {
   items: RankingItem[]
+  categorias?: { id: string; nome: string }[]
 }
 
 function exportToXLS(items: RankingItem[]) {
-  const header = ['Posição', 'Título', 'Protocolo', 'Nota Final', 'Avaliações', 'Status']
-  const rows = items.map(item => [
-    item.posicao,
-    item.titulo,
-    item.protocolo,
-    item.nota_media?.toFixed(2) ?? '',
-    item.num_avaliacoes,
-    item.status,
-  ])
+  const hasCategoria = items.some(i => i.categoria_nome)
+  const header = hasCategoria
+    ? ['Posição', 'Título', 'Categoria', 'Protocolo', 'Nota Final', 'Avaliações', 'Status']
+    : ['Posição', 'Título', 'Protocolo', 'Nota Final', 'Avaliações', 'Status']
+  const rows = items.map(item => {
+    const base = [item.posicao, item.titulo]
+    if (hasCategoria) base.push(item.categoria_nome || '—')
+    base.push(item.protocolo, item.nota_media?.toFixed(2) ?? '', item.num_avaliacoes as any, item.status)
+    return base
+  })
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <?mso-application progid="Excel.Sheet"?>
@@ -67,19 +70,28 @@ ${rows.map(row => `<Row>${row.map((cell, i) => {
   URL.revokeObjectURL(url)
 }
 
-export function RankingTable({ items }: RankingTableProps) {
+export function RankingTable({ items, categorias }: RankingTableProps) {
   const [busca, setBusca] = useState('')
   const [filtroStatus, setFiltroStatus] = useState<string>('todos')
+  const [filtroCategoria, setFiltroCategoria] = useState<string>('todas')
 
   const statusOptions = useMemo(() => {
     const unique = new Set(items.map(i => i.status))
     return Array.from(unique).sort()
   }, [items])
 
+  const categoriaOptions = useMemo(() => {
+    if (!categorias || categorias.length === 0) return []
+    return categorias
+  }, [categorias])
+
   const filteredItems = useMemo(() => {
     let result = items
     if (filtroStatus !== 'todos') {
       result = result.filter(i => i.status === filtroStatus)
+    }
+    if (filtroCategoria !== 'todas') {
+      result = result.filter(i => i.categoria_nome === filtroCategoria)
     }
     if (busca.trim()) {
       const q = busca.toLowerCase()
@@ -88,7 +100,7 @@ export function RankingTable({ items }: RankingTableProps) {
       )
     }
     return result
-  }, [items, filtroStatus, busca])
+  }, [items, filtroStatus, filtroCategoria, busca])
 
   return (
     <div className="space-y-6">
@@ -147,12 +159,40 @@ export function RankingTable({ items }: RankingTableProps) {
         </div>
       </div>
 
+      {categoriaOptions.length > 0 && (
+        <div className="flex gap-2 flex-wrap">
+          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide self-center mr-1">Categoria:</span>
+          <Button
+            variant={filtroCategoria === 'todas' ? 'default' : 'outline'}
+            size="sm"
+            className="rounded-xl text-xs"
+            onClick={() => setFiltroCategoria('todas')}
+          >
+            Todas
+          </Button>
+          {categoriaOptions.map(c => (
+            <Button
+              key={c.id}
+              variant={filtroCategoria === c.nome ? 'default' : 'outline'}
+              size="sm"
+              className="rounded-xl text-xs"
+              onClick={() => setFiltroCategoria(c.nome)}
+            >
+              {c.nome}
+            </Button>
+          ))}
+        </div>
+      )}
+
       <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Table>
           <TableHeader className="bg-[var(--brand-primary)]">
             <TableRow className="hover:bg-transparent border-[var(--brand-primary)]">
               <TableHead className="w-24 py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white">Posição</TableHead>
               <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Projeto</TableHead>
+              {categoriaOptions.length > 0 && (
+                <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Categoria</TableHead>
+              )}
               <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Nota Final</TableHead>
               <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">Avaliações</TableHead>
               <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">Status</TableHead>
@@ -196,6 +236,13 @@ export function RankingTable({ items }: RankingTableProps) {
                       </div>
                     </div>
                   </TableCell>
+                  {categoriaOptions.length > 0 && (
+                    <TableCell className="py-6 px-4">
+                      <Badge className="bg-slate-50 text-slate-600 border-none rounded-lg px-2 text-[11px] font-medium py-1">
+                        {item.categoria_nome || '—'}
+                      </Badge>
+                    </TableCell>
+                  )}
                   <TableCell className="py-6 px-4">
                     <div className={[
                       'text-lg md:text-2xl font-bold tracking-tight transition-transform group-hover:scale-110 origin-left',
@@ -224,7 +271,7 @@ export function RankingTable({ items }: RankingTableProps) {
             })}
             {filteredItems.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="h-64 text-center">
+                <TableCell colSpan={categoriaOptions.length > 0 ? 6 : 5} className="h-64 text-center">
                   <div className="flex flex-col items-center justify-center space-y-4">
                     <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <Trophy className="h-8 w-8" />

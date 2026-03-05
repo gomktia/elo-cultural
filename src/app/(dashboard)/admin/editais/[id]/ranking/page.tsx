@@ -56,6 +56,7 @@ export default async function RankingPage({
     nota_media: p.nota_final ? Number(p.nota_final) : null,
     num_avaliacoes: Array.isArray(p.avaliacoes) ? p.avaliacoes.length : 0,
     status: p.status_atual,
+    categoria_nome: p.categoria_id ? catMap.get(p.categoria_id) || undefined : undefined,
   }))
 
   const countSelecionados = (projetos || []).filter(p => p.status_atual === 'selecionado').length
@@ -122,7 +123,7 @@ export default async function RankingPage({
       )}
 
       <Suspense fallback={<RankingTableSkeleton />}>
-        <RankingTable items={items} />
+        <RankingTable items={items} categorias={categorias || []} />
       </Suspense>
     </div>
   )

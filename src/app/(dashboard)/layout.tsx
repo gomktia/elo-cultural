@@ -78,16 +78,20 @@ export default async function DashboardLayout({
         <SidebarInset className="bg-transparent">
           <main className="flex-1 px-4 py-4 md:px-8 lg:px-10 md:py-6">
             <div className="w-full max-w-7xl mx-auto space-y-6 md:space-y-8">
-              {pendingApproval && (
-                <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 flex items-start gap-3">
-                  <svg className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <div>
-                    <p className="text-sm font-semibold text-amber-800">Conta pendente de aprovação</p>
-                    <p className="text-xs text-amber-600 mt-0.5">Seu cadastro como <strong>{role}</strong> está aguardando aprovação de um administrador. Você poderá acessar todas as funcionalidades após a aprovação.</p>
+              {pendingApproval ? (
+                <div className="flex flex-col items-center justify-center py-16 space-y-6">
+                  <div className="h-20 w-20 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center">
+                    <svg className="h-10 w-10 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <div className="text-center space-y-2 max-w-md">
+                    <h2 className="text-lg font-bold text-slate-900">Conta pendente de aprovação</h2>
+                    <p className="text-sm text-slate-500">
+                      Seu cadastro como <strong className="text-amber-700">{role}</strong> está aguardando aprovação de um administrador.
+                      Você receberá acesso completo às funcionalidades assim que sua conta for aprovada.
+                    </p>
                   </div>
                 </div>
-              )}
-              {children}
+              ) : children}
             </div>
           </main>
           {tenantRodapeUrl && (
