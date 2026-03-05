@@ -109,7 +109,7 @@ export default function PerfilPage() {
       .update({ nome: form.nome, telefone: form.telefone || null, cpf_cnpj: form.cpf_cnpj || null })
       .eq('id', user.id)
     if (error) {
-      toast.error('Erro ao salvar: ' + error.message)
+      toast.error(translateAuthError(error.message))
     } else {
       toast.success('Perfil atualizado com sucesso')
     }
@@ -163,7 +163,7 @@ export default function PerfilPage() {
 
     const { error } = await supabase.from('profiles').update(extraData).eq('id', user.id)
     if (error) {
-      toast.error('Erro ao salvar: ' + error.message)
+      toast.error(translateAuthError(error.message))
     } else {
       toast.success('Dados do perfil atualizados com sucesso')
     }
@@ -311,6 +311,48 @@ export default function PerfilPage() {
         </CardContent>
       </Card>
 
+      {/* Dados do Perfil (Role-specific) — shown first for visibility */}
+      {profile?.role && ['proponente', 'avaliador', 'gestor'].includes(profile.role) && (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-[var(--brand-primary)] px-6 py-3.5">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-xl bg-white/20 flex items-center justify-center">
+                <Briefcase className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-white uppercase tracking-wide">
+                  Dados do Perfil — {ROLE_LABELS[profile.role as keyof typeof ROLE_LABELS] || profile.role}
+                </h2>
+                <p className="text-[11px] text-white/60 mt-0.5">Informações específicas do seu tipo de cadastro</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6">
+            <form onSubmit={salvarDadosPerfil} className="space-y-6">
+              {profile.role === 'proponente' && (
+                <ProponenteForm form={proponenteData} onChange={updateProponente} />
+              )}
+              {profile.role === 'avaliador' && (
+                <AvaliadorForm form={avaliadorData} onChange={updateAvaliador} />
+              )}
+              {profile.role === 'gestor' && (
+                <GestorForm form={gestorData} onChange={updateGestor} />
+              )}
+              <div className="flex justify-end pt-2 border-t border-slate-100">
+                <Button
+                  type="submit"
+                  disabled={savingExtra}
+                  className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[#005cdd] text-white font-semibold text-xs uppercase tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]"
+                >
+                  {savingExtra && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Salvar Dados do Perfil
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Dados Pessoais */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -419,48 +461,6 @@ export default function PerfilPage() {
           </div>
         </div>
       </div>
-
-      {/* Dados do Perfil (Role-specific) */}
-      {profile?.role && ['proponente', 'avaliador', 'gestor'].includes(profile.role) && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="bg-[var(--brand-primary)] px-6 py-3.5">
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-xl bg-white/20 flex items-center justify-center">
-                <Briefcase className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <h2 className="text-sm font-semibold text-white uppercase tracking-wide">
-                  Dados do Perfil — {ROLE_LABELS[profile.role as keyof typeof ROLE_LABELS] || profile.role}
-                </h2>
-                <p className="text-[11px] text-white/60 mt-0.5">Informações específicas do seu tipo de cadastro</p>
-              </div>
-            </div>
-          </div>
-          <div className="p-6">
-            <form onSubmit={salvarDadosPerfil} className="space-y-6">
-              {profile.role === 'proponente' && (
-                <ProponenteForm form={proponenteData} onChange={updateProponente} />
-              )}
-              {profile.role === 'avaliador' && (
-                <AvaliadorForm form={avaliadorData} onChange={updateAvaliador} />
-              )}
-              {profile.role === 'gestor' && (
-                <GestorForm form={gestorData} onChange={updateGestor} />
-              )}
-              <div className="flex justify-end pt-2 border-t border-slate-100">
-                <Button
-                  type="submit"
-                  disabled={savingExtra}
-                  className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[#005cdd] text-white font-semibold text-xs uppercase tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98]"
-                >
-                  {savingExtra && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Salvar Dados do Perfil
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Privacidade e Dados (LGPD) */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

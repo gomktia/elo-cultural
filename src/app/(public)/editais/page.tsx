@@ -14,6 +14,7 @@ export default async function EditaisPublicosPage() {
     .from('editais')
     .select('*')
     .eq('active', true)
+    .in('status', ['publicacao', 'inscricao'])
     .order('created_at', { ascending: false })
 
   // On subdomain: filter by tenant. On root domain: show all.

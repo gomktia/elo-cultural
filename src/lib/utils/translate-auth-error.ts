@@ -23,6 +23,8 @@ const ERROR_MAP: Record<string, string> = {
     'Credenciais inválidas ou acesso não autorizado.',
   'Email not confirmed':
     'E-mail ainda não confirmado. Verifique sua caixa de entrada.',
+  'rate limit':
+    'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
 
   // Password reset
   'For security purposes, you can only request this after':

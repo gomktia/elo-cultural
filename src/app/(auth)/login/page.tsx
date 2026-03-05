@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { loginSchema } from '@/lib/schemas/auth'
+import { translateAuthError } from '@/lib/utils/translate-auth-error'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -86,13 +87,7 @@ function LoginForm() {
     const { data: authData, error: loginError } = await supabase.auth.signInWithPassword({ email: emailToLogin, password })
 
     if (loginError) {
-      if (loginError.status === 429 || loginError.message?.includes('rate limit')) {
-        setError('Muitas tentativas de login. Aguarde alguns minutos e tente novamente.')
-      } else if (loginError.message?.includes('Email not confirmed')) {
-        setError('E-mail ainda não confirmado. Verifique sua caixa de entrada.')
-      } else {
-        setError('Credenciais inválidas ou acesso não autorizado.')
-      }
+      setError(translateAuthError(loginError.message))
       setLoading(false)
       return
     }
