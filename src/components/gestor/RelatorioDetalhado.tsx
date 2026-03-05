@@ -22,6 +22,7 @@ interface ProjetoRelatorio {
   proponente_municipio: string | null
   proponente_genero: string | null
   num_avaliacoes: number
+  categoria_nome: string | null
 }
 
 interface RelatorioDetalhadoProps {
@@ -35,6 +36,8 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
   const [busca, setBusca] = useState('')
   const [filtroHabilitacao, setFiltroHabilitacao] = useState('todos')
   const [filtroAvaliacao, setFiltroAvaliacao] = useState('todos')
+  const [filtroCategoria, setFiltroCategoria] = useState('todas')
+  const [filtroGenero, setFiltroGenero] = useState('todos')
 
   useEffect(() => {
     if (!expanded || projetos.length > 0) return
@@ -45,13 +48,21 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
     setLoading(true)
     const supabase = createClient()
 
-    const { data: projs } = await supabase
-      .from('projetos')
-      .select('id, titulo, numero_protocolo, status_atual, status_habilitacao, nota_final, proponente_id')
-      .eq('edital_id', editalId)
-      .order('nota_final', { ascending: false, nullsFirst: false })
+    const [{ data: projs }, { data: categorias }] = await Promise.all([
+      supabase
+        .from('projetos')
+        .select('id, titulo, numero_protocolo, status_atual, status_habilitacao, nota_final, proponente_id, categoria_id')
+        .eq('edital_id', editalId)
+        .order('nota_final', { ascending: false, nullsFirst: false }),
+      supabase
+        .from('edital_categorias')
+        .select('id, nome')
+        .eq('edital_id', editalId),
+    ])
 
     if (!projs) { setLoading(false); return }
+
+    const catMap = new Map((categorias || []).map(c => [c.id, c.nome]))
 
     // Load proponente data
     const proponenteIds = [...new Set(projs.map(p => p.proponente_id).filter(Boolean))]
@@ -88,6 +99,7 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
         proponente_municipio: prof?.municipio || null,
         proponente_genero: prof?.genero || null,
         num_avaliacoes: avCount[p.id] || 0,
+        categoria_nome: p.categoria_id ? catMap.get(p.categoria_id) || null : null,
       }
     }))
     setLoading(false)
@@ -95,6 +107,16 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
 
   const habilitacaoOptions = useMemo(() => {
     const s = new Set(projetos.map(p => p.status_habilitacao).filter(Boolean))
+    return Array.from(s).sort()
+  }, [projetos])
+
+  const categoriaOptions = useMemo(() => {
+    const s = new Set(projetos.map(p => p.categoria_nome).filter(Boolean) as string[])
+    return Array.from(s).sort()
+  }, [projetos])
+
+  const generoOptions = useMemo(() => {
+    const s = new Set(projetos.map(p => p.proponente_genero).filter(Boolean) as string[])
     return Array.from(s).sort()
   }, [projetos])
 
@@ -108,6 +130,12 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
     } else if (filtroAvaliacao === 'pendentes') {
       result = result.filter(p => p.num_avaliacoes === 0)
     }
+    if (filtroCategoria !== 'todas') {
+      result = result.filter(p => p.categoria_nome === filtroCategoria)
+    }
+    if (filtroGenero !== 'todos') {
+      result = result.filter(p => p.proponente_genero === filtroGenero)
+    }
     if (busca.trim()) {
       const q = busca.toLowerCase()
       result = result.filter(p =>
@@ -119,13 +147,15 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
       )
     }
     return result
-  }, [projetos, filtroHabilitacao, filtroAvaliacao, busca])
+  }, [projetos, filtroHabilitacao, filtroAvaliacao, filtroCategoria, filtroGenero, busca])
 
   function exportCSV() {
-    const header = ['Protocolo', 'Título', 'Proponente', 'CPF/CNPJ', 'Município', 'Gênero', 'Habilitação', 'Nota Final', 'Avaliações', 'Status']
+    const hasCat = filtered.some(p => p.categoria_nome)
+    const header = ['Protocolo', 'Título', ...(hasCat ? ['Categoria'] : []), 'Proponente', 'CPF/CNPJ', 'Município', 'Gênero', 'Habilitação', 'Nota Final', 'Avaliações', 'Status']
     const rows = filtered.map(p => [
       p.numero_protocolo,
       p.titulo,
+      ...(hasCat ? [p.categoria_nome || ''] : []),
       p.proponente_nome || '',
       p.proponente_cpf || '',
       p.proponente_municipio || '',
@@ -197,6 +227,37 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
                   CSV
                 </Button>
               </div>
+
+              {(categoriaOptions.length > 0 || generoOptions.length > 0) && (
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {categoriaOptions.length > 0 && (
+                    <div className="flex gap-2 flex-wrap items-center">
+                      <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Categoria:</span>
+                      <Button variant={filtroCategoria === 'todas' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroCategoria('todas')}>
+                        Todas
+                      </Button>
+                      {categoriaOptions.map(c => (
+                        <Button key={c} variant={filtroCategoria === c ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroCategoria(c)}>
+                          {c}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                  {generoOptions.length > 0 && (
+                    <div className="flex gap-2 flex-wrap items-center">
+                      <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Gênero:</span>
+                      <Button variant={filtroGenero === 'todos' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroGenero('todos')}>
+                        Todos
+                      </Button>
+                      {generoOptions.map(g => (
+                        <Button key={g} variant={filtroGenero === g ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroGenero(g)}>
+                          {g}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="overflow-x-auto rounded-xl border border-slate-200">
                 <Table>
