@@ -67,10 +67,15 @@ export async function GET(request: NextRequest) {
                         .update({ status: nextPhase })
                         .eq('id', editalId)
 
-                    if (!advanceError) {
+                    if (advanceError) {
+                        console.error(`[CRON] Falha ao avançar edital ${editalId} de ${edital.status} para ${nextPhase}:`, advanceError)
+                    } else {
+                        console.log(`[CRON] Edital ${editalId} avançado: ${edital.status} → ${nextPhase}`)
                         avancados++
                     }
                 }
+            } else {
+                console.log(`[CRON] Edital ${editalId}: fase bloqueada (${blockedPhases.join(', ')}) não corresponde ao status atual (${edital.status}), sem avanço`)
             }
         }
     }

@@ -78,30 +78,30 @@
 
 ---
 
-## Priorização Sugerida
+## Priorização Sugerida (atualizado 2026-03-05)
 
 ### Crítico (Bugs que impedem uso)
-1. Botão "publicar resultado" sem função (Gestor #3)
-2. Edital aberto não aparece para proponente (Proponente #3)
-3. Perfil não mostra dados cadastrados (Proponente #2)
-4. Relatório sem link (Gestor #10)
-5. Textos de erro em inglês (Cadastro #2)
+1. ~~Botão "publicar resultado" sem função (Gestor #3)~~ — Não é bug: usar "Gerenciar Publicações"
+2. ~~Edital aberto não aparece para proponente (Proponente #3)~~ — CORRIGIDO: filtro status adicionado
+3. ~~Perfil não mostra dados cadastrados (Proponente #2)~~ — CORRIGIDO: seção role-specific movida para cima
+4. ~~Relatório sem link (Gestor #10)~~ — Não é bug: link existe e funciona
+5. ~~Textos de erro em inglês (Cadastro #2)~~ — CORRIGIDO: translateAuthError() no login
 
 ### Alta Prioridade (Funcionalidades essenciais)
-6. Aprovação de avaliador/gestor por admin (Cadastro #3)
-7. Avaliador acessar projetos durante avaliação (Avaliador #3)
-8. Nota < 6 com justificativa obrigatória (Avaliador #1-2)
-9. Filtros no ranking + export XLS (Gestor #8)
-10. Melhorar atribuição em massa (Gestor #5)
-11. Avanço automático de fase (Gestor #11)
+6. ~~Aprovação de avaliador/gestor por admin (Cadastro #3)~~ — JÁ EXISTIA + bloqueio de acesso adicionado
+7. ~~Avaliador acessar projetos durante avaliação (Avaliador #3)~~ — CORRIGIDO: link "Ver Projeto Completo" adicionado
+8. ~~Nota < 6 com justificativa obrigatória (Avaliador #1-2)~~ — JÁ EXISTIA
+9. ~~Filtros no ranking + export XLS (Gestor #8)~~ — FEITO: filtro categoria + coluna no XLS
+10. ~~Melhorar atribuição em massa (Gestor #5)~~ — JÁ EXISTIA (filtros + selecionar todos)
+11. ~~Avanço automático de fase (Gestor #11)~~ — JÁ EXISTIA + logging melhorado
 
 ### Média Prioridade (Melhorias importantes)
-12. Publicações com campo etapa + tipo livre (Gestor #2)
-13. Reverter fase + cancelar com justificativa (Gestor #1)
-14. Filtros no relatório (Gestor #4)
-15. Checklist documentos na avaliação (Avaliador #4)
-16. Indicadores: projetos aprovados + mapa municipal (Indicadores)
+12. ~~Publicações com campo etapa + tipo livre (Gestor #2)~~ — JÁ EXISTIA
+13. ~~Reverter fase + cancelar com justificativa (Gestor #1)~~ — JÁ EXISTIA (na página cronograma)
+14. ~~Filtros no relatório (Gestor #4)~~ — FEITO: filtros categoria + gênero adicionados
+15. ~~Checklist documentos na avaliação (Avaliador #4)~~ — JÁ EXISTIA
+16. Indicadores: projetos aprovados + mapa municipal (Indicadores) — PENDENTE
 
 ### Longo Prazo (Features complexas)
-17. Configuração completa de edital: tipo, categorias, cotas, desempate, reserva de vagas (Gestor #9)
-18. Form builder dinâmico para inscrição (Gestor #12)
+17. ~~Configuração completa de edital: tipo, categorias, cotas, desempate, reserva de vagas (Gestor #9)~~ — JÁ EXISTIA (EditalConfigManager.tsx)
+18. Form builder dinâmico para inscrição (Gestor #12) — PENDENTE (já existe página /formulario com campos customizáveis)

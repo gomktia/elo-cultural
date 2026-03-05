@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { Loader2, ArrowLeft, AlertTriangle, Sparkles, FileDown, CheckCircle2, Circle } from 'lucide-react'
+import { Loader2, ArrowLeft, AlertTriangle, Sparkles, FileDown, CheckCircle2, Circle, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 
 interface CriterioAvaliacao {
@@ -322,8 +322,16 @@ export default function AvaliacaoPage() {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <div className="space-y-2">
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Avaliação</h1>
+            <div className="space-y-2 flex-1">
+              <div className="flex items-center justify-between">
+                <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Avaliação</h1>
+                <Link href={`/projetos/${projetoId}`} target="_blank">
+                  <Button variant="outline" size="sm" className="rounded-xl text-xs font-semibold gap-1.5 border-slate-200 text-slate-500 hover:text-[var(--brand-primary)]">
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    Ver Projeto Completo
+                  </Button>
+                </Link>
+              </div>
               <code className="text-[11px] font-semibold text-[var(--brand-primary)] bg-[var(--brand-primary)]/8 px-2.5 py-1 rounded-md uppercase tracking-wide">
                 {projeto.numero_protocolo}
               </code>
