@@ -23,6 +23,7 @@ interface ProjetoRelatorio {
   proponente_genero: string | null
   num_avaliacoes: number
   categoria_nome: string | null
+  campos_extras: Record<string, string> | null
 }
 
 interface RelatorioDetalhadoProps {
@@ -51,7 +52,7 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
     const [{ data: projs }, { data: categorias }] = await Promise.all([
       supabase
         .from('projetos')
-        .select('id, titulo, numero_protocolo, status_atual, status_habilitacao, nota_final, proponente_id, categoria_id')
+        .select('id, titulo, numero_protocolo, status_atual, status_habilitacao, nota_final, proponente_id, categoria_id, campos_extras')
         .eq('edital_id', editalId)
         .order('nota_final', { ascending: false, nullsFirst: false }),
       supabase
@@ -100,6 +101,7 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
         proponente_genero: prof?.genero || null,
         num_avaliacoes: avCount[p.id] || 0,
         categoria_nome: p.categoria_id ? catMap.get(p.categoria_id) || null : null,
+        campos_extras: (p as any).campos_extras || null,
       }
     }))
     setLoading(false)
@@ -151,7 +153,14 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
 
   function exportCSV() {
     const hasCat = filtered.some(p => p.categoria_nome)
-    const header = ['Protocolo', 'Título', ...(hasCat ? ['Categoria'] : []), 'Proponente', 'CPF/CNPJ', 'Município', 'Gênero', 'Habilitação', 'Nota Final', 'Avaliações', 'Status']
+    // Collect unique custom field labels across all projects
+    const extraLabels = new Set<string>()
+    for (const p of filtered) {
+      if (p.campos_extras) Object.keys(p.campos_extras).forEach(k => extraLabels.add(k))
+    }
+    const extraKeys = Array.from(extraLabels)
+
+    const header = ['Protocolo', 'Título', ...(hasCat ? ['Categoria'] : []), 'Proponente', 'CPF/CNPJ', 'Município', 'Gênero', 'Habilitação', 'Nota Final', 'Avaliações', 'Status', ...extraKeys]
     const rows = filtered.map(p => [
       p.numero_protocolo,
       p.titulo,
@@ -164,6 +173,7 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
       p.nota_final?.toFixed(2) || '',
       p.num_avaliacoes,
       p.status_atual,
+      ...extraKeys.map(k => p.campos_extras?.[k] || ''),
     ])
     const csv = [header, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n')
     const bom = '\uFEFF'

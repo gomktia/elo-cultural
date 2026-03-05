@@ -135,6 +135,22 @@ export default async function ProjetoDetailPage({
         </Card>
       )}
 
+      {projeto.campos_extras && Object.keys(projeto.campos_extras).length > 0 && (
+        <Card>
+          <CardHeader><CardTitle>Informações Adicionais</CardTitle></CardHeader>
+          <CardContent>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {Object.entries(projeto.campos_extras as Record<string, string>).map(([label, value]) => (
+                <div key={label} className="space-y-1">
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">{label}</p>
+                  <p className="text-sm text-slate-900">{String(value) || '—'}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="flex gap-3">
         {canRecurso && (
           <Link href={`/projetos/${id}/recurso`}>
