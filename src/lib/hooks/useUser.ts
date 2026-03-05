@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import * as Sentry from '@sentry/nextjs'
 import { createClient } from '@/lib/supabase/client'
 import type { Profile } from '@/types/database.types'
 import type { User } from '@supabase/supabase-js'
@@ -25,6 +26,15 @@ export function useUser() {
           .single()
 
         setProfile(profile)
+
+        Sentry.setUser({
+          id: user.id,
+          email: user.email,
+          role: profile?.role,
+          tenant_id: profile?.tenant_id,
+        })
+      } else {
+        Sentry.setUser(null)
       }
 
       setLoading(false)
@@ -36,6 +46,7 @@ export function useUser() {
       setUser(session?.user ?? null)
       if (!session?.user) {
         setProfile(null)
+        Sentry.setUser(null)
       }
     })
 
