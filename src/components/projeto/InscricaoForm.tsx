@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/audit'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -137,6 +138,21 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         }))
       )
     }
+
+    logAudit({
+      supabase,
+      acao: 'INSCRICAO_PROJETO',
+      tabela_afetada: 'projetos',
+      registro_id: projeto!.id,
+      tenant_id: tenantId,
+      usuario_id: user.id,
+      dados_novos: {
+        protocolo,
+        titulo: form.titulo,
+        edital_id: editalId,
+        documentos: documents.length,
+      },
+    }).catch(() => {})
 
     toast.success(`Inscrição enviada! Protocolo: ${protocolo}`)
 

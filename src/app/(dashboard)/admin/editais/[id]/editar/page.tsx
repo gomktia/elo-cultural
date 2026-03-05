@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/audit'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -142,6 +143,14 @@ export default function EditarEditalPage() {
 
     const supabase = createClient()
 
+    // Fetch current state for audit trail
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: editalAntigo } = await supabase
+      .from('editais')
+      .select('numero_edital, titulo, descricao, tipo_edital, inicio_inscricao, fim_inscricao')
+      .eq('id', id)
+      .single()
+
     const { error } = await supabase
       .from('editais')
       .update({
@@ -197,6 +206,27 @@ export default function EditarEditalPage() {
         tamanho_bytes: f.tamanho_bytes,
       }))
       await supabase.from('edital_documentos').insert(docs)
+    }
+
+    if (user && tenantId) {
+      logAudit({
+        supabase,
+        acao: 'EDICAO_EDITAL',
+        tabela_afetada: 'editais',
+        registro_id: id,
+        tenant_id: tenantId,
+        usuario_id: user.id,
+        dados_antigos: editalAntigo ? {
+          numero_edital: editalAntigo.numero_edital,
+          titulo: editalAntigo.titulo,
+          tipo_edital: editalAntigo.tipo_edital,
+        } : null,
+        dados_novos: {
+          numero_edital: form.numero_edital,
+          titulo: form.titulo,
+          tipo_edital: editalConfig.tipo_edital,
+        },
+      }).catch(() => {})
     }
 
     toast.success('Edital atualizado com sucesso')

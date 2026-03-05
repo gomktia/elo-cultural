@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notifyEditalFaseAlterada } from '@/lib/email/notify'
 import { notifyInAppEditalFase } from '@/lib/notifications/notify'
 import { ADMIN_ROLES } from '@/lib/constants/roles'
+import { logAudit } from '@/lib/audit'
 
 // Order of phases for the edital workflow
 // Note: After fix, seleção (avaliação) comes before habilitação
@@ -64,6 +65,17 @@ export async function avancarEtapa(editalId: string) {
 
   if (updateError) return { error: updateError.message }
 
+  logAudit({
+    supabase,
+    acao: 'AVANCO_FASE_EDITAL',
+    tabela_afetada: 'editais',
+    registro_id: editalId,
+    tenant_id: edital.tenant_id,
+    usuario_id: user.id,
+    dados_antigos: { status: edital.status },
+    dados_novos: { status: nextPhase },
+  }).catch(() => {})
+
   // Fire-and-forget: notify proponentes about phase change
   notifyEditalFaseAlterada({ editalId, novaFase: nextPhase }).catch(() => {})
   notifyInAppEditalFase({ editalId, novaFase: nextPhase }).catch(() => {})
@@ -108,6 +120,17 @@ export async function reverterEtapa(editalId: string) {
 
   if (updateError) return { error: updateError.message }
 
+  logAudit({
+    supabase,
+    acao: 'REVERSAO_FASE_EDITAL',
+    tabela_afetada: 'editais',
+    registro_id: editalId,
+    tenant_id: edital.tenant_id,
+    usuario_id: user.id,
+    dados_antigos: { status: edital.status },
+    dados_novos: { status: prevPhase },
+  }).catch(() => {})
+
   return { success: true, newPhase: prevPhase }
 }
 
@@ -140,6 +163,17 @@ export async function cancelarEdital(editalId: string, justificativa: string) {
     .eq('tenant_id', profile.tenant_id)
 
   if (updateError) return { error: updateError.message }
+
+  logAudit({
+    supabase,
+    acao: 'CANCELAMENTO_EDITAL',
+    tabela_afetada: 'editais',
+    registro_id: editalId,
+    tenant_id: profile.tenant_id,
+    usuario_id: user.id,
+    dados_antigos: null,
+    dados_novos: { cancelado: true, justificativa },
+  }).catch(() => {})
 
   return { success: true }
 }

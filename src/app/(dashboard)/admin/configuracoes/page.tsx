@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/audit'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -96,6 +97,27 @@ export default function ConfiguracoesPage() {
     if (error) {
       toast.error('Erro ao salvar configuracoes: ' + error.message)
     } else {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        logAudit({
+          supabase,
+          acao: 'ALTERACAO_CONFIGURACOES',
+          tabela_afetada: 'tenants',
+          registro_id: tenant.id,
+          tenant_id: tenant.id,
+          usuario_id: user.id,
+          dados_antigos: {
+            nome: tenant.nome,
+            cnpj: tenant.cnpj,
+            dominio: tenant.dominio,
+          },
+          dados_novos: {
+            nome: form.nome,
+            cnpj: form.cnpj,
+            dominio: form.dominio,
+          },
+        }).catch(() => {})
+      }
       toast.success('Configuracoes salvas com sucesso')
     }
     setSaving(false)

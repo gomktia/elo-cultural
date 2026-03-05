@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/audit'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -264,6 +265,30 @@ export default function AvaliacaoPage() {
     await supabase.from('avaliacoes').update(updateData).eq('id', avaliacao.id)
 
     if (finalizar) {
+      const supabaseAudit = createClient()
+      const { data: { user: currentUser } } = await supabaseAudit.auth.getUser()
+      const { data: userProfile } = currentUser ? await supabaseAudit
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', currentUser.id)
+        .single() : { data: null }
+
+      if (currentUser && userProfile) {
+        logAudit({
+          supabase: supabaseAudit,
+          acao: 'FINALIZACAO_AVALIACAO',
+          tabela_afetada: 'avaliacoes',
+          registro_id: avaliacao.id,
+          tenant_id: userProfile.tenant_id,
+          usuario_id: currentUser.id,
+          dados_novos: {
+            projeto_id: projetoId,
+            pontuacao_total: updateData.pontuacao_total,
+            criterios_avaliados: notas.length,
+          },
+        }).catch(() => {})
+      }
+
       toast.success('Avaliação finalizada com sucesso')
       router.push('/avaliacao')
     } else {

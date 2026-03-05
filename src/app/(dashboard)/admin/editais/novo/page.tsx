@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/audit'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -136,6 +137,22 @@ export default function NovoEditalPage() {
       }))
       await supabase.from('edital_documentos').insert(docs)
     }
+
+    logAudit({
+      supabase,
+      acao: 'CRIACAO_EDITAL',
+      tabela_afetada: 'editais',
+      registro_id: editalData!.id,
+      tenant_id: profile.tenant_id,
+      usuario_id: user.id,
+      dados_novos: {
+        numero_edital: form.numero_edital,
+        titulo: form.titulo,
+        tipo_edital: editalConfig.tipo_edital,
+        categorias: editalConfig.categorias.length,
+        documentos: allFiles.length,
+      },
+    }).catch(() => {})
 
     toast.success('Edital criado com sucesso')
     router.push('/admin/editais')

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/audit'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -74,6 +75,16 @@ export default function RecursoPage() {
         }))
       )
     }
+
+    logAudit({
+      supabase,
+      acao: 'SUBMISSAO_RECURSO',
+      tabela_afetada: 'recursos',
+      registro_id: recurso!.id,
+      tenant_id: profile.tenant_id,
+      usuario_id: user.id,
+      dados_novos: { protocolo, tipo, projeto_id: projetoId, anexos: anexos.length },
+    }).catch(() => {})
 
     toast.success(`Recurso enviado! Protocolo: ${protocolo}`)
     router.push(`/projetos/${projetoId}`)
