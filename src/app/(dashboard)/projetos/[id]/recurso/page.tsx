@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { logAudit } from '@/lib/audit'
+import { recursoSchema } from '@/lib/schemas/projeto'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -25,8 +26,10 @@ export default function RecursoPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!tipo || !fundamentacao) {
-      toast.error('Preencha todos os campos obrigatorios.')
+
+    const validation = recursoSchema.safeParse({ tipo, fundamentacao })
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message)
       return
     }
 

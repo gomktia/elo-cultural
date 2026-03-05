@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { cadastroStep1Schema } from '@/lib/schemas/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -68,8 +69,11 @@ export default function CadastroPage() {
 
   function handleStep1(e: React.FormEvent) {
     e.preventDefault()
-    if (!lgpdConsent) {
-      setError('Voce deve aceitar os termos de uso e politica de privacidade.')
+    const validation = cadastroStep1Schema.safeParse({
+      nome, email, password, cpfCnpj, telefone, lgpdConsent,
+    })
+    if (!validation.success) {
+      setError(validation.error.issues[0].message)
       return
     }
     setError('')

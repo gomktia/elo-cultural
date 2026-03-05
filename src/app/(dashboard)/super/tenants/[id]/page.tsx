@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { tenantFormSchema } from '@/lib/schemas/tenant'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -92,6 +93,13 @@ export default function EditarTenantPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
+    const validation = tenantFormSchema.safeParse(form)
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message)
+      return
+    }
+
     setSaving(true)
 
     const supabase = createClient()

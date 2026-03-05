@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { perfilSchema, alterarSenhaSchema } from '@/lib/schemas'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -92,6 +93,13 @@ export default function PerfilPage() {
 
   async function salvarPerfil(e: React.FormEvent) {
     e.preventDefault()
+
+    const validation = perfilSchema.safeParse(form)
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message)
+      return
+    }
+
     setSaving(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -164,10 +172,13 @@ export default function PerfilPage() {
 
   async function alterarSenha(e: React.FormEvent) {
     e.preventDefault()
-    if (senha.nova !== senha.confirmar) {
-      toast.error('As senhas não coincidem.')
+
+    const validation = alterarSenhaSchema.safeParse(senha)
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message)
       return
     }
+
     setAlterandoSenha(true)
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password: senha.nova })

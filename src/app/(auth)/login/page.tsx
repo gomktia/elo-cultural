@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { loginSchema } from '@/lib/schemas/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -48,6 +49,13 @@ function LoginForm() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+
+    const validation = loginSchema.safeParse({ identifier, password })
+    if (!validation.success) {
+      setError(validation.error.issues[0].message)
+      return
+    }
+
     setLoading(true)
 
     let emailToLogin = identifier.trim()

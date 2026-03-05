@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { logAudit } from '@/lib/audit'
+import { editalFormSchema } from '@/lib/schemas/edital'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -139,6 +140,13 @@ export default function EditarEditalPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
+    const validation = editalFormSchema.safeParse(form)
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message)
+      return
+    }
+
     setSaving(true)
 
     const supabase = createClient()

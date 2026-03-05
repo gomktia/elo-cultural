@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { esquecerSenhaSchema } from '@/lib/schemas/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,6 +20,13 @@ export default function EsqueciSenhaPage() {
   async function handleReset(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+
+    const validation = esquecerSenhaSchema.safeParse({ email })
+    if (!validation.success) {
+      setError(validation.error.issues[0].message)
+      return
+    }
+
     setLoading(true)
 
     const supabase = createClient()

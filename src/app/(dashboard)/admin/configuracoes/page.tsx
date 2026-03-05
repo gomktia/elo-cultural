@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { logAudit } from '@/lib/audit'
+import { configuracoesSchema } from '@/lib/schemas/tenant'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -80,6 +81,13 @@ export default function ConfiguracoesPage() {
   async function salvar(e: React.FormEvent) {
     e.preventDefault()
     if (!tenant) return
+
+    const validation = configuracoesSchema.safeParse(form)
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message)
+      return
+    }
+
     setSaving(true)
     const supabase = createClient()
     const { error } = await supabase

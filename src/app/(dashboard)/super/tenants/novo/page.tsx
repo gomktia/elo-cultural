@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { tenantFormSchema } from '@/lib/schemas/tenant'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -29,6 +30,13 @@ export default function NovaTenantPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
+    const validation = tenantFormSchema.safeParse(form)
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message)
+      return
+    }
+
     setLoading(true)
 
     const supabase = createClient()
