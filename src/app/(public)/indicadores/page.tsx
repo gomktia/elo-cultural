@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { FileText, FolderOpen, CheckCircle2, Banknote, BarChart3, PieChart, ArrowRight, MapPin, Trophy } from 'lucide-react'
 import Link from 'next/link'
@@ -100,6 +101,37 @@ function groupStatus(status: string): string {
 
 export default async function IndicadoresPage() {
   const supabase = await createClient()
+  const cookieStore = await cookies()
+  const tenantId = cookieStore.get('tenant_id')?.value
+
+  // Build queries with optional tenant filter
+  const editaisBase = tenantId
+    ? supabase.from('editais').select('id', { count: 'exact', head: true }).eq('active', true).eq('tenant_id', tenantId)
+    : supabase.from('editais').select('id', { count: 'exact', head: true }).eq('active', true)
+
+  const projetosCount = tenantId
+    ? supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId)
+    : supabase.from('projetos').select('id', { count: 'exact', head: true })
+
+  const aprovadosCount = tenantId
+    ? supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('status_habilitacao', 'habilitado').eq('tenant_id', tenantId)
+    : supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('status_habilitacao', 'habilitado')
+
+  const editaisStatus = tenantId
+    ? supabase.from('editais').select('status').eq('active', true).eq('tenant_id', tenantId)
+    : supabase.from('editais').select('status').eq('active', true)
+
+  const orcamentoQuery = tenantId
+    ? supabase.from('projetos').select('orcamento_total').eq('status_habilitacao', 'habilitado').not('orcamento_total', 'is', null).eq('tenant_id', tenantId)
+    : supabase.from('projetos').select('orcamento_total').eq('status_habilitacao', 'habilitado').not('orcamento_total', 'is', null)
+
+  const recentesQuery = tenantId
+    ? supabase.from('editais').select('id, titulo, numero_edital, status, created_at').eq('active', true).eq('tenant_id', tenantId).order('created_at', { ascending: false }).limit(10)
+    : supabase.from('editais').select('id, titulo, numero_edital, status, created_at').eq('active', true).order('created_at', { ascending: false }).limit(10)
+
+  const aprovadosQuery = tenantId
+    ? supabase.from('projetos').select('id, titulo, numero_protocolo, nota_final, edital_id, editais!inner(titulo, numero_edital)').eq('status_habilitacao', 'habilitado').not('nota_final', 'is', null).eq('tenant_id', tenantId).order('nota_final', { ascending: false }).limit(20)
+    : supabase.from('projetos').select('id, titulo, numero_protocolo, nota_final, edital_id, editais!inner(titulo, numero_edital)').eq('status_habilitacao', 'habilitado').not('nota_final', 'is', null).order('nota_final', { ascending: false }).limit(20)
 
   // Queries em paralelo
   const [
@@ -112,14 +144,14 @@ export default async function IndicadoresPage() {
     { data: editaisRecentes },
     { data: projetosAprovados },
   ] = await Promise.all([
-    supabase.from('editais').select('id', { count: 'exact', head: true }).eq('active', true),
-    supabase.from('projetos').select('id', { count: 'exact', head: true }),
-    supabase.from('projetos').select('id', { count: 'exact', head: true }).eq('status_habilitacao', 'habilitado'),
-    supabase.from('editais').select('status').eq('active', true),
-    supabase.from('projetos').select('orcamento_total').eq('status_habilitacao', 'habilitado').not('orcamento_total', 'is', null),
+    editaisBase,
+    projetosCount,
+    aprovadosCount,
+    editaisStatus,
+    orcamentoQuery,
     supabase.from('profiles').select('areas_atuacao').eq('role', 'proponente').eq('active', true).not('areas_atuacao', 'is', null),
-    supabase.from('editais').select('id, titulo, numero_edital, status, created_at').eq('active', true).order('created_at', { ascending: false }).limit(10),
-    supabase.from('projetos').select('id, titulo, numero_protocolo, nota_final, edital_id, editais!inner(titulo, numero_edital)').eq('status_habilitacao', 'habilitado').not('nota_final', 'is', null).order('nota_final', { ascending: false }).limit(20),
+    recentesQuery,
+    aprovadosQuery,
   ])
 
   // Calcular valor total investido

@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getCoordenadas } from '@/lib/municipios-coordenadas'
 import { MapaCultural } from '@/components/mapa/MapaCultural'
@@ -5,12 +6,20 @@ import { MapPin, Users, FileText, Banknote } from 'lucide-react'
 
 export default async function MapaPage() {
   const supabase = await createClient()
+  const cookieStore = await cookies()
+  const tenantId = cookieStore.get('tenant_id')?.value
 
   // Buscar projetos com dados do proponente (município/estado)
-  const { data: projetos } = await supabase
+  let query = supabase
     .from('projetos')
     .select('id, orcamento_total, proponente_id, status_habilitacao, profiles!projetos_proponente_id_fkey(municipio, estado)')
     .eq('status_habilitacao', 'habilitado')
+
+  if (tenantId) {
+    query = query.eq('tenant_id', tenantId)
+  }
+
+  const { data: projetos } = await query
 
   // Agrupar por município
   const municipioMap = new Map<string, { municipio: string; estado: string; lat: number; lng: number; total_projetos: number; valor_total: number }>()
