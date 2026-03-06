@@ -298,7 +298,7 @@ export default async function GestorDashboardPage() {
         <div className="space-y-5">
           {/* Painel de Pendências */}
           <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
-            <div className="bg-slate-900 px-5 py-3">
+            <div className="bg-red-600 px-5 py-3">
               <h3 className="text-xs font-medium uppercase tracking-wide text-white flex items-center gap-2">
                 <AlertTriangle className="h-3.5 w-3.5" />
                 Pendências
