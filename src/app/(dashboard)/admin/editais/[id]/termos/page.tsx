@@ -6,7 +6,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Plus, FileSignature, DollarSign, CheckCircle2, Clock } from 'lucide-react'
 import { TermosTable } from '@/components/termos/TermosTable'
-import type { TermoWithProjeto } from '@/types/database.types'
+import { PagamentosSection } from '@/components/termos/PagamentosSection'
+import { AditivosSection } from '@/components/termos/AditivosSection'
+import type { TermoWithProjeto, TermoAditivo } from '@/types/database.types'
 
 export default async function TermosPage({
   params,
@@ -38,6 +40,15 @@ export default async function TermosPage({
   const termosFiltered = (termos || []).filter(
     (t: TermoWithProjeto) => t.projetos !== null
   )
+
+  const termoIds = termosFiltered.map((t: TermoWithProjeto) => t.id)
+  const { data: aditivos } = termoIds.length > 0
+    ? await supabase
+        .from('termos_aditivos')
+        .select('*')
+        .in('termo_id', termoIds)
+        .order('created_at', { ascending: false })
+    : { data: [] }
 
   const stats = {
     total: termosFiltered.length,
@@ -105,6 +116,16 @@ export default async function TermosPage({
 
       {/* Table */}
       <TermosTable termos={termosFiltered as TermoWithProjeto[]} editalId={id} />
+
+      {/* Aditivos (Fase 6.5) */}
+      {termosFiltered.length > 0 && (
+        <AditivosSection termos={termosFiltered as TermoWithProjeto[]} aditivos={(aditivos || []) as TermoAditivo[]} />
+      )}
+
+      {/* Pagamentos */}
+      {termosFiltered.length > 0 && (
+        <PagamentosSection editalId={id} termos={termosFiltered as TermoWithProjeto[]} />
+      )}
     </div>
   )
 }

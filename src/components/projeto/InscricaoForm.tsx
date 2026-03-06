@@ -13,7 +13,74 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DocumentUpload } from './DocumentUpload'
 import { toast } from 'sonner'
-import { Loader2, ArrowLeft, ArrowRight, Check, Target, Users, MapPin, Calendar, Megaphone } from 'lucide-react'
+import { Loader2, ArrowLeft, ArrowRight, Check, Target, Users, MapPin, Calendar, Megaphone, Accessibility, UserPlus, Trash2, DollarSign, Clock, AlertTriangle } from 'lucide-react'
+
+// ── Equipe (Fase 1.6) ──
+interface EquipeMembro {
+  nome: string
+  funcao: string
+  cpf_cnpj: string
+  minicurriculo: string
+}
+
+// ── Orcamento (Fase 1.7) ──
+const CATEGORIAS_ORCAMENTO = [
+  { value: 'producao', label: 'Producao' },
+  { value: 'divulgacao', label: 'Divulgacao' },
+  { value: 'acessibilidade', label: 'Acessibilidade' },
+  { value: 'outras_fontes', label: 'Outras Fontes' },
+]
+
+interface OrcamentoItem {
+  categoria: string
+  item: string
+  unidade_medida: string
+  quantidade: string
+  valor_unitario: string
+}
+
+// ── Cronograma (Fase 1.8) ──
+const FASES_CRONOGRAMA = [
+  { value: 'pre_producao', label: 'Pre-producao' },
+  { value: 'divulgacao', label: 'Divulgacao' },
+  { value: 'producao', label: 'Producao' },
+  { value: 'pos_producao', label: 'Pos-producao' },
+]
+
+interface CronogramaItem {
+  fase: string
+  atividade: string
+  data_inicio: string
+  data_fim: string
+}
+
+const ACESSIBILIDADE_ARQUITETONICA = [
+  { key: 'rotas_acessiveis', label: 'Rotas acessiveis' },
+  { key: 'piso_tatil', label: 'Piso tatil' },
+  { key: 'rampas', label: 'Rampas' },
+  { key: 'elevadores', label: 'Elevadores' },
+  { key: 'corrimaos', label: 'Corrimaos' },
+  { key: 'banheiros_adaptados', label: 'Banheiros adaptados' },
+  { key: 'vagas_estacionamento', label: 'Vagas de estacionamento PcD' },
+  { key: 'assentos_obesos', label: 'Assentos para obesos' },
+  { key: 'iluminacao', label: 'Iluminacao adequada' },
+]
+
+const ACESSIBILIDADE_COMUNICACIONAL = [
+  { key: 'libras', label: 'Interprete de Libras' },
+  { key: 'braille', label: 'Material em Braille' },
+  { key: 'sinalizacao_tatil', label: 'Sinalizacao tatil' },
+  { key: 'audiodescricao', label: 'Audiodescricao' },
+  { key: 'legendas', label: 'Legendas' },
+  { key: 'linguagem_simples', label: 'Linguagem simples' },
+  { key: 'textos_leitor_tela', label: 'Textos para leitor de tela' },
+]
+
+const ACESSIBILIDADE_ATITUDINAL = [
+  { key: 'capacitacao_equipes', label: 'Capacitacao de equipes' },
+  { key: 'contratacao_pcd', label: 'Contratacao de PcD' },
+  { key: 'formacao_sensibilizacao', label: 'Formacao e sensibilizacao' },
+]
 
 const AREAS_PROJETO = [
   { value: 'artes_digitais', label: 'Artes Digitais' },
@@ -104,6 +171,38 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
   const [vendaProdutos, setVendaProdutos] = useState(false)
   const [concorreCota, setConcorreCota] = useState(false)
   const [tipoCota, setTipoCota] = useState('')
+  const [acessibilidade, setAcessibilidade] = useState<Record<string, boolean>>({})
+  const [acessibilidadeDescricao, setAcessibilidadeDescricao] = useState('')
+  const [equipe, setEquipe] = useState<EquipeMembro[]>([])
+  const [orcamento, setOrcamento] = useState<OrcamentoItem[]>([])
+  const [cronograma, setCronograma] = useState<CronogramaItem[]>([])
+
+  // Auto-sync orcamento_total from itemized budget (Fase 1.7)
+  const orcamentoItensTotal = orcamento.reduce(
+    (sum, item) => sum + (parseFloat(item.quantidade) || 0) * (parseFloat(item.valor_unitario) || 0), 0
+  )
+  useEffect(() => {
+    if (orcamento.length > 0) {
+      updateForm('orcamento_total', orcamentoItensTotal.toFixed(2))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orcamentoItensTotal, orcamento.length])
+
+  // Cronograma date validation (Fase 1.8)
+  const cronogramaWarnings = cronograma.map((item, i) => {
+    const warnings: string[] = []
+    if (form.periodo_execucao_inicio && item.data_inicio && item.data_inicio < form.periodo_execucao_inicio) {
+      warnings.push('Data inicio anterior ao periodo de execucao')
+    }
+    if (form.periodo_execucao_fim && item.data_fim && item.data_fim > form.periodo_execucao_fim) {
+      warnings.push('Data fim posterior ao periodo de execucao')
+    }
+    if (item.data_inicio && item.data_fim && item.data_inicio > item.data_fim) {
+      warnings.push('Data inicio posterior a data fim')
+    }
+    return warnings
+  })
+  const hasCronogramaWarnings = cronogramaWarnings.some(w => w.length > 0)
 
   useEffect(() => {
     const supabase = createClient()
@@ -203,6 +302,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         contrapartida_social: form.contrapartida_social || null,
         concorre_cota: concorreCota,
         tipo_cota: concorreCota ? (tipoCota || null) : null,
+        acessibilidade: Object.keys(acessibilidade).filter(k => acessibilidade[k]).length > 0
+          ? Object.fromEntries(Object.entries(acessibilidade).filter(([, v]) => v))
+          : null,
+        acessibilidade_descricao: acessibilidadeDescricao || null,
       })
       .select('id')
       .single()
@@ -222,6 +325,50 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           nome_arquivo: doc.nome_arquivo,
           storage_path: doc.storage_path,
           tamanho_bytes: doc.tamanho_bytes,
+        }))
+      )
+    }
+
+    // Save equipe (Fase 1.6)
+    if (equipe.length > 0 && projeto) {
+      await supabase.from('projeto_equipe').insert(
+        equipe.map(m => ({
+          tenant_id: tenantId,
+          projeto_id: projeto.id,
+          nome: m.nome,
+          funcao: m.funcao,
+          cpf_cnpj: m.cpf_cnpj || null,
+          minicurriculo: m.minicurriculo || null,
+        }))
+      )
+    }
+
+    // Save orcamento (Fase 1.7)
+    if (orcamento.length > 0 && projeto) {
+      await supabase.from('projeto_orcamento_itens').insert(
+        orcamento.map(item => ({
+          tenant_id: tenantId,
+          projeto_id: projeto.id,
+          categoria: item.categoria,
+          item: item.item,
+          unidade_medida: item.unidade_medida || null,
+          quantidade: parseInt(item.quantidade) || 1,
+          valor_unitario: parseFloat(item.valor_unitario) || 0,
+          valor_total: (parseInt(item.quantidade) || 1) * (parseFloat(item.valor_unitario) || 0),
+        }))
+      )
+    }
+
+    // Save cronograma (Fase 1.8)
+    if (cronograma.length > 0 && projeto) {
+      await supabase.from('projeto_cronograma').insert(
+        cronograma.map(item => ({
+          tenant_id: tenantId,
+          projeto_id: projeto.id,
+          fase: item.fase,
+          atividade: item.atividade,
+          data_inicio: item.data_inicio || null,
+          data_fim: item.data_fim || null,
         }))
       )
     }
@@ -255,9 +402,9 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
   return (
     <div className="space-y-6">
       {/* Step indicator */}
-      <div className="flex items-center gap-2">
-        {[1, 2, 3, 4].map(s => (
-          <div key={s} className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
+        {[1, 2, 3, 4, 5].map(s => (
+          <div key={s} className="flex items-center gap-1.5">
             <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
               s < step ? 'bg-primary text-primary-foreground' :
               s === step ? 'bg-primary text-primary-foreground' :
@@ -265,10 +412,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             }`}>
               {s < step ? <Check className="h-4 w-4" /> : s}
             </div>
-            <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'} hidden sm:inline`}>
-              {s === 1 ? 'Projeto' : s === 2 ? 'Detalhes' : s === 3 ? 'Documentos' : 'Revisao'}
+            <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'} hidden lg:inline`}>
+              {s === 1 ? 'Projeto' : s === 2 ? 'Detalhes' : s === 3 ? 'Equipe' : s === 4 ? 'Documentos' : 'Revisao'}
             </span>
-            {s < 4 && <div className="h-px w-4 sm:w-8 bg-border" />}
+            {s < 5 && <div className="h-px w-3 sm:w-6 bg-border" />}
           </div>
         ))}
       </div>
@@ -654,6 +801,88 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               )}
             </div>
 
+            {/* Acessibilidade (Fase 1.5) */}
+            <div className="space-y-4 p-5 rounded-2xl border border-violet-100 bg-violet-50/30">
+              <div className="flex items-center gap-2">
+                <Accessibility className="h-3.5 w-3.5 text-violet-500" />
+                <span className="text-[11px] font-semibold text-violet-600 uppercase tracking-wide">Medidas de Acessibilidade</span>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Arquitetonica</p>
+                <div className="flex flex-wrap gap-2">
+                  {ACESSIBILIDADE_ARQUITETONICA.map(item => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => setAcessibilidade(prev => ({ ...prev, [item.key]: !prev[item.key] }))}
+                      className={[
+                        'px-3 py-1.5 rounded-xl text-[11px] font-medium transition-all border',
+                        acessibilidade[item.key]
+                          ? 'bg-violet-600 text-white border-violet-600 shadow-sm'
+                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                      ].join(' ')}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Comunicacional</p>
+                <div className="flex flex-wrap gap-2">
+                  {ACESSIBILIDADE_COMUNICACIONAL.map(item => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => setAcessibilidade(prev => ({ ...prev, [item.key]: !prev[item.key] }))}
+                      className={[
+                        'px-3 py-1.5 rounded-xl text-[11px] font-medium transition-all border',
+                        acessibilidade[item.key]
+                          ? 'bg-violet-600 text-white border-violet-600 shadow-sm'
+                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                      ].join(' ')}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Atitudinal</p>
+                <div className="flex flex-wrap gap-2">
+                  {ACESSIBILIDADE_ATITUDINAL.map(item => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => setAcessibilidade(prev => ({ ...prev, [item.key]: !prev[item.key] }))}
+                      className={[
+                        'px-3 py-1.5 rounded-xl text-[11px] font-medium transition-all border',
+                        acessibilidade[item.key]
+                          ? 'bg-violet-600 text-white border-violet-600 shadow-sm'
+                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                      ].join(' ')}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Como as medidas serao implementadas?</Label>
+                <Textarea
+                  value={acessibilidadeDescricao}
+                  onChange={e => setAcessibilidadeDescricao(e.target.value)}
+                  placeholder="Descreva como as medidas de acessibilidade selecionadas serao implementadas no projeto..."
+                  rows={3}
+                  className="rounded-xl border-slate-200 bg-white text-sm"
+                />
+              </div>
+            </div>
+
             {/* Cotas */}
             <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-200">
               <label className="flex items-center gap-3 cursor-pointer">
@@ -693,18 +922,144 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         </Card>
       )}
 
-      {/* Step 3: Documents */}
+      {/* Step 3: Equipe + Orcamento + Cronograma */}
       {step === 3 && (
         <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Documentos</CardTitle>
+            <CardTitle className="text-lg font-semibold">Equipe, Orcamento e Cronograma</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <DocumentUpload tipo="identidade" label="Documento de Identidade" tenantId={tenantId} onUpload={handleDocUpload} />
-            <DocumentUpload tipo="proposta" label="Proposta do Projeto" tenantId={tenantId} onUpload={handleDocUpload} />
-            <DocumentUpload tipo="orcamento" label="Planilha Orcamentaria" tenantId={tenantId} onUpload={handleDocUpload} />
-            <DocumentUpload tipo="complementar" label="Documentos Complementares" tenantId={tenantId} onUpload={handleDocUpload} />
-            <div className="flex justify-between">
+
+            {/* === EQUIPE (Fase 1.6) === */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Users className="h-3.5 w-3.5 text-blue-500" />
+                <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wide">Ficha Tecnica / Equipe</span>
+              </div>
+
+              {equipe.length > 0 && (
+                <div className="space-y-2">
+                  {equipe.map((m, i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-900">{m.nome} <span className="text-slate-400 font-normal">— {m.funcao}</span></p>
+                        {m.cpf_cnpj && <p className="text-xs text-slate-400">{m.cpf_cnpj}</p>}
+                      </div>
+                      <button type="button" onClick={() => setEquipe(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-300 hover:text-red-500">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <EquipeAddForm onAdd={(m) => setEquipe(prev => [...prev, m])} />
+            </div>
+
+            {/* === ORCAMENTO (Fase 1.7) === */}
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-3.5 w-3.5 text-emerald-500" />
+                <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide">Planilha Orcamentaria</span>
+              </div>
+
+              {orcamento.length > 0 && (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">
+                        <th className="text-left pb-2">Categoria</th>
+                        <th className="text-left pb-2">Item</th>
+                        <th className="text-right pb-2">Qtd</th>
+                        <th className="text-right pb-2">Unit. (R$)</th>
+                        <th className="text-right pb-2">Total (R$)</th>
+                        <th className="pb-2 w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orcamento.map((item, i) => {
+                        const total = (parseFloat(item.quantidade) || 0) * (parseFloat(item.valor_unitario) || 0)
+                        return (
+                          <tr key={i} className="border-t border-slate-100">
+                            <td className="py-2 text-xs text-slate-500">{CATEGORIAS_ORCAMENTO.find(c => c.value === item.categoria)?.label}</td>
+                            <td className="py-2">{item.item}</td>
+                            <td className="py-2 text-right">{item.quantidade}</td>
+                            <td className="py-2 text-right">{parseFloat(item.valor_unitario).toFixed(2)}</td>
+                            <td className="py-2 text-right font-medium">{total.toFixed(2)}</td>
+                            <td className="py-2 text-right">
+                              <button type="button" onClick={() => setOrcamento(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-300 hover:text-red-500">
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                      <tr className="border-t-2 border-slate-200">
+                        <td colSpan={4} className="py-2 text-right font-semibold text-sm">Total Geral:</td>
+                        <td className="py-2 text-right font-bold text-sm text-emerald-600">
+                          R$ {orcamento.reduce((sum, item) => sum + (parseFloat(item.quantidade) || 0) * (parseFloat(item.valor_unitario) || 0), 0).toFixed(2)}
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {orcamento.length > 0 && form.orcamento_total && Math.abs(orcamentoItensTotal - parseFloat(form.orcamento_total)) > 0.01 && (
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs">
+                  <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span>O total dos itens (R$ {orcamentoItensTotal.toFixed(2)}) difere do orcamento informado (R$ {parseFloat(form.orcamento_total).toFixed(2)})</span>
+                </div>
+              )}
+
+              <OrcamentoAddForm onAdd={(item) => setOrcamento(prev => [...prev, item])} />
+            </div>
+
+            {/* === CRONOGRAMA (Fase 1.8) === */}
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-2">
+                <Clock className="h-3.5 w-3.5 text-amber-500" />
+                <span className="text-[11px] font-semibold text-amber-600 uppercase tracking-wide">Cronograma de Execucao</span>
+              </div>
+
+              {cronograma.length > 0 && (
+                <div className="space-y-2">
+                  {cronograma.map((item, i) => (
+                    <div key={i} className={`flex items-center gap-3 p-3 rounded-xl border ${cronogramaWarnings[i]?.length > 0 ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50 border-slate-200'}`}>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-900">{item.atividade}</p>
+                        <p className="text-xs text-slate-400">
+                          {FASES_CRONOGRAMA.find(f => f.value === item.fase)?.label}
+                          {item.data_inicio && ` · ${item.data_inicio}`}
+                          {item.data_fim && ` a ${item.data_fim}`}
+                        </p>
+                        {cronogramaWarnings[i]?.length > 0 && (
+                          <div className="flex items-center gap-1.5 mt-1 text-amber-600">
+                            <AlertTriangle className="h-3 w-3 flex-shrink-0" />
+                            <span className="text-[11px] font-medium">{cronogramaWarnings[i].join(' · ')}</span>
+                          </div>
+                        )}
+                      </div>
+                      <button type="button" onClick={() => setCronograma(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-300 hover:text-red-500">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {hasCronogramaWarnings && (
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs">
+                  <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span>Algumas atividades possuem datas fora do periodo de execucao ({form.periodo_execucao_inicio || '?'} a {form.periodo_execucao_fim || '?'})</span>
+                </div>
+              )}
+
+              <CronogramaAddForm onAdd={(item) => setCronograma(prev => [...prev, item])} />
+            </div>
+
+            <div className="flex justify-between pt-2">
               <Button variant="outline" onClick={() => setStep(2)} className="rounded-xl">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar
@@ -718,8 +1073,33 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         </Card>
       )}
 
-      {/* Step 4: Review */}
+      {/* Step 4: Documents */}
       {step === 4 && (
+        <Card className="border border-slate-200 rounded-2xl shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Documentos</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <DocumentUpload tipo="identidade" label="Documento de Identidade" tenantId={tenantId} onUpload={handleDocUpload} />
+            <DocumentUpload tipo="proposta" label="Proposta do Projeto" tenantId={tenantId} onUpload={handleDocUpload} />
+            <DocumentUpload tipo="orcamento" label="Planilha Orcamentaria" tenantId={tenantId} onUpload={handleDocUpload} />
+            <DocumentUpload tipo="complementar" label="Documentos Complementares" tenantId={tenantId} onUpload={handleDocUpload} />
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={() => setStep(3)} className="rounded-xl">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar
+              </Button>
+              <Button onClick={() => setStep(5)} className="rounded-xl">
+                Proximo
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Step 5: Review */}
+      {step === 5 && (
         <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">Revisao e Envio</CardTitle>
@@ -747,10 +1127,43 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               {publicoPrioritarioSelected.length > 0 && (
                 <p className="text-sm"><strong>Publico prioritario:</strong> {publicoPrioritarioSelected.map(p => PUBLICO_PRIORITARIO.find(pp => pp.value === p)?.label).join(', ')}</p>
               )}
+              {Object.keys(acessibilidade).filter(k => acessibilidade[k]).length > 0 && (
+                <p className="text-sm"><strong>Acessibilidade:</strong> {
+                  [...ACESSIBILIDADE_ARQUITETONICA, ...ACESSIBILIDADE_COMUNICACIONAL, ...ACESSIBILIDADE_ATITUDINAL]
+                    .filter(item => acessibilidade[item.key])
+                    .map(item => item.label)
+                    .join(', ')
+                }</p>
+              )}
+              {acessibilidadeDescricao && (
+                <p className="text-sm"><strong>Implementacao acessibilidade:</strong> {acessibilidadeDescricao}</p>
+              )}
               {camposExtras.filter(c => camposValues[c.id]?.trim()).map(c => (
                 <p key={c.id} className="text-sm"><strong>{c.label}:</strong> {camposValues[c.id]}</p>
               ))}
             </div>
+            {equipe.length > 0 && (
+              <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
+                <h4 className="font-medium text-sm">Equipe ({equipe.length} membros)</h4>
+                {equipe.map((m, i) => (
+                  <p key={i} className="text-sm">{m.nome} — {m.funcao}</p>
+                ))}
+              </div>
+            )}
+            {orcamento.length > 0 && (
+              <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
+                <h4 className="font-medium text-sm">Orcamento ({orcamento.length} itens)</h4>
+                <p className="text-sm font-medium">Total: R$ {orcamento.reduce((sum, item) => sum + (parseFloat(item.quantidade) || 0) * (parseFloat(item.valor_unitario) || 0), 0).toFixed(2)}</p>
+              </div>
+            )}
+            {cronograma.length > 0 && (
+              <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
+                <h4 className="font-medium text-sm">Cronograma ({cronograma.length} atividades)</h4>
+                {cronograma.map((item, i) => (
+                  <p key={i} className="text-sm">{FASES_CRONOGRAMA.find(f => f.value === item.fase)?.label}: {item.atividade}</p>
+                ))}
+              </div>
+            )}
             <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
               <h4 className="font-medium text-sm">Documentos ({documents.length})</h4>
               {documents.map((doc, i) => (
@@ -773,7 +1186,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               </label>
             </div>
             <div className="flex justify-between pt-4">
-              <Button variant="outline" onClick={() => setStep(3)} className="rounded-xl">
+              <Button variant="outline" onClick={() => setStep(4)} className="rounded-xl">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar
               </Button>
@@ -785,6 +1198,106 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           </CardContent>
         </Card>
       )}
+    </div>
+  )
+}
+
+// ── Mini-form: Equipe ──
+function EquipeAddForm({ onAdd }: { onAdd: (m: EquipeMembro) => void }) {
+  const [nome, setNome] = useState('')
+  const [funcao, setFuncao] = useState('')
+  const [cpf, setCpf] = useState('')
+  const [mini, setMini] = useState('')
+
+  function add() {
+    if (!nome.trim() || !funcao.trim()) return
+    onAdd({ nome: nome.trim(), funcao: funcao.trim(), cpf_cnpj: cpf.trim(), minicurriculo: mini.trim() })
+    setNome(''); setFuncao(''); setCpf(''); setMini('')
+  }
+
+  return (
+    <div className="space-y-3 p-4 rounded-xl border border-blue-100 bg-blue-50/30">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <Input placeholder="Nome *" value={nome} onChange={e => setNome(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input placeholder="Funcao *" value={funcao} onChange={e => setFuncao(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input placeholder="CPF/CNPJ (opcional)" value={cpf} onChange={e => setCpf(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input placeholder="Minicurriculo (opcional)" value={mini} onChange={e => setMini(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+      </div>
+      <Button type="button" onClick={add} variant="outline" size="sm" className="rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50">
+        <UserPlus className="h-3.5 w-3.5 mr-2" /> Adicionar Membro
+      </Button>
+    </div>
+  )
+}
+
+// ── Mini-form: Orcamento ──
+function OrcamentoAddForm({ onAdd }: { onAdd: (item: OrcamentoItem) => void }) {
+  const [categoria, setCategoria] = useState('producao')
+  const [item, setItem] = useState('')
+  const [unidade, setUnidade] = useState('')
+  const [qtd, setQtd] = useState('')
+  const [valor, setValor] = useState('')
+
+  function add() {
+    if (!item.trim()) return
+    onAdd({ categoria, item: item.trim(), unidade_medida: unidade.trim(), quantidade: qtd || '1', valor_unitario: valor || '0' })
+    setItem(''); setUnidade(''); setQtd(''); setValor('')
+  }
+
+  return (
+    <div className="space-y-3 p-4 rounded-xl border border-emerald-100 bg-emerald-50/30">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <Select value={categoria} onValueChange={setCategoria}>
+          <SelectTrigger className="h-10 rounded-xl border-slate-200 bg-white text-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {CATEGORIAS_ORCAMENTO.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Input placeholder="Item *" value={item} onChange={e => setItem(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input placeholder="Unidade" value={unidade} onChange={e => setUnidade(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input type="number" placeholder="Qtd" value={qtd} onChange={e => setQtd(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input type="number" step="0.01" placeholder="Valor unit." value={valor} onChange={e => setValor(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+      </div>
+      <Button type="button" onClick={add} variant="outline" size="sm" className="rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50">
+        <DollarSign className="h-3.5 w-3.5 mr-2" /> Adicionar Item
+      </Button>
+    </div>
+  )
+}
+
+// ── Mini-form: Cronograma ──
+function CronogramaAddForm({ onAdd }: { onAdd: (item: CronogramaItem) => void }) {
+  const [fase, setFase] = useState('producao')
+  const [atividade, setAtividade] = useState('')
+  const [inicio, setInicio] = useState('')
+  const [fim, setFim] = useState('')
+
+  function add() {
+    if (!atividade.trim()) return
+    onAdd({ fase, atividade: atividade.trim(), data_inicio: inicio, data_fim: fim })
+    setAtividade(''); setInicio(''); setFim('')
+  }
+
+  return (
+    <div className="space-y-3 p-4 rounded-xl border border-amber-100 bg-amber-50/30">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Select value={fase} onValueChange={setFase}>
+          <SelectTrigger className="h-10 rounded-xl border-slate-200 bg-white text-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {FASES_CRONOGRAMA.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Input placeholder="Atividade *" value={atividade} onChange={e => setAtividade(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input type="date" value={inicio} onChange={e => setInicio(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input type="date" value={fim} onChange={e => setFim(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+      </div>
+      <Button type="button" onClick={add} variant="outline" size="sm" className="rounded-xl border-amber-200 text-amber-600 hover:bg-amber-50">
+        <Clock className="h-3.5 w-3.5 mr-2" /> Adicionar Atividade
+      </Button>
     </div>
   )
 }

@@ -564,6 +564,22 @@ export function PrestacaoForm({ projetoId, tenantId, orcamentoPrevisto, prestaca
                 nome_arquivo: d.nome_arquivo, storage_path: d.storage_path, tamanho_bytes: d.tamanho_bytes || 0, tipo: d.tipo,
               }))}
             />
+            <DocumentUpload
+              tipo="prestacao_contas"
+              label="Materiais de divulgação, folders, clipping"
+              tenantId={tenantId}
+              onUpload={async (file) => {
+                const supabase = createClient()
+                await supabase.from('projeto_documentos').insert({
+                  tenant_id: tenantId, projeto_id: projetoId, tipo: 'prestacao_contas',
+                  nome_arquivo: file.nome_arquivo, storage_path: file.storage_path, tamanho_bytes: file.tamanho_bytes,
+                })
+                router.refresh()
+              }}
+              existingFiles={documentos.filter(d => d.tipo === 'prestacao_contas').map(d => ({
+                nome_arquivo: d.nome_arquivo, storage_path: d.storage_path, tamanho_bytes: d.tamanho_bytes || 0, tipo: d.tipo,
+              }))}
+            />
           </CardContent>
         </Card>
       )}

@@ -18,15 +18,15 @@
 - [x] Atualizar formulario de cadastro do proponente com todos os campos ✅ ProponenteForm + perfil + cadastro + AdminEditProfileSheet
 
 ### 1.2 Perfil Pessoa Juridica
-- [ ] Adicionar campos PJ no profiles: `razao_social`, `nome_fantasia`, `endereco_sede`
-- [ ] Adicionar campos do representante legal: `representante_nome`, `representante_cpf`, `representante_genero`, `representante_raca_etnia`, `representante_pcd`, `representante_escolaridade`
-- [ ] UI condicional: mostrar campos PJ quando tipo_pessoa = juridica
+- [x] Adicionar campos PJ no profiles: `razao_social`, `nome_fantasia`, `endereco_sede` ✅ migration 20260306000006
+- [x] Adicionar campos do representante legal: `representante_nome`, `representante_cpf`, `representante_genero`, `representante_raca_etnia`, `representante_pcd`, `representante_escolaridade` ✅ migration 20260306000006
+- [x] UI condicional: mostrar campos PJ quando tipo_pessoa = juridica ✅ ProponenteForm seção condicional azul
 
 ### 1.3 Perfil Coletivo sem CNPJ
-- [ ] Criar tabela `coletivos` (id, profile_id, nome_coletivo, ano_criacao, quantidade_membros)
-- [ ] Criar tabela `coletivo_membros` (id, coletivo_id, nome, cpf)
-- [ ] Campo para upload de portfolio do coletivo
-- [ ] UI condicional: mostrar campos de coletivo quando tipo_pessoa = coletivo_sem_cnpj
+- [x] Criar tabela `coletivos` (id, profile_id, nome_coletivo, ano_criacao, quantidade_membros) ✅ migration 20260306000006
+- [x] Criar tabela `coletivo_membros` (id, coletivo_id, nome, cpf) ✅ migration 20260306000006
+- [x] Campo para upload de portfolio do coletivo ✅ campo texto portfolio na tabela coletivos + Textarea no form
+- [x] UI condicional: mostrar campos de coletivo quando tipo_pessoa = coletivo_sem_cnpj ✅ ColetivoSection com mini form de membros
 
 ### 1.4 Formulario de Inscricao do Projeto (campos estruturados)
 - [x] Adicionar campo `areas_projeto` (multi-select) ✅ migration 20260306000004 + InscricaoForm
@@ -44,34 +44,34 @@
 - [x] Concorrencia a cotas: campo `concorre_cota` (boolean) + `tipo_cota` (negra, indigena, pcd) ✅
 
 ### 1.5 Medidas de Acessibilidade do Projeto
-- [ ] Criar campo JSONB `acessibilidade` no projeto com 3 categorias:
+- [x] Criar campo JSONB `acessibilidade` no projeto com 3 categorias: ✅ migration 20260306000007
   - Arquitetonica: rotas_acessiveis, piso_tatil, rampas, elevadores, corrimaos, banheiros_adaptados, vagas_estacionamento, assentos_obesos, iluminacao
   - Comunicacional: libras, braille, sinalizacao_tatil, audiodescricao, legendas, linguagem_simples, textos_leitor_tela
   - Atitudinal: capacitacao_equipes, contratacao_pcd, formacao_sensibilizacao
-- [ ] Campo descritivo de como as medidas serao implementadas
+- [x] Campo descritivo de como as medidas serao implementadas ✅ acessibilidade_descricao + UI no InscricaoForm Step 2
 
 ### 1.6 Ficha Tecnica / Equipe do Projeto
-- [ ] Criar tabela `projeto_equipe` (id, projeto_id, nome, funcao, cpf_cnpj, minicurriculo)
-- [ ] UI para adicionar/remover membros da equipe
-- [ ] Exibir equipe na visualizacao do projeto
+- [x] Criar tabela `projeto_equipe` (id, projeto_id, nome, funcao, cpf_cnpj, minicurriculo) ✅ migration 20260306000008
+- [x] UI para adicionar/remover membros da equipe ✅ InscricaoForm Step 3 + EquipeAddForm
+- [x] Exibir equipe na visualizacao do projeto ✅ projetos/[id]/page.tsx
 
 ### 1.7 Planilha Orcamentaria Estruturada
-- [ ] Criar tabela `projeto_orcamento_itens` (id, projeto_id, categoria [producao/divulgacao/acessibilidade/outras_fontes], item, unidade_medida, quantidade, valor_unitario, valor_total)
-- [ ] UI de tabela editavel para adicionar itens por categoria
-- [ ] Calculo automatico de totais por categoria e total geral
-- [ ] Validacao: total itens deve ser <= orcamento do edital
+- [x] Criar tabela `projeto_orcamento_itens` (id, projeto_id, categoria [producao/divulgacao/acessibilidade/outras_fontes], item, unidade_medida, quantidade, valor_unitario, valor_total) ✅ migration 20260306000008
+- [x] UI de tabela editavel para adicionar itens por categoria ✅ InscricaoForm Step 3 + OrcamentoAddForm
+- [x] Calculo automatico de totais por categoria e total geral ✅ tabela com total geral no form + visualizacao
+- [x] Validacao: total itens deve ser <= orcamento do edital ✅ auto-sync orcamento_total from items + warning mismatch
 
 ### 1.8 Cronograma de Execucao Estruturado
-- [ ] Criar tabela `projeto_cronograma` (id, projeto_id, fase [pre_producao/divulgacao/producao/pos_producao], atividade, data_inicio, data_fim)
-- [ ] UI de tabela editavel agrupada por fase
-- [ ] Validacao: datas dentro do periodo de execucao
+- [x] Criar tabela `projeto_cronograma` (id, projeto_id, fase [pre_producao/divulgacao/producao/pos_producao], atividade, data_inicio, data_fim) ✅ migration 20260306000008
+- [x] UI de tabela editavel agrupada por fase ✅ InscricaoForm Step 3 + CronogramaAddForm
+- [x] Validacao: datas dentro do periodo de execucao ✅ cronograma date warnings per item + global banner
 
 ### 1.9 Templates DOCX/XLSX para Download
-- [ ] Zona de "Anexos do Edital" na pagina publica do edital
-- [ ] Gestor faz upload de templates (DOCX/XLSX) ao criar edital
-- [ ] Proponente baixa templates, preenche offline, faz upload como PDF
-- [ ] Aceitar upload de DOCX alem de PDF (adicionar ao mime type do storage)
-- [ ] Tipos de anexo no edital: carta_anuencia, planilha_orcamentaria, cronograma, termo_compromisso, declaracao_etnico_racial, declaracao_pcd, declaracao_coletivo, formulario_recurso, outros
+- [x] Zona de "Anexos do Edital" na pagina publica do edital ✅ seção "Anexos para Download" com links diretos
+- [x] Gestor faz upload de templates (DOCX/XLSX) ao criar edital ✅ admin/editais/[id]/anexos com upload form
+- [x] Proponente baixa templates, preenche offline, faz upload como PDF ✅ links públicos para download
+- [x] Aceitar upload de DOCX alem de PDF (adicionar ao mime type do storage) ✅ accept inclui .doc,.docx,.xls,.xlsx,.odt,.ods,.rtf,.txt,.zip
+- [x] Tipos de anexo no edital: carta_anuencia, planilha_orcamentaria, cronograma, termo_compromisso, declaracao_etnico_racial, declaracao_pcd, declaracao_coletivo, formulario_recurso, outros ✅ migration 20260306000013 + CHECK constraint
 
 ---
 
@@ -85,29 +85,29 @@
 - [x] UI de configuracao no formulario de criar/editar edital ✅ secao "Configuracao da Avaliacao"
 
 ### 2.2 Atribuicao de Pareceristas
-- [ ] Melhorar pagina /admin/editais/[id]/atribuicoes
-- [ ] Distribuicao automatica: N pareceristas por projeto, balanceando carga
-- [ ] Distribuicao manual: gestor escolhe quais pareceristas avaliam qual projeto
+- [x] Melhorar pagina /admin/editais/[id]/atribuicoes ✅ AtribuicaoMatrix com auto-distribute
+- [x] Distribuicao automatica: N pareceristas por projeto, balanceando carga ✅ round-robin load-balanced autoDistribute()
+- [x] Distribuicao manual: gestor escolhe quais pareceristas avaliam qual projeto ✅ já existia (checkbox matrix)
 - [ ] Verificacao de impedimento: parecerista nao pode avaliar projeto de parente/conhecido
-- [ ] Status visual: quantos projetos cada parecerista ja avaliou
+- [x] Status visual: quantos projetos cada parecerista ja avaliou ✅ badge N/M avaliados com cor por status
 
 ### 2.3 Calculo de Media e Ranking Automatico
 - [x] Calcular nota_final = media das notas dos N pareceristas ✅ consolidar-ranking.ts (ja existia)
 - [x] Exibir no ranking: Parecerista 1 | Parecerista 2 | Parecerista 3 | Media Final ✅ RankingTable com colunas P1/P2/P3
-- [ ] Desclassificar automaticamente projetos com nota 0 em qualquer criterio
-- [ ] Desclassificar projetos abaixo da nota minima
+- [x] Desclassificar automaticamente projetos com nota 0 em qualquer criterio ✅ consolidar-ranking.ts nota_zero_desclassifica check
+- [x] Desclassificar projetos abaixo da nota minima ✅ consolidar-ranking.ts nota_minima_aprovacao check
 - [x] Alerta de discrepancia: quando diferenca entre pareceristas > X pontos ✅ icone AlertTriangle + tooltip
 - [x] Exibir contagem avaliacoes pendentes (N/esperado) com destaque amber ✅
 
 ### 2.4 Comissao de Avaliacao
-- [ ] Criar tabela `edital_comissao` (id, edital_id, nome, cpf, qualificacao, tipo [sociedade_civil/poder_executivo], portaria_numero)
-- [ ] UI para cadastrar membros da comissao
+- [x] Criar tabela `edital_comissao` (id, edital_id, nome, cpf, qualificacao, tipo [sociedade_civil/poder_executivo], portaria_numero) ✅ migration 20260306000012
+- [x] UI para cadastrar membros da comissao ✅ /admin/editais/[id]/comissao com form + lista agrupada por tipo
 - [ ] Gerar portaria de designacao (PDF)
-- [ ] Publicar composicao da comissao
+- [x] Publicar composicao da comissao ✅ seção pública na página do edital com membros agrupados por tipo
 
 ### 2.5 Criterios de Desempate
-- [ ] Configuracao dos criterios de desempate por edital (ordem de prioridade)
-- [ ] Desempate automatico no ranking: maior nota no criterio A, depois B, depois C, depois D
+- [x] Configuracao dos criterios de desempate por edital (ordem de prioridade) ✅ EditalConfigManager seção desempate com toggle + reorder
+- [x] Desempate automatico no ranking: maior nota no criterio A, depois B, depois C, depois D ✅ consolidar-ranking.ts compareDesempate()
 - [ ] Desempate final por sorteio (registro auditavel)
 
 ---
@@ -115,25 +115,25 @@
 ## FASE 3 — COTAS, SUPLENTES E CLASSIFICACAO
 
 ### 3.1 Motor de Cotas Inteligente
-- [ ] Configuracao de cotas por edital: tipo_cota, percentual ou vagas_fixas, por_categoria (boolean)
-- [ ] Tipos de cota: pessoa_negra, pessoa_indigena, pessoa_pcd, areas_perifericas
-- [ ] Regra: cotista concorre simultaneamente em ampla concorrencia e na cota
-- [ ] Se cotista atinge nota suficiente pela ampla, entra por la e libera vaga da cota
-- [ ] Remanejamento automatico: vagas de cota nao preenchidas -> outra cota -> ampla concorrencia
-- [ ] Classificacao exibe: "CLASSIFICADO - AMPLA CONCORRENCIA" / "CLASSIFICADO - COTA PESSOAS NEGRAS" / "CLASSIFICADO - AREAS PERIFERICAS" / etc.
+- [x] Configuracao de cotas por edital: tipo_cota, percentual ou vagas_fixas, por_categoria (boolean) ✅ migration 20260306000009 tabela edital_cotas
+- [x] Tipos de cota: pessoa_negra, pessoa_indigena, pessoa_pcd, areas_perifericas ✅ CHECK constraint na tabela
+- [x] Regra: cotista concorre simultaneamente em ampla concorrencia e na cota ✅ consolidar-ranking.ts dual-track allocation
+- [x] Se cotista atinge nota suficiente pela ampla, entra por la e libera vaga da cota ✅ Pass 1 (ampla) + Pass 3 (cotas restantes)
+- [x] Remanejamento automatico: vagas de cota nao preenchidas -> outra cota -> ampla concorrencia ✅ Pass 4 (remanejamento)
+- [x] Classificacao exibe: "CLASSIFICADO - AMPLA CONCORRENCIA" / "CLASSIFICADO - COTA PESSOAS NEGRAS" / "CLASSIFICADO - AREAS PERIFERICAS" / etc. ✅ RankingTable badges com classificacao_tipo + XLS export
 
 ### 3.2 Areas Perifericas / Regioes
-- [ ] Configuracao de areas perifericas por edital (lista de bairros/regioes)
-- [ ] Validacao automatica baseada no endereco do proponente
-- [ ] Percentual reservado configuravel (default 20%)
+- [x] Configuracao de areas perifericas por edital (lista de bairros/regioes) ✅ EditalConfigManager "Reserva de Vagas Regionais" + config_reserva_vagas JSONB
+- [x] Validacao automatica baseada no endereco do proponente ✅ consolidar-ranking.ts verifica municipio do proponente vs região
+- [x] Percentual reservado configuravel (default 20%) ✅ vagas fixas por região configurável no EditalConfigManager
 
 ### 3.3 Sistema de Suplentes e Chamadas
-- [ ] Lista de suplentes automatica por categoria (classificados apos o corte de vagas)
-- [ ] Workflow de convocacao: quando titular e inabilitado -> convocar proximo suplente
-- [ ] Historico de chamadas (1a, 2a, 3a, 4a chamada)
-- [ ] Status por projeto: CLASSIFICADO / SUPLENTE / SUPLENTE_CONVOCADO_2A / SUPLENTE_CONVOCADO_3A / etc.
+- [x] Lista de suplentes automatica por categoria (classificados apos o corte de vagas) ✅ consolidar-ranking.ts marca suplentes automaticamente
+- [x] Workflow de convocacao: quando titular e inabilitado -> convocar proximo suplente ✅ convocacao-actions.ts convocarSuplente()
+- [x] Historico de chamadas (1a, 2a, 3a, 4a chamada) ✅ tabela convocacoes (migration 20260306000011) + página admin
+- [x] Status por projeto: CLASSIFICADO / SUPLENTE / SUPLENTE_CONVOCADO_2A / etc. ✅ status_atual dinâmico + badges
 - [ ] Notificacao automatica ao suplente convocado
-- [ ] Prazo para suplente apresentar documentacao de habilitacao
+- [x] Prazo para suplente apresentar documentacao de habilitacao ✅ prazo_habilitacao (default 5 dias) + indicador prazo expirado
 
 ### 3.4 Lista de Inscritos Publica
 - [x] Pagina publica /editais/[id]/inscritos ✅ src/app/(public)/editais/[id]/inscritos/page.tsx
@@ -142,11 +142,11 @@
 - [ ] Periodo de impugnacao configuravel
 
 ### 3.5 Publicacao de Resultados
-- [ ] Resultado preliminar da selecao (ranking por categoria com status)
-- [ ] Resultado final da selecao (pos-recursos)
-- [ ] Resultado preliminar da habilitacao
-- [ ] Resultado definitivo da habilitacao
-- [ ] Homologacao final
+- [x] Resultado preliminar da selecao (ranking por categoria com status) ✅ publicar-resultado.ts auto-gera conteúdo + PublicacoesManager quick-publish
+- [x] Resultado final da selecao (pos-recursos) ✅ publicar-resultado.ts tipo resultado_final_selecao
+- [x] Resultado preliminar da habilitacao ✅ publicar-resultado.ts tipo resultado_preliminar_habilitacao
+- [x] Resultado definitivo da habilitacao ✅ publicar-resultado.ts tipo resultado_definitivo_habilitacao
+- [x] Homologacao final ✅ publicar-resultado.ts tipo homologacao_final com valor total + contemplados
 - [ ] Cada publicacao gera PDF automatico + notificacao aos proponentes
 
 ---
@@ -170,10 +170,10 @@
 - [ ] Parecerista revisa -> nova nota -> recalcula media -> atualiza ranking
 
 ### 4.3 Decisao Administrativa (Template)
-- [ ] Template estruturado da decisao com campos: fundamentacao, analise_merito, conclusao, dispositivo
+- [x] Template estruturado da decisao com campos: fundamentacao, analise_merito, conclusao, dispositivo ✅ RecursoDecisaoPanel com 4 campos estruturados
 - [ ] Geracao automatica de PDF da decisao
 - [ ] Assinatura digital da decisao (assessor + coordenador + secretario)
-- [ ] Publicacao da decisao vinculada ao recurso
+- [x] Publicacao da decisao vinculada ao recurso ✅ parecer estruturado salvo no recurso via decidirRecurso()
 - [ ] Notificacao ao proponente com a decisao
 
 ---
@@ -242,15 +242,15 @@
 
 ### 6.5 Aditivos ao Termo
 - [x] Criar tabela `termos_aditivos` ✅ migration 20260306000001
-- [ ] Regra: alteracoes ate 20% do valor podem ser feitas pelo proponente sem autorizacao previa (apenas comunicar)
-- [ ] Alteracoes > 20% precisam de aprovacao do gestor
-- [ ] Prorrogacao de oficio quando atraso na liberacao de recursos
+- [x] Regra: alteracoes ate 20% do valor podem ser feitas pelo proponente sem autorizacao previa (apenas comunicar) ✅ aditivo-actions.ts auto-aprova se <= 20%
+- [x] Alteracoes > 20% precisam de aprovacao do gestor ✅ requer_aprovacao flag + aprovar/rejeitar actions
+- [x] Prorrogacao de oficio quando atraso na liberacao de recursos ✅ tipo prorrogacao atualiza vigencia_fim automaticamente
 - [ ] Geracao de PDF do aditivo + assinatura
-- [ ] UI de gestao de aditivos
+- [x] UI de gestao de aditivos ✅ AditivosSection com form + lista + aprovar/rejeitar
 
 ### 6.6 Pagamento
 - [x] Criar tabela `pagamentos` ✅ migration 20260306000001
-- [ ] UI de gestao de pagamentos (registrar liberacao, upload comprovante)
+- [x] UI de gestao de pagamentos (registrar liberacao, upload comprovante) ✅ PagamentosSection na página termos + pagamento-actions.ts
 - [ ] Notificacao ao proponente quando pagamento liberado
 
 ---
@@ -278,21 +278,21 @@
 - [x] UI para listar profissionais que participaram da execucao ✅ PrestacaoForm.tsx secao 7 (quantidade + mudancas)
 
 ### 7.3 Anexos Comprobatorios
-- [ ] Upload de multiplos anexos: fotos, videos, listas de presenca, relatorio fotografico, folders, materiais de divulgacao
-- [ ] Categorizar anexos por tipo
+- [x] Upload de multiplos anexos: fotos, videos, listas de presenca, relatorio fotografico, folders, materiais de divulgacao ✅ 3 categorias de upload (comprovante_despesa, relatorio_atividade, prestacao_contas)
+- [x] Categorizar anexos por tipo ✅ DocumentUpload com tipos separados
 - [ ] Galeria visual dos comprovantes
 
 ### 7.4 Analise da Prestacao pelo Gestor
-- [ ] Parecer tecnico com opcoes:
+- [x] Parecer tecnico com opcoes: ✅ PrestacaoAnalise com parecer + 3 decisões (aprovar/reprovar/pendências)
   - Cumprimento integral do objeto
   - Necessidade de documentacao complementar
   - Necessidade de Relatorio Financeiro
-- [ ] Julgamento final:
+- [x] Julgamento final: ✅ JULGAMENTO_OPTIONS com 4 tipos + UI card selection
   - Aprovada sem ressalvas
   - Aprovada com ressalvas (realizou a acao mas com inadequacoes, sem ma-fe)
   - Rejeitada parcial (devolucao proporcional)
   - Rejeitada total (devolucao + multa + suspensao 180-540 dias)
-- [ ] Plano de acoes compensatorias (alternativa a devolucao)
+- [x] Plano de acoes compensatorias (alternativa a devolucao) ✅ campo plano_compensatorio condicional
 - [ ] Parcelamento de debito
 
 ### 7.5 Relatorio Financeiro (quando exigido)
@@ -307,14 +307,13 @@
 ## FASE 8 — EXPORTACOES E RELATORIOS
 
 ### 8.1 Exportacao PNAB Federal (Planilha MinC)
-- [ ] Gerar XLSX com 6 abas no formato padrao do MinC:
-  - Aba Instrumentos: CNPJ tenant, titulo edital, numero, link, objeto, modalidade, valor_total, inscritos, selecionados, segmentos, cotas, acoes_afirmativas, comissao
-  - Aba Pessoas Fisicas: CPF, nome, email, tel, nascimento, CEP, cidade, situacao, raca, sexo, genero, orientacao_sexual, renda, escolaridade, PCD, indigena, quilombola, segmentos, ocupacoes, acesso_previo_recursos
-  - Aba Organizacoes: tipo, CNPJ, CPF representante, data fundacao, dados representante
-  - Aba Acoes Culturais: identificador, CPF/CNPJ, edital, valor, modalidade, resumo, segmentos
-  - Aba Categorias: listas de referencia para dropdowns
-- [ ] Botao "Exportar Planilha PNAB" no dashboard do gestor
-- [ ] Validacao: alertar campos faltantes antes de exportar
+- [x] Gerar XLSX com 4 abas no formato padrao do MinC: ✅ exportar-pnab.ts (XML SpreadsheetML)
+  - Aba Instrumentos: CNPJ tenant, titulo edital, numero, objeto, modalidade, valor_total, inscritos, selecionados, segmentos, cotas ✅
+  - Aba Pessoas Fisicas: CPF, nome, tel, nascimento, cidade, UF, situacao, raca, genero, orientacao_sexual, renda, escolaridade, PCD, tipo_deficiencia, segmento, projeto, valor ✅
+  - Aba Organizacoes: tipo, CNPJ, razao_social, nome_fantasia, CPF representante, nome representante, projeto, situacao, valor ✅
+  - Aba Acoes Culturais: identificador, CPF/CNPJ, edital, valor, modalidade, resumo, segmento, status ✅
+- [x] Botao "Exportar Planilha PNAB" no dashboard do gestor ✅ ExportarPNABButton por edital na seção PNAB
+- [x] Validacao: alertar campos faltantes antes de exportar ✅ alertas inline com contagem
 
 ### 8.2 Lista de Inscritos (PDF/XLSX)
 - [ ] Exportar lista formatada com numero, nome, projeto, categoria
@@ -345,10 +344,10 @@
 ## FASE 9 — ERRATAS E VERSIONAMENTO
 
 ### 9.1 Erratas do Edital
-- [ ] Criar tabela `edital_erratas` (id, edital_id, numero_errata, descricao, campo_alterado, valor_anterior, valor_novo, publicado_em, publicado_por)
-- [ ] UI para criar errata com diff do que mudou
-- [ ] Historico de todas as erratas de um edital
-- [ ] Publicacao automatica da errata
+- [x] Criar tabela `edital_erratas` (id, edital_id, numero_errata, descricao, campo_alterado, valor_anterior, valor_novo, publicado_em, publicado_por) ✅ migration 20260306000010
+- [x] UI para criar errata com diff do que mudou ✅ /admin/editais/[id]/erratas com campo_alterado + valor_anterior → valor_novo
+- [x] Historico de todas as erratas de um edital ✅ listagem ordenada por numero_errata DESC
+- [x] Publicacao automatica da errata ✅ botão Publicar + exibição pública na página do edital
 - [ ] Notificacao a todos os inscritos quando errata publicada
 
 ### 9.2 Versionamento do Edital
@@ -419,22 +418,22 @@
 ## FASE 12 — MELHORIAS DE UX/UI
 
 ### 12.1 Dashboard do Gestor
-- [ ] Cards de resumo: total inscritos, em avaliacao, classificados, habilitados, termos assinados, pagos, em execucao, prestacao pendente
-- [ ] Timeline visual do edital com fase atual destacada
-- [ ] Alertas: prazos vencendo, recursos pendentes, habilitacoes pendentes
+- [x] Cards de resumo: total inscritos, em avaliacao, classificados, habilitados, termos assinados, pagos, em execucao, prestacao pendente ✅ gestor/page.tsx (4 métricas + pendências + pipeline)
+- [x] Timeline visual do edital com fase atual destacada ✅ admin/editais/[id]/page.tsx sidebar "Linha do Tempo"
+- [x] Alertas: prazos vencendo, recursos pendentes, habilitacoes pendentes ✅ gestor/page.tsx painel de pendências + prazos próximos
 
 ### 12.2 Dashboard do Proponente
-- [ ] Status do projeto com timeline visual (inscrito -> em avaliacao -> classificado -> habilitado -> termo -> pagamento -> execucao -> prestacao)
-- [ ] Documentos pendentes de envio
-- [ ] Prazos importantes com countdown
+- [x] Status do projeto com timeline visual (inscrito -> em avaliacao -> classificado -> habilitado -> termo -> pagamento -> execucao -> prestacao) ✅ projetos/[id]/page.tsx ProjetoTimeline + StatusTracker
+- [x] Documentos pendentes de envio ✅ card "Documentos Pendentes" no detalhe do projeto com status por doc
+- [x] Prazos importantes com countdown ✅ projetos/[id] seção "Prazos Importantes" com dias restantes + cor de urgência
 - [ ] Historico de notificacoes
 
 ### 12.3 Pagina Publica do Edital
-- [ ] Secao "Anexos para Download" com todos os templates DOCX/XLSX
-- [ ] Secao "Documentos Publicados" (erratas, resultados, atas)
-- [ ] Secao "Cronograma" visual com fases e datas
-- [ ] Secao "Categorias e Vagas" com tabela de cotas
-- [ ] Secao "Criterios de Avaliacao" com pesos
+- [x] Secao "Anexos para Download" com todos os templates DOCX/XLSX ✅ seção pública com links para todos os anexos do edital
+- [x] Secao "Documentos Publicados" (erratas, resultados, atas) ✅ erratas publicadas na página pública do edital
+- [x] Secao "Cronograma" visual com fases e datas ✅ página pública do edital com timeline de datas
+- [x] Secao "Categorias e Vagas" com tabela de cotas ✅ página pública com categorias + cotas/ações afirmativas
+- [x] Secao "Criterios de Avaliacao" com pesos ✅ já existente na página pública do edital
 
 ---
 

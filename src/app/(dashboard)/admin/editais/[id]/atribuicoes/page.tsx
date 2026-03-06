@@ -38,7 +38,7 @@ export default async function AtribuicoesPage({
 
   const { data: existingAvals } = await supabase
     .from('avaliacoes')
-    .select('avaliador_id, projeto_id')
+    .select('avaliador_id, projeto_id, status')
     .eq('tenant_id', edital.tenant_id)
     .in('projeto_id', (projetos || []).map((p) => p.id))
 

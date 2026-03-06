@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { toast } from 'sonner'
-import { Loader2, Check, Users, Shield, Search, CheckSquare } from 'lucide-react'
+import { Loader2, Check, Users, Shield, Search, CheckSquare, Shuffle } from 'lucide-react'
 import type { Profile, Projeto } from '@/types/database.types'
 
 interface AtribuicaoMatrixProps {
@@ -21,7 +21,7 @@ interface AtribuicaoMatrixProps {
   tenantId: string
   avaliadores: Profile[]
   projetos: Projeto[]
-  atribuicoes: Array<{ avaliador_id: string; projeto_id: string }>
+  atribuicoes: Array<{ avaliador_id: string; projeto_id: string; status?: string }>
 }
 
 export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, atribuicoes }: AtribuicaoMatrixProps) {
@@ -95,6 +95,61 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
       }
       return next
     })
+  }
+
+  // Stats: how many projects each avaliador has evaluated (finalizada) vs total assigned (Fase 2.2)
+  const avaliacaoStats = useMemo(() => {
+    const stats: Record<string, { total: number; finalizadas: number }> = {}
+    atribuicoes.forEach(a => {
+      if (!stats[a.avaliador_id]) stats[a.avaliador_id] = { total: 0, finalizadas: 0 }
+      stats[a.avaliador_id].total++
+      if (a.status === 'finalizada') stats[a.avaliador_id].finalizadas++
+    })
+    return stats
+  }, [atribuicoes])
+
+  const [numPareceristas, setNumPareceristas] = useState(3)
+
+  function autoDistribute() {
+    if (avaliadores.length === 0 || projetos.length === 0) return
+    const n = Math.min(numPareceristas, avaliadores.length)
+
+    // Round-robin: assign N avaliadores per projeto, balancing load
+    const newMatrix: Record<string, Set<string>> = {}
+    const loadCount = new Map<string, number>()
+    avaliadores.forEach(a => { newMatrix[a.id] = new Set(); loadCount.set(a.id, 0) })
+
+    // Preserve existing finalized assignments
+    for (const [avId, projetoIds] of Object.entries(matrix)) {
+      if (!newMatrix[avId]) newMatrix[avId] = new Set()
+      for (const pId of projetoIds) {
+        newMatrix[avId].add(pId)
+        loadCount.set(avId, (loadCount.get(avId) || 0) + 1)
+      }
+    }
+
+    for (const proj of projetos) {
+      // Who is already assigned to this project?
+      const alreadyAssigned = avaliadores.filter(a => newMatrix[a.id]?.has(proj.id))
+      if (alreadyAssigned.length >= n) continue
+
+      const needed = n - alreadyAssigned.length
+      const alreadyIds = new Set(alreadyAssigned.map(a => a.id))
+
+      // Sort candidates by current load (ascending)
+      const candidates = avaliadores
+        .filter(a => !alreadyIds.has(a.id))
+        .sort((a, b) => (loadCount.get(a.id) || 0) - (loadCount.get(b.id) || 0))
+
+      for (let i = 0; i < Math.min(needed, candidates.length); i++) {
+        const av = candidates[i]
+        newMatrix[av.id].add(proj.id)
+        loadCount.set(av.id, (loadCount.get(av.id) || 0) + 1)
+      }
+    }
+
+    setMatrix(newMatrix)
+    toast.success(`Distribuição automática: ${n} pareceristas por projeto`)
   }
 
   async function saveAtribuicoes() {
@@ -186,14 +241,35 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
           <p className="text-slate-500 font-medium italic">Selecione quais avaliadores atuarão em cada projeto.</p>
         </div>
 
-        <Button
-          onClick={saveAtribuicoes}
-          disabled={saving}
-          className="h-14 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-semibold shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
-        >
-          {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Shield className="mr-2 h-5 w-5 text-white/70 group-hover:scale-110 transition-transform" />}
-          Salvar Atribuições
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-slate-50 rounded-xl px-3 py-2 border border-slate-200">
+            <label className="text-[11px] font-medium text-slate-400 uppercase tracking-wide whitespace-nowrap">N por projeto:</label>
+            <Input
+              type="number"
+              min={1}
+              max={avaliadores.length || 10}
+              value={numPareceristas}
+              onChange={e => setNumPareceristas(parseInt(e.target.value) || 3)}
+              className="h-8 w-14 rounded-lg border-slate-200 text-sm text-center"
+            />
+            <Button
+              type="button"
+              onClick={autoDistribute}
+              variant="outline"
+              className="h-8 rounded-lg text-[11px] font-semibold gap-1 border-slate-200"
+            >
+              <Shuffle className="h-3 w-3" /> Auto
+            </Button>
+          </div>
+          <Button
+            onClick={saveAtribuicoes}
+            disabled={saving}
+            className="h-14 px-8 rounded-2xl bg-[var(--brand-primary)] hover:opacity-90 text-white font-semibold shadow-xl shadow-blue-200/40 transition-all active:scale-95 group"
+          >
+            {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Shield className="mr-2 h-5 w-5 text-white/70 group-hover:scale-110 transition-transform" />}
+            Salvar Atribuições
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
@@ -263,7 +339,20 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
                         <div className="text-base font-bold text-slate-900 leading-none mb-1 group-hover:text-[var(--brand-primary)] transition-colors">
                           {av.nome}
                         </div>
-                        <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Avaliador Externo</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Avaliador Externo</span>
+                          {avaliacaoStats[av.id] && (
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${
+                              avaliacaoStats[av.id].finalizadas === avaliacaoStats[av.id].total && avaliacaoStats[av.id].total > 0
+                                ? 'bg-emerald-50 text-emerald-600'
+                                : avaliacaoStats[av.id].finalizadas > 0
+                                  ? 'bg-amber-50 text-amber-600'
+                                  : 'bg-slate-50 text-slate-400'
+                            }`}>
+                              {avaliacaoStats[av.id].finalizadas}/{avaliacaoStats[av.id].total} avaliados
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <button
                         type="button"

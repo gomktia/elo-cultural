@@ -53,6 +53,16 @@ export interface Profile {
   escolaridade: string | null
   beneficiario_programa_social: string | null
   funcao_cultural: string | null
+  // Pessoa Juridica fields (Fase 1.2)
+  razao_social: string | null
+  nome_fantasia: string | null
+  endereco_sede: string | null
+  representante_nome: string | null
+  representante_cpf: string | null
+  representante_genero: string | null
+  representante_raca_etnia: string | null
+  representante_pcd: boolean
+  representante_escolaridade: string | null
   // Avaliador fields
   curriculo_descricao: string | null
   areas_avaliacao: string[] | null
@@ -164,6 +174,11 @@ export interface Projeto {
   contrapartida_social: string | null
   concorre_cota: boolean
   tipo_cota: 'negra' | 'indigena' | 'pcd' | null
+  // Acessibilidade (Fase 1.5)
+  acessibilidade: Record<string, boolean> | null
+  acessibilidade_descricao: string | null
+  // Classificacao (Fase 3.1)
+  classificacao_tipo: 'ampla_concorrencia' | 'cota_pessoa_negra' | 'cota_pessoa_indigena' | 'cota_pessoa_pcd' | 'cota_areas_perifericas' | 'remanejamento' | null
 }
 
 export interface ProjetoDocumento {
@@ -348,6 +363,166 @@ export interface HabilitacaoDiligencia {
   respondida: boolean
   criado_por: string | null
   created_at: string
+}
+
+// ============================================================
+// Equipe do Projeto (Fase 1.6)
+// ============================================================
+
+export interface ProjetoEquipe {
+  id: string
+  projeto_id: string
+  tenant_id: string
+  nome: string
+  funcao: string
+  cpf_cnpj: string | null
+  minicurriculo: string | null
+  created_at: string
+}
+
+// ============================================================
+// Planilha Orcamentaria (Fase 1.7)
+// ============================================================
+
+export type CategoriaOrcamento = 'producao' | 'divulgacao' | 'acessibilidade' | 'outras_fontes'
+
+export interface ProjetoOrcamentoItem {
+  id: string
+  projeto_id: string
+  tenant_id: string
+  categoria: CategoriaOrcamento
+  item: string
+  unidade_medida: string | null
+  quantidade: number
+  valor_unitario: number
+  valor_total: number
+  created_at: string
+}
+
+// ============================================================
+// Cronograma de Execucao (Fase 1.8)
+// ============================================================
+
+export type FaseCronograma = 'pre_producao' | 'divulgacao' | 'producao' | 'pos_producao'
+
+export interface ProjetoCronograma {
+  id: string
+  projeto_id: string
+  tenant_id: string
+  fase: FaseCronograma
+  atividade: string
+  data_inicio: string | null
+  data_fim: string | null
+  created_at: string
+}
+
+// ============================================================
+// Coletivo sem CNPJ (Fase 1.3)
+// ============================================================
+
+export interface Coletivo {
+  id: string
+  profile_id: string
+  nome_coletivo: string
+  ano_criacao: number | null
+  quantidade_membros: number
+  portfolio: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ColetivoMembro {
+  id: string
+  coletivo_id: string
+  nome: string
+  cpf: string | null
+  created_at: string
+}
+
+// ============================================================
+// Erratas do Edital (Fase 9.1)
+// ============================================================
+
+export interface EditalErrata {
+  id: string
+  edital_id: string
+  tenant_id: string
+  numero_errata: number
+  descricao: string
+  campo_alterado: string | null
+  valor_anterior: string | null
+  valor_novo: string | null
+  publicado_em: string | null
+  publicado_por: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================================
+// Comissão de Avaliação (Fase 2.4)
+// ============================================================
+
+export type TipoMembroComissao = 'sociedade_civil' | 'poder_executivo' | 'suplente'
+
+export interface EditalComissao {
+  id: string
+  edital_id: string
+  tenant_id: string
+  nome: string
+  cpf: string | null
+  qualificacao: string | null
+  tipo: TipoMembroComissao
+  portaria_numero: string | null
+  created_at: string
+}
+
+// ============================================================
+// Convocações de Suplentes (Fase 3.3)
+// ============================================================
+
+export type StatusConvocacao = 'convocado' | 'habilitado' | 'inabilitado' | 'desistente' | 'prazo_expirado'
+
+export interface Convocacao {
+  id: string
+  edital_id: string
+  projeto_id: string
+  tenant_id: string
+  numero_chamada: number
+  motivo: string
+  projeto_substituido_id: string | null
+  data_convocacao: string
+  prazo_habilitacao: string | null
+  status: StatusConvocacao
+  convocado_por: string | null
+  observacao: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================================
+// Anexos do Edital (Fase 1.9)
+// ============================================================
+
+export type TipoAnexoEdital = 'carta_anuencia' | 'planilha_orcamentaria' | 'cronograma' |
+  'termo_compromisso' | 'declaracao_etnico_racial' | 'declaracao_pcd' |
+  'declaracao_coletivo' | 'formulario_recurso' | 'modelo_projeto' |
+  'edital_completo' | 'outros'
+
+export interface EditalAnexo {
+  id: string
+  edital_id: string
+  tenant_id: string
+  nome: string
+  descricao: string | null
+  tipo_anexo: TipoAnexoEdital
+  nome_arquivo: string
+  storage_path: string
+  tamanho_bytes: number
+  mime_type: string | null
+  ordem: number
+  criado_por: string | null
+  created_at: string
+  updated_at: string
 }
 
 export interface LogAuditoria {

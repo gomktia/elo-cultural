@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusTracker } from '@/components/projeto/StatusTracker'
 import { ProjetoTimeline } from '@/components/projeto/ProjetoTimeline'
-import { ArrowLeft, Scale, FileText, FileCheck } from 'lucide-react'
-import { format } from 'date-fns'
+import { ArrowLeft, Scale, FileText, FileCheck, AlertTriangle } from 'lucide-react'
+import { format, differenceInDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import type { ProjetoWithEdital, ProjetoDocumento } from '@/types/database.types'
+import { Users, DollarSign, Clock } from 'lucide-react'
+import type { ProjetoWithEdital, ProjetoDocumento, ProjetoEquipe, ProjetoOrcamentoItem, ProjetoCronograma } from '@/types/database.types'
 
 export default async function ProjetoDetailPage({
   params,
@@ -20,7 +21,7 @@ export default async function ProjetoDetailPage({
 
   const { data: rawProjeto } = await supabase
     .from('projetos')
-    .select('*, editais(titulo, numero_edital, status)')
+    .select('*, editais(titulo, numero_edital, status, fim_inscricao, inicio_recurso_inscricao, fim_recurso_inscricao, inicio_recurso_selecao, fim_recurso_selecao, inicio_recurso_habilitacao, fim_recurso_habilitacao, inicio_habilitacao, fim_habilitacao)')
     .eq('id', id)
     .single()
 
@@ -34,6 +35,32 @@ export default async function ProjetoDetailPage({
     .eq('projeto_id', id)
 
   const typedDocs = (documentos || []) as ProjetoDocumento[]
+
+  const { data: equipeData } = await supabase.from('projeto_equipe').select('*').eq('projeto_id', id).order('created_at')
+  const equipe = (equipeData || []) as ProjetoEquipe[]
+
+  const { data: orcamentoData } = await supabase.from('projeto_orcamento_itens').select('*').eq('projeto_id', id).order('created_at')
+  const orcamentoItens = (orcamentoData || []) as ProjetoOrcamentoItem[]
+
+  const { data: cronogramaData } = await supabase.from('projeto_cronograma').select('*').eq('projeto_id', id).order('created_at')
+  const cronogramaItens = (cronogramaData || []) as ProjetoCronograma[]
+
+  // Documentos exigidos na habilitação vs enviados (Fase 12.2)
+  const { data: docsExigidos } = await supabase
+    .from('edital_docs_habilitacao')
+    .select('id, nome, obrigatorio')
+    .eq('edital_id', projeto.edital_id)
+    .order('ordem')
+
+  const { data: conferencias } = await supabase
+    .from('habilitacao_doc_conferencia')
+    .select('doc_exigido_id, documento_id, status')
+    .eq('projeto_id', id)
+
+  const docsPendentes = (docsExigidos || []).filter(doc => {
+    const conf = (conferencias || []).find((c: any) => c.doc_exigido_id === doc.id)
+    return !conf || !conf.documento_id || conf.status === 'pendente' || conf.status === 'reprovado'
+  })
 
   const editalStatus = projeto.editais?.status
 
@@ -150,6 +177,159 @@ export default async function ProjetoDetailPage({
           </CardContent>
         </Card>
       )}
+
+      {equipe.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Users className="h-4 w-4" /> Equipe ({equipe.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {equipe.map(m => (
+                <div key={m.id} className="flex items-center gap-3 p-2 rounded-lg bg-slate-50">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{m.nome} <span className="text-slate-400 font-normal">— {m.funcao}</span></p>
+                    {m.cpf_cnpj && <p className="text-xs text-slate-400">{m.cpf_cnpj}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {orcamentoItens.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><DollarSign className="h-4 w-4" /> Orcamento</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-[11px] font-medium text-slate-400 uppercase tracking-wide border-b">
+                  <th className="text-left pb-2">Item</th>
+                  <th className="text-right pb-2">Qtd</th>
+                  <th className="text-right pb-2">Unit.</th>
+                  <th className="text-right pb-2">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orcamentoItens.map(item => (
+                  <tr key={item.id} className="border-b border-slate-50">
+                    <td className="py-1.5">{item.item}</td>
+                    <td className="py-1.5 text-right">{item.quantidade}</td>
+                    <td className="py-1.5 text-right">R$ {Number(item.valor_unitario).toFixed(2)}</td>
+                    <td className="py-1.5 text-right font-medium">R$ {Number(item.valor_total).toFixed(2)}</td>
+                  </tr>
+                ))}
+                <tr className="border-t-2 border-slate-200">
+                  <td colSpan={3} className="py-2 text-right font-semibold">Total:</td>
+                  <td className="py-2 text-right font-bold text-emerald-600">R$ {orcamentoItens.reduce((s, i) => s + Number(i.valor_total), 0).toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
+
+      {cronogramaItens.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Clock className="h-4 w-4" /> Cronograma</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {cronogramaItens.map(item => (
+                <div key={item.id} className="flex items-center gap-3 p-2 rounded-lg bg-slate-50">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{item.atividade}</p>
+                    <p className="text-xs text-slate-400">
+                      {item.fase.replace('_', ' ')}
+                      {item.data_inicio && ` · ${item.data_inicio}`}
+                      {item.data_fim && ` a ${item.data_fim}`}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Documentos Pendentes (Fase 12.2) */}
+      {docsPendentes.length > 0 && (
+        <Card className="border border-rose-200 bg-rose-50/30 rounded-2xl">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2 text-rose-800">
+              <AlertTriangle className="h-4 w-4" />
+              Documentos Pendentes de Envio ({docsPendentes.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {docsPendentes.map((doc: any) => {
+                const conf = (conferencias || []).find((c: any) => c.doc_exigido_id === doc.id)
+                const statusLabel = conf?.status === 'reprovado' ? 'Reprovado - reenviar' : 'Pendente'
+                const statusColor = conf?.status === 'reprovado' ? 'text-red-600 bg-red-50' : 'text-amber-600 bg-amber-50'
+                return (
+                  <div key={doc.id} className="flex items-center justify-between p-3 rounded-xl bg-white border border-rose-100">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-rose-400" />
+                      <span className="text-sm font-medium text-slate-900">{doc.nome}</span>
+                      {doc.obrigatorio && (
+                        <span className="text-[10px] font-semibold text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded-md uppercase">Obrigatório</span>
+                      )}
+                    </div>
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-md ${statusColor}`}>{statusLabel}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Prazos Importantes */}
+      {(() => {
+        const ed = projeto.editais as any
+        if (!ed) return null
+        const now = new Date()
+        const prazos = [
+          { label: 'Recurso da Inscrição', fim: ed.fim_recurso_inscricao },
+          { label: 'Recurso da Seleção', fim: ed.fim_recurso_selecao },
+          { label: 'Habilitação', fim: ed.fim_habilitacao },
+          { label: 'Recurso da Habilitação', fim: ed.fim_recurso_habilitacao },
+        ]
+          .filter(p => p.fim && new Date(p.fim) > now)
+          .map(p => ({ ...p, dias: differenceInDays(new Date(p.fim), now) }))
+
+        if (prazos.length === 0) return null
+        return (
+          <Card className="border border-amber-200 bg-amber-50/30 rounded-2xl">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-amber-800">
+                <AlertTriangle className="h-4 w-4" />
+                Prazos Importantes
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {prazos.map((p, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white border border-amber-100">
+                    <span className="text-sm font-medium text-slate-900">{p.label}</span>
+                    <div className="text-right">
+                      <p className="text-xs text-slate-500">{format(new Date(p.fim), "dd/MM/yyyy", { locale: ptBR })}</p>
+                      <p className={`text-xs font-semibold ${p.dias <= 3 ? 'text-red-600' : p.dias <= 7 ? 'text-amber-600' : 'text-slate-500'}`}>
+                        {p.dias === 0 ? 'Hoje!' : p.dias === 1 ? 'Amanhã' : `${p.dias} dias restantes`}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )
+      })()}
 
       <div className="flex gap-3">
         {canRecurso && (
