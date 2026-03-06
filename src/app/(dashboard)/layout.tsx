@@ -58,14 +58,17 @@ export default async function DashboardLayout({
   const brandRgb = hexToRgb(brandColor)
 
   return (
-    <div
-      style={{
-        ['--brand-primary' as string]: brandColor,
-        ['--brand-secondary' as string]: brandSecondary,
-        ['--brand-rgb' as string]: brandRgb,
-      }}
-      className="min-h-screen bg-[var(--background)]"
-    >
+    <>
+      {/* Inject brand CSS vars at :root so Radix portals (Sheet, Dialog, DropdownMenu) inherit them */}
+      <style>{`:root { --brand-primary: ${brandColor}; --brand-secondary: ${brandSecondary}; --brand-rgb: ${brandRgb}; }`}</style>
+      <div
+        style={{
+          ['--brand-primary' as string]: brandColor,
+          ['--brand-secondary' as string]: brandSecondary,
+          ['--brand-rgb' as string]: brandRgb,
+        }}
+        className="min-h-screen bg-[var(--background)]"
+      >
       <SidebarProvider>
         <AppSidebar
           role={role}
@@ -103,5 +106,6 @@ export default async function DashboardLayout({
         <Toaster richColors closeButton position="bottom-right" />
       </SidebarProvider>
     </div>
+    </>
   )
 }
