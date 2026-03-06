@@ -12,7 +12,8 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Trophy, Search, Download } from 'lucide-react'
+import { Trophy, Search, Download, AlertTriangle } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export interface RankingItem {
   posicao: number
@@ -22,11 +23,15 @@ export interface RankingItem {
   num_avaliacoes: number
   status: string
   categoria_nome?: string
+  notas_por_avaliador?: Record<string, number | null>
+  discrepancia?: boolean
 }
 
 interface RankingTableProps {
   items: RankingItem[]
   categorias?: { id: string; nome: string }[]
+  avaliadores?: { id: string; nome: string }[]
+  numPareceristas?: number
 }
 
 function exportToXLS(items: RankingItem[]) {
@@ -70,7 +75,8 @@ ${rows.map(row => `<Row>${row.map((cell, i) => {
   URL.revokeObjectURL(url)
 }
 
-export function RankingTable({ items, categorias }: RankingTableProps) {
+export function RankingTable({ items, categorias, avaliadores, numPareceristas = 3 }: RankingTableProps) {
+  const showAvaliadores = (avaliadores?.length ?? 0) > 0
   const [busca, setBusca] = useState('')
   const [filtroStatus, setFiltroStatus] = useState<string>('todos')
   const [filtroCategoria, setFiltroCategoria] = useState<string>('todas')
@@ -193,8 +199,13 @@ export function RankingTable({ items, categorias }: RankingTableProps) {
               {categoriaOptions.length > 0 && (
                 <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Categoria</TableHead>
               )}
-              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Nota Final</TableHead>
-              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">Avaliações</TableHead>
+              {showAvaliadores && avaliadores!.map((av, i) => (
+                <TableHead key={av.id} className="py-4 px-3 font-semibold text-[10px] uppercase tracking-wide text-white/80 text-center">
+                  <div className="truncate max-w-[80px]" title={av.nome}>P{i + 1}</div>
+                </TableHead>
+              ))}
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white">Média Final</TableHead>
+              <TableHead className="py-4 px-4 font-semibold text-xs uppercase tracking-wide text-white text-center">Aval.</TableHead>
               <TableHead className="py-4 px-8 font-semibold text-xs uppercase tracking-wide text-white text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -243,17 +254,56 @@ export function RankingTable({ items, categorias }: RankingTableProps) {
                       </Badge>
                     </TableCell>
                   )}
+                  {showAvaliadores && avaliadores!.map((av) => {
+                    const nota = item.notas_por_avaliador?.[av.id]
+                    return (
+                      <TableCell key={av.id} className="py-6 px-3 text-center">
+                        <TooltipProvider delayDuration={200}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className={`text-sm font-semibold ${nota != null ? 'text-slate-600' : 'text-slate-300'}`}>
+                                {nota != null ? nota.toFixed(1) : '—'}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">{av.nome}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </TableCell>
+                    )
+                  })}
                   <TableCell className="py-6 px-4">
-                    <div className={[
-                      'text-lg md:text-2xl font-bold tracking-tight transition-transform group-hover:scale-110 origin-left',
-                      isTop3 ? 'text-slate-900' : 'text-slate-400'
-                    ].join(' ')}>
-                      {item.nota_media?.toFixed(2) ?? '—'}
+                    <div className="flex items-center gap-2">
+                      <div className={[
+                        'text-lg md:text-2xl font-bold tracking-tight transition-transform group-hover:scale-110 origin-left',
+                        isTop3 ? 'text-slate-900' : 'text-slate-400'
+                      ].join(' ')}>
+                        {item.nota_media?.toFixed(2) ?? '—'}
+                      </div>
+                      {item.discrepancia && (
+                        <TooltipProvider delayDuration={200}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="h-5 w-5 rounded-full bg-red-50 flex items-center justify-center">
+                                <AlertTriangle className="h-3 w-3 text-red-500" />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Discrepância entre pareceristas</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell className="py-6 px-4 text-center">
-                    <div className="h-8 w-12 bg-slate-50 rounded-lg flex items-center justify-center mx-auto border border-slate-100 font-semibold text-xs text-slate-600">
-                      {item.num_avaliacoes}
+                    <div className={`h-8 w-12 rounded-lg flex items-center justify-center mx-auto border font-semibold text-xs ${
+                      item.num_avaliacoes < numPareceristas
+                        ? 'bg-amber-50 border-amber-200 text-amber-600'
+                        : 'bg-slate-50 border-slate-100 text-slate-600'
+                    }`}>
+                      {item.num_avaliacoes}/{numPareceristas}
                     </div>
                   </TableCell>
                   <TableCell className="py-6 px-8 text-right">
@@ -271,7 +321,7 @@ export function RankingTable({ items, categorias }: RankingTableProps) {
             })}
             {filteredItems.length === 0 && (
               <TableRow>
-                <TableCell colSpan={categoriaOptions.length > 0 ? 6 : 5} className="h-64 text-center">
+                <TableCell colSpan={99} className="h-64 text-center">
                   <div className="flex flex-col items-center justify-center space-y-4">
                     <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200">
                       <Trophy className="h-8 w-8" />

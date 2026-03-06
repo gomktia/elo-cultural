@@ -22,7 +22,7 @@ export default async function RankingPage({
 
   const { data: edital } = await supabase
     .from('editais')
-    .select('id, titulo, numero_edital, config_pontuacao_extra, config_cotas, config_desempate')
+    .select('id, titulo, numero_edital, config_pontuacao_extra, config_cotas, config_desempate, numero_pareceristas, limiar_discrepancia')
     .eq('id', id)
     .single()
 
@@ -32,13 +32,15 @@ export default async function RankingPage({
     (edital.config_cotas as unknown[])?.length > 0 ||
     (edital.config_desempate as unknown[])?.length > 0
 
+  const numPareceristas = (edital.numero_pareceristas as number) || 3
+  const limiarDiscrepancia = (edital.limiar_discrepancia as number) || 20
+
   // Only habilitado projects should appear in ranking
   const { data: projetos } = await supabase
     .from('projetos')
-    .select('id, titulo, numero_protocolo, status_atual, nota_final, categoria_id, avaliacoes(id)')
+    .select('id, titulo, numero_protocolo, status_atual, nota_final, categoria_id, avaliacoes(id, pontuacao_total, avaliador_id, status)')
     .eq('edital_id', id)
     .eq('status_habilitacao', 'habilitado')
-    .eq('avaliacoes.status', 'finalizada')
     .order('nota_final', { ascending: false, nullsFirst: false })
 
   // Load categorias
@@ -47,17 +49,60 @@ export default async function RankingPage({
     .select('id, nome, vagas')
     .eq('edital_id', id)
 
+  // Load avaliador names for column headers
+  const avaliadorIds = new Set<string>()
+  ;(projetos || []).forEach(p => {
+    const avaliacoes = p.avaliacoes as Array<{ avaliador_id: string; status: string }> | null
+    if (avaliacoes) {
+      avaliacoes.filter(a => a.status === 'finalizada').forEach(a => avaliadorIds.add(a.avaliador_id))
+    }
+  })
+
+  const { data: avaliadores } = avaliadorIds.size > 0
+    ? await supabase
+        .from('profiles')
+        .select('id, nome')
+        .in('id', Array.from(avaliadorIds))
+    : { data: [] }
+
+  const avaliadorMap = new Map((avaliadores || []).map(a => [a.id, a.nome]))
+  const avaliadorList = Array.from(avaliadorIds).map(id => ({
+    id,
+    nome: avaliadorMap.get(id) || 'Parecerista',
+  }))
+
   const catMap = new Map((categorias || []).map(c => [c.id, c.nome]))
 
-  const items: RankingItem[] = (projetos || []).map((p, idx) => ({
-    posicao: idx + 1,
-    titulo: p.titulo,
-    protocolo: p.numero_protocolo,
-    nota_media: p.nota_final ? Number(p.nota_final) : null,
-    num_avaliacoes: Array.isArray(p.avaliacoes) ? p.avaliacoes.length : 0,
-    status: p.status_atual,
-    categoria_nome: p.categoria_id ? catMap.get(p.categoria_id) || undefined : undefined,
-  }))
+  const items: RankingItem[] = (projetos || []).map((p, idx) => {
+    const avaliacoes = (p.avaliacoes as Array<{ id: string; pontuacao_total: number | null; avaliador_id: string; status: string }>) || []
+    const finalizadas = avaliacoes.filter(a => a.status === 'finalizada')
+
+    // Build per-evaluator scores map
+    const notas_por_avaliador: Record<string, number | null> = {}
+    for (const a of finalizadas) {
+      notas_por_avaliador[a.avaliador_id] = a.pontuacao_total != null ? Number(a.pontuacao_total) : null
+    }
+
+    // Discrepancy check
+    const scores = finalizadas
+      .map(a => a.pontuacao_total != null ? Number(a.pontuacao_total) : null)
+      .filter((n): n is number => n !== null)
+    const discrepancia = scores.length >= 2
+      ? Math.max(...scores) - Math.min(...scores) > limiarDiscrepancia
+      : false
+
+    return {
+      posicao: idx + 1,
+      titulo: p.titulo,
+      protocolo: p.numero_protocolo,
+      nota_media: p.nota_final ? Number(p.nota_final) : null,
+      num_avaliacoes: finalizadas.length,
+      status: p.status_atual,
+      categoria_nome: p.categoria_id ? catMap.get(p.categoria_id) || undefined : undefined,
+      notas_por_avaliador,
+      discrepancia,
+    }
+  })
 
   const countSelecionados = (projetos || []).filter(p => p.status_atual === 'selecionado').length
   const countSuplentes = (projetos || []).filter(p => p.status_atual === 'suplente').length
@@ -123,7 +168,12 @@ export default async function RankingPage({
       )}
 
       <Suspense fallback={<RankingTableSkeleton />}>
-        <RankingTable items={items} categorias={categorias || []} />
+        <RankingTable
+          items={items}
+          categorias={categorias || []}
+          avaliadores={avaliadorList}
+          numPareceristas={numPareceristas}
+        />
       </Suspense>
     </div>
   )

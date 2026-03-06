@@ -79,6 +79,10 @@ export interface Edital {
   config_reserva_vagas: Record<string, unknown>[] | null
   cancelado: boolean
   justificativa_cancelamento: string | null
+  numero_pareceristas: number
+  nota_minima_aprovacao: number
+  nota_zero_desclassifica: boolean
+  limiar_discrepancia: number
   versao: number
   active: boolean
   created_at: string

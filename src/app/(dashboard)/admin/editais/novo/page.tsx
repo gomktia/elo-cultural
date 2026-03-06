@@ -15,7 +15,7 @@ import { EditalConfigManager, type EditalConfig } from '@/components/edital/Edit
 import { toast } from 'sonner'
 import {
   Loader2, ArrowLeft, FileText, CalendarDays, Upload,
-  Settings2, Scale, DollarSign, Hash, Type, AlignLeft,
+  Settings2, Scale, DollarSign, Hash, Type, AlignLeft, Users,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -63,6 +63,10 @@ export default function NovoEditalPage() {
     fim_recurso_selecao: '',
     inicio_recurso_habilitacao: '',
     fim_recurso_habilitacao: '',
+    numero_pareceristas: '3',
+    nota_minima_aprovacao: '0',
+    nota_zero_desclassifica: true,
+    limiar_discrepancia: '20',
   })
   const [editalFiles, setEditalFiles] = useState<UploadedFile[]>([])
   const [anexoFiles, setAnexoFiles] = useState<UploadedFile[]>([])
@@ -119,6 +123,10 @@ export default function NovoEditalPage() {
       inicio_recurso_habilitacao: form.inicio_recurso_habilitacao || null,
       fim_recurso_habilitacao: form.fim_recurso_habilitacao || null,
       valor_total: form.valor_total ? parseFloat(form.valor_total) : null,
+      numero_pareceristas: parseInt(form.numero_pareceristas) || 3,
+      nota_minima_aprovacao: parseFloat(form.nota_minima_aprovacao) || 0,
+      nota_zero_desclassifica: form.nota_zero_desclassifica,
+      limiar_discrepancia: parseFloat(form.limiar_discrepancia) || 20,
       tipo_edital: editalConfig.tipo_edital,
       config_cotas: editalConfig.config_cotas,
       config_desempate: editalConfig.config_desempate,
@@ -451,6 +459,81 @@ export default function NovoEditalPage() {
             </div>
 
             <EditalConfigManager config={editalConfig} onChange={setEditalConfig} />
+          </CardContent>
+        </Card>
+
+        {/* 5. Avaliacao */}
+        <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardContent className="p-6">
+            <div className={sectionHeader}>
+              <div className={`${sectionIcon} bg-indigo-50 text-indigo-500`}>
+                <Users className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className={sectionTitle}>Configuracao da Avaliacao</h2>
+                <p className={sectionDesc}>Pareceristas, notas minimas e discrepancia</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="space-y-1.5">
+                <Label className={fieldLabel}>Pareceristas por Projeto</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={form.numero_pareceristas}
+                  onChange={e => updateForm('numero_pareceristas', e.target.value)}
+                  className={fieldInput}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className={fieldLabel}>Nota Minima Aprovacao</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.nota_minima_aprovacao}
+                  onChange={e => updateForm('nota_minima_aprovacao', e.target.value)}
+                  className={fieldInput}
+                  placeholder="0 = sem minimo"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className={fieldLabel}>Limiar Discrepancia (pts)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.limiar_discrepancia}
+                  onChange={e => updateForm('limiar_discrepancia', e.target.value)}
+                  className={fieldInput}
+                  placeholder="20"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className={fieldLabel}>Nota 0 desclassifica?</Label>
+                <div
+                  onClick={() => setForm(prev => ({ ...prev, nota_zero_desclassifica: !prev.nota_zero_desclassifica }))}
+                  className={`h-10 rounded-xl border border-slate-200 flex items-center px-3 gap-2 cursor-pointer transition-all ${
+                    form.nota_zero_desclassifica
+                      ? 'bg-green-50 border-green-200'
+                      : 'bg-slate-50'
+                  }`}
+                >
+                  <div className={`h-5 w-5 rounded-md border-2 flex items-center justify-center transition-colors ${
+                    form.nota_zero_desclassifica
+                      ? 'bg-green-500 border-green-500 text-white'
+                      : 'border-slate-300'
+                  }`}>
+                    {form.nota_zero_desclassifica && <span className="text-xs font-bold">✓</span>}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700">
+                    {form.nota_zero_desclassifica ? 'Sim' : 'Nao'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
