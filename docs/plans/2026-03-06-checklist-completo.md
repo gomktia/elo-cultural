@@ -78,9 +78,11 @@
 ## FASE 2 — AVALIACAO E SELECAO
 
 ### 2.1 Configuracao de Pareceristas por Edital
-- [ ] Adicionar campo `numero_pareceristas` no editais (default: 3)
-- [ ] Adicionar campo `nota_minima_aprovacao` no editais (ex: 30 pontos)
-- [ ] Adicionar campo `nota_zero_desclassifica` (boolean, default true) — nota 0 em qualquer criterio = desclassificado
+- [x] Adicionar campo `numero_pareceristas` no editais (default: 3) ✅ migration 20260306000002
+- [x] Adicionar campo `nota_minima_aprovacao` no editais (ex: 30 pontos) ✅ migration 20260306000002
+- [x] Adicionar campo `nota_zero_desclassifica` (boolean, default true) ✅ migration 20260306000002
+- [x] Adicionar campo `limiar_discrepancia` no editais (default: 20) ✅ migration 20260306000002
+- [x] UI de configuracao no formulario de criar/editar edital ✅ secao "Configuracao da Avaliacao"
 
 ### 2.2 Atribuicao de Pareceristas
 - [ ] Melhorar pagina /admin/editais/[id]/atribuicoes
@@ -90,11 +92,12 @@
 - [ ] Status visual: quantos projetos cada parecerista ja avaliou
 
 ### 2.3 Calculo de Media e Ranking Automatico
-- [ ] Calcular nota_final = media das notas dos N pareceristas
-- [ ] Exibir no ranking: Parecerista 1 | Parecerista 2 | Parecerista 3 | Media Final
+- [x] Calcular nota_final = media das notas dos N pareceristas ✅ consolidar-ranking.ts (ja existia)
+- [x] Exibir no ranking: Parecerista 1 | Parecerista 2 | Parecerista 3 | Media Final ✅ RankingTable com colunas P1/P2/P3
 - [ ] Desclassificar automaticamente projetos com nota 0 em qualquer criterio
 - [ ] Desclassificar projetos abaixo da nota minima
-- [ ] Alerta de discrepancia: quando diferenca entre pareceristas > X pontos
+- [x] Alerta de discrepancia: quando diferenca entre pareceristas > X pontos ✅ icone AlertTriangle + tooltip
+- [x] Exibir contagem avaliacoes pendentes (N/esperado) com destaque amber ✅
 
 ### 2.4 Comissao de Avaliacao
 - [ ] Criar tabela `edital_comissao` (id, edital_id, nome, cpf, qualificacao, tipo [sociedade_civil/poder_executivo], portaria_numero)
@@ -196,12 +199,13 @@
 ## FASE 6 — TERMO DE EXECUCAO CULTURAL E ASSINATURA
 
 ### 6.1 Tabela e Dados do Termo
-- [ ] Criar tabela `termos_execucao` (id, projeto_id, tenant_id, numero_termo, edital_referencia)
-- [ ] Campos: valor_total, valor_extenso, vigencia_inicio, vigencia_fim, vigencia_meses
-- [ ] Dados bancarios: banco, agencia, conta_corrente, tipo_conta
-- [ ] Status: rascunho, pendente_assinatura_proponente, pendente_assinatura_gestor, assinado, vigente, encerrado, rescindido
-- [ ] Campos de assinatura: assinado_proponente_em, assinado_gestor_em, ip_proponente, ip_gestor
-- [ ] Prazo para assinatura (default 2 dias uteis)
+- [x] Criar tabela `termos_execucao` ✅ migration 20260306000001
+- [x] Campos: valor_total, valor_extenso, vigencia_inicio, vigencia_fim, vigencia_meses ✅
+- [x] Dados bancarios: banco, agencia, conta_corrente, tipo_conta ✅
+- [x] Status: rascunho, pendente_assinatura_proponente, pendente_assinatura_gestor, assinado, vigente, encerrado, rescindido ✅
+- [x] Prazo para assinatura (default 2 dias uteis) ✅
+- [x] RLS: proponente ve apenas os seus, staff ve do tenant, publico ve assinados/vigentes/encerrados ✅
+- [x] Audit triggers ✅
 
 ### 6.2 Geracao Automatica do Termo (PDF)
 - [ ] Template do Termo com 14 clausulas preenchidas automaticamente
@@ -210,14 +214,23 @@
 - [ ] Geracao em PDF com layout profissional
 - [ ] Preview antes de assinar
 
+### 6.x Admin UI de Termos (NOVO)
+- [x] Pagina de listagem /admin/editais/[id]/termos com stats (total, assinados, pendentes, valor) ✅
+- [x] Componente TermosTable com badges de status e acoes (visualizar/editar) ✅
+- [x] Pagina de geracao em lote /admin/editais/[id]/termos/novo ✅
+- [x] Server action gerarTermosEdital() com auto-numeracao TEC-YYYY-NNNN ✅
+- [x] Server action enviarParaAssinatura() ✅
+- [x] Link "Termos de Execucao" na grade de navegacao do edital ✅
+- [x] TypeScript types: TermoExecucao, AssinaturaDigital, TermoAditivo, Pagamento, TermoWithProjeto ✅
+
 ### 6.3 Assinatura Eletronica Simples (MVP)
 - [ ] Tela de assinatura com visualizacao do PDF
 - [ ] Checkbox: "Declaro que li e concordo com todos os termos"
-- [ ] Captura de dados: IP, user-agent, timestamp, hash SHA-256 do documento
+- [x] Captura de dados: IP, user-agent, timestamp, hash SHA-256 do documento ✅ assinarDocumento() em termo-actions.ts
 - [ ] Selo visual no PDF: "Assinado eletronicamente por [NOME] em [DATA] as [HORA] - IP: [IP] - Hash: [HASH]"
-- [ ] Armazenar log de assinatura na tabela `assinaturas_digitais`
-- [ ] Criar tabela `assinaturas_digitais` (id, documento_tipo, documento_id, usuario_id, ip, user_agent, hash_documento, timestamp, metodo [simples/govbr])
-- [ ] Fluxo: proponente assina primeiro -> gestor/secretario assina depois -> status muda para "assinado"
+- [x] Armazenar log de assinatura na tabela `assinaturas_digitais` ✅ migration 20260306000001
+- [x] Criar tabela `assinaturas_digitais` ✅ migration 20260306000001
+- [x] Fluxo: proponente assina primeiro -> gestor assina depois -> status muda para "assinado" ✅ termo-actions.ts
 - [ ] Validacao de assinatura: qualquer pessoa pode verificar hash do PDF
 
 ### 6.4 Assinatura via GOV.BR (Evolucao)
@@ -228,16 +241,16 @@
 - [ ] Configuracao por tenant: qual metodo de assinatura usar
 
 ### 6.5 Aditivos ao Termo
-- [ ] Criar tabela `termos_aditivos` (id, termo_id, numero_aditivo, tipo [prorrogacao/alteracao_valor/alteracao_objeto], justificativa, valor_alterado, nova_vigencia_fim)
+- [x] Criar tabela `termos_aditivos` ✅ migration 20260306000001
 - [ ] Regra: alteracoes ate 20% do valor podem ser feitas pelo proponente sem autorizacao previa (apenas comunicar)
 - [ ] Alteracoes > 20% precisam de aprovacao do gestor
 - [ ] Prorrogacao de oficio quando atraso na liberacao de recursos
 - [ ] Geracao de PDF do aditivo + assinatura
+- [ ] UI de gestao de aditivos
 
 ### 6.6 Pagamento
-- [ ] Registrar liberacao do pagamento (data, valor, comprovante)
-- [ ] Status: pendente, liberado, parcela_1, parcela_2, concluido
-- [ ] Upload de comprovante de transferencia
+- [x] Criar tabela `pagamentos` ✅ migration 20260306000001
+- [ ] UI de gestao de pagamentos (registrar liberacao, upload comprovante)
 - [ ] Notificacao ao proponente quando pagamento liberado
 
 ---
