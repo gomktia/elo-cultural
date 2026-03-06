@@ -13,6 +13,7 @@
 ALTER TABLE public.profiles ALTER COLUMN tenant_id DROP NOT NULL;
 
 -- 2. Constraint: staff roles MUST have tenant_id
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS check_tenant_required_for_staff;
 ALTER TABLE public.profiles ADD CONSTRAINT check_tenant_required_for_staff
   CHECK (role = 'proponente' OR tenant_id IS NOT NULL);
 
@@ -24,11 +25,13 @@ RETURNS BOOLEAN AS $$
 $$ LANGUAGE SQL STABLE;
 
 -- 4. RLS: Proponente global can SELECT their own projects (any tenant)
+DROP POLICY IF EXISTS "projetos_select_proponente_global" ON public.projetos;
 CREATE POLICY "projetos_select_proponente_global"
 ON public.projetos FOR SELECT
 USING (public.is_global_proponente() AND proponente_id = auth.uid());
 
 -- 5. RLS: Proponente global can INSERT projects (tenant comes from edital)
+DROP POLICY IF EXISTS "projetos_insert_proponente_global" ON public.projetos;
 CREATE POLICY "projetos_insert_proponente_global"
 ON public.projetos FOR INSERT
 WITH CHECK (
@@ -37,20 +40,24 @@ WITH CHECK (
 );
 
 -- 6. RLS: Proponente global can see active editais from any tenant
+DROP POLICY IF EXISTS "editais_select_proponente_global" ON public.editais;
 CREATE POLICY "editais_select_proponente_global"
 ON public.editais FOR SELECT
 USING (public.is_global_proponente() AND active = true);
 
 -- 7. RLS: Proponente global can read/update own profile
+DROP POLICY IF EXISTS "profiles_select_own_global" ON public.profiles;
 CREATE POLICY "profiles_select_own_global"
 ON public.profiles FOR SELECT
 USING (public.is_global_proponente() AND id = auth.uid());
 
+DROP POLICY IF EXISTS "profiles_update_own_global" ON public.profiles;
 CREATE POLICY "profiles_update_own_global"
 ON public.profiles FOR UPDATE
 USING (public.is_global_proponente() AND id = auth.uid());
 
 -- 8. RLS: Proponente global can see active tenants (for unified dashboard)
+DROP POLICY IF EXISTS "tenants_select_proponente_global" ON public.tenants;
 CREATE POLICY "tenants_select_proponente_global"
 ON public.tenants FOR SELECT
 USING (public.is_global_proponente() AND status = 'ativo');
@@ -59,6 +66,7 @@ USING (public.is_global_proponente() AND status = 'ativo');
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'edital_categorias') THEN
+    EXECUTE 'DROP POLICY IF EXISTS "edital_categorias_select_proponente_global" ON public.edital_categorias';
     EXECUTE 'CREATE POLICY "edital_categorias_select_proponente_global"
       ON public.edital_categorias FOR SELECT
       USING (public.is_global_proponente())';

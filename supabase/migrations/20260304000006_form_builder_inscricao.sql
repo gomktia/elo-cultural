@@ -25,18 +25,22 @@ ALTER TABLE projetos ADD COLUMN IF NOT EXISTS campos_extras JSONB DEFAULT '{}';
 -- 3. RLS
 ALTER TABLE edital_campos_inscricao ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Campos visíveis pelo tenant" ON edital_campos_inscricao;
 CREATE POLICY "Campos visíveis pelo tenant"
   ON edital_campos_inscricao FOR SELECT
   USING (tenant_id = uid_tenant());
 
+DROP POLICY IF EXISTS "Admin pode inserir campos" ON edital_campos_inscricao;
 CREATE POLICY "Admin pode inserir campos"
   ON edital_campos_inscricao FOR INSERT
   WITH CHECK (tenant_id = uid_tenant());
 
+DROP POLICY IF EXISTS "Admin pode atualizar campos" ON edital_campos_inscricao;
 CREATE POLICY "Admin pode atualizar campos"
   ON edital_campos_inscricao FOR UPDATE
   USING (tenant_id = uid_tenant());
 
+DROP POLICY IF EXISTS "Admin pode deletar campos" ON edital_campos_inscricao;
 CREATE POLICY "Admin pode deletar campos"
   ON edital_campos_inscricao FOR DELETE
   USING (tenant_id = uid_tenant());

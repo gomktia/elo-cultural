@@ -39,18 +39,22 @@ ALTER TABLE projetos ADD COLUMN IF NOT EXISTS categoria_id UUID REFERENCES edita
 -- 5. RLS para edital_categorias
 ALTER TABLE edital_categorias ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Categorias visíveis pelo tenant" ON edital_categorias;
 CREATE POLICY "Categorias visíveis pelo tenant"
   ON edital_categorias FOR SELECT
   USING (tenant_id = uid_tenant());
 
+DROP POLICY IF EXISTS "Admin/gestor pode inserir categorias" ON edital_categorias;
 CREATE POLICY "Admin/gestor pode inserir categorias"
   ON edital_categorias FOR INSERT
   WITH CHECK (tenant_id = uid_tenant());
 
+DROP POLICY IF EXISTS "Admin/gestor pode atualizar categorias" ON edital_categorias;
 CREATE POLICY "Admin/gestor pode atualizar categorias"
   ON edital_categorias FOR UPDATE
   USING (tenant_id = uid_tenant());
 
+DROP POLICY IF EXISTS "Admin/gestor pode deletar categorias" ON edital_categorias;
 CREATE POLICY "Admin/gestor pode deletar categorias"
   ON edital_categorias FOR DELETE
   USING (tenant_id = uid_tenant());
