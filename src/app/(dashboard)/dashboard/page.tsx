@@ -20,7 +20,7 @@ export default async function DashboardHome() {
     case 'super_admin':
       redirect('/super/dashboard')
     case 'admin':
-      redirect('/admin/editais')
+      redirect('/gestor')
     case 'gestor':
       redirect('/gestor')
     case 'avaliador':

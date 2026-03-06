@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusTracker } from '@/components/projeto/StatusTracker'
-import { Plus, ArrowRight, FolderOpen } from 'lucide-react'
+import { Plus, ArrowRight, FolderOpen, CheckCircle, Clock, FileText } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { UnifiedProjects } from './UnifiedProjects'
@@ -82,11 +82,24 @@ export default async function MeusProjetosPage() {
     )
   }
 
-  const { data: projetos } = await supabase
-    .from('projetos')
-    .select('*, editais(titulo, numero_edital)')
-    .eq('proponente_id', user.id)
-    .order('data_envio', { ascending: false })
+  const [{ data: projetos }, { count: editaisAbertos }] = await Promise.all([
+    supabase
+      .from('projetos')
+      .select('*, editais(titulo, numero_edital)')
+      .eq('proponente_id', user.id)
+      .order('data_envio', { ascending: false }),
+    supabase
+      .from('editais')
+      .select('id', { count: 'exact', head: true })
+      .eq('tenant_id', profile?.tenant_id)
+      .eq('status', 'inscricao')
+      .eq('active', true),
+  ])
+
+  const projetosList = projetos || []
+  const totalProjetos = projetosList.length
+  const selecionados = projetosList.filter(p => ['selecionado', 'aprovado'].includes(p.status_atual)).length
+  const emAnalise = projetosList.filter(p => ['enviado', 'em_analise', 'em_avaliacao', 'habilitado'].includes(p.status_atual)).length
 
   return (
     <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -99,7 +112,7 @@ export default async function MeusProjetosPage() {
               <p className="text-sm text-slate-500">Acompanhe o status das suas propostas culturais.</p>
             </div>
             <Link href="/editais">
-              <Button className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95">
+              <Button className="h-10 px-6 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm shadow-xl shadow-[var(--brand-primary)]/20 transition-all active:scale-95">
                 <Plus className="mr-2 h-4 w-4" />
                 Nova Inscrição
               </Button>
@@ -108,9 +121,31 @@ export default async function MeusProjetosPage() {
         </CardContent>
       </Card>
 
-      {projetos && projetos.length > 0 ? (
+      {/* Stats Cards */}
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: 'Projetos Inscritos', value: totalProjetos, icon: FolderOpen, color: 'text-slate-400', bg: 'bg-slate-50' },
+          { label: 'Selecionados', value: selecionados, icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-50' },
+          { label: 'Em Análise', value: emAnalise, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50' },
+          { label: 'Editais Abertos', value: editaisAbertos ?? 0, icon: FileText, color: 'text-[var(--brand-primary)]', bg: 'bg-[var(--brand-primary)]/10' },
+        ].map((stat) => (
+          <Card key={stat.label} className="group border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className={`h-10 w-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
+                  <stat.icon className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="text-2xl font-bold text-slate-900 tracking-tight leading-none">{stat.value}</div>
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mt-0.5">{stat.label}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {projetosList.length > 0 ? (
         <div className="grid gap-3">
-          {projetos.map((projeto) => (
+          {projetosList.map((projeto) => (
             <Card key={projeto.id} className={`border-slate-200 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden bg-white border-l-4 ${statusBorderColor[projeto.status_atual] || 'border-l-slate-300'}`}>
               <CardContent className="p-4">
                 <div className="flex items-start gap-3 sm:items-center sm:gap-4">

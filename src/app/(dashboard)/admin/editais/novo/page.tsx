@@ -41,6 +41,7 @@ export default function NovoEditalPage() {
   const [form, setForm] = useState({
     numero_edital: '',
     titulo: '',
+    valor_total: '',
     descricao: '',
     inicio_inscricao: '',
     fim_inscricao: '',
@@ -107,6 +108,7 @@ export default function NovoEditalPage() {
       fim_recurso_selecao: form.fim_recurso_selecao || null,
       inicio_recurso_habilitacao: form.inicio_recurso_habilitacao || null,
       fim_recurso_habilitacao: form.fim_recurso_habilitacao || null,
+      valor_total: form.valor_total ? parseFloat(form.valor_total) : null,
       tipo_edital: editalConfig.tipo_edital,
       config_cotas: editalConfig.config_cotas,
       config_desempate: editalConfig.config_desempate,
@@ -212,6 +214,19 @@ export default function NovoEditalPage() {
                   onChange={e => updateForm('titulo', e.target.value)}
                   className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                   required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="valor_total" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Dotação Orçamentária (R$)</Label>
+                <Input
+                  id="valor_total"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Ex: 500000.00"
+                  value={form.valor_total}
+                  onChange={e => updateForm('valor_total', e.target.value)}
+                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
                 />
               </div>
             </div>
