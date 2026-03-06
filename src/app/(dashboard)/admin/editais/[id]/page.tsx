@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import { AvancarEtapaButton } from '@/components/edital/AvancarEtapaButton'
-import { ArrowLeft, FileText, Settings, Users, BarChart3, Scale, Calendar, Brain, ClipboardList } from 'lucide-react'
+import { ArrowLeft, FileText, Settings, Users, BarChart3, Scale, Calendar, Brain, ClipboardList, FileSignature } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { Edital } from '@/types/database.types'
@@ -128,6 +128,7 @@ export default async function AdminEditalDetailPage({
                 { title: 'Publicações', url: 'publicacoes', icon: FileText, desc: 'Atas e documentos oficiais.', color: 'text-slate-900', bg: 'bg-slate-900/5' },
                 { title: 'Formulário Inscrição', url: 'formulario', icon: ClipboardList, desc: 'Campos customizados do formulário.', color: 'text-amber-600', bg: 'bg-amber-100/50' },
                 { title: 'Triagem por IA', url: 'triagem-ia', icon: Brain, desc: 'Análise automatizada dos projetos.', color: 'text-purple-600', bg: 'bg-purple-100/50' },
+                { title: 'Termos de Execução', url: 'termos', icon: FileSignature, desc: 'Contratos e assinaturas digitais.', color: 'text-teal-600', bg: 'bg-teal-100/50' },
               ].map((nav, i) => (
                 <Link key={i} href={`/admin/editais/${id}/${nav.url}`} className="group p-0.5">
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm transition-all duration-300 group-hover:shadow-md group-active:scale-98">

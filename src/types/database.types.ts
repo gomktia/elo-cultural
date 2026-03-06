@@ -323,3 +323,97 @@ export type TriagemResultadoWithNotas = TriagemResultado & {
 export type TriagemExecucaoWithResults = TriagemExecucao & {
   triagem_ia_resultados: TriagemResultadoWithProjeto[]
 }
+
+// ============================================================
+// Termo de Execução Cultural + Assinatura Digital
+// ============================================================
+
+export type StatusTermo = 'rascunho' | 'pendente_assinatura_proponente' | 'pendente_assinatura_gestor' | 'assinado' | 'vigente' | 'encerrado' | 'rescindido'
+
+export interface TermoExecucao {
+  id: string
+  tenant_id: string
+  projeto_id: string
+  proponente_id: string
+  numero_termo: string
+  edital_referencia: string | null
+  valor_total: number
+  valor_extenso: string | null
+  banco: string | null
+  agencia: string | null
+  conta_corrente: string | null
+  tipo_conta: 'corrente' | 'poupanca'
+  vigencia_inicio: string | null
+  vigencia_fim: string | null
+  vigencia_meses: number
+  prorrogacao_meses: number
+  status: StatusTermo
+  prazo_assinatura_dias: number
+  data_envio_para_assinatura: string | null
+  pdf_storage_path: string | null
+  pdf_assinado_storage_path: string | null
+  observacoes: string | null
+  created_at: string
+  updated_at: string
+  created_by: string | null
+}
+
+export interface AssinaturaDigital {
+  id: string
+  tenant_id: string
+  documento_tipo: 'termo_execucao' | 'decisao_recurso' | 'prestacao_contas' | 'publicacao'
+  documento_id: string
+  usuario_id: string
+  nome_signatario: string
+  cpf_signatario: string | null
+  papel_signatario: 'proponente' | 'gestor' | 'secretario' | 'parecerista' | 'coordenador'
+  metodo: 'simples' | 'govbr'
+  hash_documento: string
+  ip_address: string
+  user_agent: string | null
+  govbr_certificado: string | null
+  govbr_transaction_id: string | null
+  assinado_em: string
+  created_at: string
+}
+
+export interface TermoAditivo {
+  id: string
+  tenant_id: string
+  termo_id: string
+  numero_aditivo: number
+  tipo: 'prorrogacao' | 'alteracao_valor' | 'alteracao_objeto' | 'alteracao_equipe' | 'outro'
+  justificativa: string
+  valor_alterado: number | null
+  nova_vigencia_fim: string | null
+  requer_aprovacao: boolean
+  aprovado_por: string | null
+  aprovado_em: string | null
+  status: 'pendente' | 'aprovado' | 'rejeitado'
+  pdf_storage_path: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Pagamento {
+  id: string
+  tenant_id: string
+  termo_id: string
+  projeto_id: string
+  numero_parcela: number
+  valor: number
+  data_pagamento: string | null
+  comprovante_storage_path: string | null
+  status: 'pendente' | 'liberado' | 'pago' | 'cancelado'
+  observacoes: string | null
+  registrado_por: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type TermoWithProjeto = TermoExecucao & {
+  projetos: Pick<Projeto, 'titulo' | 'numero_protocolo'> & {
+    editais: Pick<Edital, 'titulo' | 'numero_edital'> | null
+  } | null
+  profiles: Pick<Profile, 'nome' | 'cpf_cnpj'> | null
+}
