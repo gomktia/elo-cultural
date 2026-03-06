@@ -30,6 +30,9 @@ export default function EditarTenantPage() {
     status: 'ativo' as 'ativo' | 'inativo' | 'suspenso',
     cor_primaria: '#0047AB',
     cor_secundaria: '#7E3AF2',
+    whatsapp_suporte: '',
+    email_suporte: '',
+    site_url: '',
   })
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [logoRodapeUrl, setLogoRodapeUrl] = useState<string | null>(null)
@@ -70,6 +73,9 @@ export default function EditarTenantPage() {
         status: tenant.status || 'ativo',
         cor_primaria: cores?.primary || '#0047AB',
         cor_secundaria: cores?.secondary || '#7E3AF2',
+        whatsapp_suporte: (tenant as any).whatsapp_suporte || '',
+        email_suporte: (tenant as any).email_suporte || '',
+        site_url: (tenant as any).site_url || '',
       })
       setLogoUrl(tenant.logo_url || null)
       setLogoRodapeUrl(tenant.logo_rodape_url || null)
@@ -113,6 +119,9 @@ export default function EditarTenantPage() {
         tema_cores: { primary: form.cor_primaria, secondary: form.cor_secundaria },
         logo_url: logoUrl,
         logo_rodape_url: logoRodapeUrl,
+        whatsapp_suporte: form.whatsapp_suporte || null,
+        email_suporte: form.email_suporte || null,
+        site_url: form.site_url || null,
       })
       .eq('id', tenantId)
 
@@ -261,6 +270,43 @@ export default function EditarTenantPage() {
                     <option value="inativo">Inativo</option>
                     <option value="suspenso">Suspenso</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-100 pt-6 mt-6">
+                <h3 className="text-sm font-semibold text-slate-700 mb-4">Contato e Suporte</h3>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="whatsapp" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">WhatsApp Suporte</Label>
+                    <Input
+                      id="whatsapp"
+                      placeholder="Ex: (61) 99196-9207"
+                      value={form.whatsapp_suporte}
+                      onChange={e => updateForm('whatsapp_suporte', e.target.value)}
+                      className="h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="email_suporte" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Email Suporte</Label>
+                    <Input
+                      id="email_suporte"
+                      type="email"
+                      placeholder="Ex: suporte@cultura.gov.br"
+                      value={form.email_suporte}
+                      onChange={e => updateForm('email_suporte', e.target.value)}
+                      className="h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="site_url" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Site Institucional</Label>
+                    <Input
+                      id="site_url"
+                      placeholder="Ex: https://cultura.prefeitura.gov.br"
+                      value={form.site_url}
+                      onChange={e => updateForm('site_url', e.target.value)}
+                      className="h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    />
+                  </div>
                 </div>
               </div>
             </CardContent>

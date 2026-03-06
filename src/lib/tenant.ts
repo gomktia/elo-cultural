@@ -18,7 +18,7 @@ export async function getTenantFromCookie() {
   const supabase = await createClient()
   const { data } = await supabase
     .from('tenants')
-    .select('nome, tema_cores, logo_url, logo_rodape_url')
+    .select('nome, tema_cores, logo_url, logo_rodape_url, whatsapp_suporte, email_suporte, site_url')
     .eq('id', tenantId)
     .single()
 

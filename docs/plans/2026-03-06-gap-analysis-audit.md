@@ -220,12 +220,12 @@
 
 ## PLANO DE ACAO RECOMENDADO
 
-### Sprint 1 (Impacto Alto, Esforco Baixo) — ~2-3 dias
-- [ ] GAP-02: Widget VLibras (1 linha de script no layout)
-- [ ] GAP-04: Busca/filtros na listagem de editais
-- [ ] GAP-05: Mostrar editais encerrados (filtro simples)
-- [ ] GAP-08: Links de legislacao no footer
-- [ ] GAP-11: Campo whatsapp_suporte no tenant + exibir no footer
+### Sprint 1 (Impacto Alto, Esforco Baixo) — CONCLUIDO
+- [x] GAP-02: Widget VLibras — VLibrasWidget.tsx + Script lazyOnload no root layout
+- [x] GAP-04: Busca/filtros na listagem de editais — barra de busca + tabs abertos/encerrados com contagem
+- [x] GAP-05: Mostrar editais encerrados — tab "Encerrados" com todos os status pos-inscricao
+- [x] GAP-08: Links de legislacao no footer — Lei 14.903/2024, Decreto 11.453/2023, Lei 14.063/2020
+- [x] GAP-11: WhatsApp/email/site no tenant — migration 20260306000022 + campos no super admin + exibicao condicional no footer
 
 ### Sprint 2 (Impacto Alto, Esforco Medio) — ~3-4 dias
 - [ ] GAP-01: Pagina FAQ com accordion (configuravel por tenant/edital)

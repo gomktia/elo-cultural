@@ -33,6 +33,8 @@ export default async function PublicLayout({
 
   const tenant = await getTenantFromCookie()
   const { brandColor, logoSrc, brandName } = getTenantBrand(tenant)
+  const whatsapp = (tenant as any)?.whatsapp_suporte as string | null
+  const emailSuporte = (tenant as any)?.email_suporte as string | null
   const cssVars = brandCssVars(getTenantBrand(tenant))
 
   return (
@@ -123,7 +125,7 @@ export default async function PublicLayout({
               </p>
             </div>
 
-            <div className="flex gap-12 md:gap-16">
+            <div className="flex flex-wrap gap-8 md:gap-12">
               <div className="space-y-3">
                 <h4 className="text-[11px] font-medium text-white/40 uppercase tracking-wider">Plataforma</h4>
                 <div className="flex flex-col gap-2">
@@ -139,8 +141,34 @@ export default async function PublicLayout({
                 <div className="flex flex-col gap-2">
                   <Link href="/privacidade" className="text-sm text-white/70 hover:text-white transition-colors">Privacidade</Link>
                   <Link href="/termos" className="text-sm text-white/70 hover:text-white transition-colors">Termos de Uso</Link>
+                  <Link href="/verificar-assinatura" className="text-sm text-white/70 hover:text-white transition-colors">Verificar Assinatura</Link>
                 </div>
               </div>
+              <div className="space-y-3">
+                <h4 className="text-[11px] font-medium text-white/40 uppercase tracking-wider">Legislacao</h4>
+                <div className="flex flex-col gap-2">
+                  <a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/L14903.htm" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-white transition-colors">Lei 14.903/2024 (PNAB)</a>
+                  <a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/decreto/D11453.htm" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-white transition-colors">Decreto 11.453/2023</a>
+                  <a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14063.htm" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-white transition-colors">Lei 14.063/2020 (Assinatura)</a>
+                </div>
+              </div>
+              {(whatsapp || emailSuporte) && (
+                <div className="space-y-3">
+                  <h4 className="text-[11px] font-medium text-white/40 uppercase tracking-wider">Contato</h4>
+                  <div className="flex flex-col gap-2">
+                    {whatsapp && (
+                      <a href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-white transition-colors">
+                        WhatsApp: {whatsapp}
+                      </a>
+                    )}
+                    {emailSuporte && (
+                      <a href={`mailto:${emailSuporte}`} className="text-sm text-white/70 hover:text-white transition-colors">
+                        {emailSuporte}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
