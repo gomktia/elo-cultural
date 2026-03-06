@@ -75,6 +75,7 @@ const CRITERIOS_DESEMPATE = [
   { value: 'menor_renda', label: 'Menor renda' },
   { value: 'maior_nota_tecnica', label: 'Maior nota técnica' },
   { value: 'inscricao_anterior', label: 'Inscrição mais antiga' },
+  { value: 'sorteio', label: 'Sorteio (hash determinístico)' },
 ]
 
 const labelClass = 'text-xs font-medium text-slate-400 uppercase tracking-wide ml-1'

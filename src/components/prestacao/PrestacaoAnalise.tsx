@@ -17,6 +17,14 @@ const JULGAMENTO_OPTIONS: Array<{ value: JulgamentoPrestacao; label: string; des
   { value: 'rejeitada_total', label: 'Rejeitada Total', desc: 'Devolução total + multa + suspensão 180-540 dias', color: 'bg-red-50 border-red-200 text-red-700' },
 ]
 
+interface DocComprovante {
+  id: string
+  nome_arquivo: string
+  storage_path: string
+  tipo: string
+  created_at: string
+}
+
 interface PrestacaoAnaliseProps {
   prestacao: {
     id: string
@@ -32,15 +40,17 @@ interface PrestacaoAnaliseProps {
     valor_devolucao?: number | null
   }
   projeto: {
+    id: string
     titulo: string
     numero_protocolo: string
     orcamento_total: number
     edital_titulo: string
     edital_numero: string
   }
+  documentos?: DocComprovante[]
 }
 
-export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) {
+export function PrestacaoAnalise({ prestacao, projeto, documentos = [] }: PrestacaoAnaliseProps) {
   const router = useRouter()
   const [expanded, setExpanded] = useState(false)
   const [parecer, setParecer] = useState(prestacao.parecer_gestor || '')
@@ -187,6 +197,50 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
               <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">Observações do Proponente</p>
               <div className="rounded-xl bg-slate-50 p-4">
                 <p className="text-sm text-slate-600 whitespace-pre-wrap">{prestacao.observacoes}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Comprovantes/Anexos (Galeria visual) */}
+          {documentos.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">
+                Comprovantes e Anexos ({documentos.length})
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {documentos.map(doc => {
+                  const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(doc.nome_arquivo)
+                  const isPdf = /\.pdf$/i.test(doc.nome_arquivo)
+                  const tipoLabel = doc.tipo === 'comprovante_despesa' ? 'Comprovante' :
+                    doc.tipo === 'relatorio_atividade' ? 'Relatório' : 'Anexo'
+                  const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/documentos/${doc.storage_path}`
+
+                  return (
+                    <a
+                      key={doc.id}
+                      href={publicUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/doc rounded-xl border border-slate-200 p-3 hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/[0.02] transition-all flex items-center gap-3"
+                    >
+                      <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        isImage ? 'bg-purple-50 text-purple-500' :
+                        isPdf ? 'bg-red-50 text-red-500' :
+                        'bg-slate-50 text-slate-400'
+                      }`}>
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-slate-700 truncate group-hover/doc:text-[var(--brand-primary)]">
+                          {doc.nome_arquivo}
+                        </p>
+                        <p className="text-[11px] text-slate-400">
+                          {tipoLabel} &middot; {new Date(doc.created_at).toLocaleDateString('pt-BR')}
+                        </p>
+                      </div>
+                    </a>
+                  )
+                })}
               </div>
             </div>
           )}

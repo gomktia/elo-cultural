@@ -14,6 +14,8 @@ export const editalFormSchema = z.object({
   fim_recurso_selecao: z.string().default(''),
   inicio_recurso_habilitacao: z.string().default(''),
   fim_recurso_habilitacao: z.string().default(''),
+  inicio_impugnacao_inscritos: z.string().default(''),
+  fim_impugnacao_inscritos: z.string().default(''),
 })
 
 export type EditalFormData = z.infer<typeof editalFormSchema>

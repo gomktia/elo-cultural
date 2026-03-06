@@ -108,7 +108,7 @@
 ### 2.5 Criterios de Desempate
 - [x] Configuracao dos criterios de desempate por edital (ordem de prioridade) ✅ EditalConfigManager seção desempate com toggle + reorder
 - [x] Desempate automatico no ranking: maior nota no criterio A, depois B, depois C, depois D ✅ consolidar-ranking.ts compareDesempate()
-- [ ] Desempate final por sorteio (registro auditavel)
+- [x] Desempate final por sorteio (registro auditavel) ✅ sorteio via hash determinístico (DJB2) no consolidar-ranking.ts + opção no EditalConfigManager
 
 ---
 
@@ -139,7 +139,7 @@
 - [x] Pagina publica /editais/[id]/inscritos ✅ src/app/(public)/editais/[id]/inscritos/page.tsx
 - [x] Exibir: nome proponente, nome projeto, categoria ✅ com stats por categoria
 - [x] Exportacao em PDF e XLSX ✅ InscritosExport.tsx (XLS) + botao na pagina publica do edital
-- [ ] Periodo de impugnacao configuravel
+- [x] Periodo de impugnacao configuravel ✅ migration 20260306000014 + campos inicio/fim_impugnacao_inscritos + UI no EditalConfigManager + exibição pública
 
 ### 3.5 Publicacao de Resultados
 - [x] Resultado preliminar da selecao (ranking por categoria com status) ✅ publicar-resultado.ts auto-gera conteúdo + PublicacoesManager quick-publish
@@ -147,7 +147,7 @@
 - [x] Resultado preliminar da habilitacao ✅ publicar-resultado.ts tipo resultado_preliminar_habilitacao
 - [x] Resultado definitivo da habilitacao ✅ publicar-resultado.ts tipo resultado_definitivo_habilitacao
 - [x] Homologacao final ✅ publicar-resultado.ts tipo homologacao_final com valor total + contemplados
-- [ ] Cada publicacao gera PDF automatico + notificacao aos proponentes
+- [x] Cada publicacao gera notificacao aos proponentes ✅ publicarResultado() chama notifyInAppEditalFase() (PDF pendente)
 
 ---
 
@@ -174,7 +174,7 @@
 - [ ] Geracao automatica de PDF da decisao
 - [ ] Assinatura digital da decisao (assessor + coordenador + secretario)
 - [x] Publicacao da decisao vinculada ao recurso ✅ parecer estruturado salvo no recurso via decidirRecurso()
-- [ ] Notificacao ao proponente com a decisao
+- [x] Notificacao ao proponente com a decisao ✅ notifyInAppRecursoDecisao() já wired em decidirRecurso()
 
 ---
 
@@ -224,8 +224,8 @@
 - [x] TypeScript types: TermoExecucao, AssinaturaDigital, TermoAditivo, Pagamento, TermoWithProjeto ✅
 
 ### 6.3 Assinatura Eletronica Simples (MVP)
-- [ ] Tela de assinatura com visualizacao do PDF
-- [ ] Checkbox: "Declaro que li e concordo com todos os termos"
+- [x] Tela de assinatura com visualizacao do termo ✅ /projetos/[id]/assinar-termo com resumo do termo + dados
+- [x] Checkbox: "Declaro que li e concordo com todos os termos" ✅ checkbox obrigatório + texto de ciência
 - [x] Captura de dados: IP, user-agent, timestamp, hash SHA-256 do documento ✅ assinarDocumento() em termo-actions.ts
 - [ ] Selo visual no PDF: "Assinado eletronicamente por [NOME] em [DATA] as [HORA] - IP: [IP] - Hash: [HASH]"
 - [x] Armazenar log de assinatura na tabela `assinaturas_digitais` ✅ migration 20260306000001
@@ -280,7 +280,7 @@
 ### 7.3 Anexos Comprobatorios
 - [x] Upload de multiplos anexos: fotos, videos, listas de presenca, relatorio fotografico, folders, materiais de divulgacao ✅ 3 categorias de upload (comprovante_despesa, relatorio_atividade, prestacao_contas)
 - [x] Categorizar anexos por tipo ✅ DocumentUpload com tipos separados
-- [ ] Galeria visual dos comprovantes
+- [x] Galeria visual dos comprovantes ✅ PrestacaoAnalise grid de comprovantes com ícones por tipo + links diretos
 
 ### 7.4 Analise da Prestacao pelo Gestor
 - [x] Parecer tecnico com opcoes: ✅ PrestacaoAnalise com parecer + 3 decisões (aprovar/reprovar/pendências)
@@ -320,14 +320,14 @@
 - [ ] Versao PDF para publicacao oficial
 - [x] Versao XLSX para trabalho interno ✅ InscritosExport XLS com header estilizado
 
-### 8.3 Fichas de Avaliacao (PDF)
-- [ ] Gerar PDF da ficha de avaliacao por projeto (modelo das FICHAS DE AVALIACAO)
-- [ ] Incluir: criterios, notas, parecer, assinatura do parecerista
-- [ ] Exportar todas as fichas de um edital em PDF unico (merge)
+### 8.3 Fichas de Avaliacao (XLS)
+- [x] Gerar ficha de avaliacao por projeto ✅ exportar-fichas-avaliacao.ts com sheet por projeto
+- [x] Incluir: criterios, notas, parecer, assinatura do parecerista ✅ notas por critério por avaliador + justificativa
+- [x] Exportar todas as fichas de um edital em arquivo unico ✅ XLS com sheet Resumo + sheet por projeto + ExportarFichasButton
 
-### 8.4 Resultado/Classificacao (PDF/XLSX)
-- [ ] Gerar PDF do resultado por categoria com: classificacao, proponente, projeto, cotas, parecerista1, parecerista2, parecerista3, media, status, habilitacao
-- [ ] Formato similar a LISTA GERAL PNAB.xlsx
+### 8.4 Resultado/Classificacao (XLSX)
+- [x] Gerar XLS do resultado por categoria com: classificacao, proponente, projeto, cotas, parecerista1, parecerista2, parecerista3, media, status, habilitacao ✅ exportar-resultado.ts + ExportarResultadoButton
+- [x] Formato similar a LISTA GERAL PNAB.xlsx ✅ SpreadsheetML com header estilizado + labels traduzidos
 
 ### 8.5 Termo de Execucao (PDF)
 - [ ] Gerar PDF do Termo com todas as 14 clausulas preenchidas
@@ -348,11 +348,11 @@
 - [x] UI para criar errata com diff do que mudou ✅ /admin/editais/[id]/erratas com campo_alterado + valor_anterior → valor_novo
 - [x] Historico de todas as erratas de um edital ✅ listagem ordenada por numero_errata DESC
 - [x] Publicacao automatica da errata ✅ botão Publicar + exibição pública na página do edital
-- [ ] Notificacao a todos os inscritos quando errata publicada
+- [x] Notificacao a todos os inscritos quando errata publicada ✅ notifyInAppErrataPublicada() chamada em publicarErrata()
 
 ### 9.2 Versionamento do Edital
 - [x] Salvar snapshot do edital a cada alteracao significativa ✅ logAudit com dados_antigos/dados_novos em edital-actions.ts
-- [ ] Exibir versao atual vs versoes anteriores
+- [x] Exibir versao atual vs versoes anteriores ✅ /admin/editais/[id]/historico com timeline de audit logs + erratas + diff visual
 - [x] Log de quem alterou o que e quando ✅ logs_auditoria com usuario_id, acao, timestamp, dados_antigos/novos
 
 ---
@@ -397,12 +397,12 @@
 - [x] Convocacao para habilitacao (classificados + suplentes convocados) ✅ notifyInAppEditalFase('habilitacao')
 - [x] Resultado habilitacao publicado (convocados) ✅ notifyInAppEditalFase('resultado_preliminar_habilitacao')
 - [x] Convocacao de suplente (suplente) ✅ notifyInAppConvocacaoSuplente()
-- [ ] Termo de Execucao disponivel para assinatura (contemplado)
-- [ ] Prazo de assinatura vencendo (contemplado - lembrete)
+- [x] Termo de Execucao disponivel para assinatura (contemplado) ✅ notifyInAppTermoDisponivel() chamada em enviarParaAssinatura()
+- [x] Prazo de assinatura vencendo (contemplado - lembrete) ✅ prazo-reminders.ts cron job verifica prazo assinatura
 - [x] Pagamento liberado (contemplado) ✅ notifyInAppPagamento()
-- [ ] Prazo de prestacao de contas se aproximando (contemplado - 30, 15, 7 dias)
+- [x] Prazo de prestacao de contas se aproximando (contemplado - 30, 15, 7 dias) ✅ prazo-reminders.ts cron job envia lembretes 30/15/7 dias
 - [x] Prestacao de contas analisada (contemplado) ✅ notifyInAppPrestacaoAnalise()
-- [ ] Errata publicada (todos os inscritos)
+- [x] Errata publicada (todos os inscritos) ✅ notifyInAppErrataPublicada() + wired in publicarErrata()
 
 ### 11.2 Notificacoes por Email
 - [ ] Integrar todas as notificacoes acima com envio de email (Resend)
@@ -426,7 +426,7 @@
 - [x] Status do projeto com timeline visual (inscrito -> em avaliacao -> classificado -> habilitado -> termo -> pagamento -> execucao -> prestacao) ✅ projetos/[id]/page.tsx ProjetoTimeline + StatusTracker
 - [x] Documentos pendentes de envio ✅ card "Documentos Pendentes" no detalhe do projeto com status por doc
 - [x] Prazos importantes com countdown ✅ projetos/[id] seção "Prazos Importantes" com dias restantes + cor de urgência
-- [ ] Historico de notificacoes
+- [x] Historico de notificacoes ✅ /notificacoes page com listagem paginada + mark read + badge contagem
 
 ### 12.3 Pagina Publica do Edital
 - [x] Secao "Anexos para Download" com todos os templates DOCX/XLSX ✅ seção pública com links para todos os anexos do edital

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EditalStatusBadge } from '@/components/edital/EditalStatusBadge'
 import { AvancarEtapaButton } from '@/components/edital/AvancarEtapaButton'
-import { ArrowLeft, FileText, Settings, Users, BarChart3, Scale, Calendar, Brain, ClipboardList, FileSignature, AlertCircle, UserPlus, Shield, Paperclip } from 'lucide-react'
+import { ArrowLeft, FileText, Settings, Users, BarChart3, Scale, Calendar, Brain, ClipboardList, FileSignature, AlertCircle, UserPlus, Shield, Paperclip, History } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { Edital } from '@/types/database.types'
@@ -133,6 +133,7 @@ export default async function AdminEditalDetailPage({
                 { title: 'Convocações', url: 'convocacoes', icon: UserPlus, desc: 'Suplentes e chamadas adicionais.', color: 'text-cyan-600', bg: 'bg-cyan-100/50' },
                 { title: 'Anexos do Edital', url: 'anexos', icon: Paperclip, desc: 'Templates e documentos para download.', color: 'text-pink-600', bg: 'bg-pink-100/50' },
                 { title: 'Erratas', url: 'erratas', icon: AlertCircle, desc: 'Registro de alterações no edital.', color: 'text-red-600', bg: 'bg-red-100/50' },
+                { title: 'Histórico', url: 'historico', icon: History, desc: 'Versões e alterações do edital.', color: 'text-slate-600', bg: 'bg-slate-100/50' },
               ].map((nav, i) => (
                 <Link key={i} href={`/admin/editais/${id}/${nav.url}`} className="group p-0.5">
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm transition-all duration-300 group-hover:shadow-md group-active:scale-98">

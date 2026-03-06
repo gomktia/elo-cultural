@@ -99,6 +99,14 @@ function compareDesempate(a: ProjetoRanking, b: ProjetoRanking, criterios: strin
         if (ra !== rb) return ra - rb
         break
       }
+      case 'sorteio': {
+        // Deterministic random tiebreak using hash of project IDs
+        // Auditable: same input always produces same result
+        const hashA = simpleHash(a.id)
+        const hashB = simpleHash(b.id)
+        if (hashA !== hashB) return hashA - hashB
+        break
+      }
       default: {
         const aMatch = matchesCriteria(a, criterio)
         const bMatch = matchesCriteria(b, criterio)
@@ -109,6 +117,19 @@ function compareDesempate(a: ProjetoRanking, b: ProjetoRanking, criterios: strin
     }
   }
   return 0
+}
+
+/**
+ * Simple deterministic hash for tiebreak sorteio.
+ * Uses DJB2 algorithm — same input always produces same output.
+ */
+function simpleHash(str: string): number {
+  let hash = 5381
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i)
+    hash = hash & hash // Convert to 32bit integer
+  }
+  return hash
 }
 
 // ── Profile field match for cotas ──

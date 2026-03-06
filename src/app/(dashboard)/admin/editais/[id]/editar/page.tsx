@@ -68,6 +68,8 @@ export default function EditarEditalPage() {
     fim_recurso_selecao: '',
     inicio_recurso_habilitacao: '',
     fim_recurso_habilitacao: '',
+    inicio_impugnacao_inscritos: '',
+    fim_impugnacao_inscritos: '',
     numero_pareceristas: '3',
     nota_minima_aprovacao: '0',
     nota_zero_desclassifica: true,
@@ -115,6 +117,8 @@ export default function EditarEditalPage() {
         fim_recurso_selecao: toLocalDatetime(edital.fim_recurso_selecao),
         inicio_recurso_habilitacao: toLocalDatetime(edital.inicio_recurso_habilitacao),
         fim_recurso_habilitacao: toLocalDatetime(edital.fim_recurso_habilitacao),
+        inicio_impugnacao_inscritos: toLocalDatetime(edital.inicio_impugnacao_inscritos),
+        fim_impugnacao_inscritos: toLocalDatetime(edital.fim_impugnacao_inscritos),
         numero_pareceristas: edital.numero_pareceristas?.toString() || '3',
         nota_minima_aprovacao: edital.nota_minima_aprovacao?.toString() || '0',
         nota_zero_desclassifica: edital.nota_zero_desclassifica ?? true,
@@ -191,6 +195,8 @@ export default function EditarEditalPage() {
         fim_recurso_selecao: form.fim_recurso_selecao || null,
         inicio_recurso_habilitacao: form.inicio_recurso_habilitacao || null,
         fim_recurso_habilitacao: form.fim_recurso_habilitacao || null,
+        inicio_impugnacao_inscritos: form.inicio_impugnacao_inscritos || null,
+        fim_impugnacao_inscritos: form.fim_impugnacao_inscritos || null,
         valor_total: form.valor_total ? parseFloat(form.valor_total) : null,
         numero_pareceristas: parseInt(form.numero_pareceristas) || 3,
         nota_minima_aprovacao: parseFloat(form.nota_minima_aprovacao) || 0,
@@ -434,6 +440,20 @@ export default function EditarEditalPage() {
                     <Label className={fieldLabel}>Fim Recurso Habilitacao</Label>
                     <Input type="datetime-local" value={form.fim_recurso_habilitacao} onChange={e => updateForm('fim_recurso_habilitacao', e.target.value)} className={fieldInput} />
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-5 border-t border-slate-100">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-3 pl-0.5">Impugnacao da Lista de Inscritos</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className={fieldLabel}>Inicio Impugnacao</Label>
+                  <Input type="datetime-local" value={form.inicio_impugnacao_inscritos} onChange={e => updateForm('inicio_impugnacao_inscritos', e.target.value)} className={fieldInput} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className={fieldLabel}>Fim Impugnacao</Label>
+                  <Input type="datetime-local" value={form.fim_impugnacao_inscritos} onChange={e => updateForm('fim_impugnacao_inscritos', e.target.value)} className={fieldInput} />
                 </div>
               </div>
             </div>

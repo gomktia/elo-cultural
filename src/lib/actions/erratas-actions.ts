@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { notifyInAppErrataPublicada } from '@/lib/notifications/notify'
 
 export async function criarErrata(editalId: string, data: {
   descricao: string
@@ -63,6 +64,21 @@ export async function publicarErrata(errataId: string, editalId: string) {
     .eq('id', errataId)
 
   if (error) return { error: error.message }
+
+  // Notify all inscritos about the errata
+  const { data: errata } = await supabase
+    .from('edital_erratas')
+    .select('numero_errata, descricao')
+    .eq('id', errataId)
+    .single()
+
+  if (errata) {
+    notifyInAppErrataPublicada({
+      editalId,
+      numeroErrata: errata.numero_errata,
+      descricao: errata.descricao,
+    }).catch(() => {})
+  }
 
   revalidatePath(`/admin/editais/${editalId}/erratas`)
   return { success: true }

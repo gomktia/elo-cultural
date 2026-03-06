@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { RankingTable } from '@/components/avaliacao/RankingTable'
 import { RankingTableSkeleton } from '@/components/avaliacao/RankingTableSkeleton'
 import { ArrowLeft, RefreshCw, ShieldCheck, Star, GripVertical } from 'lucide-react'
+import { ExportarFichasButton } from '@/components/admin/ExportarFichasButton'
+import { ExportarResultadoButton } from '@/components/admin/ExportarResultadoButton'
 import { consolidarRanking } from '@/lib/actions/consolidar-ranking'
 import { revalidatePath } from 'next/cache'
 import type { RankingItem } from '@/components/avaliacao/RankingTable'
@@ -136,12 +138,16 @@ export default async function RankingPage({
                 </div>
               </div>
             </div>
-            <form action={handleConsolidar}>
-              <Button type="submit" variant="outline" className="rounded-xl border-slate-200 font-semibold text-xs uppercase tracking-wide gap-2">
-                <RefreshCw className="h-4 w-4" />
-                Consolidar Ranking
-              </Button>
-            </form>
+            <div className="flex items-center gap-2">
+              <ExportarResultadoButton editalId={id} editalNumero={edital.numero_edital} />
+              <ExportarFichasButton editalId={id} />
+              <form action={handleConsolidar}>
+                <Button type="submit" variant="outline" className="rounded-xl border-slate-200 font-semibold text-xs uppercase tracking-wide gap-2">
+                  <RefreshCw className="h-4 w-4" />
+                  Consolidar Ranking
+                </Button>
+              </form>
+            </div>
           </div>
         </CardContent>
       </Card>

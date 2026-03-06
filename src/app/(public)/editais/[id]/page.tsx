@@ -76,6 +76,7 @@ export default async function EditalPublicoPage({
   const cronograma = [
     { fase: 'Inscrições', inicio: e.inicio_inscricao, fim: e.fim_inscricao },
     { fase: 'Recurso Inscrição', inicio: (e as any).inicio_recurso_inscricao, fim: (e as any).fim_recurso_inscricao },
+    { fase: 'Impugnação da Lista de Inscritos', inicio: e.inicio_impugnacao_inscritos, fim: e.fim_impugnacao_inscritos },
     { fase: 'Avaliação Técnica', inicio: (e as any).inicio_avaliacao, fim: (e as any).fim_avaliacao },
     { fase: 'Recurso Avaliação', inicio: (e as any).inicio_recurso_selecao, fim: (e as any).fim_recurso_selecao },
     { fase: 'Habilitação', inicio: (e as any).inicio_habilitacao, fim: (e as any).fim_habilitacao },

@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { GESTAO_ROLES } from '@/lib/constants/roles'
 import type { UserRole } from '@/types/database.types'
+import { notifyInAppTermoDisponivel } from '@/lib/notifications/notify'
 
 /**
  * Gera termos de execução para todos os projetos selecionados de um edital
@@ -122,6 +123,16 @@ export async function enviarParaAssinatura(termoId: string) {
     return { error: 'Sem permissão' }
   }
 
+  // Get termo details before updating
+  const { data: termo } = await supabase
+    .from('termos_execucao')
+    .select('projeto_id')
+    .eq('id', termoId)
+    .eq('status', 'rascunho')
+    .single()
+
+  if (!termo) return { error: 'Termo não encontrado ou já enviado' }
+
   const { error } = await supabase
     .from('termos_execucao')
     .update({
@@ -129,9 +140,15 @@ export async function enviarParaAssinatura(termoId: string) {
       data_envio_para_assinatura: new Date().toISOString(),
     })
     .eq('id', termoId)
-    .eq('status', 'rascunho')
 
   if (error) return { error: error.message }
+
+  // Notify proponente
+  notifyInAppTermoDisponivel({
+    termoId,
+    projetoId: termo.projeto_id,
+  }).catch(() => {})
+
   return { success: true }
 }
 

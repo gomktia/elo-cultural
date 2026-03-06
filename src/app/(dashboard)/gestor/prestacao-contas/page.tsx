@@ -28,10 +28,27 @@ export default async function GestorPrestacaoContasPage() {
   // Buscar todas as prestações do tenant com dados do projeto
   const { data: prestacoes } = await supabase
     .from('prestacoes_contas')
-    .select('*, projetos(titulo, numero_protocolo, orcamento_total, editais(titulo, numero_edital))')
+    .select('*, projetos(id, titulo, numero_protocolo, orcamento_total, editais(titulo, numero_edital))')
     .eq('tenant_id', tenantId)
     .neq('status', 'rascunho')
     .order('data_envio', { ascending: false })
+
+  // Load comprovantes for all projects
+  const projetoIds = [...new Set((prestacoes || []).map((p: any) => p.projeto_id).filter(Boolean))]
+  const { data: allDocs } = projetoIds.length > 0
+    ? await supabase
+        .from('projeto_documentos')
+        .select('id, nome_arquivo, storage_path, tipo, created_at, projeto_id')
+        .in('projeto_id', projetoIds)
+        .in('tipo', ['comprovante_despesa', 'relatorio_atividade', 'prestacao_contas'])
+    : { data: [] }
+
+  const docsByProjeto = new Map<string, typeof allDocs>()
+  for (const doc of (allDocs || []) as any[]) {
+    const list = docsByProjeto.get(doc.projeto_id) || []
+    list.push(doc)
+    docsByProjeto.set(doc.projeto_id, list)
+  }
 
   // Contadores
   const enviadas = (prestacoes || []).filter(p => p.status === 'enviada').length
@@ -105,12 +122,14 @@ export default async function GestorPrestacaoContasPage() {
                   valor_devolucao: p.valor_devolucao ? Number(p.valor_devolucao) : null,
                 }}
                 projeto={{
+                  id: p.projeto_id,
                   titulo: p.projetos?.titulo || 'Projeto',
                   numero_protocolo: p.projetos?.numero_protocolo || '',
                   orcamento_total: Number(p.projetos?.orcamento_total) || 0,
                   edital_titulo: p.projetos?.editais?.titulo || '',
                   edital_numero: p.projetos?.editais?.numero_edital || '',
                 }}
+                documentos={(docsByProjeto.get(p.projeto_id) || []) as any}
               />
             ))}
           </div>

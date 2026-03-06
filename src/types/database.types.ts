@@ -91,6 +91,8 @@ export interface Edital {
   fim_recurso_selecao: string | null
   inicio_recurso_habilitacao: string | null
   fim_recurso_habilitacao: string | null
+  inicio_impugnacao_inscritos: string | null
+  fim_impugnacao_inscritos: string | null
   config_cotas: Record<string, unknown>[] | null
   config_desempate: string[] | null
   config_pontuacao_extra: Record<string, unknown>[] | null

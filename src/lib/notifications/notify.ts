@@ -187,6 +187,70 @@ export async function notifyInAppInscricaoConfirmada(params: {
   })
 }
 
+// ─── ERRATA PUBLICADA ─────────────────────────────────────────
+
+export async function notifyInAppErrataPublicada(params: {
+  editalId: string
+  numeroErrata: number
+  descricao: string
+}) {
+  const supabase = createServiceClient()
+
+  const { data: edital } = await supabase
+    .from('editais')
+    .select('titulo, tenant_id')
+    .eq('id', params.editalId)
+    .single()
+  if (!edital) return
+
+  // Notify all proponentes with projects in this edital
+  const { data: projetos } = await supabase
+    .from('projetos')
+    .select('proponente_id')
+    .eq('edital_id', params.editalId)
+
+  const proponenteIds = [...new Set((projetos || []).map(p => p.proponente_id))]
+  if (proponenteIds.length === 0) return
+
+  const notifications = proponenteIds.map(uid => ({
+    tenant_id: edital.tenant_id,
+    usuario_id: uid,
+    tipo: 'edital_fase' as const,
+    titulo: `Errata nº ${params.numeroErrata} Publicada`,
+    mensagem: `O edital "${edital.titulo}" recebeu a errata nº ${params.numeroErrata}: ${params.descricao.substring(0, 120)}${params.descricao.length > 120 ? '...' : ''}`,
+    link: `/editais/${params.editalId}`,
+    metadata: { edital_id: params.editalId, numero_errata: params.numeroErrata },
+  }))
+
+  await createNotificationBatch(notifications)
+}
+
+// ─── TERMO DISPONIVEL PARA ASSINATURA ─────────────────────────
+
+export async function notifyInAppTermoDisponivel(params: {
+  termoId: string
+  projetoId: string
+}) {
+  const supabase = createServiceClient()
+
+  const { data: projeto } = await supabase
+    .from('projetos')
+    .select('proponente_id, titulo, tenant_id')
+    .eq('id', params.projetoId)
+    .single()
+  if (!projeto) return
+
+  await createNotification({
+    tenant_id: projeto.tenant_id,
+    usuario_id: projeto.proponente_id,
+    tipo: 'projeto_status',
+    titulo: 'Termo de Execução Disponível',
+    mensagem: `O Termo de Execução Cultural referente ao projeto "${projeto.titulo}" está disponível para assinatura.`,
+    link: `/projetos/${params.projetoId}`,
+    metadata: { projeto_id: params.projetoId, termo_id: params.termoId },
+  })
+}
+
 // ─── EDITAL FASE ───────────────────────────────────────────────
 
 const FASE_LABELS: Record<string, string> = {

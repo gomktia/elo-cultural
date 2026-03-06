@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusTracker } from '@/components/projeto/StatusTracker'
 import { ProjetoTimeline } from '@/components/projeto/ProjetoTimeline'
-import { ArrowLeft, Scale, FileText, FileCheck, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, Scale, FileText, FileCheck, AlertTriangle, FileSignature } from 'lucide-react'
 import { format, differenceInDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Users, DollarSign, Clock } from 'lucide-react'
@@ -61,6 +61,15 @@ export default async function ProjetoDetailPage({
     const conf = (conferencias || []).find((c: any) => c.doc_exigido_id === doc.id)
     return !conf || !conf.documento_id || conf.status === 'pendente' || conf.status === 'reprovado'
   })
+
+  // Load termo de execução (if exists)
+  const { data: termo } = await supabase
+    .from('termos_execucao')
+    .select('id, numero_termo, status, valor_total, vigencia_inicio, vigencia_fim, data_envio_para_assinatura')
+    .eq('projeto_id', id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
 
   const editalStatus = projeto.editais?.status
 
@@ -330,6 +339,53 @@ export default async function ProjetoDetailPage({
           </Card>
         )
       })()}
+
+      {/* Termo de Execução Cultural */}
+      {termo && (
+        <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+          <CardContent className="p-5 space-y-4">
+            <div className="flex items-center gap-3">
+              <FileSignature className="h-5 w-5 text-[var(--brand-primary)]" />
+              <h2 className="text-base font-semibold text-slate-900">Termo de Execução Cultural</h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Número</p>
+                <p className="text-sm font-semibold text-slate-900 mt-0.5">{termo.numero_termo}</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Status</p>
+                <p className="text-sm font-semibold text-slate-900 mt-0.5 capitalize">{(termo.status || '').replace(/_/g, ' ')}</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Valor</p>
+                <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                  {Number(termo.valor_total || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </p>
+              </div>
+              {termo.vigencia_fim && (
+                <div className="rounded-lg bg-slate-50 p-3">
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Vigência até</p>
+                  <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                    {new Date(termo.vigencia_fim).toLocaleDateString('pt-BR')}
+                  </p>
+                </div>
+              )}
+            </div>
+            {termo.status === 'pendente_assinatura_proponente' && (
+              <Link href={`/projetos/${id}/assinar-termo`}>
+                <Button className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm rounded-xl">
+                  <FileSignature className="mr-2 h-4 w-4" />
+                  Assinar Termo
+                </Button>
+              </Link>
+            )}
+            {(termo.status === 'assinado' || termo.status === 'vigente') && (
+              <p className="text-sm text-green-600 font-medium">Termo assinado por ambas as partes.</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex gap-3">
         {canRecurso && (

@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { notifyInAppEditalFase } from '@/lib/notifications/notify'
 
 type TipoResultado =
   | 'resultado_preliminar_selecao'
@@ -81,6 +82,21 @@ export async function publicarResultado(editalId: string, tipo: TipoResultado) {
   })
 
   if (error) return { error: error.message }
+
+  // Map resultado type to edital fase for notification
+  const faseMap: Record<TipoResultado, string> = {
+    resultado_preliminar_selecao: 'resultado_preliminar_avaliacao',
+    resultado_final_selecao: 'resultado_final',
+    resultado_preliminar_habilitacao: 'resultado_preliminar_habilitacao',
+    resultado_definitivo_habilitacao: 'resultado_final',
+    homologacao_final: 'homologacao',
+  }
+
+  notifyInAppEditalFase({
+    editalId,
+    novaFase: faseMap[tipo],
+  }).catch(() => {})
+
   return { success: true, titulo }
 }
 
