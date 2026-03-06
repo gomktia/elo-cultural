@@ -305,6 +305,51 @@ export interface PrestacaoEquipe {
   created_at: string
 }
 
+// ============================================================
+// Habilitacao - Checklist de Documentos
+// ============================================================
+
+export interface EditalDocHabilitacao {
+  id: string
+  edital_id: string
+  tenant_id: string
+  tipo_documento: string
+  nome: string
+  descricao: string | null
+  obrigatorio: boolean
+  ordem: number
+  created_at: string
+}
+
+export type StatusConferenciaDoc = 'pendente' | 'aprovado' | 'reprovado' | 'pendencia'
+
+export interface HabilitacaoDocConferencia {
+  id: string
+  projeto_id: string
+  doc_exigido_id: string
+  documento_id: string | null
+  tenant_id: string
+  status: StatusConferenciaDoc
+  observacao: string | null
+  conferido_por: string | null
+  conferido_em: string | null
+  created_at: string
+}
+
+export interface HabilitacaoDiligencia {
+  id: string
+  projeto_id: string
+  tenant_id: string
+  numero: number
+  descricao: string
+  prazo_dias: number
+  data_envio: string
+  data_resposta: string | null
+  respondida: boolean
+  criado_por: string | null
+  created_at: string
+}
+
 export interface LogAuditoria {
   id: string
   tenant_id: string
