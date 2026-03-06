@@ -169,7 +169,7 @@ export function EditalConfigManager({ config, onChange }: EditalConfigManagerPro
               type="button"
               variant={config.tipo_edital === t.value ? 'default' : 'outline'}
               size="sm"
-              className="rounded-lg text-[11px] h-8"
+              className="rounded-lg text-[11px] h-8 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]"
               onClick={() => update('tipo_edital', t.value)}
             >
               {t.label}
@@ -185,7 +185,7 @@ export function EditalConfigManager({ config, onChange }: EditalConfigManagerPro
             <Star className="h-4 w-4 text-amber-500" />
             <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Categorias de Seleção</h3>
           </div>
-          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1" onClick={addCategoria}>
+          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={addCategoria}>
             <Plus className="h-3 w-3" /> Adicionar
           </Button>
         </div>
@@ -224,7 +224,7 @@ export function EditalConfigManager({ config, onChange }: EditalConfigManagerPro
             <ShieldCheck className="h-4 w-4 text-green-600" />
             <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Cotas</h3>
           </div>
-          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1" onClick={addCota}>
+          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={addCota}>
             <Plus className="h-3 w-3" /> Adicionar
           </Button>
         </div>
@@ -273,7 +273,7 @@ export function EditalConfigManager({ config, onChange }: EditalConfigManagerPro
             <Star className="h-4 w-4 text-[var(--brand-primary)]" />
             <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Pontuação Extra (Ações Afirmativas)</h3>
           </div>
-          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1" onClick={addPontuacao}>
+          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={addPontuacao}>
             <Plus className="h-3 w-3" /> Adicionar
           </Button>
         </div>
@@ -381,7 +381,7 @@ export function EditalConfigManager({ config, onChange }: EditalConfigManagerPro
             <MapPin className="h-4 w-4 text-rose-500" />
             <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700">Reserva de Vagas Regionais</h3>
           </div>
-          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1" onClick={addReserva}>
+          <Button type="button" variant="outline" size="sm" className="rounded-lg text-[11px] h-7 gap-1 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={addReserva}>
             <Plus className="h-3 w-3" /> Adicionar
           </Button>
         </div>

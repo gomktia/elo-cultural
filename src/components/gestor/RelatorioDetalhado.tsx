@@ -215,24 +215,24 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
                   />
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <Button variant={filtroHabilitacao === 'todos' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9" onClick={() => setFiltroHabilitacao('todos')}>
+                  <Button variant={filtroHabilitacao === 'todos' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroHabilitacao('todos')}>
                     Todos ({projetos.length})
                   </Button>
                   {habilitacaoOptions.map(s => (
-                    <Button key={s} variant={filtroHabilitacao === s ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9 capitalize" onClick={() => setFiltroHabilitacao(s)}>
+                    <Button key={s} variant={filtroHabilitacao === s ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9 capitalize border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroHabilitacao(s)}>
                       {s} ({projetos.filter(p => p.status_habilitacao === s).length})
                     </Button>
                   ))}
                 </div>
                 <div className="flex gap-2">
-                  <Button variant={filtroAvaliacao === 'avaliados' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9" onClick={() => setFiltroAvaliacao(filtroAvaliacao === 'avaliados' ? 'todos' : 'avaliados')}>
+                  <Button variant={filtroAvaliacao === 'avaliados' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroAvaliacao(filtroAvaliacao === 'avaliados' ? 'todos' : 'avaliados')}>
                     Avaliados
                   </Button>
-                  <Button variant={filtroAvaliacao === 'pendentes' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9" onClick={() => setFiltroAvaliacao(filtroAvaliacao === 'pendentes' ? 'todos' : 'pendentes')}>
+                  <Button variant={filtroAvaliacao === 'pendentes' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-9 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroAvaliacao(filtroAvaliacao === 'pendentes' ? 'todos' : 'pendentes')}>
                     Pendentes
                   </Button>
                 </div>
-                <Button variant="outline" size="sm" className="rounded-lg text-[11px] h-9 gap-1.5" onClick={exportCSV} disabled={filtered.length === 0}>
+                <Button variant="outline" size="sm" className="rounded-lg text-[11px] h-9 gap-1.5 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={exportCSV} disabled={filtered.length === 0}>
                   <Download className="h-3.5 w-3.5" />
                   CSV
                 </Button>
@@ -243,11 +243,11 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
                   {categoriaOptions.length > 0 && (
                     <div className="flex gap-2 flex-wrap items-center">
                       <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Categoria:</span>
-                      <Button variant={filtroCategoria === 'todas' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroCategoria('todas')}>
+                      <Button variant={filtroCategoria === 'todas' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroCategoria('todas')}>
                         Todas
                       </Button>
                       {categoriaOptions.map(c => (
-                        <Button key={c} variant={filtroCategoria === c ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroCategoria(c)}>
+                        <Button key={c} variant={filtroCategoria === c ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroCategoria(c)}>
                           {c}
                         </Button>
                       ))}
@@ -256,11 +256,11 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
                   {generoOptions.length > 0 && (
                     <div className="flex gap-2 flex-wrap items-center">
                       <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Gênero:</span>
-                      <Button variant={filtroGenero === 'todos' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroGenero('todos')}>
+                      <Button variant={filtroGenero === 'todos' ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroGenero('todos')}>
                         Todos
                       </Button>
                       {generoOptions.map(g => (
-                        <Button key={g} variant={filtroGenero === g ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7" onClick={() => setFiltroGenero(g)}>
+                        <Button key={g} variant={filtroGenero === g ? 'default' : 'outline'} size="sm" className="rounded-lg text-[11px] h-7 border-slate-200 shadow-none hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)]" onClick={() => setFiltroGenero(g)}>
                           {g}
                         </Button>
                       ))}

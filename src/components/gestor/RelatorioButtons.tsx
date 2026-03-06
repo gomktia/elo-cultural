@@ -80,7 +80,7 @@ export function DownloadRelatorios({
     return (
         <DropdownMenu onOpenChange={(open) => open && fetchData()}>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2 rounded-xl border-brand-primary/20 hover:bg-brand-primary/5 hover:text-brand-primary transition-all">
+                <Button variant="outline" size="sm" className="gap-2 rounded-xl border-white/40 text-white hover:bg-white/20 hover:text-white transition-all">
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
                     <span>Baixar Relatórios</span>
                 </Button>
@@ -91,7 +91,7 @@ export function DownloadRelatorios({
 
                 {data ? (
                     <>
-                        <DropdownMenuItem asChild className="focus:bg-brand-primary focus:text-white hover:bg-brand-primary hover:text-white rounded-lg cursor-pointer transition-colors px-3 py-2">
+                        <DropdownMenuItem asChild className="focus:bg-[var(--brand-primary)] focus:text-white hover:bg-[var(--brand-primary)] hover:text-white rounded-lg cursor-pointer transition-colors px-3 py-2">
                             <PDFDownloadLink
                                 document={gerarRanking({
                                     editalTitulo,
@@ -107,7 +107,7 @@ export function DownloadRelatorios({
                             </PDFDownloadLink>
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem asChild className="focus:bg-brand-primary focus:text-white hover:bg-brand-primary hover:text-white rounded-lg cursor-pointer transition-colors px-3 py-2">
+                        <DropdownMenuItem asChild className="focus:bg-[var(--brand-primary)] focus:text-white hover:bg-[var(--brand-primary)] hover:text-white rounded-lg cursor-pointer transition-colors px-3 py-2">
                             <PDFDownloadLink
                                 document={gerarAtaResultado({
                                     editalTitulo,
@@ -125,7 +125,7 @@ export function DownloadRelatorios({
                             </PDFDownloadLink>
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem asChild className="focus:bg-brand-primary focus:text-white hover:bg-brand-primary hover:text-white rounded-lg cursor-pointer transition-colors px-3 py-2 text-slate-700">
+                        <DropdownMenuItem asChild className="focus:bg-[var(--brand-primary)] focus:text-white hover:bg-[var(--brand-primary)] hover:text-white rounded-lg cursor-pointer transition-colors px-3 py-2 text-slate-700">
                             <PDFDownloadLink
                                 document={gerarHomologacao({
                                     editalTitulo,

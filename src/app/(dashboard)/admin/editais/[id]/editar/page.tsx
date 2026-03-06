@@ -9,11 +9,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { EditalFileUpload } from '@/components/edital/EditalFileUpload'
-import { EditalConfigManager, type EditalConfig, type CategoriaItem } from '@/components/edital/EditalConfigManager'
+import { EditalConfigManager, type EditalConfig } from '@/components/edital/EditalConfigManager'
 import { toast } from 'sonner'
-import { Loader2, ArrowLeft } from 'lucide-react'
+import {
+  Loader2, ArrowLeft, FileText, CalendarDays, Upload,
+  Settings2, DollarSign, Hash, Type, AlignLeft,
+} from 'lucide-react'
 import Link from 'next/link'
 
 interface UploadedFile {
@@ -27,13 +30,19 @@ function toLocalDatetime(isoString: string | null | undefined): string {
   if (!isoString) return ''
   try {
     const d = new Date(isoString)
-    // Format as YYYY-MM-DDTHH:MM for datetime-local input
     const pad = (n: number) => n.toString().padStart(2, '0')
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
   } catch {
     return ''
   }
 }
+
+const sectionHeader = 'flex items-center gap-2.5 mb-5'
+const sectionIcon = 'h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0'
+const sectionTitle = 'text-sm font-bold text-slate-900 leading-tight'
+const sectionDesc = 'text-xs text-slate-400 font-medium'
+const fieldLabel = 'text-xs font-medium text-slate-500 uppercase tracking-wide'
+const fieldInput = 'h-10 rounded-xl border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)]/30 transition-all placeholder:text-slate-300'
 
 export default function EditarEditalPage() {
   const router = useRouter()
@@ -82,7 +91,7 @@ export default function EditarEditalPage() {
 
       const { data: edital } = await supabase.from('editais').select('*').eq('id', id).single()
       if (!edital) {
-        toast.error('Edital não encontrado')
+        toast.error('Edital nao encontrado')
         router.push('/admin/editais')
         return
       }
@@ -104,7 +113,6 @@ export default function EditarEditalPage() {
         fim_recurso_habilitacao: toLocalDatetime(edital.fim_recurso_habilitacao),
       })
 
-      // Load existing documents
       const { data: docs } = await supabase
         .from('edital_documentos')
         .select('nome_arquivo, storage_path, tamanho_bytes, tipo')
@@ -115,7 +123,6 @@ export default function EditarEditalPage() {
         setAnexoFiles(docs.filter(d => d.tipo !== 'edital_pdf'))
       }
 
-      // Load categorias
       const { data: cats } = await supabase
         .from('edital_categorias')
         .select('id, nome, vagas')
@@ -153,7 +160,6 @@ export default function EditarEditalPage() {
 
     const supabase = createClient()
 
-    // Fetch current state for audit trail
     const { data: { user } } = await supabase.auth.getUser()
     const { data: editalAntigo } = await supabase
       .from('editais')
@@ -192,7 +198,6 @@ export default function EditarEditalPage() {
       return
     }
 
-    // Sync categorias: delete old, insert current
     await supabase.from('edital_categorias').delete().eq('edital_id', id)
     const catsToInsert = editalConfig.categorias.filter(c => c.nome.trim()).map(c => ({
       edital_id: id,
@@ -204,7 +209,6 @@ export default function EditarEditalPage() {
       await supabase.from('edital_categorias').insert(catsToInsert)
     }
 
-    // Sync documents: delete old ones, insert current ones
     await supabase.from('edital_documentos').delete().eq('edital_id', id)
     const allFiles = [...editalFiles, ...anexoFiles]
     if (allFiles.length > 0 && tenantId) {
@@ -253,17 +257,18 @@ export default function EditarEditalPage() {
   }
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-5 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Header */}
       <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
         <div className="h-1 w-full bg-[var(--brand-primary)]" />
         <CardContent className="p-4">
-          <div className="flex items-start gap-5">
+          <div className="flex items-center gap-4">
             <Link href={`/admin/editais/${id}`}>
-              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all mt-0.5">
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 shadow-none text-slate-400 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/30 hover:bg-[var(--brand-primary)]/5 transition-all">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <div className="space-y-2">
+            <div className="space-y-0.5">
               <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Editar Edital</h1>
               <p className="text-sm text-slate-500">Atualize os dados e prazos do edital.</p>
             </div>
@@ -271,37 +276,38 @@ export default function EditarEditalPage() {
         </CardContent>
       </Card>
 
-      <form onSubmit={handleSubmit}>
-        <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
-          <CardHeader className="bg-[var(--brand-primary)] p-4">
-            <CardTitle className="text-xs font-medium uppercase tracking-wide text-white">Dados Estruturais</CardTitle>
-          </CardHeader>
-          <CardContent className="p-5 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* 1. Dados Basicos */}
+        <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardContent className="p-6">
+            <div className={sectionHeader}>
+              <div className={`${sectionIcon} bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]`}>
+                <FileText className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className={sectionTitle}>Dados do Edital</h2>
+                <p className={sectionDesc}>Informacoes basicas de identificacao</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
-                <Label htmlFor="numero" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Número do Edital *</Label>
+                <Label htmlFor="numero" className={fieldLabel}>
+                  <span className="inline-flex items-center gap-1.5"><Hash className="h-3 w-3" /> Numero do Edital *</span>
+                </Label>
                 <Input
                   id="numero"
                   placeholder="Ex: 001/2026"
                   value={form.numero_edital}
                   onChange={e => updateForm('numero_edital', e.target.value)}
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
-                  required
-                />
-              </div>
-              <div className="space-y-1.5 md:col-span-2">
-                <Label htmlFor="titulo" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Título do Edital *</Label>
-                <Input
-                  id="titulo"
-                  placeholder="Ex: Prêmio Cultura Viva 2026"
-                  value={form.titulo}
-                  onChange={e => updateForm('titulo', e.target.value)}
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className={fieldInput}
                   required
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="valor_total" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Dotação Orçamentária (R$)</Label>
+                <Label htmlFor="valor_total" className={fieldLabel}>
+                  <span className="inline-flex items-center gap-1.5"><DollarSign className="h-3 w-3" /> Dotacao Orcamentaria (R$)</span>
+                </Label>
                 <Input
                   id="valor_total"
                   type="number"
@@ -310,112 +316,173 @@ export default function EditarEditalPage() {
                   placeholder="Ex: 500000.00"
                   value={form.valor_total}
                   onChange={e => updateForm('valor_total', e.target.value)}
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                  className={fieldInput}
+                />
+              </div>
+              <div className="space-y-1.5 md:col-span-2">
+                <Label htmlFor="titulo" className={fieldLabel}>
+                  <span className="inline-flex items-center gap-1.5"><Type className="h-3 w-3" /> Titulo do Edital *</span>
+                </Label>
+                <Input
+                  id="titulo"
+                  placeholder="Ex: Premio Cultura Viva 2026"
+                  value={form.titulo}
+                  onChange={e => updateForm('titulo', e.target.value)}
+                  className={fieldInput}
+                  required
+                />
+              </div>
+              <div className="space-y-1.5 md:col-span-2">
+                <Label htmlFor="descricao" className={fieldLabel}>
+                  <span className="inline-flex items-center gap-1.5"><AlignLeft className="h-3 w-3" /> Descricao</span>
+                </Label>
+                <Textarea
+                  id="descricao"
+                  placeholder="Detalhe o objetivo e as regras gerais do edital..."
+                  value={form.descricao}
+                  onChange={e => updateForm('descricao', e.target.value)}
+                  rows={4}
+                  className="rounded-xl border-slate-200 bg-white text-sm font-medium focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)]/30 transition-all placeholder:text-slate-300 resize-none"
                 />
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="descricao" className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Descrição</Label>
-              <Textarea
-                id="descricao"
-                placeholder="Detalhe o objetivo e as regras gerais..."
-                value={form.descricao}
-                onChange={e => updateForm('descricao', e.target.value)}
-                rows={4}
-                className="rounded-2xl border-slate-200 bg-slate-50/50 font-medium text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início das Inscrições</Label>
-                <Input type="datetime-local" value={form.inicio_inscricao} onChange={e => updateForm('inicio_inscricao', e.target.value)}
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
+        {/* 2. Cronograma */}
+        <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardContent className="p-6">
+            <div className={sectionHeader}>
+              <div className={`${sectionIcon} bg-amber-50 text-amber-500`}>
+                <CalendarDays className="h-4 w-4" />
               </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim das Inscrições</Label>
-                <Input type="datetime-local" value={form.fim_inscricao} onChange={e => updateForm('fim_inscricao', e.target.value)}
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início dos Recursos</Label>
-                <Input type="datetime-local" value={form.inicio_recurso} onChange={e => updateForm('inicio_recurso', e.target.value)}
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim dos Recursos</Label>
-                <Input type="datetime-local" value={form.fim_recurso} onChange={e => updateForm('fim_recurso', e.target.value)}
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
+              <div>
+                <h2 className={sectionTitle}>Cronograma</h2>
+                <p className={sectionDesc}>Datas de inscricao e prazos de recurso</p>
               </div>
             </div>
 
-            {/* Documentos do Edital */}
-            {tenantId && (
-              <div className="pt-4 border-t border-slate-200 mt-2">
-                <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Documentos do Edital</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <EditalFileUpload tenantId={tenantId} label="PDF do Edital" tipo="edital_pdf" files={editalFiles} onFilesChange={setEditalFiles} multiple={false} />
-                  <EditalFileUpload tenantId={tenantId} label="Anexos" tipo="anexo" files={anexoFiles} onFilesChange={setAnexoFiles} multiple={true} />
-                </div>
-              </div>
-            )}
-
-            {/* Configuração do Edital */}
-            <div className="pt-4 border-t border-slate-200 mt-2">
-              <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Configuração do Edital</h3>
-              <EditalConfigManager config={editalConfig} onChange={setEditalConfig} />
-            </div>
-
-            {/* Prazos de Recurso */}
-            <div className="pt-4 border-t border-slate-200 mt-2">
-              <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-4">Prazos de Recurso</h3>
+            <div className="mb-5">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-3 pl-0.5">Periodo de Inscricoes</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início Recurso da Lista de Inscritos</Label>
-                  <Input type="datetime-local" value={form.inicio_recurso_inscricao} onChange={e => updateForm('inicio_recurso_inscricao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
+                  <Label className={fieldLabel}>Inicio</Label>
+                  <Input type="datetime-local" value={form.inicio_inscricao} onChange={e => updateForm('inicio_inscricao', e.target.value)} className={fieldInput} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim Recurso da Lista de Inscritos</Label>
-                  <Input type="datetime-local" value={form.fim_recurso_inscricao} onChange={e => updateForm('fim_recurso_inscricao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início Recurso da Seleção</Label>
-                  <Input type="datetime-local" value={form.inicio_recurso_selecao} onChange={e => updateForm('inicio_recurso_selecao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim Recurso da Seleção</Label>
-                  <Input type="datetime-local" value={form.fim_recurso_selecao} onChange={e => updateForm('fim_recurso_selecao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Início Recurso da Habilitação</Label>
-                  <Input type="datetime-local" value={form.inicio_recurso_habilitacao} onChange={e => updateForm('inicio_recurso_habilitacao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-slate-400 uppercase tracking-wide ml-1">Fim Recurso da Habilitação</Label>
-                  <Input type="datetime-local" value={form.fim_recurso_habilitacao} onChange={e => updateForm('fim_recurso_habilitacao', e.target.value)}
-                    className="h-10 rounded-xl border-slate-200 bg-slate-50/50 font-bold text-sm focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all" />
+                  <Label className={fieldLabel}>Fim</Label>
+                  <Input type="datetime-local" value={form.fim_inscricao} onChange={e => updateForm('fim_inscricao', e.target.value)} className={fieldInput} />
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-6 border-t border-slate-50 mt-4">
+            <div className="mb-5 pt-5 border-t border-slate-100">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-3 pl-0.5">Recursos Gerais</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className={fieldLabel}>Inicio</Label>
+                  <Input type="datetime-local" value={form.inicio_recurso} onChange={e => updateForm('inicio_recurso', e.target.value)} className={fieldInput} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className={fieldLabel}>Fim</Label>
+                  <Input type="datetime-local" value={form.fim_recurso} onChange={e => updateForm('fim_recurso', e.target.value)} className={fieldInput} />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-5 border-t border-slate-100">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-3 pl-0.5">Recursos por Fase</p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className={fieldLabel}>Inicio Recurso Lista Inscritos</Label>
+                    <Input type="datetime-local" value={form.inicio_recurso_inscricao} onChange={e => updateForm('inicio_recurso_inscricao', e.target.value)} className={fieldInput} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className={fieldLabel}>Fim Recurso Lista Inscritos</Label>
+                    <Input type="datetime-local" value={form.fim_recurso_inscricao} onChange={e => updateForm('fim_recurso_inscricao', e.target.value)} className={fieldInput} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className={fieldLabel}>Inicio Recurso Selecao</Label>
+                    <Input type="datetime-local" value={form.inicio_recurso_selecao} onChange={e => updateForm('inicio_recurso_selecao', e.target.value)} className={fieldInput} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className={fieldLabel}>Fim Recurso Selecao</Label>
+                    <Input type="datetime-local" value={form.fim_recurso_selecao} onChange={e => updateForm('fim_recurso_selecao', e.target.value)} className={fieldInput} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className={fieldLabel}>Inicio Recurso Habilitacao</Label>
+                    <Input type="datetime-local" value={form.inicio_recurso_habilitacao} onChange={e => updateForm('inicio_recurso_habilitacao', e.target.value)} className={fieldInput} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className={fieldLabel}>Fim Recurso Habilitacao</Label>
+                    <Input type="datetime-local" value={form.fim_recurso_habilitacao} onChange={e => updateForm('fim_recurso_habilitacao', e.target.value)} className={fieldInput} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 3. Documentos */}
+        {tenantId && (
+          <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+            <CardContent className="p-6">
+              <div className={sectionHeader}>
+                <div className={`${sectionIcon} bg-blue-50 text-blue-500`}>
+                  <Upload className="h-4 w-4" />
+                </div>
+                <div>
+                  <h2 className={sectionTitle}>Documentos</h2>
+                  <p className={sectionDesc}>PDF do edital e anexos complementares</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <EditalFileUpload tenantId={tenantId} label="PDF do Edital" tipo="edital_pdf" files={editalFiles} onFilesChange={setEditalFiles} multiple={false} />
+                <EditalFileUpload tenantId={tenantId} label="Anexos" tipo="anexo" files={anexoFiles} onFilesChange={setAnexoFiles} multiple={true} />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 4. Configuracao */}
+        <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardContent className="p-6">
+            <div className={sectionHeader}>
+              <div className={`${sectionIcon} bg-purple-50 text-purple-500`}>
+                <Settings2 className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className={sectionTitle}>Configuracao do Edital</h2>
+                <p className={sectionDesc}>Tipo, categorias, cotas e acoes afirmativas</p>
+              </div>
+            </div>
+
+            <EditalConfigManager config={editalConfig} onChange={setEditalConfig} />
+          </CardContent>
+        </Card>
+
+        {/* Footer Actions */}
+        <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
               <Link href={`/admin/editais/${id}`}>
-                <Button variant="ghost" type="button" className="h-10 px-6 rounded-xl font-bold text-xs uppercase tracking-wide text-slate-400 hover:text-slate-900 transition-all">
+                <Button variant="ghost" type="button" className="h-10 px-5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-700 transition-all">
                   Cancelar
                 </Button>
               </Link>
               <Button
                 type="submit"
                 disabled={saving}
-                className="h-10 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs uppercase tracking-wide shadow-xl shadow-[#0047AB]/20 transition-all active:scale-95"
+                className="h-11 px-8 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-sm shadow-lg shadow-[var(--brand-primary)]/20 transition-all active:scale-95"
               >
-                {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Alterações'}
+                {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {saving ? 'Salvando...' : 'Salvar Alteracoes'}
               </Button>
             </div>
           </CardContent>
