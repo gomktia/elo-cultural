@@ -10,9 +10,45 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DocumentUpload } from './DocumentUpload'
 import { toast } from 'sonner'
-import { Loader2, ArrowLeft, ArrowRight, Check } from 'lucide-react'
+import { Loader2, ArrowLeft, ArrowRight, Check, Target, Users, MapPin, Calendar, Megaphone } from 'lucide-react'
+
+const AREAS_PROJETO = [
+  { value: 'artes_digitais', label: 'Artes Digitais' },
+  { value: 'artes_transversais', label: 'Artes Transversais' },
+  { value: 'artes_visuais', label: 'Artes Visuais' },
+  { value: 'artesanato', label: 'Artesanato' },
+  { value: 'audiovisual', label: 'Audiovisual' },
+  { value: 'circo', label: 'Circo' },
+  { value: 'cultura_popular', label: 'Cultura Popular' },
+  { value: 'danca', label: 'Danca' },
+  { value: 'economia_criativa', label: 'Economia Criativa' },
+  { value: 'livro_literatura', label: 'Livro e Literatura' },
+  { value: 'musica', label: 'Musica' },
+  { value: 'patrimonio', label: 'Patrimonio Cultural' },
+  { value: 'teatro', label: 'Teatro' },
+  { value: 'tradicao_folclore', label: 'Tradicao e Folclore' },
+  { value: 'outras', label: 'Outras' },
+]
+
+const PUBLICO_PRIORITARIO = [
+  { value: 'vitimas_violencia', label: 'Vitimas de violencia' },
+  { value: 'pobreza', label: 'Pessoas em situacao de pobreza' },
+  { value: 'situacao_rua', label: 'Pessoas em situacao de rua' },
+  { value: 'privacao_liberdade', label: 'Pessoas privadas de liberdade' },
+  { value: 'pcd', label: 'Pessoas com deficiencia' },
+  { value: 'sofrimento_fisico_psiquico', label: 'Pessoas em sofrimento fisico/psiquico' },
+  { value: 'mulheres', label: 'Mulheres' },
+  { value: 'lgbtqiapn', label: 'LGBTQIAPN+' },
+  { value: 'povos_tradicionais', label: 'Povos e comunidades tradicionais' },
+  { value: 'negros', label: 'Pessoas negras' },
+  { value: 'ciganos', label: 'Povos ciganos' },
+  { value: 'indigenas', label: 'Povos indigenas' },
+  { value: 'aberto_todos', label: 'Aberto a todos' },
+  { value: 'outro', label: 'Outro' },
+]
 
 interface InscricaoFormProps {
   editalId: string
@@ -49,7 +85,25 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     descricao_tecnica: '',
     orcamento_total: '',
     cronograma_execucao: '',
+    // Novos campos estruturados
+    minicurriculo_proponente: '',
+    objetivos: '',
+    metas_projeto: '',
+    perfil_publico: '',
+    local_execucao: '',
+    periodo_execucao_inicio: '',
+    periodo_execucao_fim: '',
+    estrategia_divulgacao: '',
+    outras_fontes_detalhamento: '',
+    venda_detalhamento: '',
+    contrapartida_social: '',
   })
+  const [areasProjetoSelected, setAreasProjetoSelected] = useState<string[]>([])
+  const [publicoPrioritarioSelected, setPublicoPrioritarioSelected] = useState<string[]>([])
+  const [outrasFontes, setOutrasFontes] = useState(false)
+  const [vendaProdutos, setVendaProdutos] = useState(false)
+  const [concorreCota, setConcorreCota] = useState(false)
+  const [tipoCota, setTipoCota] = useState('')
 
   useEffect(() => {
     const supabase = createClient()
@@ -70,6 +124,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         if (data && data.length > 0) setCamposExtras(data)
       })
   }, [editalId])
+
   const [documents, setDocuments] = useState<Array<{
     nome_arquivo: string
     storage_path: string
@@ -82,13 +137,21 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     setForm(prev => ({ ...prev, [field]: value }))
   }
 
+  function toggleArrayItem(arr: string[], item: string, setter: (v: string[]) => void) {
+    if (arr.includes(item)) {
+      setter(arr.filter(a => a !== item))
+    } else {
+      setter([...arr, item])
+    }
+  }
+
   function handleDocUpload(doc: { nome_arquivo: string; storage_path: string; tamanho_bytes: number; tipo: string }) {
     setDocuments(prev => [...prev, doc])
   }
 
   async function handleSubmit() {
     if (!aceitaTermos) {
-      toast.error('Você deve aceitar os termos para enviar.')
+      toast.error('Voce deve aceitar os termos para enviar.')
       return
     }
 
@@ -101,7 +164,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     setLoading(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { toast.error('Sessão expirada'); setLoading(false); return }
+    if (!user) { toast.error('Sessao expirada'); setLoading(false); return }
 
     const protocolo = `PROT-${Date.now().toString(36).toUpperCase()}`
 
@@ -122,17 +185,34 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           camposExtras.map(c => [c.label, camposValues[c.id] || ''])
         ) : {},
         ip_submissao: null,
+        // Novos campos estruturados
+        areas_projeto: areasProjetoSelected.length > 0 ? areasProjetoSelected : null,
+        minicurriculo_proponente: form.minicurriculo_proponente || null,
+        objetivos: form.objetivos || null,
+        metas_projeto: form.metas_projeto || null,
+        perfil_publico: form.perfil_publico || null,
+        publico_prioritario: publicoPrioritarioSelected.length > 0 ? publicoPrioritarioSelected : null,
+        local_execucao: form.local_execucao || null,
+        periodo_execucao_inicio: form.periodo_execucao_inicio || null,
+        periodo_execucao_fim: form.periodo_execucao_fim || null,
+        estrategia_divulgacao: form.estrategia_divulgacao || null,
+        outras_fontes_recurso: outrasFontes,
+        outras_fontes_detalhamento: outrasFontes ? (form.outras_fontes_detalhamento || null) : null,
+        venda_produtos_ingressos: vendaProdutos,
+        venda_detalhamento: vendaProdutos ? (form.venda_detalhamento || null) : null,
+        contrapartida_social: form.contrapartida_social || null,
+        concorre_cota: concorreCota,
+        tipo_cota: concorreCota ? (tipoCota || null) : null,
       })
       .select('id')
       .single()
 
     if (error) {
-      toast.error('Erro ao enviar inscrição: ' + error.message)
+      toast.error('Erro ao enviar inscricao: ' + error.message)
       setLoading(false)
       return
     }
 
-    // Save documents
     if (documents.length > 0 && projeto) {
       await supabase.from('projeto_documentos').insert(
         documents.map(doc => ({
@@ -161,9 +241,8 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       },
     }).catch(() => {})
 
-    toast.success(`Inscrição enviada! Protocolo: ${protocolo}`)
+    toast.success(`Inscricao enviada! Protocolo: ${protocolo}`)
 
-    // Fire-and-forget: send confirmation email
     fetch('/api/email/notify-inscricao', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -177,7 +256,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     <div className="space-y-6">
       {/* Step indicator */}
       <div className="flex items-center gap-2">
-        {[1, 2, 3].map(s => (
+        {[1, 2, 3, 4].map(s => (
           <div key={s} className="flex items-center gap-2">
             <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
               s < step ? 'bg-primary text-primary-foreground' :
@@ -186,140 +265,174 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             }`}>
               {s < step ? <Check className="h-4 w-4" /> : s}
             </div>
-            <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'}`}>
-              {s === 1 ? 'Dados' : s === 2 ? 'Documentos' : 'Revisão'}
+            <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'} hidden sm:inline`}>
+              {s === 1 ? 'Projeto' : s === 2 ? 'Detalhes' : s === 3 ? 'Documentos' : 'Revisao'}
             </span>
-            {s < 3 && <div className="h-px w-8 bg-border" />}
+            {s < 4 && <div className="h-px w-4 sm:w-8 bg-border" />}
           </div>
         ))}
       </div>
 
-      {/* Step 1: Project Data */}
+      {/* Step 1: Basic Project Data */}
       {step === 1 && (
-        <Card>
+        <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
-            <CardTitle>Dados do Projeto</CardTitle>
+            <CardTitle className="text-lg font-semibold">Dados do Projeto</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="titulo">Título do Projeto *</Label>
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Titulo do Projeto *</Label>
               <Input
-                id="titulo"
                 value={form.titulo}
                 onChange={e => updateForm('titulo', e.target.value)}
                 placeholder="Nome do seu projeto cultural"
-                required
+                className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
+
             {categorias.length > 0 && (
               <div className="space-y-2">
-                <Label htmlFor="categoria">Categoria de Seleção *</Label>
-                <select
-                  id="categoria"
-                  value={categoriaId}
-                  onChange={e => setCategoriaId(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <option value="">Selecione uma categoria</option>
-                  {categorias.map(c => (
-                    <option key={c.id} value={c.id}>
-                      {c.nome}{c.vagas > 0 ? ` (${c.vagas} vagas)` : ''}
-                    </option>
-                  ))}
-                </select>
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Categoria de Selecao *</Label>
+                <Select value={categoriaId} onValueChange={setCategoriaId}>
+                  <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm">
+                    <SelectValue placeholder="Selecione uma categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categorias.map(c => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.nome}{c.vagas > 0 ? ` (${c.vagas} vagas)` : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
+
+            {/* Areas do Projeto */}
             <div className="space-y-2">
-              <Label htmlFor="resumo">Resumo</Label>
-              <Textarea
-                id="resumo"
-                value={form.resumo}
-                onChange={e => updateForm('resumo', e.target.value)}
-                placeholder="Breve descrição do projeto"
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="descricao_tecnica">Descrição Técnica</Label>
-              <Textarea
-                id="descricao_tecnica"
-                value={form.descricao_tecnica}
-                onChange={e => updateForm('descricao_tecnica', e.target.value)}
-                placeholder="Detalhamento técnico do projeto"
-                rows={5}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="orcamento">Orçamento Total (R$)</Label>
-                <Input
-                  id="orcamento"
-                  type="number"
-                  step="0.01"
-                  value={form.orcamento_total}
-                  onChange={e => updateForm('orcamento_total', e.target.value)}
-                  placeholder="0.00"
-                />
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                <Target className="h-3 w-3" /> Areas do Projeto
+              </Label>
+              <div className="flex flex-wrap gap-2">
+                {AREAS_PROJETO.map(area => (
+                  <button
+                    key={area.value}
+                    type="button"
+                    onClick={() => toggleArrayItem(areasProjetoSelected, area.value, setAreasProjetoSelected)}
+                    className={[
+                      'px-3 py-1.5 rounded-xl text-[11px] font-medium uppercase tracking-wider transition-all border',
+                      areasProjetoSelected.includes(area.value)
+                        ? 'bg-[#0047AB] text-white border-[#0047AB] shadow-sm'
+                        : 'bg-slate-50 text-slate-500 border-slate-200 hover:border-slate-300'
+                    ].join(' ')}
+                  >
+                    {area.label}
+                  </button>
+                ))}
               </div>
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="cronograma">Cronograma de Execução</Label>
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Resumo</Label>
               <Textarea
-                id="cronograma"
-                value={form.cronograma_execucao}
-                onChange={e => updateForm('cronograma_execucao', e.target.value)}
-                placeholder="Descreva as etapas e prazos"
+                value={form.resumo}
+                onChange={e => updateForm('resumo', e.target.value)}
+                placeholder="Breve descricao do projeto"
                 rows={3}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Minicurriculo do Proponente</Label>
+              <Textarea
+                value={form.minicurriculo_proponente}
+                onChange={e => updateForm('minicurriculo_proponente', e.target.value)}
+                placeholder="Descreva sua trajetoria cultural e qualificacoes relevantes"
+                rows={3}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Descricao Tecnica</Label>
+              <Textarea
+                value={form.descricao_tecnica}
+                onChange={e => updateForm('descricao_tecnica', e.target.value)}
+                placeholder="Detalhamento tecnico do projeto"
+                rows={5}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Objetivos</Label>
+              <Textarea
+                value={form.objetivos}
+                onChange={e => updateForm('objetivos', e.target.value)}
+                placeholder="Objetivos gerais e especificos do projeto"
+                rows={3}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Metas</Label>
+              <Textarea
+                value={form.metas_projeto}
+                onChange={e => updateForm('metas_projeto', e.target.value)}
+                placeholder="Metas quantitativas e qualitativas a serem alcancadas"
+                rows={3}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
 
             {/* Campos extras do edital */}
             {camposExtras.length > 0 && (
               <div className="border-t pt-4 mt-4 space-y-4">
-                <h4 className="text-sm font-semibold text-slate-700">Informações Adicionais</h4>
+                <h4 className="text-sm font-semibold text-slate-700">Informacoes Adicionais</h4>
                 {camposExtras.map(campo => (
                   <div key={campo.id} className="space-y-2">
-                    <Label htmlFor={`campo-${campo.id}`}>
+                    <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">
                       {campo.label}{campo.obrigatorio ? ' *' : ''}
                     </Label>
                     {campo.tipo === 'text' && (
                       <Input
-                        id={`campo-${campo.id}`}
                         value={camposValues[campo.id] || ''}
                         onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
                         placeholder={campo.placeholder || ''}
+                        className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
                       />
                     )}
                     {campo.tipo === 'textarea' && (
                       <Textarea
-                        id={`campo-${campo.id}`}
                         value={camposValues[campo.id] || ''}
                         onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
                         placeholder={campo.placeholder || ''}
                         rows={3}
+                        className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
                       />
                     )}
                     {campo.tipo === 'number' && (
                       <Input
-                        id={`campo-${campo.id}`}
                         type="number"
                         value={camposValues[campo.id] || ''}
                         onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
                         placeholder={campo.placeholder || ''}
+                        className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
                       />
                     )}
                     {campo.tipo === 'select' && (
-                      <select
-                        id={`campo-${campo.id}`}
-                        value={camposValues[campo.id] || ''}
-                        onChange={e => setCamposValues(prev => ({ ...prev, [campo.id]: e.target.value }))}
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Selecione...</option>
-                        {campo.opcoes?.map(op => (
-                          <option key={op} value={op}>{op}</option>
-                        ))}
-                      </select>
+                      <Select value={camposValues[campo.id] || ''} onValueChange={v => setCamposValues(prev => ({ ...prev, [campo.id]: v }))}>
+                        <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm">
+                          <SelectValue placeholder="Selecione..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {campo.opcoes?.map(op => (
+                            <SelectItem key={op} value={op}>{op}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     )}
                     {campo.tipo === 'checkbox' && (
                       <label className="flex items-center gap-2 cursor-pointer">
@@ -348,15 +461,19 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             )}
 
             <div className="flex justify-end">
-              <Button onClick={() => {
-                const missingRequired = camposExtras.filter(c => c.obrigatorio && !camposValues[c.id]?.trim())
-                if (missingRequired.length > 0) {
-                  toast.error(`Preencha: ${missingRequired.map(c => c.label).join(', ')}`)
-                  return
-                }
-                setStep(2)
-              }} disabled={!form.titulo || (categorias.length > 0 && !categoriaId)}>
-                Próximo
+              <Button
+                onClick={() => {
+                  const missingRequired = camposExtras.filter(c => c.obrigatorio && !camposValues[c.id]?.trim())
+                  if (missingRequired.length > 0) {
+                    toast.error(`Preencha: ${missingRequired.map(c => c.label).join(', ')}`)
+                    return
+                  }
+                  setStep(2)
+                }}
+                disabled={!form.titulo || (categorias.length > 0 && !categoriaId)}
+                className="rounded-xl"
+              >
+                Proximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -364,24 +481,236 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         </Card>
       )}
 
-      {/* Step 2: Documents */}
+      {/* Step 2: Detalhes (publico, local, orcamento, cotas) */}
       {step === 2 && (
-        <Card>
+        <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
-            <CardTitle>Documentos</CardTitle>
+            <CardTitle className="text-lg font-semibold">Detalhes do Projeto</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {/* Publico */}
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                <Users className="h-3 w-3" /> Perfil do Publico
+              </Label>
+              <Textarea
+                value={form.perfil_publico}
+                onChange={e => updateForm('perfil_publico', e.target.value)}
+                placeholder="Descreva o publico-alvo do projeto"
+                rows={2}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Publico Prioritario</Label>
+              <div className="flex flex-wrap gap-2">
+                {PUBLICO_PRIORITARIO.map(p => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => toggleArrayItem(publicoPrioritarioSelected, p.value, setPublicoPrioritarioSelected)}
+                    className={[
+                      'px-3 py-1.5 rounded-xl text-[11px] font-medium uppercase tracking-wider transition-all border',
+                      publicoPrioritarioSelected.includes(p.value)
+                        ? 'bg-[#e32a74] text-white border-[#e32a74] shadow-sm'
+                        : 'bg-slate-50 text-slate-500 border-slate-200 hover:border-slate-300'
+                    ].join(' ')}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Local e Periodo */}
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                <MapPin className="h-3 w-3" /> Local de Execucao
+              </Label>
+              <Input
+                value={form.local_execucao}
+                onChange={e => updateForm('local_execucao', e.target.value)}
+                placeholder="Endereco ou espaco onde o projeto sera realizado"
+                className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                  <Calendar className="h-3 w-3" /> Inicio da Execucao
+                </Label>
+                <Input
+                  type="date"
+                  value={form.periodo_execucao_inicio}
+                  onChange={e => updateForm('periodo_execucao_inicio', e.target.value)}
+                  className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Fim da Execucao</Label>
+                <Input
+                  type="date"
+                  value={form.periodo_execucao_fim}
+                  onChange={e => updateForm('periodo_execucao_fim', e.target.value)}
+                  className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Orcamento */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Orcamento Total (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={form.orcamento_total}
+                  onChange={e => updateForm('orcamento_total', e.target.value)}
+                  placeholder="0.00"
+                  className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Cronograma de Execucao</Label>
+              <Textarea
+                value={form.cronograma_execucao}
+                onChange={e => updateForm('cronograma_execucao', e.target.value)}
+                placeholder="Descreva as etapas e prazos"
+                rows={3}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            {/* Divulgacao */}
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                <Megaphone className="h-3 w-3" /> Estrategia de Divulgacao
+              </Label>
+              <Textarea
+                value={form.estrategia_divulgacao}
+                onChange={e => updateForm('estrategia_divulgacao', e.target.value)}
+                placeholder="Como o projeto sera divulgado?"
+                rows={2}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            {/* Contrapartida Social */}
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Contrapartida Social</Label>
+              <Textarea
+                value={form.contrapartida_social}
+                onChange={e => updateForm('contrapartida_social', e.target.value)}
+                placeholder="Descreva a contrapartida social do projeto"
+                rows={2}
+                className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
+              />
+            </div>
+
+            {/* Outras fontes */}
+            <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-200">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={outrasFontes}
+                  onChange={e => setOutrasFontes(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-200 text-[#0047AB]"
+                />
+                <span className="text-xs font-medium text-slate-700">O projeto possui outras fontes de recurso?</span>
+              </label>
+              {outrasFontes && (
+                <Textarea
+                  value={form.outras_fontes_detalhamento}
+                  onChange={e => updateForm('outras_fontes_detalhamento', e.target.value)}
+                  placeholder="Detalhe as outras fontes de recurso"
+                  rows={2}
+                  className="rounded-xl border-slate-200 bg-white text-sm"
+                />
+              )}
+            </div>
+
+            <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-200">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={vendaProdutos}
+                  onChange={e => setVendaProdutos(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-200 text-[#0047AB]"
+                />
+                <span className="text-xs font-medium text-slate-700">Havera venda de produtos ou ingressos?</span>
+              </label>
+              {vendaProdutos && (
+                <Textarea
+                  value={form.venda_detalhamento}
+                  onChange={e => updateForm('venda_detalhamento', e.target.value)}
+                  placeholder="Detalhe os produtos/ingressos e valores"
+                  rows={2}
+                  className="rounded-xl border-slate-200 bg-white text-sm"
+                />
+              )}
+            </div>
+
+            {/* Cotas */}
+            <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-200">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={concorreCota}
+                  onChange={e => setConcorreCota(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-200 text-[#0047AB]"
+                />
+                <span className="text-xs font-medium text-slate-700">Deseja concorrer a vagas reservadas (cotas)?</span>
+              </label>
+              {concorreCota && (
+                <Select value={tipoCota} onValueChange={setTipoCota}>
+                  <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-white text-sm">
+                    <SelectValue placeholder="Selecione o tipo de cota" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="negra">Pessoa Negra</SelectItem>
+                    <SelectItem value="indigena">Pessoa Indigena</SelectItem>
+                    <SelectItem value="pcd">Pessoa com Deficiencia (PcD)</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={() => setStep(1)} className="rounded-xl">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar
+              </Button>
+              <Button onClick={() => setStep(3)} className="rounded-xl">
+                Proximo
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Step 3: Documents */}
+      {step === 3 && (
+        <Card className="border border-slate-200 rounded-2xl shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Documentos</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <DocumentUpload tipo="identidade" label="Documento de Identidade" tenantId={tenantId} onUpload={handleDocUpload} />
             <DocumentUpload tipo="proposta" label="Proposta do Projeto" tenantId={tenantId} onUpload={handleDocUpload} />
-            <DocumentUpload tipo="orcamento" label="Planilha Orçamentária" tenantId={tenantId} onUpload={handleDocUpload} />
+            <DocumentUpload tipo="orcamento" label="Planilha Orcamentaria" tenantId={tenantId} onUpload={handleDocUpload} />
             <DocumentUpload tipo="complementar" label="Documentos Complementares" tenantId={tenantId} onUpload={handleDocUpload} />
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(1)}>
+              <Button variant="outline" onClick={() => setStep(2)} className="rounded-xl">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar
               </Button>
-              <Button onClick={() => setStep(3)}>
-                Próximo
+              <Button onClick={() => setStep(4)} className="rounded-xl">
+                Proximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -389,27 +718,41 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
         </Card>
       )}
 
-      {/* Step 3: Review */}
-      {step === 3 && (
-        <Card>
+      {/* Step 4: Review */}
+      {step === 4 && (
+        <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
-            <CardTitle>Revisão e Envio</CardTitle>
+            <CardTitle className="text-lg font-semibold">Revisao e Envio</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-md border p-4 space-y-2">
-              <h4 className="font-medium">Dados do Projeto</h4>
-              <p className="text-sm"><strong>Título:</strong> {form.titulo}</p>
+            <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
+              <h4 className="font-medium text-sm">Dados do Projeto</h4>
+              <p className="text-sm"><strong>Titulo:</strong> {form.titulo}</p>
               {categoriaId && (
                 <p className="text-sm"><strong>Categoria:</strong> {categorias.find(c => c.id === categoriaId)?.nome}</p>
               )}
+              {areasProjetoSelected.length > 0 && (
+                <p className="text-sm"><strong>Areas:</strong> {areasProjetoSelected.map(a => AREAS_PROJETO.find(ap => ap.value === a)?.label).join(', ')}</p>
+              )}
               {form.resumo && <p className="text-sm"><strong>Resumo:</strong> {form.resumo}</p>}
-              {form.orcamento_total && <p className="text-sm"><strong>Orçamento:</strong> R$ {parseFloat(form.orcamento_total).toFixed(2)}</p>}
+              {form.objetivos && <p className="text-sm"><strong>Objetivos:</strong> {form.objetivos}</p>}
+              {form.orcamento_total && <p className="text-sm"><strong>Orcamento:</strong> R$ {parseFloat(form.orcamento_total).toFixed(2)}</p>}
+              {form.local_execucao && <p className="text-sm"><strong>Local:</strong> {form.local_execucao}</p>}
+              {(form.periodo_execucao_inicio || form.periodo_execucao_fim) && (
+                <p className="text-sm"><strong>Periodo:</strong> {form.periodo_execucao_inicio} a {form.periodo_execucao_fim}</p>
+              )}
+              {concorreCota && tipoCota && (
+                <p className="text-sm"><strong>Cota:</strong> {tipoCota === 'negra' ? 'Pessoa Negra' : tipoCota === 'indigena' ? 'Pessoa Indigena' : 'PcD'}</p>
+              )}
+              {publicoPrioritarioSelected.length > 0 && (
+                <p className="text-sm"><strong>Publico prioritario:</strong> {publicoPrioritarioSelected.map(p => PUBLICO_PRIORITARIO.find(pp => pp.value === p)?.label).join(', ')}</p>
+              )}
               {camposExtras.filter(c => camposValues[c.id]?.trim()).map(c => (
                 <p key={c.id} className="text-sm"><strong>{c.label}:</strong> {camposValues[c.id]}</p>
               ))}
             </div>
-            <div className="rounded-md border p-4 space-y-2">
-              <h4 className="font-medium">Documentos ({documents.length})</h4>
+            <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
+              <h4 className="font-medium text-sm">Documentos ({documents.length})</h4>
               {documents.map((doc, i) => (
                 <p key={i} className="text-sm">{doc.tipo}: {doc.nome_arquivo}</p>
               ))}
@@ -426,17 +769,17 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="mt-1"
               />
               <label htmlFor="termos" className="text-sm text-muted-foreground leading-snug">
-                Declaro que as informações prestadas são verdadeiras e que estou ciente das regras do edital.
+                Declaro que as informacoes prestadas sao verdadeiras e que estou ciente das regras do edital.
               </label>
             </div>
             <div className="flex justify-between pt-4">
-              <Button variant="outline" onClick={() => setStep(2)}>
+              <Button variant="outline" onClick={() => setStep(3)} className="rounded-xl">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar
               </Button>
-              <Button onClick={handleSubmit} disabled={loading || !aceitaTermos}>
+              <Button onClick={handleSubmit} disabled={loading || !aceitaTermos} className="rounded-xl">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Enviar Inscrição
+                Enviar Inscricao
               </Button>
             </div>
           </CardContent>

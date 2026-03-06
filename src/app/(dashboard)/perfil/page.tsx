@@ -26,6 +26,8 @@ export default function PerfilPage() {
   const [proponenteData, setProponenteData] = useState({
     areas_atuacao: [] as string[], tempo_atuacao: '', renda: '', genero: '',
     orientacao_sexual: '', raca_etnia: '', pcd: false, endereco_completo: '', municipio: '', estado: '',
+    tipo_pessoa: 'fisica', nome_artistico: '', data_nascimento: '', comunidade_tradicional: 'nenhuma',
+    tipo_deficiencia: '', escolaridade: '', beneficiario_programa_social: 'nenhum', funcao_cultural: '',
   })
   const [avaliadorData, setAvaliadorData] = useState({
     curriculo_descricao: '', areas_avaliacao: [] as string[], lattes_url: '',
@@ -72,6 +74,14 @@ export default function PerfilPage() {
           endereco_completo: prof.endereco_completo || '',
           municipio: prof.municipio || '',
           estado: prof.estado || '',
+          tipo_pessoa: prof.tipo_pessoa || 'fisica',
+          nome_artistico: prof.nome_artistico || '',
+          data_nascimento: prof.data_nascimento || '',
+          comunidade_tradicional: prof.comunidade_tradicional || 'nenhuma',
+          tipo_deficiencia: prof.tipo_deficiencia || '',
+          escolaridade: prof.escolaridade || '',
+          beneficiario_programa_social: prof.beneficiario_programa_social || 'nenhum',
+          funcao_cultural: prof.funcao_cultural || '',
         })
       } else if (prof?.role === 'avaliador') {
         setAvaliadorData({
@@ -146,6 +156,14 @@ export default function PerfilPage() {
         endereco_completo: proponenteData.endereco_completo || null,
         municipio: proponenteData.municipio || null,
         estado: proponenteData.estado || null,
+        tipo_pessoa: proponenteData.tipo_pessoa || 'fisica',
+        nome_artistico: proponenteData.nome_artistico || null,
+        data_nascimento: proponenteData.data_nascimento || null,
+        comunidade_tradicional: proponenteData.comunidade_tradicional || 'nenhuma',
+        tipo_deficiencia: proponenteData.pcd ? (proponenteData.tipo_deficiencia || null) : null,
+        escolaridade: proponenteData.escolaridade || null,
+        beneficiario_programa_social: proponenteData.beneficiario_programa_social || 'nenhum',
+        funcao_cultural: proponenteData.funcao_cultural || null,
       }
     } else if (profile?.role === 'avaliador') {
       extraData = {

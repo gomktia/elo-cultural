@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MapPin, Briefcase, Heart } from 'lucide-react'
+import { MapPin, Briefcase, Heart, GraduationCap, Users, Calendar } from 'lucide-react'
 
 const AREAS_ATUACAO = [
   'Artes Visuais', 'Audiovisual', 'Circo', 'Dança', 'Design',
@@ -19,6 +19,66 @@ const ORIENTACAO_OPCOES = ['Heterossexual', 'Homossexual', 'Bissexual', 'Pansexu
 const RACA_OPCOES = ['Branca', 'Preta', 'Parda', 'Amarela', 'Indígena', 'Prefiro não informar']
 const ESTADOS = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
 
+const TIPO_PESSOA_OPCOES = [
+  { value: 'fisica', label: 'Pessoa Física' },
+  { value: 'juridica', label: 'Pessoa Jurídica' },
+  { value: 'coletivo_sem_cnpj', label: 'Coletivo sem CNPJ' },
+]
+
+const COMUNIDADE_OPCOES = [
+  { value: 'nenhuma', label: 'Nenhuma' },
+  { value: 'extrativistas', label: 'Extrativistas' },
+  { value: 'ribeirinhas', label: 'Ribeirinhas' },
+  { value: 'rurais', label: 'Rurais' },
+  { value: 'indigenas', label: 'Indígenas' },
+  { value: 'ciganos', label: 'Ciganos' },
+  { value: 'pescadores', label: 'Pescadores Artesanais' },
+  { value: 'terreiro', label: 'Povos de Terreiro' },
+  { value: 'quilombolas', label: 'Quilombolas' },
+  { value: 'outra', label: 'Outra' },
+]
+
+const TIPO_DEFICIENCIA_OPCOES = [
+  { value: '', label: 'Selecione...' },
+  { value: 'auditiva', label: 'Auditiva' },
+  { value: 'fisica', label: 'Física' },
+  { value: 'intelectual', label: 'Intelectual' },
+  { value: 'multipla', label: 'Múltipla' },
+  { value: 'visual', label: 'Visual' },
+  { value: 'outra', label: 'Outra' },
+]
+
+const ESCOLARIDADE_OPCOES = [
+  { value: 'sem_educacao_formal', label: 'Sem educação formal' },
+  { value: 'fundamental_incompleto', label: 'Fundamental incompleto' },
+  { value: 'fundamental_completo', label: 'Fundamental completo' },
+  { value: 'medio_incompleto', label: 'Médio incompleto' },
+  { value: 'medio_completo', label: 'Médio completo' },
+  { value: 'tecnico', label: 'Técnico' },
+  { value: 'superior_incompleto', label: 'Superior incompleto' },
+  { value: 'superior_completo', label: 'Superior completo' },
+  { value: 'pos_graduacao', label: 'Pós-graduação' },
+]
+
+const BENEFICIO_OPCOES = [
+  { value: 'nenhum', label: 'Nenhum' },
+  { value: 'bolsa_familia', label: 'Bolsa Família' },
+  { value: 'bpc', label: 'BPC (Benefício de Prestação Continuada)' },
+  { value: 'outro', label: 'Outro' },
+]
+
+const FUNCAO_CULTURAL_OPCOES = [
+  { value: '', label: 'Selecione...' },
+  { value: 'artista', label: 'Artista' },
+  { value: 'instrutor', label: 'Instrutor / Oficineiro' },
+  { value: 'curador', label: 'Curador' },
+  { value: 'produtor', label: 'Produtor Cultural' },
+  { value: 'gestor', label: 'Gestor Cultural' },
+  { value: 'tecnico', label: 'Técnico' },
+  { value: 'consultor', label: 'Consultor' },
+  { value: 'outro', label: 'Outro' },
+]
+
 interface ProponenteFormProps {
   form: {
     areas_atuacao: string[]
@@ -31,6 +91,14 @@ interface ProponenteFormProps {
     endereco_completo: string
     municipio: string
     estado: string
+    tipo_pessoa: string
+    nome_artistico: string
+    data_nascimento: string
+    comunidade_tradicional: string
+    tipo_deficiencia: string
+    escolaridade: string
+    beneficiario_programa_social: string
+    funcao_cultural: string
   }
   onChange: (field: string, value: any) => void
 }
@@ -47,6 +115,62 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
 
   return (
     <div className="space-y-6">
+      {/* Tipo de Pessoa + Nome Artístico */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1 flex items-center gap-2">
+            <Users className="h-3 w-3" /> Tipo de Pessoa
+          </Label>
+          <Select value={form.tipo_pessoa || 'fisica'} onValueChange={v => onChange('tipo_pessoa', v)}>
+            <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {TIPO_PESSOA_OPCOES.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nome Artístico / Social</Label>
+          <Input
+            placeholder="Nome artístico ou social (opcional)"
+            value={form.nome_artistico || ''}
+            onChange={e => onChange('nome_artistico', e.target.value)}
+            className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300"
+          />
+        </div>
+      </div>
+
+      {/* Data Nascimento + Escolaridade */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1 flex items-center gap-2">
+            <Calendar className="h-3 w-3" /> Data de Nascimento
+          </Label>
+          <Input
+            type="date"
+            value={form.data_nascimento || ''}
+            onChange={e => onChange('data_nascimento', e.target.value)}
+            className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1 flex items-center gap-2">
+            <GraduationCap className="h-3 w-3" /> Escolaridade
+          </Label>
+          <Select value={form.escolaridade || ''} onValueChange={v => onChange('escolaridade', v)}>
+            <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {ESCOLARIDADE_OPCOES.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       {/* Areas de Atuacao */}
       <div className="space-y-2">
         <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1 flex items-center gap-2">
@@ -72,6 +196,19 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Funcao Cultural */}
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Funcao Cultural Principal</Label>
+          <Select value={form.funcao_cultural || ''} onValueChange={v => onChange('funcao_cultural', v)}>
+            <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {FUNCAO_CULTURAL_OPCOES.filter(o => o.value).map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Tempo de Atuacao */}
         <div className="space-y-2">
           <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Tempo de Atuacao</Label>
@@ -94,6 +231,19 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
             </SelectTrigger>
             <SelectContent>
               {RENDA_OPCOES.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Beneficio Social */}
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Beneficiario de Programa Social</Label>
+          <Select value={form.beneficiario_programa_social || 'nenhum'} onValueChange={v => onChange('beneficiario_programa_social', v)}>
+            <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {BENEFICIO_OPCOES.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
@@ -139,6 +289,19 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
           </Select>
         </div>
 
+        {/* Comunidade Tradicional */}
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Comunidade Tradicional</Label>
+          <Select value={form.comunidade_tradicional || 'nenhuma'} onValueChange={v => onChange('comunidade_tradicional', v)}>
+            <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {COMUNIDADE_OPCOES.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* PCD */}
         <div className="space-y-2 flex items-end">
           <div className="flex items-center gap-3 bg-slate-50/50 p-3 rounded-2xl border border-slate-200 w-full h-11">
@@ -152,6 +315,21 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
             <Label htmlFor="pcd" className="text-xs text-slate-600 font-medium cursor-pointer">Pessoa com Deficiencia (PcD)</Label>
           </div>
         </div>
+
+        {/* Tipo Deficiencia - condicional */}
+        {form.pcd && (
+          <div className="space-y-2">
+            <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Tipo de Deficiencia</Label>
+            <Select value={form.tipo_deficiencia || ''} onValueChange={v => onChange('tipo_deficiencia', v)}>
+              <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900">
+                <SelectValue placeholder="Selecione..." />
+              </SelectTrigger>
+              <SelectContent>
+                {TIPO_DEFICIENCIA_OPCOES.filter(o => o.value).map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
       {/* Endereco */}

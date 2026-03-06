@@ -42,6 +42,14 @@ export default function CadastroPage() {
     endereco_completo: '',
     municipio: '',
     estado: '',
+    tipo_pessoa: 'fisica',
+    nome_artistico: '',
+    data_nascimento: '',
+    comunidade_tradicional: 'nenhuma',
+    tipo_deficiencia: '',
+    escolaridade: '',
+    beneficiario_programa_social: 'nenhum',
+    funcao_cultural: '',
   })
   const [avaliadorData, setAvaliadorData] = useState({
     curriculo_descricao: '',
@@ -138,6 +146,14 @@ export default function CadastroPage() {
           endereco_completo: proponenteData.endereco_completo || null,
           municipio: proponenteData.municipio || null,
           estado: proponenteData.estado || null,
+          tipo_pessoa: proponenteData.tipo_pessoa || 'fisica',
+          nome_artistico: proponenteData.nome_artistico || null,
+          data_nascimento: proponenteData.data_nascimento || null,
+          comunidade_tradicional: proponenteData.comunidade_tradicional || 'nenhuma',
+          tipo_deficiencia: proponenteData.pcd ? (proponenteData.tipo_deficiencia || null) : null,
+          escolaridade: proponenteData.escolaridade || null,
+          beneficiario_programa_social: proponenteData.beneficiario_programa_social || 'nenhum',
+          funcao_cultural: proponenteData.funcao_cultural || null,
         })
       } else if (perfilTipo === 'avaliador') {
         Object.assign(extraData, {

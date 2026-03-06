@@ -58,6 +58,14 @@ export function AdminEditProfileSheet({ profile }: AdminEditProfileSheetProps) {
     endereco_completo: profile.endereco_completo || '',
     municipio: profile.municipio || '',
     estado: profile.estado || '',
+    tipo_pessoa: (profile as any).tipo_pessoa || 'fisica',
+    nome_artistico: (profile as any).nome_artistico || '',
+    data_nascimento: (profile as any).data_nascimento || '',
+    comunidade_tradicional: (profile as any).comunidade_tradicional || 'nenhuma',
+    tipo_deficiencia: (profile as any).tipo_deficiencia || '',
+    escolaridade: (profile as any).escolaridade || '',
+    beneficiario_programa_social: (profile as any).beneficiario_programa_social || 'nenhum',
+    funcao_cultural: (profile as any).funcao_cultural || '',
   })
 
   function updateAvaliador(field: string, value: any) {
@@ -103,6 +111,14 @@ export function AdminEditProfileSheet({ profile }: AdminEditProfileSheetProps) {
         endereco_completo: proponenteData.endereco_completo || null,
         municipio: proponenteData.municipio || null,
         estado: proponenteData.estado || null,
+        tipo_pessoa: proponenteData.tipo_pessoa || 'fisica',
+        nome_artistico: proponenteData.nome_artistico || null,
+        data_nascimento: proponenteData.data_nascimento || null,
+        comunidade_tradicional: proponenteData.comunidade_tradicional || 'nenhuma',
+        tipo_deficiencia: proponenteData.pcd ? (proponenteData.tipo_deficiencia || null) : null,
+        escolaridade: proponenteData.escolaridade || null,
+        beneficiario_programa_social: proponenteData.beneficiario_programa_social || 'nenhum',
+        funcao_cultural: proponenteData.funcao_cultural || null,
       }
     }
 

@@ -45,6 +45,14 @@ export interface Profile {
   endereco_completo: string | null
   municipio: string | null
   estado: string | null
+  tipo_pessoa: 'fisica' | 'juridica' | 'coletivo_sem_cnpj'
+  nome_artistico: string | null
+  data_nascimento: string | null
+  comunidade_tradicional: string | null
+  tipo_deficiencia: string | null
+  escolaridade: string | null
+  beneficiario_programa_social: string | null
+  funcao_cultural: string | null
   // Avaliador fields
   curriculo_descricao: string | null
   areas_avaliacao: string[] | null
@@ -138,6 +146,24 @@ export interface Projeto {
   status_atual: string
   data_envio: string
   ip_submissao: string | null
+  // Campos estruturados (Fase 1.4)
+  areas_projeto: string[] | null
+  minicurriculo_proponente: string | null
+  objetivos: string | null
+  metas_projeto: string | null
+  perfil_publico: string | null
+  publico_prioritario: string[] | null
+  local_execucao: string | null
+  periodo_execucao_inicio: string | null
+  periodo_execucao_fim: string | null
+  estrategia_divulgacao: string | null
+  outras_fontes_recurso: boolean
+  outras_fontes_detalhamento: string | null
+  venda_produtos_ingressos: boolean
+  venda_detalhamento: string | null
+  contrapartida_social: string | null
+  concorre_cota: boolean
+  tipo_cota: 'negra' | 'indigena' | 'pcd' | null
 }
 
 export interface ProjetoDocumento {
