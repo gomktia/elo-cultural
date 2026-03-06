@@ -23,8 +23,18 @@ export interface RankingItem {
   num_avaliacoes: number
   status: string
   categoria_nome?: string
+  classificacao_tipo?: string | null
   notas_por_avaliador?: Record<string, number | null>
   discrepancia?: boolean
+}
+
+const CLASSIFICACAO_LABELS: Record<string, { label: string; color: string }> = {
+  ampla_concorrencia: { label: 'Ampla', color: 'bg-blue-50 text-blue-600' },
+  cota_pessoa_negra: { label: 'Cota Negra', color: 'bg-purple-50 text-purple-600' },
+  cota_pessoa_indigena: { label: 'Cota Indígena', color: 'bg-amber-50 text-amber-700' },
+  cota_pessoa_pcd: { label: 'Cota PcD', color: 'bg-teal-50 text-teal-600' },
+  cota_areas_perifericas: { label: 'Cota Periférica', color: 'bg-rose-50 text-rose-600' },
+  remanejamento: { label: 'Remanejamento', color: 'bg-orange-50 text-orange-600' },
 }
 
 interface RankingTableProps {
@@ -36,13 +46,22 @@ interface RankingTableProps {
 
 function exportToXLS(items: RankingItem[]) {
   const hasCategoria = items.some(i => i.categoria_nome)
-  const header = hasCategoria
-    ? ['Posição', 'Título', 'Categoria', 'Protocolo', 'Nota Final', 'Avaliações', 'Status']
-    : ['Posição', 'Título', 'Protocolo', 'Nota Final', 'Avaliações', 'Status']
+  const hasClassificacao = items.some(i => i.classificacao_tipo)
+  const header = [
+    'Posição', 'Título',
+    ...(hasCategoria ? ['Categoria'] : []),
+    'Protocolo', 'Nota Final', 'Avaliações',
+    ...(hasClassificacao ? ['Classificação'] : []),
+    'Status',
+  ]
   const rows = items.map(item => {
-    const base = [item.posicao, item.titulo]
+    const base: (string | number)[] = [item.posicao, item.titulo]
     if (hasCategoria) base.push(item.categoria_nome || '—')
-    base.push(item.protocolo, item.nota_media?.toFixed(2) ?? '', item.num_avaliacoes as any, item.status)
+    base.push(item.protocolo, item.nota_media?.toFixed(2) ?? '', item.num_avaliacoes as any)
+    if (hasClassificacao) base.push(
+      item.classificacao_tipo ? (CLASSIFICACAO_LABELS[item.classificacao_tipo]?.label || item.classificacao_tipo) : '—'
+    )
+    base.push(item.status)
     return base
   })
 
@@ -307,14 +326,21 @@ export function RankingTable({ items, categorias, avaliadores, numPareceristas =
                     </div>
                   </TableCell>
                   <TableCell className="py-6 px-8 text-right">
-                    <Badge className={[
-                      'border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-1',
-                      item.status === 'selecionado' ? 'bg-green-50 text-[var(--brand-success)]' :
-                        item.status === 'suplente' ? 'bg-orange-50 text-[var(--brand-warning)]' :
-                          'bg-slate-50 text-slate-400'
-                    ].join(' ')}>
-                      {item.status}
-                    </Badge>
+                    <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                      {item.classificacao_tipo && CLASSIFICACAO_LABELS[item.classificacao_tipo] && (
+                        <Badge className={`border-none rounded-lg px-2 text-[10px] font-medium py-0.5 ${CLASSIFICACAO_LABELS[item.classificacao_tipo].color}`}>
+                          {CLASSIFICACAO_LABELS[item.classificacao_tipo].label}
+                        </Badge>
+                      )}
+                      <Badge className={[
+                        'border-none rounded-lg px-2 text-[11px] font-medium uppercase tracking-wide py-1',
+                        item.status === 'selecionado' ? 'bg-green-50 text-[var(--brand-success)]' :
+                          item.status === 'suplente' ? 'bg-orange-50 text-[var(--brand-warning)]' :
+                            'bg-slate-50 text-slate-400'
+                      ].join(' ')}>
+                        {item.status}
+                      </Badge>
+                    </div>
                   </TableCell>
                 </TableRow>
               )

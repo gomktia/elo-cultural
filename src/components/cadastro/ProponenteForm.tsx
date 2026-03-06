@@ -1,9 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MapPin, Briefcase, Heart, GraduationCap, Users, Calendar } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { MapPin, Briefcase, Heart, GraduationCap, Users, Calendar, Building2, UserPlus, Trash2 } from 'lucide-react'
 
 const AREAS_ATUACAO = [
   'Artes Visuais', 'Audiovisual', 'Circo', 'Dança', 'Design',
@@ -79,6 +82,11 @@ const FUNCAO_CULTURAL_OPCOES = [
   { value: 'outro', label: 'Outro' },
 ]
 
+export interface ColetivoMembro {
+  nome: string
+  cpf: string
+}
+
 interface ProponenteFormProps {
   form: {
     areas_atuacao: string[]
@@ -99,8 +107,142 @@ interface ProponenteFormProps {
     escolaridade: string
     beneficiario_programa_social: string
     funcao_cultural: string
+    // PJ fields (Fase 1.2)
+    razao_social: string
+    nome_fantasia: string
+    endereco_sede: string
+    representante_nome: string
+    representante_cpf: string
+    representante_genero: string
+    representante_raca_etnia: string
+    representante_pcd: boolean
+    representante_escolaridade: string
+    // Coletivo fields (Fase 1.3)
+    nome_coletivo: string
+    ano_criacao: string
+    quantidade_membros: string
+    portfolio: string
+    membros: ColetivoMembro[]
   }
   onChange: (field: string, value: any) => void
+}
+
+function ColetivoSection({ form, onChange }: Pick<ProponenteFormProps, 'form' | 'onChange'>) {
+  const [novoNome, setNovoNome] = useState('')
+  const [novoCpf, setNovoCpf] = useState('')
+
+  function addMembro() {
+    if (!novoNome.trim()) return
+    const membros = [...(form.membros || []), { nome: novoNome.trim(), cpf: novoCpf.trim() }]
+    onChange('membros', membros)
+    setNovoNome('')
+    setNovoCpf('')
+  }
+
+  function removeMembro(index: number) {
+    const membros = (form.membros || []).filter((_: ColetivoMembro, i: number) => i !== index)
+    onChange('membros', membros)
+  }
+
+  return (
+    <div className="space-y-5 p-5 rounded-2xl border border-emerald-100 bg-emerald-50/30">
+      <div className="flex items-center gap-2 mb-1">
+        <Users className="h-3.5 w-3.5 text-emerald-500" />
+        <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide">Dados do Coletivo</span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="space-y-2 md:col-span-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nome do Coletivo</Label>
+          <Input
+            placeholder="Nome do coletivo cultural"
+            value={form.nome_coletivo || ''}
+            onChange={e => onChange('nome_coletivo', e.target.value)}
+            className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Ano de Criacao</Label>
+          <Input
+            type="number"
+            placeholder="Ex: 2018"
+            value={form.ano_criacao || ''}
+            onChange={e => onChange('ano_criacao', e.target.value)}
+            className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Quantidade de Membros</Label>
+          <Input
+            type="number"
+            min={1}
+            placeholder="Ex: 5"
+            value={form.quantidade_membros || ''}
+            onChange={e => onChange('quantidade_membros', e.target.value)}
+            className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Portfolio / Historico do Coletivo</Label>
+        <Textarea
+          placeholder="Descreva brevemente o historico, atividades e portfolio do coletivo..."
+          value={form.portfolio || ''}
+          onChange={e => onChange('portfolio', e.target.value)}
+          rows={3}
+          className="rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300 resize-none"
+        />
+      </div>
+
+      {/* Membros */}
+      <div className="pt-3 border-t border-emerald-100">
+        <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide">Membros do Coletivo</span>
+      </div>
+
+      {(form.membros || []).length > 0 && (
+        <div className="space-y-2">
+          {(form.membros || []).map((m: ColetivoMembro, i: number) => (
+            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-200">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-slate-900 truncate">{m.nome}</p>
+                {m.cpf && <p className="text-xs text-slate-400">{m.cpf}</p>}
+              </div>
+              <button type="button" onClick={() => removeMembro(i)} className="text-slate-300 hover:text-red-500 transition-colors">
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-end gap-3">
+        <div className="flex-1 space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nome</Label>
+          <Input
+            placeholder="Nome do membro"
+            value={novoNome}
+            onChange={e => setNovoNome(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addMembro())}
+            className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+          />
+        </div>
+        <div className="flex-1 space-y-2">
+          <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">CPF (opcional)</Label>
+          <Input
+            placeholder="000.000.000-00"
+            value={novoCpf}
+            onChange={e => setNovoCpf(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addMembro())}
+            className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+          />
+        </div>
+        <Button type="button" onClick={addMembro} variant="outline" className="h-11 rounded-2xl border-emerald-200 text-emerald-600 hover:bg-emerald-50">
+          <UserPlus className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
@@ -141,6 +283,123 @@ export function ProponenteForm({ form, onChange }: ProponenteFormProps) {
           />
         </div>
       </div>
+
+      {/* === PESSOA JURIDICA FIELDS (Fase 1.2) === */}
+      {form.tipo_pessoa === 'juridica' && (
+        <div className="space-y-5 p-5 rounded-2xl border border-blue-100 bg-blue-50/30">
+          <div className="flex items-center gap-2 mb-1">
+            <Building2 className="h-3.5 w-3.5 text-blue-500" />
+            <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wide">Dados da Pessoa Juridica</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Razao Social</Label>
+              <Input
+                placeholder="Razao social da empresa"
+                value={form.razao_social || ''}
+                onChange={e => onChange('razao_social', e.target.value)}
+                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nome Fantasia</Label>
+              <Input
+                placeholder="Nome fantasia (opcional)"
+                value={form.nome_fantasia || ''}
+                onChange={e => onChange('nome_fantasia', e.target.value)}
+                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Endereco da Sede</Label>
+            <Input
+              placeholder="Endereco completo da sede"
+              value={form.endereco_sede || ''}
+              onChange={e => onChange('endereco_sede', e.target.value)}
+              className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+            />
+          </div>
+
+          {/* Representante Legal */}
+          <div className="pt-3 border-t border-blue-100">
+            <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wide">Representante Legal</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Nome Completo</Label>
+              <Input
+                placeholder="Nome do representante legal"
+                value={form.representante_nome || ''}
+                onChange={e => onChange('representante_nome', e.target.value)}
+                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">CPF</Label>
+              <Input
+                placeholder="000.000.000-00"
+                value={form.representante_cpf || ''}
+                onChange={e => onChange('representante_cpf', e.target.value)}
+                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-300"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Genero</Label>
+              <Select value={form.representante_genero || ''} onValueChange={v => onChange('representante_genero', v)}>
+                <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900">
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {GENERO_OPCOES.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Raca / Etnia</Label>
+              <Select value={form.representante_raca_etnia || ''} onValueChange={v => onChange('representante_raca_etnia', v)}>
+                <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900">
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {RACA_OPCOES.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">Escolaridade</Label>
+              <Select value={form.representante_escolaridade || ''} onValueChange={v => onChange('representante_escolaridade', v)}>
+                <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-900">
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {ESCOLARIDADE_OPCOES.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2 flex items-end">
+              <div className="flex items-center gap-3 bg-white p-3 rounded-2xl border border-slate-200 w-full h-11">
+                <input
+                  type="checkbox"
+                  id="representante_pcd"
+                  checked={form.representante_pcd || false}
+                  onChange={e => onChange('representante_pcd', e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-200 bg-slate-50 text-[#0047AB]"
+                />
+                <Label htmlFor="representante_pcd" className="text-xs text-slate-600 font-medium cursor-pointer">PcD</Label>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* === COLETIVO SEM CNPJ FIELDS (Fase 1.3) === */}
+      {form.tipo_pessoa === 'coletivo_sem_cnpj' && (
+        <ColetivoSection form={form} onChange={onChange} />
+      )}
 
       {/* Data Nascimento + Escolaridade */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

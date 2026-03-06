@@ -12,11 +12,14 @@ interface PontuacaoExtraRule {
   valor: string
 }
 
-interface CotaRule {
-  nome: string
+interface EditalCota {
+  tipo_cota: string
   percentual: number
+  vagas_fixas: number
+  por_categoria: boolean
   campo_perfil: string
-  valor?: string
+  valor_campo: string | null
+  ordem: number
 }
 
 interface ReservaVagasRule {
@@ -40,6 +43,14 @@ interface ProjetoRanking {
     municipio: string | null
   } | null
 }
+
+type ClassificacaoTipo =
+  | 'ampla_concorrencia'
+  | 'cota_pessoa_negra'
+  | 'cota_pessoa_indigena'
+  | 'cota_pessoa_pcd'
+  | 'cota_areas_perifericas'
+  | 'remanejamento'
 
 // ── Desempate helpers ──
 
@@ -102,7 +113,7 @@ function compareDesempate(a: ProjetoRanking, b: ProjetoRanking, criterios: strin
 
 // ── Profile field match for cotas ──
 
-function profileMatchesField(profile: ProjetoRanking['profile'], campo: string, valor?: string): boolean {
+function profileMatchesField(profile: ProjetoRanking['profile'], campo: string, valor?: string | null): boolean {
   if (!profile) return false
   const fieldValue = (profile as Record<string, unknown>)[campo]
 
@@ -114,6 +125,18 @@ function profileMatchesField(profile: ProjetoRanking['profile'], campo: string, 
 
   // If no valor specified, check truthy
   return !!fieldValue
+}
+
+// ── Map tipo_cota → classificacao_tipo ──
+
+function cotaToClassificacao(tipoCota: string): ClassificacaoTipo {
+  const map: Record<string, ClassificacaoTipo> = {
+    pessoa_negra: 'cota_pessoa_negra',
+    pessoa_indigena: 'cota_pessoa_indigena',
+    pessoa_pcd: 'cota_pessoa_pcd',
+    areas_perifericas: 'cota_areas_perifericas',
+  }
+  return map[tipoCota] || 'ampla_concorrencia'
 }
 
 // ── Main function ──
@@ -138,14 +161,25 @@ export async function consolidarRanking(editalId: string) {
   // ── 1. Load edital config ──
   const { data: edital } = await supabase
     .from('editais')
-    .select('config_cotas, config_desempate, config_pontuacao_extra, config_reserva_vagas')
+    .select('config_cotas, config_desempate, config_pontuacao_extra, config_reserva_vagas, nota_minima_aprovacao, nota_zero_desclassifica')
     .eq('id', editalId)
     .single()
 
   const pontuacaoExtra: PontuacaoExtraRule[] = (edital?.config_pontuacao_extra as PontuacaoExtraRule[]) || []
-  const cotas: CotaRule[] = (edital?.config_cotas as CotaRule[]) || []
   const desempate: string[] = (edital?.config_desempate as string[]) || []
   const reservaVagas: ReservaVagasRule[] = (edital?.config_reserva_vagas as ReservaVagasRule[]) || []
+
+  // ── 1b. Load structured cotas from edital_cotas table ──
+  const { data: editalCotas } = await supabase
+    .from('edital_cotas')
+    .select('tipo_cota, percentual, vagas_fixas, por_categoria, campo_perfil, valor_campo, ordem')
+    .eq('edital_id', editalId)
+    .order('ordem')
+
+  const cotasEstruturadas: EditalCota[] = (editalCotas || []) as EditalCota[]
+
+  // Fallback: if no structured cotas, use legacy config_cotas JSONB
+  const legacyCotas = (edital?.config_cotas as Array<{ nome: string; percentual: number; campo_perfil: string; valor?: string }>) || []
 
   // ── 2. Load categorias ──
   const { data: categorias } = await supabase
@@ -224,113 +258,250 @@ export async function consolidarRanking(editalId: string) {
     return a.data_envio < b.data_envio ? -1 : 1
   })
 
-  // ── 7. Allocate vagas per category ──
-  type StatusResult = { id: string; nota_final: number; status_atual: string }
+  // ── 6b. Desclassify projects with nota 0 or below nota mínima ──
+  const notaMinima = edital?.nota_minima_aprovacao ? Number(edital.nota_minima_aprovacao) : 0
+  const notaZeroDesclassifica = edital?.nota_zero_desclassifica !== false // default true
+
+  const desclassificados: Array<{ id: string; nota_final: number }> = []
+  const elegiveisRanking: ProjetoRanking[] = []
+
+  for (const proj of rankingList) {
+    // Check nota zero in any individual evaluation
+    if (notaZeroDesclassifica) {
+      const projetoOriginal = projetosComAval.find(p => p.id === proj.id)
+      const hasZero = (projetoOriginal?.avaliacoes as Array<{ pontuacao_total: number }> || []).some(
+        a => Number(a.pontuacao_total) === 0
+      )
+      if (hasZero) {
+        desclassificados.push({ id: proj.id, nota_final: proj.nota_ajustada })
+        continue
+      }
+    }
+
+    // Check nota mínima
+    if (notaMinima > 0 && proj.nota_base < notaMinima) {
+      desclassificados.push({ id: proj.id, nota_final: proj.nota_ajustada })
+      continue
+    }
+
+    elegiveisRanking.push(proj)
+  }
+
+  // ── 7. Allocate vagas per category with dual-track cotas ──
+  type StatusResult = { id: string; nota_final: number; status_atual: string; classificacao_tipo: ClassificacaoTipo | null }
   const results: StatusResult[] = []
 
+  // Add desclassified projects to results
+  for (const d of desclassificados) {
+    results.push({
+      id: d.id,
+      nota_final: d.nota_final,
+      status_atual: 'desclassificado',
+      classificacao_tipo: null,
+    })
+  }
+
+  /**
+   * Dual-track cota allocation:
+   * 1. Rank all projects by nota_ajustada (already sorted)
+   * 2. Walk the ranked list top-to-bottom, filling ampla concorrência slots
+   * 3. A cotista who ranks high enough in ampla enters ampla → frees their cota slot
+   * 4. Cotistas who don't make ampla fill cota slots in order
+   * 5. Unfilled cota slots are redistributed: other cotas → ampla (remanejamento)
+   */
   function allocateGroup(
     groupProjects: ProjetoRanking[],
     totalVagas: number,
-    groupCotas: CotaRule[],
+    groupCotas: EditalCota[],
     groupReserva: ReservaVagasRule[]
   ): StatusResult[] {
     const output: StatusResult[] = []
-    const selected = new Set<string>()
 
     if (totalVagas <= 0) {
-      // No vagas limit = all get ranked but no status assignment
+      // No vagas limit = all get ranked as classificado
       return groupProjects.map(p => ({
         id: p.id,
         nota_final: p.nota_ajustada,
         status_atual: 'classificado',
+        classificacao_tipo: null,
       }))
     }
 
-    let vagasRestantes = totalVagas
+    // Calculate cota vagas
+    const cotaSlots: Array<EditalCota & { vagas: number; filled: number; members: string[] }> = groupCotas.map(cota => ({
+      ...cota,
+      vagas: cota.vagas_fixas > 0 ? cota.vagas_fixas : Math.ceil(totalVagas * Number(cota.percentual) / 100),
+      filled: 0,
+      members: [],
+    }))
 
-    // Step A: Fill cota spots first
-    for (const cota of groupCotas) {
-      const vagasCota = Math.ceil(totalVagas * cota.percentual / 100)
-      let filled = 0
+    const totalCotaVagas = cotaSlots.reduce((sum, c) => sum + c.vagas, 0)
+    let vagasAmpla = Math.max(0, totalVagas - totalCotaVagas)
 
-      for (const proj of groupProjects) {
-        if (selected.has(proj.id)) continue
-        if (filled >= vagasCota) break
+    // Also handle reserva de vagas (reduce from ampla)
+    const reservaSlots = groupReserva.map(r => ({ ...r, filled: 0, members: new Set<string>() }))
+    const totalReserva = reservaSlots.reduce((sum, r) => sum + r.vagas, 0)
+    vagasAmpla = Math.max(0, vagasAmpla - totalReserva)
 
-        if (proj.profile && profileMatchesField(proj.profile, cota.campo_perfil, cota.valor)) {
-          selected.add(proj.id)
-          filled++
-          vagasRestantes--
-        }
+    // Track which cota(s) each project is eligible for
+    function getEligibleCotas(proj: ProjetoRanking): typeof cotaSlots {
+      return cotaSlots.filter(cota =>
+        profileMatchesField(proj.profile, cota.campo_perfil, cota.valor_campo)
+      )
+    }
+
+    const assigned = new Map<string, { status: string; classificacao: ClassificacaoTipo }>()
+    let amplaFilled = 0
+
+    // ── Pass 1: Walk ranked list, fill ampla concorrência ──
+    // A cotista who ranks high enough enters ampla, freeing their cota slot
+    for (const proj of groupProjects) {
+      if (amplaFilled >= vagasAmpla) break
+
+      const eligible = getEligibleCotas(proj)
+      const isCotista = eligible.length > 0
+
+      if (!isCotista) {
+        // Non-cotista → must enter via ampla
+        assigned.set(proj.id, { status: 'selecionado', classificacao: 'ampla_concorrencia' })
+        amplaFilled++
+      } else {
+        // Cotista ranked high enough for ampla → enters ampla (dual track)
+        assigned.set(proj.id, { status: 'selecionado', classificacao: 'ampla_concorrencia' })
+        amplaFilled++
       }
     }
 
-    // Step B: Fill reserva de vagas spots
-    for (const reserva of groupReserva) {
-      let filled = 0
+    // ── Pass 2: Fill reserva de vagas ──
+    for (const reserva of reservaSlots) {
       for (const proj of groupProjects) {
-        if (selected.has(proj.id)) continue
-        if (filled >= reserva.vagas) break
+        if (assigned.has(proj.id)) continue
+        if (reserva.filled >= reserva.vagas) break
 
         if (proj.profile?.municipio?.toLowerCase().includes(reserva.regiao.toLowerCase())) {
-          selected.add(proj.id)
-          filled++
-          vagasRestantes--
+          assigned.set(proj.id, { status: 'selecionado', classificacao: 'ampla_concorrencia' })
+          reserva.filled++
+          reserva.members.add(proj.id)
         }
       }
     }
 
-    // Step C: Fill remaining spots from ranked list
-    for (const proj of groupProjects) {
-      if (selected.has(proj.id)) continue
-      if (vagasRestantes <= 0) break
-      selected.add(proj.id)
-      vagasRestantes--
+    // ── Pass 3: Fill cota slots with remaining cotistas (not yet selected via ampla) ──
+    for (const cota of cotaSlots) {
+      for (const proj of groupProjects) {
+        if (assigned.has(proj.id)) continue
+        if (cota.filled >= cota.vagas) break
+
+        if (profileMatchesField(proj.profile, cota.campo_perfil, cota.valor_campo)) {
+          assigned.set(proj.id, { status: 'selecionado', classificacao: cotaToClassificacao(cota.tipo_cota) })
+          cota.filled++
+          cota.members.push(proj.id)
+        }
+      }
     }
 
-    // Step D: Assign statuses
+    // ── Pass 4: Remanejamento — unfilled cota slots ──
+    // First try to redistribute to other cotas that have eligible candidates
+    let unfilledTotal = cotaSlots.reduce((sum, c) => sum + (c.vagas - c.filled), 0)
+
+    if (unfilledTotal > 0) {
+      // Try filling other cotas first
+      for (const cota of cotaSlots) {
+        if (cota.filled >= cota.vagas) continue // this cota is full
+
+        // Remaining unfilled slots for this cota → try other cotas
+        let extraSlots = cota.vagas - cota.filled
+
+        for (const otherCota of cotaSlots) {
+          if (otherCota === cota) continue
+          if (extraSlots <= 0) break
+
+          for (const proj of groupProjects) {
+            if (assigned.has(proj.id)) continue
+            if (extraSlots <= 0) break
+
+            if (profileMatchesField(proj.profile, otherCota.campo_perfil, otherCota.valor_campo)) {
+              assigned.set(proj.id, { status: 'selecionado', classificacao: 'remanejamento' })
+              extraSlots--
+            }
+          }
+        }
+
+        // Remaining unfilled → ampla concorrência (remanejamento)
+        if (extraSlots > 0) {
+          for (const proj of groupProjects) {
+            if (assigned.has(proj.id)) continue
+            if (extraSlots <= 0) break
+
+            assigned.set(proj.id, { status: 'selecionado', classificacao: 'remanejamento' })
+            extraSlots--
+          }
+        }
+      }
+    }
+
+    // ── Assign statuses ──
     for (const proj of groupProjects) {
+      const assignment = assigned.get(proj.id)
       output.push({
         id: proj.id,
         nota_final: proj.nota_ajustada,
-        status_atual: selected.has(proj.id) ? 'selecionado' : 'suplente',
+        status_atual: assignment ? assignment.status : 'suplente',
+        classificacao_tipo: assignment ? assignment.classificacao : null,
       })
     }
 
     return output
   }
 
+  // Build cotas to pass — prefer structured, fallback to legacy
+  const cotasToUse: EditalCota[] = cotasEstruturadas.length > 0
+    ? cotasEstruturadas
+    : legacyCotas.map((c, i) => ({
+        tipo_cota: c.campo_perfil === 'pcd' ? 'pessoa_pcd' :
+          c.campo_perfil === 'raca_etnia' ? 'pessoa_negra' : 'areas_perifericas',
+        percentual: c.percentual,
+        vagas_fixas: 0,
+        por_categoria: true,
+        campo_perfil: c.campo_perfil,
+        valor_campo: c.valor || null,
+        ordem: i,
+      }))
+
   if (categorias && categorias.length > 0) {
     // Group by category
     for (const cat of categorias) {
-      const catProjects = rankingList.filter(p => p.categoria_id === cat.id)
+      const catProjects = elegiveisRanking.filter(p => p.categoria_id === cat.id)
       if (catProjects.length === 0) continue
-      const catResults = allocateGroup(catProjects, cat.vagas, cotas, reservaVagas)
+      const catCotas = cotasToUse.filter(c => c.por_categoria)
+      const catResults = allocateGroup(catProjects, cat.vagas, catCotas, reservaVagas)
       results.push(...catResults)
     }
 
     // Projects without category
-    const uncategorized = rankingList.filter(p => !p.categoria_id)
+    const uncategorized = elegiveisRanking.filter(p => !p.categoria_id)
     if (uncategorized.length > 0) {
-      const totalVagasCategorizadas = categorias.reduce((sum, c) => sum + (c.vagas || 0), 0)
-      results.push(...allocateGroup(uncategorized, 0, cotas, reservaVagas))
+      results.push(...allocateGroup(uncategorized, 0, cotasToUse, reservaVagas))
     }
   } else {
     // No categories — treat all as one group, no vagas limit
-    // Projects are just ranked without selecionado/suplente
-    // (unless we had a total vagas field on the edital, which we don't)
-    results.push(...rankingList.map((p, idx) => ({
+    results.push(...elegiveisRanking.map(p => ({
       id: p.id,
       nota_final: p.nota_ajustada,
-      status_atual: 'classificado',
+      status_atual: 'classificado' as string,
+      classificacao_tipo: null as ClassificacaoTipo | null,
     })))
   }
 
   // ── 8. Persist results ──
   if (results.length > 0) {
     const updateResults = await Promise.all(
-      results.map(({ id, nota_final, status_atual }) =>
-        supabase.from('projetos').update({ nota_final, status_atual }).eq('id', id)
+      results.map(({ id, nota_final, status_atual, classificacao_tipo }) =>
+        supabase.from('projetos').update({
+          nota_final,
+          status_atual,
+          classificacao_tipo,
+        }).eq('id', id)
       )
     )
 
@@ -345,5 +516,7 @@ export async function consolidarRanking(editalId: string) {
     total: results.length,
     selecionados: results.filter(r => r.status_atual === 'selecionado').length,
     suplentes: results.filter(r => r.status_atual === 'suplente').length,
+    desclassificados: desclassificados.length,
+    remanejados: results.filter(r => r.classificacao_tipo === 'remanejamento').length,
   }
 }

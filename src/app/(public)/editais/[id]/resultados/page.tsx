@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -11,8 +11,26 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Calendar } from 'lucide-react'
+import { ArrowLeft, Calendar, FileText } from 'lucide-react'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import type { Edital } from '@/types/database.types'
+
+const tipoLabels: Record<string, string> = {
+  resultado_preliminar: 'Resultado Preliminar',
+  resultado_final: 'Resultado Final',
+  ata: 'Ata',
+  homologacao: 'Homologação',
+  comunicado: 'Comunicado',
+}
+
+const tipoBadgeColors: Record<string, string> = {
+  resultado_preliminar: 'bg-blue-50 text-blue-600',
+  resultado_final: 'bg-indigo-50 text-indigo-600',
+  homologacao: 'bg-green-50 text-green-600',
+  ata: 'bg-slate-100 text-slate-500',
+  comunicado: 'bg-purple-50 text-purple-600',
+}
 
 export default async function ResultadosPublicosPage({
   params,
@@ -32,7 +50,14 @@ export default async function ResultadosPublicosPage({
 
   const e = edital as Edital
 
-  // Only show results if edital is past avaliacao phase
+  // Fetch published results
+  const { data: publicacoes } = await supabase
+    .from('publicacoes')
+    .select('id, tipo, titulo, conteudo, etapa, data_publicacao')
+    .eq('edital_id', id)
+    .order('data_publicacao', { ascending: false })
+
+  // Only show ranking if edital is past avaliacao phase
   const resultPhases = ['resultado_preliminar_avaliacao', 'recurso_avaliacao', 'resultado_final', 'homologacao', 'arquivamento']
   const hasResults = resultPhases.includes(e.status)
 
@@ -43,6 +68,8 @@ export default async function ResultadosPublicosPage({
       .eq('edital_id', id)
       .order('nota_final', { ascending: false, nullsFirst: false })
     : { data: [] }
+
+  const hasPublicacoes = publicacoes && publicacoes.length > 0
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-10 max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -63,6 +90,40 @@ export default async function ResultadosPublicosPage({
           </CardContent>
         </Card>
 
+        {/* Published Documents */}
+        {hasPublicacoes && (
+          <div className="space-y-3">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <FileText className="h-4 w-4 text-[var(--brand-primary)]" />
+              Documentos Publicados ({publicacoes.length})
+            </h2>
+            {publicacoes.map((pub: any) => (
+              <div key={pub.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge className={`${tipoBadgeColors[pub.tipo] || 'bg-slate-100 text-slate-500'} border-none text-[11px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide`}>
+                        {tipoLabels[pub.tipo] || pub.tipo}
+                      </Badge>
+                    </div>
+                    <h3 className="text-sm font-semibold text-slate-900">{pub.titulo}</h3>
+                  </div>
+                  <span className="flex items-center gap-1.5 text-xs text-slate-400 flex-shrink-0">
+                    <Calendar className="h-3.5 w-3.5" />
+                    {format(new Date(pub.data_publicacao), "dd/MM/yyyy", { locale: ptBR })}
+                  </span>
+                </div>
+                {pub.conteudo && (
+                  <div className="bg-slate-50 rounded-xl p-4">
+                    <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">{pub.conteudo}</pre>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Ranking Table */}
         {!hasResults ? (
           <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm">
             <CardContent className="flex flex-col items-center justify-center py-16 md:py-24 text-center px-6">

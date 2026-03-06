@@ -393,7 +393,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     fetch('/api/email/notify-inscricao', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ protocolo, titulo: form.titulo, editalTitulo: '' }),
+      body: JSON.stringify({ protocolo, titulo: form.titulo, editalTitulo: '', projetoId: projeto!.id }),
     }).catch(() => {})
 
     router.push('/projetos')

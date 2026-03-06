@@ -13,6 +13,7 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { GESTAO_ROLES } from '@/lib/constants/roles'
 import { DashboardCharts } from '@/components/gestor/DashboardCharts'
+import { ExportarPNABButton } from '@/components/gestor/ExportarPNABButton'
 
 const faseOrder: FaseEdital[] = [
   'criacao', 'publicacao', 'inscricao', 'inscricao_encerrada',
@@ -384,6 +385,26 @@ export default async function GestorDashboardPage() {
               ))}
             </div>
           </div>
+
+          {/* Exportação PNAB */}
+          {editaisList.length > 0 && (
+            <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
+              <div className="px-5 py-3 border-b border-slate-100">
+                <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400">Exportação PNAB Federal</h3>
+              </div>
+              <div className="divide-y divide-slate-100">
+                {editaisList.map((ed: any) => (
+                  <div key={ed.id} className="flex items-center justify-between px-5 py-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-slate-700 truncate">{ed.numero_edital}</p>
+                      <p className="text-[11px] text-slate-400 truncate">{ed.titulo}</p>
+                    </div>
+                    <ExportarPNABButton editalId={ed.id} editalNumero={ed.numero_edital} />
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
         </div>
       </div>
     </div>

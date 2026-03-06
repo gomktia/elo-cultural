@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { notifyPrestacaoStatus } from '@/lib/email/notify'
+import { notifyInAppPrestacaoAnalise } from '@/lib/notifications/notify'
 import { NextRequest, NextResponse } from 'next/server'
 import { GESTAO_ROLES } from '@/lib/constants/roles'
 
@@ -28,6 +29,20 @@ export async function POST(request: NextRequest) {
     status,
     parecer: parecer || '',
   }).catch(() => {})
+
+  // In-app notification (need projeto_id from prestação)
+  const { data: prestacao } = await supabase
+    .from('prestacoes_contas')
+    .select('projeto_id, julgamento')
+    .eq('id', prestacaoId)
+    .single()
+
+  if (prestacao) {
+    notifyInAppPrestacaoAnalise({
+      projetoId: prestacao.projeto_id,
+      julgamento: prestacao.julgamento || status,
+    }).catch(() => {})
+  }
 
   return NextResponse.json({ ok: true })
 }

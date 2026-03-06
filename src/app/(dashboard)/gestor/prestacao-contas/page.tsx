@@ -100,6 +100,9 @@ export default async function GestorPrestacaoContasPage() {
                   parecer_gestor: p.parecer_gestor,
                   data_envio: p.data_envio,
                   data_analise: p.data_analise,
+                  julgamento: p.julgamento,
+                  plano_compensatorio: p.plano_compensatorio,
+                  valor_devolucao: p.valor_devolucao ? Number(p.valor_devolucao) : null,
                 }}
                 projeto={{
                   titulo: p.projetos?.titulo || 'Projeto',

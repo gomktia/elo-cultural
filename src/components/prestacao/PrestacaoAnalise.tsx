@@ -7,8 +7,15 @@ import { Textarea } from '@/components/ui/textarea'
 import { PrestacaoStatusBadge } from './PrestacaoStatusBadge'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, ChevronUp, Banknote, FileText, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
-import type { StatusPrestacao } from '@/types/database.types'
+import { ChevronDown, ChevronUp, Banknote, FileText, CheckCircle2, XCircle, AlertTriangle, Shield } from 'lucide-react'
+import type { StatusPrestacao, JulgamentoPrestacao } from '@/types/database.types'
+
+const JULGAMENTO_OPTIONS: Array<{ value: JulgamentoPrestacao; label: string; desc: string; color: string }> = [
+  { value: 'aprovada_sem_ressalvas', label: 'Aprovada sem Ressalvas', desc: 'Cumprimento integral do objeto', color: 'bg-green-50 border-green-200 text-green-700' },
+  { value: 'aprovada_com_ressalvas', label: 'Aprovada com Ressalvas', desc: 'Realizou a ação mas com inadequações, sem má-fé', color: 'bg-amber-50 border-amber-200 text-amber-700' },
+  { value: 'rejeitada_parcial', label: 'Rejeitada Parcial', desc: 'Devolução proporcional ao não executado', color: 'bg-orange-50 border-orange-200 text-orange-700' },
+  { value: 'rejeitada_total', label: 'Rejeitada Total', desc: 'Devolução total + multa + suspensão 180-540 dias', color: 'bg-red-50 border-red-200 text-red-700' },
+]
 
 interface PrestacaoAnaliseProps {
   prestacao: {
@@ -20,6 +27,9 @@ interface PrestacaoAnaliseProps {
     parecer_gestor: string | null
     data_envio: string | null
     data_analise: string | null
+    julgamento?: JulgamentoPrestacao | null
+    plano_compensatorio?: string | null
+    valor_devolucao?: number | null
   }
   projeto: {
     titulo: string
@@ -34,6 +44,9 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
   const router = useRouter()
   const [expanded, setExpanded] = useState(false)
   const [parecer, setParecer] = useState(prestacao.parecer_gestor || '')
+  const [julgamento, setJulgamento] = useState<JulgamentoPrestacao | ''>(prestacao.julgamento || '')
+  const [planoCompensatorio, setPlanoCompensatorio] = useState(prestacao.plano_compensatorio || '')
+  const [valorDevolucao, setValorDevolucao] = useState(prestacao.valor_devolucao?.toString() || '')
   const [submitting, setSubmitting] = useState(false)
 
   const canAnalyze = prestacao.status === 'enviada' || prestacao.status === 'em_analise'
@@ -49,18 +62,29 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
       return
     }
 
+    if (decision === 'aprovada' && !julgamento) {
+      toast.error('Selecione o tipo de julgamento')
+      return
+    }
+
     setSubmitting(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
+    const updateData: Record<string, unknown> = {
+      status: decision,
+      parecer_gestor: parecer,
+      analisado_por: user?.id,
+      data_analise: new Date().toISOString(),
+    }
+
+    if (julgamento) updateData.julgamento = julgamento
+    if (planoCompensatorio.trim()) updateData.plano_compensatorio = planoCompensatorio
+    if (valorDevolucao) updateData.valor_devolucao = parseFloat(valorDevolucao)
+
     const { error } = await supabase
       .from('prestacoes_contas')
-      .update({
-        status: decision,
-        parecer_gestor: parecer,
-        analisado_por: user?.id,
-        data_analise: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', prestacao.id)
 
     if (error) {
@@ -169,15 +193,81 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
 
           {/* Formulário de parecer (se pode analisar) */}
           {canAnalyze && (
-            <div className="space-y-3 border-t border-slate-100 pt-5">
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Parecer Técnico</p>
-              <Textarea
-                rows={4}
-                placeholder="Escreva sua análise técnica sobre a prestação de contas..."
-                value={parecer}
-                onChange={e => setParecer(e.target.value)}
-                disabled={submitting}
-              />
+            <div className="space-y-4 border-t border-slate-100 pt-5">
+              {/* Julgamento */}
+              <div>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">Julgamento</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {JULGAMENTO_OPTIONS.map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setJulgamento(opt.value)}
+                      className={`p-3 rounded-xl border text-left transition-all ${
+                        julgamento === opt.value ? opt.color + ' ring-2 ring-offset-1 ring-current' : 'border-slate-200 bg-white hover:bg-slate-50'
+                      }`}
+                    >
+                      <p className="text-sm font-semibold">{opt.label}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">{opt.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Parecer Técnico */}
+              <div>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">Parecer Técnico *</p>
+                <Textarea
+                  rows={4}
+                  placeholder="Escreva sua análise técnica sobre a prestação de contas..."
+                  value={parecer}
+                  onChange={e => setParecer(e.target.value)}
+                  disabled={submitting}
+                />
+              </div>
+
+              {/* Campos condicionais para rejeição */}
+              {(julgamento === 'rejeitada_parcial' || julgamento === 'rejeitada_total') && (
+                <div className="grid gap-4 sm:grid-cols-2 p-4 rounded-xl bg-red-50/50 border border-red-100">
+                  <div>
+                    <p className="text-xs font-medium text-red-500 uppercase tracking-wide mb-1">Valor de Devolução (R$)</p>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={valorDevolucao}
+                      onChange={e => setValorDevolucao(e.target.value)}
+                      className="w-full h-9 rounded-lg border border-red-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200"
+                      placeholder="0.00"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-red-500 uppercase tracking-wide mb-1">Plano Compensatório (alternativa)</p>
+                    <input
+                      type="text"
+                      value={planoCompensatorio}
+                      onChange={e => setPlanoCompensatorio(e.target.value)}
+                      className="w-full h-9 rounded-lg border border-red-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200"
+                      placeholder="Descreva ações compensatórias..."
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Aprovada com ressalvas */}
+              {julgamento === 'aprovada_com_ressalvas' && (
+                <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-100">
+                  <p className="text-xs font-medium text-amber-600 uppercase tracking-wide mb-1">Plano de Ações Compensatórias</p>
+                  <Textarea
+                    rows={2}
+                    value={planoCompensatorio}
+                    onChange={e => setPlanoCompensatorio(e.target.value)}
+                    placeholder="Descreva as ações compensatórias que o proponente deve realizar..."
+                    className="border-amber-200 focus:ring-amber-200"
+                  />
+                </div>
+              )}
+
               <div className="flex gap-2 justify-end">
                 <Button
                   variant="outline"
@@ -191,7 +281,7 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
                 <Button
                   variant="outline"
                   onClick={() => handleDecision('reprovada')}
-                  disabled={submitting}
+                  disabled={submitting || !julgamento || (!julgamento.startsWith('rejeitada'))}
                   className="rounded-xl text-red-600 border-red-200 hover:bg-red-50"
                 >
                   <XCircle className="mr-2 h-4 w-4" />
@@ -199,7 +289,7 @@ export function PrestacaoAnalise({ prestacao, projeto }: PrestacaoAnaliseProps) 
                 </Button>
                 <Button
                   onClick={() => handleDecision('aprovada')}
-                  disabled={submitting}
+                  disabled={submitting || !julgamento || julgamento.startsWith('rejeitada')}
                   className="rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold"
                 >
                   <CheckCircle2 className="mr-2 h-4 w-4" />

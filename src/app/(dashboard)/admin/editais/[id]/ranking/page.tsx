@@ -38,7 +38,7 @@ export default async function RankingPage({
   // Only habilitado projects should appear in ranking
   const { data: projetos } = await supabase
     .from('projetos')
-    .select('id, titulo, numero_protocolo, status_atual, nota_final, categoria_id, avaliacoes(id, pontuacao_total, avaliador_id, status)')
+    .select('id, titulo, numero_protocolo, status_atual, nota_final, categoria_id, classificacao_tipo, avaliacoes(id, pontuacao_total, avaliador_id, status)')
     .eq('edital_id', id)
     .eq('status_habilitacao', 'habilitado')
     .order('nota_final', { ascending: false, nullsFirst: false })
@@ -99,6 +99,7 @@ export default async function RankingPage({
       num_avaliacoes: finalizadas.length,
       status: p.status_atual,
       categoria_nome: p.categoria_id ? catMap.get(p.categoria_id) || undefined : undefined,
+      classificacao_tipo: (p as Record<string, unknown>).classificacao_tipo as string | null || undefined,
       notas_por_avaliador,
       discrepancia,
     }

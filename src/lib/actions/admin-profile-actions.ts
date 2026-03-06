@@ -25,6 +25,25 @@ interface AdminUpdateProfileData {
   endereco_completo?: string | null
   municipio?: string | null
   estado?: string | null
+  // Fase 1.1
+  tipo_pessoa?: string
+  nome_artistico?: string | null
+  data_nascimento?: string | null
+  comunidade_tradicional?: string | null
+  tipo_deficiencia?: string | null
+  escolaridade?: string | null
+  beneficiario_programa_social?: string | null
+  funcao_cultural?: string | null
+  // Fase 1.2 - PJ
+  razao_social?: string | null
+  nome_fantasia?: string | null
+  endereco_sede?: string | null
+  representante_nome?: string | null
+  representante_cpf?: string | null
+  representante_genero?: string | null
+  representante_raca_etnia?: string | null
+  representante_pcd?: boolean
+  representante_escolaridade?: string | null
 }
 
 export async function adminUpdateProfile(targetUserId: string, data: AdminUpdateProfileData) {
@@ -79,6 +98,23 @@ export async function adminUpdateProfile(targetUserId: string, data: AdminUpdate
       endereco_completo: data.endereco_completo ?? undefined,
       municipio: data.municipio ?? undefined,
       estado: data.estado ?? undefined,
+      tipo_pessoa: data.tipo_pessoa ?? undefined,
+      nome_artistico: data.nome_artistico ?? undefined,
+      data_nascimento: data.data_nascimento ?? undefined,
+      comunidade_tradicional: data.comunidade_tradicional ?? undefined,
+      tipo_deficiencia: data.tipo_deficiencia ?? undefined,
+      escolaridade: data.escolaridade ?? undefined,
+      beneficiario_programa_social: data.beneficiario_programa_social ?? undefined,
+      funcao_cultural: data.funcao_cultural ?? undefined,
+      razao_social: data.razao_social ?? undefined,
+      nome_fantasia: data.nome_fantasia ?? undefined,
+      endereco_sede: data.endereco_sede ?? undefined,
+      representante_nome: data.representante_nome ?? undefined,
+      representante_cpf: data.representante_cpf ?? undefined,
+      representante_genero: data.representante_genero ?? undefined,
+      representante_raca_etnia: data.representante_raca_etnia ?? undefined,
+      representante_pcd: data.representante_pcd ?? undefined,
+      representante_escolaridade: data.representante_escolaridade ?? undefined,
     })
     .eq('id', targetUserId)
 

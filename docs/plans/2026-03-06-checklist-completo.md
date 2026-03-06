@@ -132,7 +132,7 @@
 - [x] Workflow de convocacao: quando titular e inabilitado -> convocar proximo suplente ✅ convocacao-actions.ts convocarSuplente()
 - [x] Historico de chamadas (1a, 2a, 3a, 4a chamada) ✅ tabela convocacoes (migration 20260306000011) + página admin
 - [x] Status por projeto: CLASSIFICADO / SUPLENTE / SUPLENTE_CONVOCADO_2A / etc. ✅ status_atual dinâmico + badges
-- [ ] Notificacao automatica ao suplente convocado
+- [x] Notificacao automatica ao suplente convocado ✅ notifyInAppConvocacaoSuplente() chamada em convocarSuplente()
 - [x] Prazo para suplente apresentar documentacao de habilitacao ✅ prazo_habilitacao (default 5 dias) + indicador prazo expirado
 
 ### 3.4 Lista de Inscritos Publica
@@ -158,7 +158,7 @@
 - [x] Recurso da selecao (contestar notas/classificacao) ✅ ja existia
 - [x] Recurso da habilitacao (contestar inabilitacao) ✅ ja existia
 - [x] Prazo configuravel por tipo de recurso ✅ ja existia (inicio/fim_recurso_inscricao/selecao/habilitacao)
-- [ ] Contagem automatica de dias uteis (excluir sabados, domingos, feriados)
+- [x] Contagem automatica de dias uteis (excluir sabados, domingos, feriados) ✅ src/lib/utils/dias-uteis.ts com contarDiasUteis, adicionarDiasUteis, diasUteisRestantes + feriados nacionais
 - [x] Bloqueio de envio apos prazo ✅ validacao no RecursoPage com prazos do edital
 
 ### 4.2 Analise de Recurso pelo Gestor
@@ -251,7 +251,7 @@
 ### 6.6 Pagamento
 - [x] Criar tabela `pagamentos` ✅ migration 20260306000001
 - [x] UI de gestao de pagamentos (registrar liberacao, upload comprovante) ✅ PagamentosSection na página termos + pagamento-actions.ts
-- [ ] Notificacao ao proponente quando pagamento liberado
+- [x] Notificacao ao proponente quando pagamento liberado ✅ notifyInAppPagamento() chamada em atualizarStatusPagamento()
 
 ---
 
@@ -316,9 +316,9 @@
 - [x] Validacao: alertar campos faltantes antes de exportar ✅ alertas inline com contagem
 
 ### 8.2 Lista de Inscritos (PDF/XLSX)
-- [ ] Exportar lista formatada com numero, nome, projeto, categoria
+- [x] Exportar lista formatada com numero, nome, projeto, categoria ✅ InscritosExport.tsx
 - [ ] Versao PDF para publicacao oficial
-- [ ] Versao XLSX para trabalho interno
+- [x] Versao XLSX para trabalho interno ✅ InscritosExport XLS com header estilizado
 
 ### 8.3 Fichas de Avaliacao (PDF)
 - [ ] Gerar PDF da ficha de avaliacao por projeto (modelo das FICHAS DE AVALIACAO)
@@ -351,9 +351,9 @@
 - [ ] Notificacao a todos os inscritos quando errata publicada
 
 ### 9.2 Versionamento do Edital
-- [ ] Salvar snapshot do edital a cada alteracao significativa
+- [x] Salvar snapshot do edital a cada alteracao significativa ✅ logAudit com dados_antigos/dados_novos em edital-actions.ts
 - [ ] Exibir versao atual vs versoes anteriores
-- [ ] Log de quem alterou o que e quando
+- [x] Log de quem alterou o que e quando ✅ logs_auditoria com usuario_id, acao, timestamp, dados_antigos/novos
 
 ---
 
@@ -389,19 +389,19 @@
 ## FASE 11 — NOTIFICACOES E COMUNICACAO
 
 ### 11.1 Notificacoes Automaticas
-- [ ] Inscricao confirmada (proponente)
-- [ ] Lista de inscritos publicada (todos os inscritos)
-- [ ] Resultado preliminar publicado (todos os inscritos)
-- [ ] Prazo de recurso iniciado (proponentes afetados)
-- [ ] Decisao de recurso publicada (proponente)
-- [ ] Convocacao para habilitacao (classificados + suplentes convocados)
-- [ ] Resultado habilitacao publicado (convocados)
-- [ ] Convocacao de suplente (suplente)
+- [x] Inscricao confirmada (proponente) ✅ notifyInAppInscricaoConfirmada()
+- [x] Lista de inscritos publicada (todos os inscritos) ✅ notifyInAppEditalFase('divulgacao_inscritos')
+- [x] Resultado preliminar publicado (todos os inscritos) ✅ notifyInAppEditalFase('resultado_preliminar_avaliacao')
+- [x] Prazo de recurso iniciado (proponentes afetados) ✅ notifyInAppEditalFase('recurso_avaliacao' / 'recurso_habilitacao')
+- [x] Decisao de recurso publicada (proponente) ✅ notifyInAppRecursoDecisao()
+- [x] Convocacao para habilitacao (classificados + suplentes convocados) ✅ notifyInAppEditalFase('habilitacao')
+- [x] Resultado habilitacao publicado (convocados) ✅ notifyInAppEditalFase('resultado_preliminar_habilitacao')
+- [x] Convocacao de suplente (suplente) ✅ notifyInAppConvocacaoSuplente()
 - [ ] Termo de Execucao disponivel para assinatura (contemplado)
 - [ ] Prazo de assinatura vencendo (contemplado - lembrete)
-- [ ] Pagamento liberado (contemplado)
+- [x] Pagamento liberado (contemplado) ✅ notifyInAppPagamento()
 - [ ] Prazo de prestacao de contas se aproximando (contemplado - 30, 15, 7 dias)
-- [ ] Prestacao de contas analisada (contemplado)
+- [x] Prestacao de contas analisada (contemplado) ✅ notifyInAppPrestacaoAnalise()
 - [ ] Errata publicada (todos os inscritos)
 
 ### 11.2 Notificacoes por Email

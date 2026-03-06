@@ -21,7 +21,8 @@ import {
 } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { toast } from 'sonner'
-import { ArrowLeft, Plus, Loader2, FileText } from 'lucide-react'
+import { ArrowLeft, Plus, Loader2, FileText, Zap } from 'lucide-react'
+import { publicarResultado } from '@/lib/actions/publicar-resultado'
 
 interface Publicacao {
   id: string
@@ -62,11 +63,33 @@ const etapaOptions = [
   { value: 'homologacao', label: 'Homologação' },
 ]
 
+const QUICK_PUBLISH_OPTIONS = [
+  { tipo: 'resultado_preliminar_selecao' as const, label: 'Resultado Preliminar (Seleção)', color: 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100' },
+  { tipo: 'resultado_final_selecao' as const, label: 'Resultado Final (Seleção)', color: 'bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100' },
+  { tipo: 'resultado_preliminar_habilitacao' as const, label: 'Resultado Preliminar (Habilitação)', color: 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100' },
+  { tipo: 'resultado_definitivo_habilitacao' as const, label: 'Resultado Definitivo (Habilitação)', color: 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100' },
+  { tipo: 'homologacao_final' as const, label: 'Homologação Final', color: 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100' },
+]
+
 export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicacoes, backHref }: PublicacoesManagerProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
+  const [publishing, setPublishing] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [form, setForm] = useState({ tipo: '', tipoCustom: '', etapa: '', titulo: '', conteudo: '' })
+
+  async function handleQuickPublish(tipo: typeof QUICK_PUBLISH_OPTIONS[number]['tipo']) {
+    if (!confirm('Isso irá gerar automaticamente o conteúdo do resultado a partir dos dados atuais do ranking/habilitação. Continuar?')) return
+    setPublishing(tipo)
+    const result = await publicarResultado(editalId, tipo)
+    if (result.error) {
+      toast.error('Erro: ' + result.error)
+    } else {
+      toast.success(`Publicação criada: ${result.titulo}`)
+      router.refresh()
+    }
+    setPublishing(null)
+  }
 
   async function criarPublicacao() {
     setSaving(true)
@@ -198,6 +221,34 @@ export function PublicacoesManager({ editalId, editalTitulo, tenantId, publicaco
             </div>
           </DialogContent>
             </Dialog>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quick Publish - Auto-generate results */}
+      <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4 text-amber-500" />
+            <h3 className="text-sm font-semibold text-slate-900">Publicação Rápida de Resultados</h3>
+          </div>
+          <p className="text-xs text-slate-400">Gera automaticamente o conteúdo a partir dos dados atuais do ranking e habilitação.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {QUICK_PUBLISH_OPTIONS.map(opt => (
+              <button
+                key={opt.tipo}
+                onClick={() => handleQuickPublish(opt.tipo)}
+                disabled={publishing !== null}
+                className={`flex items-center gap-2 p-3 rounded-xl border text-left text-xs font-semibold transition-all ${opt.color} disabled:opacity-50`}
+              >
+                {publishing === opt.tipo ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin flex-shrink-0" />
+                ) : (
+                  <FileText className="h-3.5 w-3.5 flex-shrink-0" />
+                )}
+                {opt.label}
+              </button>
+            ))}
           </div>
         </CardContent>
       </Card>

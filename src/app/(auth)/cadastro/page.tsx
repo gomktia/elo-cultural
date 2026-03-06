@@ -50,6 +50,11 @@ export default function CadastroPage() {
     escolaridade: '',
     beneficiario_programa_social: 'nenhum',
     funcao_cultural: '',
+    razao_social: '', nome_fantasia: '', endereco_sede: '',
+    representante_nome: '', representante_cpf: '', representante_genero: '',
+    representante_raca_etnia: '', representante_pcd: false, representante_escolaridade: '',
+    nome_coletivo: '', ano_criacao: '', quantidade_membros: '', portfolio: '',
+    membros: [] as { nome: string; cpf: string }[],
   })
   const [avaliadorData, setAvaliadorData] = useState({
     curriculo_descricao: '',
@@ -154,6 +159,18 @@ export default function CadastroPage() {
           escolaridade: proponenteData.escolaridade || null,
           beneficiario_programa_social: proponenteData.beneficiario_programa_social || 'nenhum',
           funcao_cultural: proponenteData.funcao_cultural || null,
+          // PJ fields
+          ...(proponenteData.tipo_pessoa === 'juridica' ? {
+            razao_social: proponenteData.razao_social || null,
+            nome_fantasia: proponenteData.nome_fantasia || null,
+            endereco_sede: proponenteData.endereco_sede || null,
+            representante_nome: proponenteData.representante_nome || null,
+            representante_cpf: proponenteData.representante_cpf || null,
+            representante_genero: proponenteData.representante_genero || null,
+            representante_raca_etnia: proponenteData.representante_raca_etnia || null,
+            representante_pcd: proponenteData.representante_pcd,
+            representante_escolaridade: proponenteData.representante_escolaridade || null,
+          } : {}),
         })
       } else if (perfilTipo === 'avaliador') {
         Object.assign(extraData, {
@@ -174,6 +191,27 @@ export default function CadastroPage() {
           .from('profiles')
           .update(extraData)
           .eq('id', signUpData.user.id)
+      }
+
+      // Save coletivo data if applicable
+      if (perfilTipo === 'proponente' && proponenteData.tipo_pessoa === 'coletivo_sem_cnpj' && proponenteData.nome_coletivo) {
+        const { data: coletivo } = await supabase.from('coletivos').insert({
+          profile_id: signUpData.user.id,
+          nome_coletivo: proponenteData.nome_coletivo,
+          ano_criacao: proponenteData.ano_criacao ? parseInt(proponenteData.ano_criacao) : null,
+          quantidade_membros: proponenteData.quantidade_membros ? parseInt(proponenteData.quantidade_membros) : 1,
+          portfolio: proponenteData.portfolio || null,
+        }).select('id').single()
+
+        if (coletivo && proponenteData.membros.length > 0) {
+          await supabase.from('coletivo_membros').insert(
+            proponenteData.membros.map(m => ({
+              coletivo_id: coletivo.id,
+              nome: m.nome,
+              cpf: m.cpf || null,
+            }))
+          )
+        }
       }
     }
 

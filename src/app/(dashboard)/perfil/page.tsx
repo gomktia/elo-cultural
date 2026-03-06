@@ -28,6 +28,11 @@ export default function PerfilPage() {
     orientacao_sexual: '', raca_etnia: '', pcd: false, endereco_completo: '', municipio: '', estado: '',
     tipo_pessoa: 'fisica', nome_artistico: '', data_nascimento: '', comunidade_tradicional: 'nenhuma',
     tipo_deficiencia: '', escolaridade: '', beneficiario_programa_social: 'nenhum', funcao_cultural: '',
+    razao_social: '', nome_fantasia: '', endereco_sede: '',
+    representante_nome: '', representante_cpf: '', representante_genero: '',
+    representante_raca_etnia: '', representante_pcd: false, representante_escolaridade: '',
+    nome_coletivo: '', ano_criacao: '', quantidade_membros: '', portfolio: '',
+    membros: [] as { nome: string; cpf: string }[],
   })
   const [avaliadorData, setAvaliadorData] = useState({
     curriculo_descricao: '', areas_avaliacao: [] as string[], lattes_url: '',
@@ -82,7 +87,40 @@ export default function PerfilPage() {
           escolaridade: prof.escolaridade || '',
           beneficiario_programa_social: prof.beneficiario_programa_social || 'nenhum',
           funcao_cultural: prof.funcao_cultural || '',
+          razao_social: prof.razao_social || '',
+          nome_fantasia: prof.nome_fantasia || '',
+          endereco_sede: prof.endereco_sede || '',
+          representante_nome: prof.representante_nome || '',
+          representante_cpf: prof.representante_cpf || '',
+          representante_genero: prof.representante_genero || '',
+          representante_raca_etnia: prof.representante_raca_etnia || '',
+          representante_pcd: prof.representante_pcd || false,
+          representante_escolaridade: prof.representante_escolaridade || '',
+          nome_coletivo: '', ano_criacao: '', quantidade_membros: '', portfolio: '',
+          membros: [] as { nome: string; cpf: string }[],
         })
+        // Load coletivo data if applicable
+        if (prof.tipo_pessoa === 'coletivo_sem_cnpj') {
+          const { data: coletivo } = await supabase
+            .from('coletivos')
+            .select('*')
+            .eq('profile_id', user.id)
+            .single()
+          if (coletivo) {
+            const { data: membros } = await supabase
+              .from('coletivo_membros')
+              .select('nome, cpf')
+              .eq('coletivo_id', coletivo.id)
+            setProponenteData(prev => ({
+              ...prev,
+              nome_coletivo: coletivo.nome_coletivo || '',
+              ano_criacao: coletivo.ano_criacao?.toString() || '',
+              quantidade_membros: coletivo.quantidade_membros?.toString() || '',
+              portfolio: coletivo.portfolio || '',
+              membros: (membros || []).map(m => ({ nome: m.nome, cpf: m.cpf || '' })),
+            }))
+          }
+        }
       } else if (prof?.role === 'avaliador') {
         setAvaliadorData({
           curriculo_descricao: prof.curriculo_descricao || '',
@@ -164,6 +202,17 @@ export default function PerfilPage() {
         escolaridade: proponenteData.escolaridade || null,
         beneficiario_programa_social: proponenteData.beneficiario_programa_social || 'nenhum',
         funcao_cultural: proponenteData.funcao_cultural || null,
+        ...(proponenteData.tipo_pessoa === 'juridica' ? {
+          razao_social: proponenteData.razao_social || null,
+          nome_fantasia: proponenteData.nome_fantasia || null,
+          endereco_sede: proponenteData.endereco_sede || null,
+          representante_nome: proponenteData.representante_nome || null,
+          representante_cpf: proponenteData.representante_cpf || null,
+          representante_genero: proponenteData.representante_genero || null,
+          representante_raca_etnia: proponenteData.representante_raca_etnia || null,
+          representante_pcd: proponenteData.representante_pcd,
+          representante_escolaridade: proponenteData.representante_escolaridade || null,
+        } : {}),
       }
     } else if (profile?.role === 'avaliador') {
       extraData = {
@@ -182,9 +231,49 @@ export default function PerfilPage() {
     const { error } = await supabase.from('profiles').update(extraData).eq('id', user.id)
     if (error) {
       toast.error(translateAuthError(error.message))
-    } else {
-      toast.success('Dados do perfil atualizados com sucesso')
+      setSavingExtra(false)
+      return
     }
+
+    // Save coletivo data if applicable
+    if (profile?.role === 'proponente' && proponenteData.tipo_pessoa === 'coletivo_sem_cnpj' && proponenteData.nome_coletivo) {
+      const coletivoData = {
+        profile_id: user.id,
+        nome_coletivo: proponenteData.nome_coletivo,
+        ano_criacao: proponenteData.ano_criacao ? parseInt(proponenteData.ano_criacao) : null,
+        quantidade_membros: proponenteData.quantidade_membros ? parseInt(proponenteData.quantidade_membros) : 1,
+        portfolio: proponenteData.portfolio || null,
+      }
+
+      const { data: existing } = await supabase
+        .from('coletivos')
+        .select('id')
+        .eq('profile_id', user.id)
+        .single()
+
+      let coletivoId: string
+      if (existing) {
+        await supabase.from('coletivos').update(coletivoData).eq('id', existing.id)
+        coletivoId = existing.id
+      } else {
+        const { data: newColetivo } = await supabase.from('coletivos').insert(coletivoData).select('id').single()
+        coletivoId = newColetivo!.id
+      }
+
+      // Sync membros: delete all, re-insert
+      await supabase.from('coletivo_membros').delete().eq('coletivo_id', coletivoId)
+      if (proponenteData.membros.length > 0) {
+        await supabase.from('coletivo_membros').insert(
+          proponenteData.membros.map(m => ({
+            coletivo_id: coletivoId,
+            nome: m.nome,
+            cpf: m.cpf || null,
+          }))
+        )
+      }
+    }
+
+    toast.success('Dados do perfil atualizados com sucesso')
     setSavingExtra(false)
   }
 
