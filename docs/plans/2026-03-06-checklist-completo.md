@@ -136,9 +136,9 @@
 - [ ] Prazo para suplente apresentar documentacao de habilitacao
 
 ### 3.4 Lista de Inscritos Publica
-- [ ] Pagina publica /editais/[id]/inscritos
-- [ ] Exibir: nome proponente, nome projeto, categoria
-- [ ] Exportacao em PDF e XLSX
+- [x] Pagina publica /editais/[id]/inscritos ✅ src/app/(public)/editais/[id]/inscritos/page.tsx
+- [x] Exibir: nome proponente, nome projeto, categoria ✅ com stats por categoria
+- [x] Exportacao em PDF e XLSX ✅ InscritosExport.tsx (XLS) + botao na pagina publica do edital
 - [ ] Periodo de impugnacao configuravel
 
 ### 3.5 Publicacao de Resultados
@@ -258,7 +258,7 @@
 ## FASE 7 — PRESTACAO DE CONTAS COMPLETA
 
 ### 7.1 Relatorio de Execucao do Objeto (ANEXO XI)
-- [ ] Reformular tabela `prestacoes_contas` com campos estruturados:
+- [x] Reformular tabela `prestacoes_contas` com campos estruturados: ✅ migration 20260306000003
   - Secao 1: dados do projeto (auto-preenchidos)
   - Secao 2: resumo da execucao + acoes_realizadas (enum: sim_conforme/sim_com_adaptacoes/parcial/nao_conforme)
   - Secao 2.3: acoes desenvolvidas (texto livre com datas e locais)
@@ -274,8 +274,8 @@
   - Secao 9: anexos comprobatorios
 
 ### 7.2 Equipe da Prestacao de Contas
-- [ ] Criar tabela `prestacao_equipe` (id, prestacao_id, nome, funcao, cpf_cnpj, pessoa_negra_indigena boolean, pessoa_pcd boolean)
-- [ ] UI para listar profissionais que participaram da execucao
+- [x] Criar tabela `prestacao_equipe` (id, prestacao_id, nome, funcao, cpf_cnpj, pessoa_negra_indigena boolean, pessoa_pcd boolean) ✅ migration 20260306000003
+- [x] UI para listar profissionais que participaram da execucao ✅ PrestacaoForm.tsx secao 7 (quantidade + mudancas)
 
 ### 7.3 Anexos Comprobatorios
 - [ ] Upload de multiplos anexos: fotos, videos, listas de presenca, relatorio fotografico, folders, materiais de divulgacao
