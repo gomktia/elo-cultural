@@ -154,17 +154,17 @@
 ## FASE 4 — RECURSOS E DECISOES
 
 ### 4.1 Workflow de Recurso Completo
-- [ ] Recurso da inscricao (impugnacao lista de inscritos)
-- [ ] Recurso da selecao (contestar notas/classificacao)
-- [ ] Recurso da habilitacao (contestar inabilitacao)
-- [ ] Prazo configuravel por tipo de recurso (default 3 dias uteis)
+- [x] Recurso da inscricao (impugnacao lista de inscritos) ✅ ja existia
+- [x] Recurso da selecao (contestar notas/classificacao) ✅ ja existia
+- [x] Recurso da habilitacao (contestar inabilitacao) ✅ ja existia
+- [x] Prazo configuravel por tipo de recurso ✅ ja existia (inicio/fim_recurso_inscricao/selecao/habilitacao)
 - [ ] Contagem automatica de dias uteis (excluir sabados, domingos, feriados)
-- [ ] Bloqueio de envio apos prazo
+- [x] Bloqueio de envio apos prazo ✅ validacao no RecursoPage com prazos do edital
 
 ### 4.2 Analise de Recurso pelo Gestor
-- [ ] Dashboard de recursos pendentes por edital
-- [ ] Visualizacao lado-a-lado: recurso do proponente + pareceres originais
-- [ ] Opcoes de decisao: DEFERIDO / INDEFERIDO / DEFERIDO_PARCIAL
+- [x] Dashboard de recursos pendentes por edital ✅ stats (total/pendentes/deferidos/indeferidos) + prazo ativo
+- [x] Visualizacao lado-a-lado: recurso do proponente + pareceres originais ✅ /recursos/[recursoId] com grid 2 colunas
+- [x] Opcoes de decisao: DEFERIDO / INDEFERIDO ✅ RecursoDecisaoPanel com parecer obrigatorio
 - [ ] No deferimento parcial: selecionar quais criterios devem ser revisados e por qual parecerista
 - [ ] Devolver parecer para parecerista revisar criterios especificos
 - [ ] Parecerista revisa -> nova nota -> recalcula media -> atualiza ranking
@@ -181,11 +181,11 @@
 ## FASE 5 — HABILITACAO
 
 ### 5.1 Checklist de Documentos de Habilitacao
-- [ ] Configuracao por edital dos documentos exigidos na habilitacao
-- [ ] Tipos: certidao_federal, certidao_estadual, certidao_municipal, certidao_trabalhista, documento_pessoal, comprovante_residencia, estatuto_social, ata_posse, declaracao_conjunta, ficha_cnpj
-- [ ] Proponente faz upload de cada documento
-- [ ] Gestor confere cada documento (aprovado/reprovado/pendencia)
-- [ ] Diligencia: ate 2 notificacoes para regularizar (prazo 5 dias uteis cada)
+- [x] Configuracao por edital dos documentos exigidos na habilitacao ✅ tabela edital_docs_habilitacao (migration 20260306000005)
+- [x] Tipos configuraveis pelo gestor (qualquer tipo de documento) ✅
+- [x] Proponente faz upload de cada documento ✅ ja existia (projeto_documentos)
+- [x] Gestor confere cada documento (aprovado/reprovado/pendencia) ✅ habilitacao_doc_conferencia + HabilitacaoSheet com dropdown por doc
+- [x] Diligencia: ate 2 notificacoes para regularizar (prazo 5 dias uteis cada) ✅ habilitacao_diligencias + botao "Enviar Diligencia" no sheet
 
 ### 5.2 Consultas Automaticas (futuro)
 - [ ] Consulta CND federal via API (Receita Federal)
