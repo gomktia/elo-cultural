@@ -156,6 +156,110 @@ export function editalFaseAlterada(params: {
   }
 }
 
+export function convocacaoSuplente(params: {
+  nome: string
+  titulo: string
+  numeroChamada: number
+  prazoHabilitacao: string
+  brand?: BrandOptions
+}): { subject: string; html: string } {
+  return {
+    subject: `Convocacao de Suplente (${params.numeroChamada}a chamada) — ${params.titulo}`,
+    html: baseLayout(`Convocacao de Suplente — ${params.numeroChamada}a Chamada`, `
+      ${p(`Ola, <strong>${params.nome}</strong>!`)}
+      ${p(`Seu projeto foi convocado como suplente na <strong>${params.numeroChamada}a chamada</strong>.`)}
+      ${highlight('Projeto', params.titulo)}
+      ${highlight('Prazo para Habilitacao', params.prazoHabilitacao)}
+      ${p('Apresente a documentacao de habilitacao dentro do prazo indicado para garantir sua vaga.')}
+      ${p('Acesse a plataforma para mais detalhes.')}
+    `, params.brand),
+  }
+}
+
+export function pagamentoLiberado(params: {
+  nome: string
+  titulo: string
+  valor: string
+  status: 'liberado' | 'pago'
+  brand?: BrandOptions
+}): { subject: string; html: string } {
+  const statusLabel = params.status === 'pago' ? 'Pago' : 'Liberado'
+  return {
+    subject: `Pagamento ${statusLabel} — ${params.titulo}`,
+    html: baseLayout(`Pagamento ${statusLabel}`, `
+      ${p(`Ola, <strong>${params.nome}</strong>!`)}
+      ${p(`O pagamento referente ao seu projeto foi <strong>${statusLabel.toLowerCase()}</strong>.`)}
+      ${highlight('Projeto', params.titulo)}
+      ${highlight('Valor', params.valor)}
+      <div style="margin:16px 0">${statusBadge(statusLabel, params.status === 'pago' ? 'green' : 'blue')}</div>
+      ${p('Acesse a plataforma para mais detalhes.')}
+    `, params.brand),
+  }
+}
+
+export function errataPublicada(params: {
+  nome: string
+  editalTitulo: string
+  numeroErrata: number
+  descricao: string
+  brand?: BrandOptions
+}): { subject: string; html: string } {
+  return {
+    subject: `Errata no ${params.numeroErrata} — ${params.editalTitulo}`,
+    html: baseLayout(`Errata no ${params.numeroErrata} Publicada`, `
+      ${p(`Ola, <strong>${params.nome}</strong>!`)}
+      ${p('Uma errata foi publicada no edital em que voce esta inscrito.')}
+      ${highlight('Edital', params.editalTitulo)}
+      ${highlight('Errata', `no ${params.numeroErrata}`)}
+      ${highlight('Descricao', params.descricao)}
+      ${p('Acesse a plataforma para consultar a errata completa.')}
+    `, params.brand),
+  }
+}
+
+export function termoDisponivel(params: {
+  nome: string
+  titulo: string
+  brand?: BrandOptions
+}): { subject: string; html: string } {
+  return {
+    subject: `Termo de Execucao Disponivel — ${params.titulo}`,
+    html: baseLayout('Termo de Execucao Disponivel', `
+      ${p(`Ola, <strong>${params.nome}</strong>!`)}
+      ${p('O Termo de Execucao Cultural referente ao seu projeto esta disponivel para assinatura.')}
+      ${highlight('Projeto', params.titulo)}
+      ${p('Acesse a plataforma para revisar e assinar o termo.')}
+    `, params.brand),
+  }
+}
+
+export function prazoLembrete(params: {
+  nome: string
+  titulo: string
+  tipo: 'assinatura' | 'prestacao' | 'recurso'
+  diasRestantes: number
+  brand?: BrandOptions
+}): { subject: string; html: string } {
+  const tipoLabels: Record<string, string> = {
+    assinatura: 'assinatura do termo',
+    prestacao: 'prestacao de contas',
+    recurso: 'interposicao de recurso',
+  }
+  const tipoLabel = tipoLabels[params.tipo] || params.tipo
+  const urgencia = params.diasRestantes <= 2 ? 'red' : params.diasRestantes <= 5 ? 'amber' : 'blue'
+
+  return {
+    subject: `Prazo: ${params.diasRestantes} dia(s) para ${tipoLabel} — ${params.titulo}`,
+    html: baseLayout('Lembrete de Prazo', `
+      ${p(`Ola, <strong>${params.nome}</strong>!`)}
+      ${p(`Voce tem <strong>${params.diasRestantes} dia(s)</strong> restante(s) para ${tipoLabel}.`)}
+      ${highlight('Projeto', params.titulo)}
+      <div style="margin:16px 0">${statusBadge(`${params.diasRestantes} dia(s) restante(s)`, urgencia)}</div>
+      ${p('Acesse a plataforma para completar a acao pendente.')}
+    `, params.brand),
+  }
+}
+
 export function prestacaoStatus(params: {
   nome: string
   titulo: string

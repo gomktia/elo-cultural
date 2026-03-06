@@ -182,9 +182,11 @@ export async function consolidarRanking(editalId: string) {
   // ── 1. Load edital config ──
   const { data: edital } = await supabase
     .from('editais')
-    .select('config_cotas, config_desempate, config_pontuacao_extra, config_reserva_vagas, nota_minima_aprovacao, nota_zero_desclassifica')
+    .select('config_cotas, config_desempate, config_pontuacao_extra, config_reserva_vagas, nota_minima_aprovacao, nota_zero_desclassifica, tipo_edital')
     .eq('id', editalId)
     .single()
+
+  const isCulturaViva = edital?.tipo_edital === 'cultura_viva'
 
   const pontuacaoExtra: PontuacaoExtraRule[] = (edital?.config_pontuacao_extra as PontuacaoExtraRule[]) || []
   const desempate: string[] = (edital?.config_desempate as string[]) || []
@@ -209,10 +211,28 @@ export async function consolidarRanking(editalId: string) {
     .eq('edital_id', editalId)
     .order('created_at')
 
+  // ── 2b. Load criterios bloco info for Cultura Viva ──
+  let criteriosBlocoMap: Map<string, string> | null = null
+  if (isCulturaViva) {
+    const { data: criterios } = await supabase
+      .from('criterios')
+      .select('id, bloco')
+      .eq('edital_id', editalId)
+      .not('bloco', 'is', null)
+
+    if (criterios && criterios.length > 0) {
+      criteriosBlocoMap = new Map(criterios.map(c => [c.id, c.bloco as string]))
+    }
+  }
+
   // ── 3. Load projetos with avaliacoes ──
+  const avaliacaoSelect = isCulturaViva && criteriosBlocoMap
+    ? 'id, proponente_id, categoria_id, data_envio, avaliacoes(pontuacao_total, id)'
+    : 'id, proponente_id, categoria_id, data_envio, avaliacoes(pontuacao_total)'
+
   const { data: projetos } = await supabase
     .from('projetos')
-    .select('id, proponente_id, categoria_id, data_envio, avaliacoes(pontuacao_total)')
+    .select(avaliacaoSelect)
     .eq('edital_id', editalId)
     .eq('status_habilitacao', 'habilitado')
     .eq('avaliacoes.status', 'finalizada')
@@ -238,10 +258,65 @@ export async function consolidarRanking(editalId: string) {
 
   const profileMap = new Map((profiles || []).map(p => [p.id, p]))
 
+  // ── 4b. For Cultura Viva, load avaliacao_criterios to compute block scores ──
+  let avaliacaoCriteriosMap: Map<string, Array<{ criterio_id: string; nota: number }>> | null = null
+  if (isCulturaViva && criteriosBlocoMap) {
+    const avaliacaoIds = projetosComAval.flatMap(p =>
+      ((p.avaliacoes as Array<{ id: string }>) || []).map(a => a.id)
+    )
+    if (avaliacaoIds.length > 0) {
+      const { data: avalCriterios } = await supabase
+        .from('avaliacao_criterios')
+        .select('avaliacao_id, criterio_id, nota')
+        .in('avaliacao_id', avaliacaoIds)
+
+      if (avalCriterios) {
+        avaliacaoCriteriosMap = new Map()
+        for (const ac of avalCriterios) {
+          const list = avaliacaoCriteriosMap.get(ac.avaliacao_id) || []
+          list.push({ criterio_id: ac.criterio_id, nota: Number(ac.nota) })
+          avaliacaoCriteriosMap.set(ac.avaliacao_id, list)
+        }
+      }
+    }
+  }
+
   // ── 5. Calculate nota_base + apply pontuação extra ──
+  // For Cultura Viva: nota_final = (avg_bloco1 + avg_bloco2) / 2
+  const culturaVivaBloco1Scores: Map<string, number> = new Map()
+
   const rankingList: ProjetoRanking[] = projetosComAval.map(p => {
-    const avaliacoes = p.avaliacoes as Array<{ pontuacao_total: number }>
-    const notaBase = avaliacoes.reduce((sum, a) => sum + Number(a.pontuacao_total), 0) / avaliacoes.length
+    const avaliacoes = p.avaliacoes as Array<{ pontuacao_total: number; id?: string }>
+    let notaBase: number
+
+    if (isCulturaViva && criteriosBlocoMap && avaliacaoCriteriosMap) {
+      // Compute per-block scores across all evaluations
+      let bloco1Sum = 0, bloco1Count = 0
+      let bloco2Sum = 0, bloco2Count = 0
+
+      for (const aval of avaliacoes) {
+        const criterios = aval.id ? avaliacaoCriteriosMap.get(aval.id) || [] : []
+        let b1 = 0, b1n = 0, b2 = 0, b2n = 0
+
+        for (const ac of criterios) {
+          const bloco = criteriosBlocoMap.get(ac.criterio_id)
+          if (bloco === 'bloco1_entidade') { b1 += ac.nota; b1n++ }
+          else if (bloco === 'bloco2_projeto') { b2 += ac.nota; b2n++ }
+        }
+
+        if (b1n > 0) { bloco1Sum += b1; bloco1Count++ }
+        if (b2n > 0) { bloco2Sum += b2; bloco2Count++ }
+      }
+
+      const avgBloco1 = bloco1Count > 0 ? bloco1Sum / bloco1Count : 0
+      const avgBloco2 = bloco2Count > 0 ? bloco2Sum / bloco2Count : 0
+      notaBase = (avgBloco1 + avgBloco2) / 2
+
+      culturaVivaBloco1Scores.set(p.id, avgBloco1)
+    } else {
+      notaBase = avaliacoes.reduce((sum, a) => sum + Number(a.pontuacao_total), 0) / avaliacoes.length
+    }
+
     const notaBaseRounded = Math.round(notaBase * 100) / 100
 
     const prof = profileMap.get(p.proponente_id) || null
@@ -303,6 +378,15 @@ export async function consolidarRanking(editalId: string) {
     if (notaMinima > 0 && proj.nota_base < notaMinima) {
       desclassificados.push({ id: proj.id, nota_final: proj.nota_ajustada })
       continue
+    }
+
+    // Cultura Viva: bloco1 < 50 = not eligible for pre-certification
+    if (isCulturaViva && culturaVivaBloco1Scores.has(proj.id)) {
+      const bloco1Score = culturaVivaBloco1Scores.get(proj.id)!
+      if (bloco1Score < 50) {
+        desclassificados.push({ id: proj.id, nota_final: proj.nota_ajustada })
+        continue
+      }
     }
 
     elegiveisRanking.push(proj)

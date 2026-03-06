@@ -88,7 +88,7 @@
 - [x] Melhorar pagina /admin/editais/[id]/atribuicoes ✅ AtribuicaoMatrix com auto-distribute
 - [x] Distribuicao automatica: N pareceristas por projeto, balanceando carga ✅ round-robin load-balanced autoDistribute()
 - [x] Distribuicao manual: gestor escolhe quais pareceristas avaliam qual projeto ✅ já existia (checkbox matrix)
-- [ ] Verificacao de impedimento: parecerista nao pode avaliar projeto de parente/conhecido
+- [x] Verificacao de impedimento: parecerista nao pode avaliar projeto de parente/conhecido ✅ migration 20260306000017 + impedimento-actions.ts + visual no AtribuicaoMatrix (X vermelho + tooltip)
 - [x] Status visual: quantos projetos cada parecerista ja avaliou ✅ badge N/M avaliados com cor por status
 
 ### 2.3 Calculo de Media e Ranking Automatico
@@ -102,7 +102,7 @@
 ### 2.4 Comissao de Avaliacao
 - [x] Criar tabela `edital_comissao` (id, edital_id, nome, cpf, qualificacao, tipo [sociedade_civil/poder_executivo], portaria_numero) ✅ migration 20260306000012
 - [x] UI para cadastrar membros da comissao ✅ /admin/editais/[id]/comissao com form + lista agrupada por tipo
-- [ ] Gerar portaria de designacao (PDF)
+- [ ] Gerar portaria de designação (PDF)
 - [x] Publicar composicao da comissao ✅ seção pública na página do edital com membros agrupados por tipo
 
 ### 2.5 Criterios de Desempate
@@ -165,9 +165,9 @@
 - [x] Dashboard de recursos pendentes por edital ✅ stats (total/pendentes/deferidos/indeferidos) + prazo ativo
 - [x] Visualizacao lado-a-lado: recurso do proponente + pareceres originais ✅ /recursos/[recursoId] com grid 2 colunas
 - [x] Opcoes de decisao: DEFERIDO / INDEFERIDO ✅ RecursoDecisaoPanel com parecer obrigatorio
-- [ ] No deferimento parcial: selecionar quais criterios devem ser revisados e por qual parecerista
-- [ ] Devolver parecer para parecerista revisar criterios especificos
-- [ ] Parecerista revisa -> nova nota -> recalcula media -> atualiza ranking
+- [x] No deferimento parcial: selecionar quais criterios devem ser revisados e por qual parecerista ✅ DeferimentoParcialPanel + solicitarRevisao() + migration 20260306000018
+- [x] Devolver parecer para parecerista revisar criterios especificos ✅ recurso_revisoes table + status deferido_parcial + avaliacao reaberta
+- [x] Parecerista revisa -> nova nota -> recalcula media -> atualiza ranking ✅ /avaliacao/revisoes page + submeterRevisao() + finalizarDeferimentoParcial() recalcula ranking
 
 ### 4.3 Decisao Administrativa (Template)
 - [x] Template estruturado da decisao com campos: fundamentacao, analise_merito, conclusao, dispositivo ✅ RecursoDecisaoPanel com 4 campos estruturados
@@ -293,12 +293,12 @@
   - Rejeitada parcial (devolucao proporcional)
   - Rejeitada total (devolucao + multa + suspensao 180-540 dias)
 - [x] Plano de acoes compensatorias (alternativa a devolucao) ✅ campo plano_compensatorio condicional
-- [ ] Parcelamento de debito (depende de regras do ente federativo)
+- [x] Parcelamento de debito (depende de regras do ente federativo) ✅ migration 20260306000021 + campo parcelamento_parcelas + UI no PrestacaoAnalise com cálculo por parcela
 
 ### 7.5 Relatorio Financeiro (quando exigido)
 - [x] Somente quando: objeto nao comprovado OU denuncia de irregularidade ✅ tabela relatorios_financeiros (migration 20260306000016) com motivo check constraint
 - [x] Relacao de pagamentos (data, descricao, valor, comprovante) ✅ tabela relatorio_financeiro_pagamentos com data_pagamento + descricao + valor + comprovante_path
-- [ ] Extrato bancario da conta especifica
+- [x] Extrato bancario da conta especifica ✅ migration 20260306000020 + campo extrato_bancario_path + upload no relatório financeiro
 - [x] Comprovante de saldo remanescente (devolver se houver) ✅ campos saldo_remanescente + saldo_devolvido na tabela
 - [x] Prazo: 120 dias apos notificacao ✅ campo prazo_dias default 120 + data_notificacao
 
@@ -361,13 +361,13 @@
 
 ### 10.1 Tipo de Edital Cultura Viva
 - [x] Adicionar tipo_edital: `cultura_viva` ao enum ✅ tipo_edital text column (já existia) aceita 'cultura_viva'
-- [ ] Configuracoes especificas: somente PJ, certificacao de Ponto de Cultura, TCC ao inves de Termo de Execucao
+- [x] Configuracoes especificas: somente PJ, certificacao de Ponto de Cultura, TCC ao inves de Termo de Execucao ✅ EditalConfigManager info panel com regras Cultura Viva (PJ only, 2 blocos, TCC, comitê gestor, metas obrigatórias)
 
 ### 10.2 Avaliacao em Dois Blocos
-- [ ] Bloco 1: avaliacao da entidade cultural (18 criterios, 100 pontos)
-- [ ] Bloco 2: avaliacao do projeto (3 sub-blocos, 100 pontos)
-- [ ] Nota final = media aritmetica dos 2 blocos
-- [ ] Pontuacao minima Bloco 1 para pre-certificacao: 50 pontos
+- [x] Bloco 1: avaliacao da entidade cultural (18 criterios, 100 pontos) ✅ migration 20260306000019 + coluna bloco em criterios
+- [x] Bloco 2: avaliacao do projeto (3 sub-blocos, 100 pontos) ✅ bloco = 'bloco2_projeto' em criterios
+- [x] Nota final = media aritmetica dos 2 blocos ✅ consolidar-ranking.ts computa avg(bloco1) e avg(bloco2) separadamente
+- [x] Pontuacao minima Bloco 1 para pre-certificacao: 50 pontos ✅ consolidar-ranking.ts desclassifica se bloco1 < 50
 
 ### 10.3 Certificacao como Ponto de Cultura
 - [x] Status de certificacao: nao_certificado, pre_certificado, certificado ✅ tabela certificacoes_cultura_viva (migration 20260306000015) com check constraint
@@ -405,9 +405,9 @@
 - [x] Errata publicada (todos os inscritos) ✅ notifyInAppErrataPublicada() + wired in publicarErrata()
 
 ### 11.2 Notificacoes por Email
-- [ ] Integrar todas as notificacoes acima com envio de email (Resend)
-- [ ] Template de email padrao com branding do tenant
-- [ ] Opcao de desativar email (manter apenas in-app)
+- [x] Integrar todas as notificacoes acima com envio de email (Resend) ✅ email/notify.ts com 5 funções + in-app notify.ts chama email counterparts fire-and-forget
+- [x] Template de email padrao com branding do tenant ✅ email/templates.ts com baseLayout() branding (BrandOptions: nome, cor) + 8 templates
+- [x] Opcao de desativar email (manter apenas in-app) ✅ platform_settings email_enabled flag + getEmailConfig() check
 
 ### 11.3 Notificacoes por WhatsApp (futuro)
 - [ ] Integracao com API WhatsApp Business (Evolution API ou similar)

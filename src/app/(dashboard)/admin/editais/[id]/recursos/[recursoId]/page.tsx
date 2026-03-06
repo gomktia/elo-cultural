@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { RecursoDecisaoPanel } from '@/components/admin/RecursoDecisaoPanel'
+import { RecursoDecisaoWrapper } from '@/components/admin/RecursoDecisaoWrapper'
 import { ArrowLeft, FileText, User, Calendar, Scale, AlertTriangle } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -45,7 +45,7 @@ export default async function RecursoDetalhePage({
   const { data: criterioNotas } = avaliacaoIds.length > 0
     ? await supabase
       .from('avaliacao_criterios')
-      .select('avaliacao_id, nota, comentario, criterios(descricao, peso, nota_minima, nota_maxima)')
+      .select('avaliacao_id, criterio_id, nota, comentario, criterios(id, descricao, peso, nota_minima, nota_maxima)')
       .in('avaliacao_id', avaliacaoIds)
       .order('created_at')
     : { data: [] }
@@ -67,14 +67,56 @@ export default async function RecursoDetalhePage({
     decisorNome = decisor?.nome
   }
 
+  // Fetch revisoes for this recurso (for deferimento parcial)
+  const { data: revisoes } = await supabase
+    .from('recurso_revisoes')
+    .select('id, avaliador_id, status, criterios_revisar')
+    .eq('recurso_id', recursoId)
+
+  // Fetch avaliador names for revisoes
+  const revisaoAvaliadorIds = [...new Set((revisoes || []).map((r: any) => r.avaliador_id))]
+  const { data: revisaoProfiles } = revisaoAvaliadorIds.length > 0
+    ? await supabase.from('profiles').select('id, nome').in('id', revisaoAvaliadorIds)
+    : { data: [] }
+  const revisaoProfileMap = new Map((revisaoProfiles || []).map((p: any) => [p.id, p.nome]))
+
+  // Build avaliacoes data for partial deferment panel
+  const avaliacoesForPanel = (avaliacoes || []).map((av: any, idx: number) => {
+    const notasAv = (criterioNotas || []).filter((cn: any) => cn.avaliacao_id === av.id)
+    return {
+      id: av.id,
+      avaliador_id: av.avaliador_id,
+      avaliador_nome: (av.profiles as any)?.nome || `Parecerista ${idx + 1}`,
+      pontuacao_total: av.pontuacao_total,
+      criterios: notasAv.map((nc: any) => ({
+        criterio_id: nc.criterio_id || (nc.criterios as any)?.id,
+        descricao: (nc.criterios as any)?.descricao || '',
+        nota: Number(nc.nota),
+        nota_maxima: Number((nc.criterios as any)?.nota_maxima || 10),
+        peso: Number((nc.criterios as any)?.peso || 1),
+      })),
+    }
+  })
+
+  // Build revisoes data for finalization panel
+  const revisoesPendentes = (revisoes || []).map((rev: any) => ({
+    id: rev.id,
+    avaliador_id: rev.avaliador_id,
+    avaliador_nome: revisaoProfileMap.get(rev.avaliador_id) || 'Parecerista',
+    status: rev.status,
+    criterios_revisar: rev.criterios_revisar || [],
+  }))
+
   const statusColor = recurso.status === 'deferido' ? 'bg-green-50 text-green-700' :
     recurso.status === 'indeferido' ? 'bg-red-50 text-red-700' :
     recurso.status === 'em_analise' ? 'bg-blue-50 text-blue-700' :
+    recurso.status === 'deferido_parcial' ? 'bg-purple-50 text-purple-700' :
     'bg-amber-50 text-amber-700'
 
   const statusLabel = recurso.status === 'deferido' ? 'Deferido' :
     recurso.status === 'indeferido' ? 'Indeferido' :
-    recurso.status === 'em_analise' ? 'Em Analise' : 'Pendente'
+    recurso.status === 'em_analise' ? 'Em Analise' :
+    recurso.status === 'deferido_parcial' ? 'Deferido Parcial' : 'Pendente'
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -194,10 +236,18 @@ export default async function RecursoDetalhePage({
 
           {/* Decisao (if already decided) */}
           {recurso.decisao && (
-            <Card className={`border rounded-2xl shadow-sm ${recurso.status === 'deferido' ? 'border-green-200 bg-green-50/30' : 'border-red-200 bg-red-50/30'}`}>
+            <Card className={`border rounded-2xl shadow-sm ${
+              recurso.status === 'deferido' ? 'border-green-200 bg-green-50/30' :
+              recurso.status === 'deferido_parcial' ? 'border-purple-200 bg-purple-50/30' :
+              'border-red-200 bg-red-50/30'
+            }`}>
               <CardContent className="p-5 space-y-3">
-                <h3 className={`text-sm font-semibold flex items-center gap-2 ${recurso.status === 'deferido' ? 'text-green-900' : 'text-red-900'}`}>
-                  {recurso.status === 'deferido' ? '✓' : '✕'} Decisao
+                <h3 className={`text-sm font-semibold flex items-center gap-2 ${
+                  recurso.status === 'deferido' ? 'text-green-900' :
+                  recurso.status === 'deferido_parcial' ? 'text-purple-900' :
+                  'text-red-900'
+                }`}>
+                  {recurso.status === 'deferido' ? '✓' : recurso.status === 'deferido_parcial' ? '↻' : '✕'} Decisao
                 </h3>
                 <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{recurso.decisao}</p>
                 <div className="flex items-center gap-4 text-xs text-slate-400">
@@ -210,12 +260,15 @@ export default async function RecursoDetalhePage({
             </Card>
           )}
 
-          {/* Decision Panel (if pending) */}
-          {(recurso.status === 'pendente' || recurso.status === 'em_analise') && (
-            <RecursoDecisaoPanel
+          {/* Decision Panel (if pending or deferido_parcial) */}
+          {(recurso.status === 'pendente' || recurso.status === 'em_analise' || recurso.status === 'deferido_parcial') && (
+            <RecursoDecisaoWrapper
               recursoId={recursoId}
               editalId={editalId}
               fundamentacao={recurso.fundamentacao}
+              recursoStatus={recurso.status}
+              avaliacoes={avaliacoesForPanel}
+              revisoesPendentes={revisoesPendentes}
             />
           )}
         </div>

@@ -42,6 +42,11 @@ export default async function AtribuicoesPage({
     .eq('tenant_id', edital.tenant_id)
     .in('projeto_id', (projetos || []).map((p) => p.id))
 
+  const { data: impedimentos } = await supabase
+    .from('impedimentos_parecerista')
+    .select('id, avaliador_id, projeto_id, motivo')
+    .eq('edital_id', id)
+
   return (
     <div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl overflow-hidden">
@@ -86,6 +91,7 @@ export default async function AtribuicoesPage({
           avaliadores={(avaliadores as Profile[]) || []}
           projetos={(projetos as Projeto[]) || []}
           atribuicoes={existingAvals || []}
+          impedimentos={(impedimentos || []) as Array<{ id: string; avaliador_id: string; projeto_id: string; motivo: string }>}
         />
       </div>
     </div>

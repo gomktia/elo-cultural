@@ -42,6 +42,7 @@ const navByRole: Record<UserRole, NavItem[]> = {
   avaliador: [
     { title: 'Início', url: '/', icon: Home },
     { title: 'Projetos Atribuídos', url: '/avaliacao', icon: ClipboardList },
+    { title: 'Revisões', url: '/avaliacao/revisoes', icon: FileCheck },
     { title: 'Meu Perfil', url: '/perfil', icon: Users },
   ],
   gestor: [

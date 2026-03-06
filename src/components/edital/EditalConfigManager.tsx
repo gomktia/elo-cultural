@@ -53,6 +53,7 @@ const TIPOS_EDITAL = [
   { value: 'premiacao', label: 'Premiação' },
   { value: 'credenciamento', label: 'Credenciamento' },
   { value: 'chamamento_publico', label: 'Chamamento Público' },
+  { value: 'cultura_viva', label: 'Cultura Viva (PNCV)' },
   { value: 'outros', label: 'Outros' },
 ]
 
@@ -177,6 +178,21 @@ export function EditalConfigManager({ config, onChange }: EditalConfigManagerPro
             </Button>
           ))}
         </div>
+
+        {/* Cultura Viva specific info */}
+        {config.tipo_edital === 'cultura_viva' && (
+          <div className="mt-3 p-3 rounded-lg bg-green-50 border border-green-200 space-y-2">
+            <p className="text-xs font-semibold text-green-800">Configurações Cultura Viva (PNCV)</p>
+            <ul className="text-[11px] text-green-700 space-y-1 list-disc list-inside">
+              <li>Somente Pessoa Jurídica pode se inscrever</li>
+              <li>Avaliação em 2 blocos: Entidade Cultural (100pts) + Projeto (100pts)</li>
+              <li>Nota mínima Bloco 1 para pré-certificação: 50 pontos</li>
+              <li>Termo de Compromisso Cultural (TCC) ao invés de Termo de Execução</li>
+              <li>Comitê Gestor obrigatório (mín. 4 sociedade civil + 1 serviço público)</li>
+              <li>3 metas obrigatórias: Formação, Mostra Cultural, Registro/Divulgação</li>
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Categorias de Seleção */}

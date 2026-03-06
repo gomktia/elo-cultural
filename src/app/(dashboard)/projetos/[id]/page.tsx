@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusTracker } from '@/components/projeto/StatusTracker'
 import { ProjetoTimeline } from '@/components/projeto/ProjetoTimeline'
-import { ArrowLeft, Scale, FileText, FileCheck, AlertTriangle, FileSignature } from 'lucide-react'
+import { ArrowLeft, Scale, FileText, FileCheck, AlertTriangle, FileSignature, Banknote } from 'lucide-react'
 import { format, differenceInDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Users, DollarSign, Clock } from 'lucide-react'
@@ -66,6 +66,15 @@ export default async function ProjetoDetailPage({
   const { data: termo } = await supabase
     .from('termos_execucao')
     .select('id, numero_termo, status, valor_total, vigencia_inicio, vigencia_fim, data_envio_para_assinatura')
+    .eq('projeto_id', id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  // Load relatorio financeiro (if exists)
+  const { data: relatorioFinanceiro } = await supabase
+    .from('relatorios_financeiros')
+    .select('id, status, motivo, data_notificacao, prazo_dias')
     .eq('projeto_id', id)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -383,6 +392,36 @@ export default async function ProjetoDetailPage({
             {(termo.status === 'assinado' || termo.status === 'vigente') && (
               <p className="text-sm text-green-600 font-medium">Termo assinado por ambas as partes.</p>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Relatorio Financeiro */}
+      {relatorioFinanceiro && (
+        <Card className={`border shadow-sm rounded-2xl overflow-hidden ${relatorioFinanceiro.status === 'pendente' ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'}`}>
+          <CardContent className="p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Banknote className={`h-5 w-5 ${relatorioFinanceiro.status === 'pendente' ? 'text-amber-600' : 'text-[var(--brand-primary)]'}`} />
+                <h2 className="text-base font-semibold text-slate-900">Relatorio Financeiro</h2>
+              </div>
+              <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md uppercase tracking-wide ${
+                relatorioFinanceiro.status === 'pendente' ? 'bg-amber-100 text-amber-700' :
+                relatorioFinanceiro.status === 'enviado' ? 'bg-blue-100 text-blue-700' :
+                relatorioFinanceiro.status === 'aprovado' ? 'bg-green-100 text-green-700' :
+                relatorioFinanceiro.status === 'reprovado' ? 'bg-red-100 text-red-700' :
+                'bg-slate-100 text-slate-600'
+              }`}>
+                {relatorioFinanceiro.status.replace(/_/g, ' ')}
+              </span>
+            </div>
+            <p className="text-sm text-slate-600">{relatorioFinanceiro.motivo}</p>
+            <Link href={`/projetos/${id}/relatorio-financeiro`}>
+              <Button variant="outline" className="rounded-xl border-[var(--brand-primary)]/30 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 font-semibold text-sm">
+                <Banknote className="mr-2 h-4 w-4" />
+                {relatorioFinanceiro.status === 'pendente' ? 'Preencher Relatorio' : 'Ver Relatorio'}
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       )}

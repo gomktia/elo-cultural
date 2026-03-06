@@ -123,6 +123,128 @@ export async function notifyRecursoDecisao(params: {
   await sendEmail({ to: user.email, subject, html })
 }
 
+// ─── CONVOCAÇÃO SUPLENTE ──────────────────────────────────────
+
+export async function notifyConvocacaoSuplente(params: {
+  projetoId: string
+  numeroChamada: number
+  prazoHabilitacao: string
+}) {
+  const supabase = createServiceClient()
+  const { data: projeto } = await supabase
+    .from('projetos')
+    .select('proponente_id, titulo')
+    .eq('id', params.projetoId)
+    .single()
+  if (!projeto) return
+
+  const user = await getUserEmail(projeto.proponente_id)
+  if (!user) return
+
+  const { subject, html } = templates.convocacaoSuplente({
+    nome: user.nome,
+    titulo: projeto.titulo,
+    numeroChamada: params.numeroChamada,
+    prazoHabilitacao: new Date(params.prazoHabilitacao).toLocaleDateString('pt-BR'),
+  })
+
+  await sendEmail({ to: user.email, subject, html })
+}
+
+// ─── PAGAMENTO ────────────────────────────────────────────────
+
+export async function notifyPagamentoLiberado(params: {
+  projetoId: string
+  valor: number
+  status: 'liberado' | 'pago'
+}) {
+  const supabase = createServiceClient()
+  const { data: projeto } = await supabase
+    .from('projetos')
+    .select('proponente_id, titulo')
+    .eq('id', params.projetoId)
+    .single()
+  if (!projeto) return
+
+  const user = await getUserEmail(projeto.proponente_id)
+  if (!user) return
+
+  const { subject, html } = templates.pagamentoLiberado({
+    nome: user.nome,
+    titulo: projeto.titulo,
+    valor: `R$ ${params.valor.toFixed(2)}`,
+    status: params.status,
+  })
+
+  await sendEmail({ to: user.email, subject, html })
+}
+
+// ─── ERRATA PUBLICADA ─────────────────────────────────────────
+
+export async function notifyErrataPublicada(params: {
+  editalId: string
+  numeroErrata: number
+  descricao: string
+}) {
+  const supabase = createServiceClient()
+
+  const { data: edital } = await supabase
+    .from('editais')
+    .select('titulo')
+    .eq('id', params.editalId)
+    .single()
+  if (!edital) return
+
+  // Get all proponentes inscribed in this edital
+  const { data: projetos } = await supabase
+    .from('projetos')
+    .select('proponente_id')
+    .eq('edital_id', params.editalId)
+
+  const proponenteIds = [...new Set((projetos || []).map(p => p.proponente_id))]
+
+  await Promise.allSettled(
+    proponenteIds.map(async (proponenteId) => {
+      const user = await getUserEmail(proponenteId)
+      if (!user) return
+
+      const { subject, html } = templates.errataPublicada({
+        nome: user.nome,
+        editalTitulo: edital.titulo,
+        numeroErrata: params.numeroErrata,
+        descricao: params.descricao,
+      })
+
+      await sendEmail({ to: user.email, subject, html })
+    })
+  )
+}
+
+// ─── TERMO DISPONÍVEL ─────────────────────────────────────────
+
+export async function notifyTermoDisponivel(params: {
+  termoId: string
+  projetoId: string
+}) {
+  const supabase = createServiceClient()
+  const { data: projeto } = await supabase
+    .from('projetos')
+    .select('proponente_id, titulo')
+    .eq('id', params.projetoId)
+    .single()
+  if (!projeto) return
+
+  const user = await getUserEmail(projeto.proponente_id)
+  if (!user) return
+
+  const { subject, html } = templates.termoDisponivel({
+    nome: user.nome,
+    titulo: projeto.titulo,
+  })
+
+  await sendEmail({ to: user.email, subject, html })
+}
+
 // ─── EDITAL FASE ───────────────────────────────────────────────
 
 export async function notifyEditalFaseAlterada(params: {

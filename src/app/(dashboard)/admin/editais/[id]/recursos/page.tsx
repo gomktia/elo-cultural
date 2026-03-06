@@ -22,6 +22,7 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   em_analise: 'outline',
   deferido: 'default',
   indeferido: 'destructive',
+  deferido_parcial: 'outline',
 }
 
 export default async function RecursosAdminPage({
@@ -56,7 +57,7 @@ export default async function RecursosAdminPage({
     : { data: [] }
 
   const total = (recursos || []).length
-  const pendentes = (recursos || []).filter((r: any) => r.status === 'pendente' || r.status === 'em_analise').length
+  const pendentes = (recursos || []).filter((r: any) => r.status === 'pendente' || r.status === 'em_analise' || r.status === 'deferido_parcial').length
   const deferidos = (recursos || []).filter((r: any) => r.status === 'deferido').length
   const indeferidos = (recursos || []).filter((r: any) => r.status === 'indeferido').length
 
@@ -196,7 +197,8 @@ export default async function RecursosAdminPage({
             {(recursos || []).map((rec: any) => {
               const statusBarColor = rec.status === 'deferido' ? 'bg-[var(--brand-success)]' :
                 rec.status === 'indeferido' ? 'bg-[var(--brand-secondary)]' :
-                  rec.status === 'em_analise' ? 'bg-blue-500' : 'bg-amber-400'
+                  rec.status === 'em_analise' ? 'bg-blue-500' :
+                    rec.status === 'deferido_parcial' ? 'bg-purple-500' : 'bg-amber-400'
               return (
               <TableRow key={rec.id} className="relative even:bg-slate-50/40 hover:bg-slate-100/60 transition-all duration-300 border-slate-100 group">
                 <TableCell className="py-6 px-8 relative">
@@ -224,7 +226,8 @@ export default async function RecursosAdminPage({
                     rec.status === 'deferido' ? 'bg-green-50 text-[var(--brand-success)]' :
                       rec.status === 'indeferido' ? 'bg-destructive/10 text-destructive' :
                         rec.status === 'em_analise' ? 'bg-blue-50 text-blue-600' :
-                          'bg-slate-50 text-slate-400'
+                          rec.status === 'deferido_parcial' ? 'bg-purple-50 text-purple-600' :
+                            'bg-slate-50 text-slate-400'
                   ].join(' ')}>
                     {rec.status}
                   </Badge>

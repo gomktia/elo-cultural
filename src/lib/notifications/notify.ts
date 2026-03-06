@@ -6,6 +6,7 @@
 
 import { createServiceClient } from '@/lib/supabase/service'
 import { createNotification, createNotificationBatch } from './create'
+import * as emailNotify from '@/lib/email/notify'
 
 // ─── HABILITACAO ───────────────────────────────────────────────
 
@@ -34,6 +35,8 @@ export async function notifyInAppHabilitacao(params: {
     link: `/projetos/${params.projetoId}`,
     metadata: { projeto_id: params.projetoId, status: params.status },
   })
+
+  emailNotify.notifyHabilitacaoResultado({ projetoId: params.projetoId, status: params.status, justificativa: params.justificativa }).catch(() => {})
 }
 
 // ─── RECURSO ───────────────────────────────────────────────────
@@ -70,6 +73,8 @@ export async function notifyInAppRecursoDecisao(params: {
     link: `/projetos/${recurso.projeto_id}`,
     metadata: { recurso_id: params.recursoId, projeto_id: recurso.projeto_id, status: params.status },
   })
+
+  emailNotify.notifyRecursoDecisao({ recursoId: params.recursoId, status: params.status, decisao: params.decisao }).catch(() => {})
 }
 
 // ─── CONVOCAÇÃO SUPLENTE ──────────────────────────────────────
@@ -97,6 +102,8 @@ export async function notifyInAppConvocacaoSuplente(params: {
     link: `/projetos/${params.projetoId}`,
     metadata: { projeto_id: params.projetoId, numero_chamada: params.numeroChamada },
   })
+
+  emailNotify.notifyConvocacaoSuplente({ projetoId: params.projetoId, numeroChamada: params.numeroChamada, prazoHabilitacao: params.prazoHabilitacao }).catch(() => {})
 }
 
 // ─── PAGAMENTO ────────────────────────────────────────────────
@@ -126,6 +133,8 @@ export async function notifyInAppPagamento(params: {
     link: `/projetos/${params.projetoId}`,
     metadata: { projeto_id: params.projetoId, valor: params.valor },
   })
+
+  emailNotify.notifyPagamentoLiberado({ projetoId: params.projetoId, valor: params.valor, status: params.status as 'liberado' | 'pago' }).catch(() => {})
 }
 
 // ─── PRESTAÇÃO DE CONTAS ──────────────────────────────────────
@@ -159,6 +168,28 @@ export async function notifyInAppPrestacaoAnalise(params: {
     link: `/projetos/${params.projetoId}/prestacao-contas`,
     metadata: { projeto_id: params.projetoId, julgamento: params.julgamento },
   })
+
+  // Map julgamento to prestacao status and send email
+  const julgamentoToStatus: Record<string, string> = {
+    sem_ressalvas: 'aprovada',
+    com_ressalvas: 'com_pendencias',
+    rejeitada_parcial: 'reprovada',
+    rejeitada_total: 'reprovada',
+  }
+  const { data: prestacao } = await supabase
+    .from('prestacoes_contas')
+    .select('id')
+    .eq('projeto_id', params.projetoId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+  if (prestacao) {
+    emailNotify.notifyPrestacaoStatus({
+      prestacaoId: prestacao.id,
+      status: julgamentoToStatus[params.julgamento] || params.julgamento,
+      parecer: '',
+    }).catch(() => {})
+  }
 }
 
 // ─── INSCRIÇÃO CONFIRMADA ─────────────────────────────────────
@@ -223,6 +254,8 @@ export async function notifyInAppErrataPublicada(params: {
   }))
 
   await createNotificationBatch(notifications)
+
+  emailNotify.notifyErrataPublicada({ editalId: params.editalId, numeroErrata: params.numeroErrata, descricao: params.descricao }).catch(() => {})
 }
 
 // ─── TERMO DISPONIVEL PARA ASSINATURA ─────────────────────────
@@ -249,6 +282,8 @@ export async function notifyInAppTermoDisponivel(params: {
     link: `/projetos/${params.projetoId}`,
     metadata: { projeto_id: params.projetoId, termo_id: params.termoId },
   })
+
+  emailNotify.notifyTermoDisponivel({ termoId: params.termoId, projetoId: params.projetoId }).catch(() => {})
 }
 
 // ─── EDITAL FASE ───────────────────────────────────────────────
@@ -300,4 +335,6 @@ export async function notifyInAppEditalFase(params: {
   }))
 
   await createNotificationBatch(notifications)
+
+  emailNotify.notifyEditalFaseAlterada({ editalId: params.editalId, novaFase: params.novaFase }).catch(() => {})
 }

@@ -13,8 +13,16 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { toast } from 'sonner'
-import { Loader2, Check, Users, Shield, Search, CheckSquare, Shuffle } from 'lucide-react'
+import { Loader2, Check, Users, Shield, Search, CheckSquare, Shuffle, Ban, Plus, X } from 'lucide-react'
+import { registrarImpedimento, removerImpedimento } from '@/lib/actions/impedimento-actions'
 import type { Profile, Projeto } from '@/types/database.types'
+
+interface Impedimento {
+  id: string
+  avaliador_id: string
+  projeto_id: string
+  motivo: string
+}
 
 interface AtribuicaoMatrixProps {
   editalId: string
@@ -22,9 +30,10 @@ interface AtribuicaoMatrixProps {
   avaliadores: Profile[]
   projetos: Projeto[]
   atribuicoes: Array<{ avaliador_id: string; projeto_id: string; status?: string }>
+  impedimentos?: Impedimento[]
 }
 
-export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, atribuicoes }: AtribuicaoMatrixProps) {
+export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, atribuicoes, impedimentos = [] }: AtribuicaoMatrixProps) {
   const [matrix, setMatrix] = useState<Record<string, Set<string>>>(() => {
     const m: Record<string, Set<string>> = {}
     atribuicoes.forEach(a => {
@@ -36,6 +45,57 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
   const [saving, setSaving] = useState(false)
   const [filtroAvaliador, setFiltroAvaliador] = useState('')
   const [filtroProjeto, setFiltroProjeto] = useState('')
+  const [localImpedimentos, setLocalImpedimentos] = useState<Impedimento[]>(impedimentos)
+  const [impedimentoDialog, setImpedimentoDialog] = useState<{ avaliadorId: string; projetoId: string } | null>(null)
+  const [impedimentoMotivo, setImpedimentoMotivo] = useState('')
+  const [savingImpedimento, setSavingImpedimento] = useState(false)
+
+  function getImpedimento(avaliadorId: string, projetoId: string) {
+    return localImpedimentos.find(i => i.avaliador_id === avaliadorId && i.projeto_id === projetoId)
+  }
+
+  async function handleRegistrarImpedimento() {
+    if (!impedimentoDialog || !impedimentoMotivo.trim()) return
+    setSavingImpedimento(true)
+    const result = await registrarImpedimento({
+      editalId,
+      avaliadorId: impedimentoDialog.avaliadorId,
+      projetoId: impedimentoDialog.projetoId,
+      motivo: impedimentoMotivo.trim(),
+    })
+    if (result.error) {
+      toast.error(result.error)
+    } else {
+      toast.success('Impedimento registrado')
+      setLocalImpedimentos(prev => [...prev, {
+        id: crypto.randomUUID(),
+        avaliador_id: impedimentoDialog.avaliadorId,
+        projeto_id: impedimentoDialog.projetoId,
+        motivo: impedimentoMotivo.trim(),
+      }])
+      // Also remove from matrix if assigned
+      setMatrix(prev => {
+        const next = { ...prev }
+        const set = new Set(next[impedimentoDialog.avaliadorId] ?? new Set())
+        set.delete(impedimentoDialog.projetoId)
+        next[impedimentoDialog.avaliadorId] = set
+        return next
+      })
+    }
+    setImpedimentoMotivo('')
+    setImpedimentoDialog(null)
+    setSavingImpedimento(false)
+  }
+
+  async function handleRemoverImpedimento(imp: Impedimento) {
+    const result = await removerImpedimento(imp.id, editalId)
+    if (result.error) {
+      toast.error(result.error)
+    } else {
+      toast.success('Impedimento removido')
+      setLocalImpedimentos(prev => prev.filter(i => i.id !== imp.id))
+    }
+  }
 
   const avaliadoresFiltrados = useMemo(() => {
     if (!filtroAvaliador.trim()) return avaliadores
@@ -71,12 +131,13 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
     setMatrix(prev => {
       const next = { ...prev }
       const current = next[avaliadorId] ?? new Set()
-      const allAssigned = projetosFiltrados.every(p => current.has(p.id))
+      const eligible = projetosFiltrados.filter(p => !getImpedimento(avaliadorId, p.id))
+      const allAssigned = eligible.every(p => current.has(p.id))
       const set = new Set(current)
       if (allAssigned) {
-        projetosFiltrados.forEach(p => set.delete(p.id))
+        eligible.forEach(p => set.delete(p.id))
       } else {
-        projetosFiltrados.forEach(p => set.add(p.id))
+        eligible.forEach(p => set.add(p.id))
       }
       next[avaliadorId] = set
       return next
@@ -86,8 +147,9 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
   function toggleAllForProjeto(projetoId: string) {
     setMatrix(prev => {
       const next = { ...prev }
-      const allAssigned = avaliadoresFiltrados.every(av => (next[av.id] ?? new Set()).has(projetoId))
-      for (const av of avaliadoresFiltrados) {
+      const eligible = avaliadoresFiltrados.filter(av => !getImpedimento(av.id, projetoId))
+      const allAssigned = eligible.every(av => (next[av.id] ?? new Set()).has(projetoId))
+      for (const av of eligible) {
         const set = new Set(next[av.id] ?? new Set())
         if (allAssigned) set.delete(projetoId)
         else set.add(projetoId)
@@ -136,9 +198,9 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
       const needed = n - alreadyAssigned.length
       const alreadyIds = new Set(alreadyAssigned.map(a => a.id))
 
-      // Sort candidates by current load (ascending)
+      // Sort candidates by current load (ascending), excluding impedimentos
       const candidates = avaliadores
-        .filter(a => !alreadyIds.has(a.id))
+        .filter(a => !alreadyIds.has(a.id) && !getImpedimento(a.id, proj.id))
         .sort((a, b) => (loadCount.get(a.id) || 0) - (loadCount.get(b.id) || 0))
 
       for (let i = 0; i < Math.min(needed, candidates.length); i++) {
@@ -365,25 +427,54 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
                     </div>
                   </TableCell>
                   {projetosFiltrados.map(p => {
+                    const imp = getImpedimento(av.id, p.id)
                     const active = isAssigned(av.id, p.id)
                     return (
                       <TableCell key={p.id} className="text-center p-0">
-                        <div
-                          onClick={() => toggle(av.id, p.id)}
-                          className={[
-                            'h-20 w-full flex items-center justify-center cursor-pointer transition-all duration-300',
-                            active ? 'bg-brand-primary/5' : 'hover:bg-slate-50/80'
-                          ].join(' ')}
-                        >
-                          <div className={[
-                            'h-8 w-8 rounded-xl flex items-center justify-center border-2 transition-all duration-300',
-                            active
-                              ? 'bg-[var(--brand-primary)] border-[var(--brand-primary)] text-white shadow-lg shadow-brand-primary/20 scale-110'
-                              : 'bg-white border-slate-100 text-transparent'
-                          ].join(' ')}>
-                            <Check className="h-5 w-5 stroke-[3px]" />
+                        {imp ? (
+                          <div className="h-20 w-full flex flex-col items-center justify-center bg-red-50/60 gap-1 group/imp">
+                            <div
+                              className="h-8 w-8 rounded-xl flex items-center justify-center bg-red-100 border-2 border-red-300 text-red-500"
+                              title={`Impedimento: ${imp.motivo}`}
+                            >
+                              <Ban className="h-5 w-5 stroke-[2.5px]" />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoverImpedimento(imp)}
+                              className="text-[9px] font-medium text-red-400 hover:text-red-600 opacity-0 group-hover/imp:opacity-100 transition-opacity"
+                            >
+                              remover
+                            </button>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="relative h-20 w-full flex items-center justify-center group/cell">
+                            <div
+                              onClick={() => toggle(av.id, p.id)}
+                              className={[
+                                'h-20 w-full flex items-center justify-center cursor-pointer transition-all duration-300',
+                                active ? 'bg-brand-primary/5' : 'hover:bg-slate-50/80'
+                              ].join(' ')}
+                            >
+                              <div className={[
+                                'h-8 w-8 rounded-xl flex items-center justify-center border-2 transition-all duration-300',
+                                active
+                                  ? 'bg-[var(--brand-primary)] border-[var(--brand-primary)] text-white shadow-lg shadow-brand-primary/20 scale-110'
+                                  : 'bg-white border-slate-100 text-transparent'
+                              ].join(' ')}>
+                                <Check className="h-5 w-5 stroke-[3px]" />
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); setImpedimentoDialog({ avaliadorId: av.id, projetoId: p.id }) }}
+                              className="absolute top-1 right-1 h-5 w-5 rounded-md bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-600 flex items-center justify-center opacity-0 group-hover/cell:opacity-100 transition-opacity"
+                              title="Registrar impedimento"
+                            >
+                              <Ban className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
                       </TableCell>
                     )
                   })}
@@ -405,6 +496,59 @@ export function AtribuicaoMatrix({ editalId, tenantId, avaliadores, projetos, at
           </TableBody>
         </Table>
       </div>
+      {/* Impedimento Dialog */}
+      {impedimentoDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+                <Ban className="h-4 w-4 text-red-500" />
+                Registrar Impedimento
+              </h3>
+              <button
+                type="button"
+                onClick={() => { setImpedimentoDialog(null); setImpedimentoMotivo('') }}
+                className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm text-slate-500">
+              Avaliador: <span className="font-medium text-slate-700">{avaliadores.find(a => a.id === impedimentoDialog.avaliadorId)?.nome}</span>
+              <br />
+              Projeto: <span className="font-medium text-slate-700">{projetos.find(p => p.id === impedimentoDialog.projetoId)?.titulo}</span>
+            </p>
+            <div>
+              <label className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Motivo do impedimento</label>
+              <textarea
+                value={impedimentoMotivo}
+                onChange={e => setImpedimentoMotivo(e.target.value)}
+                placeholder="Descreva o conflito de interesse..."
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/30 focus:border-[var(--brand-primary)] min-h-[80px] resize-none"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => { setImpedimentoDialog(null); setImpedimentoMotivo('') }}
+                className="rounded-xl text-sm"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                onClick={handleRegistrarImpedimento}
+                disabled={!impedimentoMotivo.trim() || savingImpedimento}
+                className="rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold"
+              >
+                {savingImpedimento ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Ban className="h-4 w-4 mr-1" />}
+                Registrar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

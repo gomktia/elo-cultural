@@ -2,31 +2,47 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { Bell, CheckCheck } from 'lucide-react'
 import Link from 'next/link'
-import type { Notificacao } from '@/types/notificacoes'
+import type { Notificacao, TipoNotificacao } from '@/types/notificacoes'
 import { MarkAllReadButton, MarkReadButton } from './actions'
 
 const PAGE_SIZE = 20
 
+const TIPO_LABELS: Record<string, string> = {
+  projeto_status: 'Projeto',
+  habilitacao_resultado: 'Habilitação',
+  recurso_decisao: 'Recurso',
+  avaliacao_atribuida: 'Avaliação',
+  edital_fase: 'Edital',
+  prestacao_status: 'Prestação',
+  sistema: 'Sistema',
+}
+
 export default async function NotificacoesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; tipo?: string }>
 }) {
-  const { page: pageParam } = await searchParams
+  const { page: pageParam, tipo } = await searchParams
   const page = Math.max(1, Number(pageParam || '1'))
   const offset = (page - 1) * PAGE_SIZE
+  const tipoFilter = tipo && tipo in TIPO_LABELS ? tipo : null
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
+  let query = supabase
+    .from('notificacoes')
+    .select('*', { count: 'exact' })
+    .eq('usuario_id', user.id)
+    .order('created_at', { ascending: false })
+
+  if (tipoFilter) {
+    query = query.eq('tipo', tipoFilter)
+  }
+
   const [{ data: notificacoes, count }, { count: unreadCount }] = await Promise.all([
-    supabase
-      .from('notificacoes')
-      .select('*', { count: 'exact' })
-      .eq('usuario_id', user.id)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + PAGE_SIZE - 1),
+    query.range(offset, offset + PAGE_SIZE - 1),
     supabase
       .from('notificacoes')
       .select('id', { count: 'exact', head: true })
@@ -53,6 +69,25 @@ export default async function NotificacoesPage({
             </div>
             {(unreadCount || 0) > 0 && <MarkAllReadButton />}
           </div>
+
+          {/* Type Filter Tabs */}
+          <div className="flex items-center gap-1.5 mt-3 flex-wrap">
+            <Link
+              href="/notificacoes"
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${!tipoFilter ? 'bg-[var(--brand-primary)] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+            >
+              Todas
+            </Link>
+            {Object.entries(TIPO_LABELS).map(([key, label]) => (
+              <Link
+                key={key}
+                href={`/notificacoes?tipo=${key}`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${tipoFilter === key ? 'bg-[var(--brand-primary)] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
@@ -78,8 +113,11 @@ export default async function NotificacoesPage({
                   <div className="mt-2 h-2.5 w-2.5 rounded-full bg-[var(--brand-primary)] flex-shrink-0" />
                 )}
                 <div className={`flex-1 min-w-0 ${n.lida ? 'pl-5' : ''}`}>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm font-semibold text-slate-900">{n.titulo}</p>
+                    <span className="text-[10px] font-medium bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md">
+                      {TIPO_LABELS[n.tipo] || n.tipo}
+                    </span>
                     <span className="text-[11px] text-slate-400 flex-shrink-0">
                       {new Date(n.created_at).toLocaleDateString('pt-BR', {
                         day: '2-digit', month: '2-digit', year: '2-digit',
@@ -111,7 +149,7 @@ export default async function NotificacoesPage({
         <div className="flex items-center justify-center gap-2">
           {page > 1 && (
             <Link
-              href={`/notificacoes?page=${page - 1}`}
+              href={`/notificacoes?page=${page - 1}${tipoFilter ? `&tipo=${tipoFilter}` : ''}`}
               className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
             >
               Anterior
@@ -122,7 +160,7 @@ export default async function NotificacoesPage({
           </span>
           {page < totalPages && (
             <Link
-              href={`/notificacoes?page=${page + 1}`}
+              href={`/notificacoes?page=${page + 1}${tipoFilter ? `&tipo=${tipoFilter}` : ''}`}
               className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
             >
               Próxima

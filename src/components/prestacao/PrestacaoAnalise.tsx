@@ -57,6 +57,7 @@ export function PrestacaoAnalise({ prestacao, projeto, documentos = [] }: Presta
   const [julgamento, setJulgamento] = useState<JulgamentoPrestacao | ''>(prestacao.julgamento || '')
   const [planoCompensatorio, setPlanoCompensatorio] = useState(prestacao.plano_compensatorio || '')
   const [valorDevolucao, setValorDevolucao] = useState(prestacao.valor_devolucao?.toString() || '')
+  const [parcelamento, setParcelamento] = useState((prestacao as Record<string, unknown>).parcelamento_parcelas?.toString() || '')
   const [submitting, setSubmitting] = useState(false)
 
   const canAnalyze = prestacao.status === 'enviada' || prestacao.status === 'em_analise'
@@ -91,6 +92,7 @@ export function PrestacaoAnalise({ prestacao, projeto, documentos = [] }: Presta
     if (julgamento) updateData.julgamento = julgamento
     if (planoCompensatorio.trim()) updateData.plano_compensatorio = planoCompensatorio
     if (valorDevolucao) updateData.valor_devolucao = parseFloat(valorDevolucao)
+    if (parcelamento) updateData.parcelamento_parcelas = parseInt(parcelamento)
 
     const { error } = await supabase
       .from('prestacoes_contas')
@@ -304,6 +306,26 @@ export function PrestacaoAnalise({ prestacao, projeto, documentos = [] }: Presta
                       className="w-full h-9 rounded-lg border border-red-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200"
                       placeholder="Descreva ações compensatórias..."
                     />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <p className="text-xs font-medium text-red-500 uppercase tracking-wide mb-1">Parcelamento de Débito (opcional)</p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="1"
+                        max="60"
+                        value={parcelamento}
+                        onChange={e => setParcelamento(e.target.value)}
+                        className="w-24 h-9 rounded-lg border border-red-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 text-center"
+                        placeholder="0"
+                      />
+                      <span className="text-xs text-red-400">parcela(s) — conforme regras do ente federativo</span>
+                    </div>
+                    {parcelamento && parseInt(parcelamento) > 0 && valorDevolucao && parseFloat(valorDevolucao) > 0 && (
+                      <p className="text-[11px] text-red-500 mt-1">
+                        Valor por parcela: R$ {(parseFloat(valorDevolucao) / parseInt(parcelamento)).toFixed(2)}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
