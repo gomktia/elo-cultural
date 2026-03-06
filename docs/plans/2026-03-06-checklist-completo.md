@@ -7,15 +7,15 @@
 ## FASE 1 — INSCRICAO COMPLETA (Formulario do Proponente)
 
 ### 1.1 Perfil do Proponente - Campos Demograficos
-- [ ] Adicionar campo `tipo_pessoa` (fisica / juridica / coletivo_sem_cnpj) no profiles
-- [ ] Adicionar campo `nome_artistico` (nome social)
-- [ ] Adicionar campo `data_nascimento`
-- [ ] Adicionar campo `comunidade_tradicional` (enum: nenhuma, extrativistas, ribeirinhas, rurais, indigenas, ciganos, pescadores, terreiro, quilombolas, outra)
-- [ ] Adicionar campo `tipo_deficiencia` (enum: auditiva, fisica, intelectual, multipla, visual, outra) - quando pcd=true
-- [ ] Adicionar campo `escolaridade` (enum: sem_educacao_formal, fundamental_incompleto, fundamental_completo, medio_incompleto, medio_completo, tecnico, superior_incompleto, superior_completo, pos_graduacao)
-- [ ] Adicionar campo `beneficiario_programa_social` (enum: nenhum, bolsa_familia, bpc, outro)
-- [ ] Adicionar campo `funcao_cultural` (enum: artista, instrutor, curador, produtor, gestor, tecnico, consultor, outro)
-- [ ] Atualizar formulario de cadastro do proponente com todos os campos
+- [x] Adicionar campo `tipo_pessoa` (fisica / juridica / coletivo_sem_cnpj) no profiles ✅ migration 20260306000004
+- [x] Adicionar campo `nome_artistico` (nome social) ✅
+- [x] Adicionar campo `data_nascimento` ✅
+- [x] Adicionar campo `comunidade_tradicional` ✅
+- [x] Adicionar campo `tipo_deficiencia` (condicional quando pcd=true) ✅
+- [x] Adicionar campo `escolaridade` ✅
+- [x] Adicionar campo `beneficiario_programa_social` ✅
+- [x] Adicionar campo `funcao_cultural` ✅
+- [x] Atualizar formulario de cadastro do proponente com todos os campos ✅ ProponenteForm + perfil + cadastro + AdminEditProfileSheet
 
 ### 1.2 Perfil Pessoa Juridica
 - [ ] Adicionar campos PJ no profiles: `razao_social`, `nome_fantasia`, `endereco_sede`
@@ -29,19 +29,19 @@
 - [ ] UI condicional: mostrar campos de coletivo quando tipo_pessoa = coletivo_sem_cnpj
 
 ### 1.4 Formulario de Inscricao do Projeto (campos estruturados)
-- [ ] Adicionar campo `areas_projeto` (multi-select: artes_digitais, artes_transversais, artes_visuais, artesanato, audiovisual, circo, cultura_popular, danca, economia_criativa, livro_literatura, musica, patrimonio, teatro, tradicao_folclore, outras)
-- [ ] Adicionar campo `minicurriculo_proponente` (textarea)
-- [ ] Adicionar campo `objetivos` (textarea)
-- [ ] Adicionar campo `metas` (textarea estruturado ou JSON array)
-- [ ] Adicionar campo `perfil_publico` (textarea)
-- [ ] Adicionar campo `publico_prioritario` (multi-select: vitimas_violencia, pobreza, situacao_rua, privacao_liberdade, pcd, sofrimento_fisico_psiquico, mulheres, lgbtqiapn, povos_tradicionais, negros, ciganos, indigenas, aberto_todos, outro)
-- [ ] Adicionar campo `local_execucao` (texto)
-- [ ] Adicionar campo `periodo_execucao_inicio` e `periodo_execucao_fim` (date)
-- [ ] Adicionar campo `estrategia_divulgacao` (textarea)
-- [ ] Adicionar campo `outras_fontes_recurso` (boolean + detalhamento)
-- [ ] Adicionar campo `venda_produtos_ingressos` (boolean + detalhamento)
-- [ ] Adicionar campo `contrapartida_social` (textarea)
-- [ ] Concorrencia a cotas: campo `concorre_cota` (boolean) + `tipo_cota` (negra, indigena, pcd)
+- [x] Adicionar campo `areas_projeto` (multi-select) ✅ migration 20260306000004 + InscricaoForm
+- [x] Adicionar campo `minicurriculo_proponente` (textarea) ✅
+- [x] Adicionar campo `objetivos` (textarea) ✅
+- [x] Adicionar campo `metas` (textarea) ✅
+- [x] Adicionar campo `perfil_publico` (textarea) ✅
+- [x] Adicionar campo `publico_prioritario` (multi-select badges) ✅
+- [x] Adicionar campo `local_execucao` (texto) ✅
+- [x] Adicionar campo `periodo_execucao_inicio` e `periodo_execucao_fim` (date) ✅
+- [x] Adicionar campo `estrategia_divulgacao` (textarea) ✅
+- [x] Adicionar campo `outras_fontes_recurso` (boolean + detalhamento) ✅
+- [x] Adicionar campo `venda_produtos_ingressos` (boolean + detalhamento) ✅
+- [x] Adicionar campo `contrapartida_social` (textarea) ✅
+- [x] Concorrencia a cotas: campo `concorre_cota` (boolean) + `tipo_cota` (negra, indigena, pcd) ✅
 
 ### 1.5 Medidas de Acessibilidade do Projeto
 - [ ] Criar campo JSONB `acessibilidade` no projeto com 3 categorias:
