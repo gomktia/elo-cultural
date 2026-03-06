@@ -42,11 +42,15 @@ export function useUser() {
 
     fetchUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      if (!session?.user) {
-        setProfile(null)
-        Sentry.setUser(null)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+        setUser(session?.user ?? null)
+        if (!session?.user) {
+          setProfile(null)
+          Sentry.setUser(null)
+        }
+      } else if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+        setUser(session?.user ?? null)
       }
     })
 
