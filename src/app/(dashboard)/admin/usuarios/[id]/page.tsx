@@ -9,6 +9,7 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { Profile } from '@/types/database.types'
 import { ROLE_LABELS } from '@/lib/constants/roles'
+import { AdminEditProfileSheet } from '@/components/admin/AdminEditProfileSheet'
 
 const roleBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   admin: 'destructive',
@@ -63,11 +64,11 @@ export default async function AdminUsuarioDetailPage({
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-1">
               <div className="h-14 w-14 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xl">
                 {p.nome?.charAt(0).toUpperCase()}
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">{p.nome}</h1>
                   <Badge variant={roleBadgeVariant[p.role] || 'outline'} className="rounded-lg px-3 py-1 text-[11px] font-medium uppercase tracking-wide">
@@ -82,6 +83,7 @@ export default async function AdminUsuarioDetailPage({
                 </p>
               </div>
             </div>
+            <AdminEditProfileSheet profile={p} />
           </div>
         </CardContent>
       </Card>
