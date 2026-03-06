@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, UserPlus, Trash2, Shield } from 'lucide-react'
+import { ArrowLeft, UserPlus, Trash2, Shield, FileText } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
 import type { EditalComissao } from '@/types/database.types'
 
@@ -105,9 +105,19 @@ export default async function ComissaoPage({
                 </div>
               </div>
             </div>
-            <Badge className="bg-slate-100 text-slate-600 border-none text-xs font-medium px-2.5 py-1 rounded-lg">
-              {membrosList.length} membro{membrosList.length !== 1 ? 's' : ''}
-            </Badge>
+            <div className="flex items-center gap-3">
+              <Badge className="bg-slate-100 text-slate-600 border-none text-xs font-medium px-2.5 py-1 rounded-lg">
+                {membrosList.length} membro{membrosList.length !== 1 ? 's' : ''}
+              </Badge>
+              {membrosList.length > 0 && (
+                <a href={`/api/pdf/portaria-comissao/${id}`} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" size="sm" className="h-9 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 font-semibold text-sm">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Gerar Portaria PDF
+                  </Button>
+                </a>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

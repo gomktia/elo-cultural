@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { criarAditivo, aprovarAditivo, rejeitarAditivo } from '@/lib/actions/aditivo-actions'
 import { toast } from 'sonner'
-import { Plus, FileEdit, CheckCircle2, XCircle, Clock } from 'lucide-react'
+import { Plus, FileEdit, CheckCircle2, XCircle, Clock, FileDown } from 'lucide-react'
 import type { TermoAditivo, TermoWithProjeto } from '@/types/database.types'
 
 const TIPO_LABELS: Record<string, string> = {
@@ -165,16 +165,30 @@ export function AditivosSection({ termos, aditivos }: AditivosSectionProps) {
                     {a.valor_alterado && <p className="text-xs text-slate-500 mt-0.5">Valor: R$ {Number(a.valor_alterado).toFixed(2)}</p>}
                     {a.nova_vigencia_fim && <p className="text-xs text-slate-500 mt-0.5">Nova vigência: {a.nova_vigencia_fim}</p>}
                   </div>
-                  {a.status === 'pendente' && (
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-emerald-500 hover:text-emerald-700" onClick={() => handleAprovar(a.id)}>
-                        <CheckCircle2 className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-400 hover:text-red-600" onClick={() => handleRejeitar(a.id)}>
-                        <XCircle className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {a.status === 'aprovado' && (
+                      <a
+                        href={`/api/pdf/aditivo/${a.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Baixar PDF do Aditivo"
+                      >
+                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-[var(--brand-primary)] hover:text-[var(--brand-primary)]/80">
+                          <FileDown className="h-4 w-4" />
+                        </Button>
+                      </a>
+                    )}
+                    {a.status === 'pendente' && (
+                      <>
+                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-emerald-500 hover:text-emerald-700" onClick={() => handleAprovar(a.id)}>
+                          <CheckCircle2 className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-400 hover:text-red-600" onClick={() => handleRejeitar(a.id)}>
+                          <XCircle className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
               )
             })}

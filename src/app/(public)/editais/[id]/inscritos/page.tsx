@@ -6,8 +6,9 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Calendar, Users } from 'lucide-react'
+import { ArrowLeft, Calendar, Users, Printer, FileText } from 'lucide-react'
 import { InscritosExport } from '@/components/edital/InscritosExport'
+import { PrintButton } from '@/components/edital/PrintButton'
 import type { Edital } from '@/types/database.types'
 
 export default async function InscritosPublicosPage({
@@ -82,7 +83,19 @@ export default async function InscritosPublicosPage({
                 <p className="text-sm text-slate-500">{e.titulo}</p>
               </div>
               {showList && inscritos.length > 0 && (
-                <InscritosExport inscritos={inscritos} editalNumero={e.numero_edital} />
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`/api/pdf/inscritos/${id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--brand-primary)]/20 bg-white px-3 py-1.5 text-xs font-semibold text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all"
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    PDF
+                  </a>
+                  <PrintButton />
+                  <InscritosExport inscritos={inscritos} editalNumero={e.numero_edital} />
+                </div>
               )}
             </div>
           </CardContent>

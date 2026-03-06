@@ -211,7 +211,21 @@ export async function consolidarRanking(editalId: string) {
     .eq('edital_id', editalId)
     .order('created_at')
 
-  // ── 2b. Load criterios bloco info for Cultura Viva ──
+  // ── 2b. Load Cultura Viva data ──
+  // Load MinC certifications to bypass bloco1 minimum (Fase 10.3)
+  let certificadosMincSet = new Set<string>()
+  if (isCulturaViva) {
+    const { data: certificados } = await supabase
+      .from('certificacoes_cultura_viva')
+      .select('profile_id')
+      .eq('certificado_minc', true)
+
+    if (certificados) {
+      certificadosMincSet = new Set(certificados.map(c => c.profile_id))
+    }
+  }
+
+  // Load criterios bloco info for Cultura Viva
   let criteriosBlocoMap: Map<string, string> | null = null
   if (isCulturaViva) {
     const { data: criterios } = await supabase
@@ -381,9 +395,11 @@ export async function consolidarRanking(editalId: string) {
     }
 
     // Cultura Viva: bloco1 < 50 = not eligible for pre-certification
+    // Exception: entities already certified by MinC don't need minimum bloco1 score
     if (isCulturaViva && culturaVivaBloco1Scores.has(proj.id)) {
       const bloco1Score = culturaVivaBloco1Scores.get(proj.id)!
-      if (bloco1Score < 50) {
+      const isCertificadoMinc = certificadosMincSet.has(proj.proponente_id)
+      if (bloco1Score < 50 && !isCertificadoMinc) {
         desclassificados.push({ id: proj.id, nota_final: proj.nota_ajustada })
         continue
       }

@@ -5,7 +5,9 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { RecursoDecisaoWrapper } from '@/components/admin/RecursoDecisaoWrapper'
-import { ArrowLeft, FileText, User, Calendar, Scale, AlertTriangle } from 'lucide-react'
+import { AssinaturaDecisaoButton } from '@/components/admin/AssinaturaDecisaoButton'
+import { buscarAssinaturaDecisao } from '@/lib/actions/assinar-decisao'
+import { ArrowLeft, FileText, User, Calendar, Scale, AlertTriangle, Download } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
@@ -66,6 +68,11 @@ export default async function RecursoDetalhePage({
       .single()
     decisorNome = decisor?.nome
   }
+
+  // Fetch digital signature for this decision
+  const assinatura = (recurso.status === 'deferido' || recurso.status === 'indeferido' || recurso.status === 'deferido_parcial')
+    ? await buscarAssinaturaDecisao(recursoId)
+    : null
 
   // Fetch revisoes for this recurso (for deferimento parcial)
   const { data: revisoes } = await supabase
@@ -258,6 +265,30 @@ export default async function RecursoDetalhePage({
                 </div>
               </CardContent>
             </Card>
+          )}
+
+          {/* PDF Decisao Button */}
+          {(recurso.status === 'deferido' || recurso.status === 'indeferido' || recurso.status === 'deferido_parcial') && recurso.decisao && (
+            <a href={`/api/pdf/decisao/${recursoId}`} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="w-full h-10 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 font-semibold text-sm">
+                <Download className="mr-2 h-4 w-4" />
+                Gerar PDF Decisao Administrativa
+              </Button>
+            </a>
+          )}
+
+          {/* Assinatura Digital da Decisao */}
+          {(recurso.status === 'deferido' || recurso.status === 'indeferido' || recurso.status === 'deferido_parcial') && recurso.decisao && (
+            <AssinaturaDecisaoButton
+              recursoId={recursoId}
+              editalId={editalId}
+              assinatura={assinatura ? {
+                hash_documento: assinatura.hash_documento,
+                nome_signatario: assinatura.nome_signatario,
+                assinado_em: assinatura.assinado_em,
+                ip_address: assinatura.ip_address,
+              } : null}
+            />
           )}
 
           {/* Decision Panel (if pending or deferido_parcial) */}

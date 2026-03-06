@@ -102,7 +102,7 @@
 ### 2.4 Comissao de Avaliacao
 - [x] Criar tabela `edital_comissao` (id, edital_id, nome, cpf, qualificacao, tipo [sociedade_civil/poder_executivo], portaria_numero) ✅ migration 20260306000012
 - [x] UI para cadastrar membros da comissao ✅ /admin/editais/[id]/comissao com form + lista agrupada por tipo
-- [ ] Gerar portaria de designação (PDF)
+- [x] Gerar portaria de designação (PDF) ✅ PortariaComissaoPDF.tsx + /api/pdf/portaria-comissao/[id]
 - [x] Publicar composicao da comissao ✅ seção pública na página do edital com membros agrupados por tipo
 
 ### 2.5 Criterios de Desempate
@@ -171,8 +171,8 @@
 
 ### 4.3 Decisao Administrativa (Template)
 - [x] Template estruturado da decisao com campos: fundamentacao, analise_merito, conclusao, dispositivo ✅ RecursoDecisaoPanel com 4 campos estruturados
-- [ ] Geracao automatica de PDF da decisao
-- [ ] Assinatura digital da decisao (assessor + coordenador + secretario)
+- [x] Geracao automatica de PDF da decisao ✅ DecisaoPDF.tsx + /api/pdf/decisao/[id]
+- [x] Assinatura digital da decisao (assessor + coordenador + secretario) ✅ assinar-decisao.ts com SHA-256 hash + registro em assinaturas + badge "Assinado digitalmente"
 - [x] Publicacao da decisao vinculada ao recurso ✅ parecer estruturado salvo no recurso via decidirRecurso()
 - [x] Notificacao ao proponente com a decisao ✅ notifyInAppRecursoDecisao() já wired em decidirRecurso()
 
@@ -208,11 +208,11 @@
 - [x] Audit triggers ✅
 
 ### 6.2 Geracao Automatica do Termo (PDF)
-- [ ] Template do Termo com 14 clausulas preenchidas automaticamente
-- [ ] Dados automaticos: nome proponente, CPF/CNPJ, RG, endereco, projeto, valor, banco, vigencia
-- [ ] Dados do ente federativo (tenant): nome, representante, cargo
-- [ ] Geracao em PDF com layout profissional
-- [ ] Preview antes de assinar
+- [x] Template do Termo com 14 clausulas preenchidas automaticamente ✅ TermoPDF.tsx com 14 cláusulas (objeto, valor, prazo, conta, prestação, alterações, devolução, rescisão, publicidade, acessibilidade, contrapartida, penalidades, foro, disposições finais)
+- [x] Dados automaticos: nome proponente, CPF/CNPJ, RG, endereco, projeto, valor, banco, vigencia ✅ props TermoPDFProps com todos os dados
+- [x] Dados do ente federativo (tenant): nome, representante, cargo ✅ tenantNome + representanteNome + representanteCargo
+- [x] Geracao em PDF com layout profissional ✅ @react-pdf/renderer + /api/pdf/termo/[id]
+- [x] Preview antes de assinar ✅ botão "Visualizar Termo (PDF)" no assinar-termo abre /api/pdf/termo/[id] em nova aba
 
 ### 6.x Admin UI de Termos (NOVO)
 - [x] Pagina de listagem /admin/editais/[id]/termos com stats (total, assinados, pendentes, valor) ✅
@@ -227,11 +227,11 @@
 - [x] Tela de assinatura com visualizacao do termo ✅ /projetos/[id]/assinar-termo com resumo do termo + dados
 - [x] Checkbox: "Declaro que li e concordo com todos os termos" ✅ checkbox obrigatório + texto de ciência
 - [x] Captura de dados: IP, user-agent, timestamp, hash SHA-256 do documento ✅ assinarDocumento() em termo-actions.ts
-- [ ] Selo visual no PDF: "Assinado eletronicamente por [NOME] em [DATA] as [HORA] - IP: [IP] - Hash: [HASH]"
+- [x] Selo visual no PDF: "Assinado eletronicamente por [NOME] em [DATA] as [HORA] - IP: [IP] - Hash: [HASH]" ✅ TermoPDF.tsx signatureSeal com nome, data, IP, hash por assinante
 - [x] Armazenar log de assinatura na tabela `assinaturas_digitais` ✅ migration 20260306000001
 - [x] Criar tabela `assinaturas_digitais` ✅ migration 20260306000001
 - [x] Fluxo: proponente assina primeiro -> gestor assina depois -> status muda para "assinado" ✅ termo-actions.ts
-- [ ] Validacao de assinatura: qualquer pessoa pode verificar hash do PDF
+- [x] Validacao de assinatura: qualquer pessoa pode verificar hash do PDF ✅ /verificar-assinatura página pública com busca por hash SHA-256
 
 ### 6.4 Assinatura via GOV.BR (Evolucao)
 - [ ] Integracao com API Assinador GOV.BR (assinador.iti.br)
@@ -245,7 +245,7 @@
 - [x] Regra: alteracoes ate 20% do valor podem ser feitas pelo proponente sem autorizacao previa (apenas comunicar) ✅ aditivo-actions.ts auto-aprova se <= 20%
 - [x] Alteracoes > 20% precisam de aprovacao do gestor ✅ requer_aprovacao flag + aprovar/rejeitar actions
 - [x] Prorrogacao de oficio quando atraso na liberacao de recursos ✅ tipo prorrogacao atualiza vigencia_fim automaticamente
-- [ ] Geracao de PDF do aditivo + assinatura
+- [x] Geracao de PDF do aditivo + assinatura ✅ AditivoPDF.tsx + /api/pdf/aditivo/[id] + botão download na AditivosSection
 - [x] UI de gestao de aditivos ✅ AditivosSection com form + lista + aprovar/rejeitar
 
 ### 6.6 Pagamento
@@ -317,7 +317,7 @@
 
 ### 8.2 Lista de Inscritos (PDF/XLSX)
 - [x] Exportar lista formatada com numero, nome, projeto, categoria ✅ InscritosExport.tsx
-- [ ] Versao PDF para publicacao oficial
+- [x] Versao PDF para publicacao oficial (inscritos) ✅ InscritosPDF.tsx + /api/pdf/inscritos/[id] + botão na página pública
 - [x] Versao XLSX para trabalho interno ✅ InscritosExport XLS com header estilizado
 
 ### 8.3 Fichas de Avaliacao (XLS)
@@ -330,14 +330,14 @@
 - [x] Formato similar a LISTA GERAL PNAB.xlsx ✅ SpreadsheetML com header estilizado + labels traduzidos
 
 ### 8.5 Termo de Execucao (PDF)
-- [ ] Gerar PDF do Termo com todas as 14 clausulas preenchidas
-- [ ] Incluir selos de assinatura digital
+- [x] Gerar PDF do Termo com todas as 14 clausulas preenchidas ✅ TermoPDF.tsx + /api/pdf/termo/[id]
+- [x] Incluir selos de assinatura digital ✅ signatureSeal com nome, data, IP, hash
 
 ### 8.6 Decisao Administrativa (PDF)
-- [ ] Gerar PDF da decisao de recurso com fundamentacao completa
+- [x] Gerar PDF da decisao de recurso com fundamentacao completa ✅ DecisaoPDF.tsx + /api/pdf/decisao/[id]
 
 ### 8.7 Portaria da Comissao (PDF)
-- [ ] Gerar PDF da portaria de designacao dos pareceristas
+- [x] Gerar PDF da portaria de designacao dos pareceristas ✅ PortariaComissaoPDF.tsx + /api/pdf/portaria-comissao/[id]
 
 ---
 
@@ -371,8 +371,8 @@
 
 ### 10.3 Certificacao como Ponto de Cultura
 - [x] Status de certificacao: nao_certificado, pre_certificado, certificado ✅ tabela certificacoes_cultura_viva (migration 20260306000015) com check constraint
-- [ ] Entidades ja certificadas pelo MinC: verificar na Plataforma Cultura Viva
-- [ ] Regra: entidade certificada nao precisa nota minima no Bloco 1
+- [x] Entidades ja certificadas pelo MinC: verificar na Plataforma Cultura Viva ✅ tabela certificacoes_cultura_viva com certificado_minc flag + consulta em consolidar-ranking.ts
+- [x] Regra: entidade certificada nao precisa nota minima no Bloco 1 ✅ consolidar-ranking.ts: `if (bloco1Score < 50 && !isCertificadoMinc)` — bypass para certificados
 
 ### 10.4 Metas Padronizadas Obrigatorias
 - [x] Meta 1: Formacao e Educacao Cultural ✅ tabela cultura_viva_metas (migration 20260306000015)

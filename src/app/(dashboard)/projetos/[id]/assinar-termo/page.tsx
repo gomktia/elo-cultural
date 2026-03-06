@@ -8,7 +8,7 @@ import { assinarDocumento } from '@/lib/actions/termo-actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { ArrowLeft, FileSignature, Shield, CheckCircle2, Loader2 } from 'lucide-react'
+import { ArrowLeft, FileSignature, Shield, CheckCircle2, Loader2, FileText } from 'lucide-react'
 
 export default function AssinarTermoPage() {
   const params = useParams()
@@ -113,9 +113,21 @@ export default function AssinarTermoPage() {
       {/* Termo Summary */}
       <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl">
         <CardContent className="p-6 space-y-5">
-          <div className="flex items-center gap-3 mb-2">
-            <Shield className="h-5 w-5 text-[var(--brand-primary)]" />
-            <h2 className="text-base font-semibold text-slate-900">Termo de Execução Cultural</h2>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <Shield className="h-5 w-5 text-[var(--brand-primary)]" />
+              <h2 className="text-base font-semibold text-slate-900">Termo de Execução Cultural</h2>
+            </div>
+            <a
+              href={`/api/pdf/termo/${termo.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="outline" size="sm" className="gap-2 rounded-xl border-[var(--brand-primary)]/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 hover:border-[var(--brand-primary)]/30 transition-all">
+                <FileText className="h-4 w-4" />
+                Visualizar Termo (PDF)
+              </Button>
+            </a>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">

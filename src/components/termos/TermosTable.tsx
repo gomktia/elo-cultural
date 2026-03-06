@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
-import { Eye, FileText, Pen } from 'lucide-react'
+import { Eye, FileText, Pen, FileDown } from 'lucide-react'
 import type { TermoWithProjeto } from '@/types/database.types'
 
 const statusConfig: Record<string, { label: string; className: string }> = {
@@ -88,6 +88,16 @@ export function TermosTable({ termos, editalId }: TermosTableProps) {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a
+                      href={`/api/pdf/termo/${termo.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Visualizar PDF"
+                    >
+                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-400 hover:text-emerald-600">
+                        <FileDown className="h-4 w-4" />
+                      </Button>
+                    </a>
                     <Link href={`/admin/editais/${editalId}/termos/${termo.id}`}>
                       <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-400 hover:text-[var(--brand-primary)]">
                         <Eye className="h-4 w-4" />
