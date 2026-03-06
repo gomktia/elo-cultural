@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { ADMIN_ROLES } from '@/lib/constants/roles'
+import { GESTAO_ROLES } from '@/lib/constants/roles'
 
 export default async function AdminLayout({
   children,
@@ -17,7 +17,7 @@ export default async function AdminLayout({
     .eq('id', user.id)
     .single()
 
-  if (!profile || !ADMIN_ROLES.includes(profile.role)) {
+  if (!profile || !GESTAO_ROLES.includes(profile.role as typeof GESTAO_ROLES[number])) {
     redirect('/dashboard')
   }
 
