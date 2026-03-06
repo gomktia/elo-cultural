@@ -213,6 +213,23 @@ export interface Publicacao {
 
 export type StatusPrestacao = 'rascunho' | 'enviada' | 'em_analise' | 'aprovada' | 'reprovada' | 'com_pendencias'
 
+export type AcoesRealizadas = 'sim_conforme' | 'sim_com_adaptacoes' | 'parcial' | 'nao_conforme'
+export type LocalTipo = 'presencial' | 'virtual' | 'hibrido'
+export type JulgamentoPrestacao = 'aprovada_sem_ressalvas' | 'aprovada_com_ressalvas' | 'rejeitada_parcial' | 'rejeitada_total'
+
+export interface PrestacaoMeta {
+  meta: string
+  status: 'cumprida' | 'parcial' | 'nao_cumprida'
+  observacao: string
+  justificativa: string
+}
+
+export interface PrestacaoProduto {
+  tipo: string
+  quantidade: number
+  descricao: string
+}
+
 export interface PrestacaoContas {
   id: string
   tenant_id: string
@@ -226,6 +243,39 @@ export interface PrestacaoContas {
   analisado_por: string | null
   data_envio: string | null
   data_analise: string | null
+  // Campos estruturados ANEXO XI
+  acoes_realizadas: AcoesRealizadas
+  acoes_desenvolvidas: string | null
+  metas: PrestacaoMeta[]
+  produtos_gerados: PrestacaoProduto[]
+  produtos_disponibilizacao: string | null
+  resultados_gerados: string[]
+  publico_alcancado_quantidade: number | null
+  publico_mensuracao: string | null
+  publico_justificativa: string | null
+  equipe_quantidade: number | null
+  equipe_houve_mudancas: boolean
+  local_tipo: LocalTipo
+  local_plataformas: string | null
+  local_links: string | null
+  local_descricao: string | null
+  divulgacao: string | null
+  topicos_adicionais: string | null
+  julgamento: JulgamentoPrestacao | null
+  plano_compensatorio: string | null
+  valor_devolucao: number | null
+  created_at: string
+}
+
+export interface PrestacaoEquipe {
+  id: string
+  prestacao_id: string
+  tenant_id: string
+  nome: string
+  funcao: string
+  cpf_cnpj: string | null
+  pessoa_negra_indigena: boolean
+  pessoa_pcd: boolean
   created_at: string
 }
 

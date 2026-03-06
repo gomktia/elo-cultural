@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator'
 import type { Edital, Criterio } from '@/types/database.types'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { ArrowLeft, Calendar, FileText } from 'lucide-react'
+import { ArrowLeft, Calendar, FileText, Users } from 'lucide-react'
 import { EditalCountdown } from '@/components/edital/EditalCountdown'
 
 export default async function EditalPublicoPage({
@@ -148,6 +148,12 @@ export default async function EditalPublicoPage({
               </Button>
             </Link>
           )}
+          <Link href={`/editais/${id}/inscritos`} className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full h-11 px-8 rounded-xl md:rounded-2xl border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all active:scale-98 text-xs md:text-sm flex items-center justify-center gap-2 uppercase tracking-wide">
+              <Users className="h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+              Lista de Inscritos
+            </Button>
+          </Link>
           <Link href={`/editais/${id}/resultados`} className="w-full sm:w-auto">
             <Button variant="outline" className="w-full h-11 px-8 rounded-xl md:rounded-2xl border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all active:scale-98 text-xs md:text-sm flex items-center justify-center gap-2 uppercase tracking-wide">
               <FileText className="h-4 w-4 md:h-5 md:w-5 text-slate-400" />
