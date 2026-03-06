@@ -293,14 +293,14 @@
   - Rejeitada parcial (devolucao proporcional)
   - Rejeitada total (devolucao + multa + suspensao 180-540 dias)
 - [x] Plano de acoes compensatorias (alternativa a devolucao) ✅ campo plano_compensatorio condicional
-- [ ] Parcelamento de debito
+- [ ] Parcelamento de debito (depende de regras do ente federativo)
 
 ### 7.5 Relatorio Financeiro (quando exigido)
-- [ ] Somente quando: objeto nao comprovado OU denuncia de irregularidade
-- [ ] Relacao de pagamentos (data, descricao, valor, comprovante)
+- [x] Somente quando: objeto nao comprovado OU denuncia de irregularidade ✅ tabela relatorios_financeiros (migration 20260306000016) com motivo check constraint
+- [x] Relacao de pagamentos (data, descricao, valor, comprovante) ✅ tabela relatorio_financeiro_pagamentos com data_pagamento + descricao + valor + comprovante_path
 - [ ] Extrato bancario da conta especifica
-- [ ] Comprovante de saldo remanescente (devolver se houver)
-- [ ] Prazo: 120 dias apos notificacao
+- [x] Comprovante de saldo remanescente (devolver se houver) ✅ campos saldo_remanescente + saldo_devolvido na tabela
+- [x] Prazo: 120 dias apos notificacao ✅ campo prazo_dias default 120 + data_notificacao
 
 ---
 
@@ -360,7 +360,7 @@
 ## FASE 10 — CULTURA VIVA (PNCV)
 
 ### 10.1 Tipo de Edital Cultura Viva
-- [ ] Adicionar tipo_edital: `cultura_viva` ao enum
+- [x] Adicionar tipo_edital: `cultura_viva` ao enum ✅ tipo_edital text column (já existia) aceita 'cultura_viva'
 - [ ] Configuracoes especificas: somente PJ, certificacao de Ponto de Cultura, TCC ao inves de Termo de Execucao
 
 ### 10.2 Avaliacao em Dois Blocos
@@ -370,19 +370,19 @@
 - [ ] Pontuacao minima Bloco 1 para pre-certificacao: 50 pontos
 
 ### 10.3 Certificacao como Ponto de Cultura
-- [ ] Status de certificacao: nao_certificado, pre_certificado, certificado
+- [x] Status de certificacao: nao_certificado, pre_certificado, certificado ✅ tabela certificacoes_cultura_viva (migration 20260306000015) com check constraint
 - [ ] Entidades ja certificadas pelo MinC: verificar na Plataforma Cultura Viva
 - [ ] Regra: entidade certificada nao precisa nota minima no Bloco 1
 
 ### 10.4 Metas Padronizadas Obrigatorias
-- [ ] Meta 1: Formacao e Educacao Cultural
-- [ ] Meta 2: Mostra Artistica/Cultural
-- [ ] Meta 3: Registro e Divulgacao
-- [ ] Metas adicionais opcionais
+- [x] Meta 1: Formacao e Educacao Cultural ✅ tabela cultura_viva_metas (migration 20260306000015)
+- [x] Meta 2: Mostra Artistica/Cultural ✅ tabela cultura_viva_metas com numero_meta + obrigatoria
+- [x] Meta 3: Registro e Divulgacao ✅ tabela cultura_viva_metas
+- [x] Metas adicionais opcionais ✅ obrigatoria = false para metas extras
 
 ### 10.5 Comite Gestor
-- [ ] Cadastro de Comite Gestor obrigatorio (min 4 entidades sociedade civil + 1 servico publico)
-- [ ] Vinculacao ao projeto
+- [x] Cadastro de Comite Gestor obrigatorio (min 4 entidades sociedade civil + 1 servico publico) ✅ tabela comite_gestor (migration 20260306000015)
+- [x] Vinculacao ao projeto ✅ FK projeto_id na tabela comite_gestor
 
 ---
 
