@@ -21,6 +21,8 @@ interface HeroRobotProps {
   showBadges?: boolean
   /** Compact mode (less vertical space) */
   compact?: boolean
+  /** Brand color for CTA button (tenant mode) */
+  brandColor?: string
 }
 
 export function HeroRobot({
@@ -33,6 +35,7 @@ export function HeroRobot({
   secondaryHref = '/editais',
   showBadges = true,
   compact = false,
+  brandColor,
 }: HeroRobotProps) {
   const [robotExcited, setRobotExcited] = useState(false)
 
@@ -248,7 +251,11 @@ export function HeroRobot({
         >
           <Link
             href={ctaHref}
-            className="group inline-flex items-center gap-2 h-12 px-8 rounded-2xl bg-[#0047AB] text-white font-semibold text-sm hover:brightness-110 transition-all shadow-xl shadow-[#0047AB]/25"
+            className="group inline-flex items-center gap-2 h-12 px-8 rounded-2xl text-white font-semibold text-sm hover:brightness-110 transition-all shadow-xl"
+            style={{
+              backgroundColor: brandColor || '#0047AB',
+              boxShadow: `0 10px 25px -5px ${brandColor || '#0047AB'}40`,
+            }}
             onMouseEnter={() => setRobotExcited(true)}
             onMouseLeave={() => setRobotExcited(false)}
           >
