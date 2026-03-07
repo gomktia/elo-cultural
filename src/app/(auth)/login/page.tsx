@@ -9,10 +9,11 @@ import { translateAuthError } from '@/lib/utils/translate-auth-error'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2, Mail, Lock, User } from 'lucide-react'
+import { Loader2, Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTenant } from '@/components/TenantProvider'
 import { GovBrButton } from '@/components/auth/GovBrButton'
+import { MicoMascot, useMicoState } from '@/components/auth/MicoMascot'
 
 function isCpfOrCnpj(value: string): boolean {
   const digits = value.replace(/\D/g, '')
@@ -28,6 +29,7 @@ function LoginForm() {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const mico = useMicoState()
 
   // Gov.br and other redirect error/message handling
   const govbrErrors: Record<string, string> = {
@@ -161,17 +163,20 @@ function LoginForm() {
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_8px_40px_rgba(0,0,0,0.06)] overflow-hidden">
           <div className="p-8 md:p-12">
 
-            {/* Branding */}
-            <div className="flex flex-col items-center mb-8">
-              <img
-                src={logoSrc}
-                alt={tenantName || 'Elo Cultural'}
-                className="h-14 w-14 mb-4 rounded-2xl bg-white p-2 object-contain shadow-md ring-1 ring-slate-100"
-              />
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 leading-none mb-2">
-                {tenantName || (<>Elo<span className="text-[var(--brand-primary)]">Cultural</span></>)}
-              </h1>
-              <p className="text-[11px] uppercase font-semibold tracking-wider text-slate-400">
+            {/* Mico Mascot + Branding */}
+            <div className="flex flex-col items-center mb-6">
+              <MicoMascot state={mico.micoState} lookProgress={mico.lookProgress} />
+              <div className="flex items-center gap-2 mt-2">
+                <img
+                  src={logoSrc}
+                  alt={tenantName || 'Elo Cultural'}
+                  className="h-8 w-8 rounded-xl bg-white p-1 object-contain shadow-sm ring-1 ring-slate-100"
+                />
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
+                  {tenantName || (<>Elo<span className="text-[var(--brand-primary)]">Cultural</span></>)}
+                </h1>
+              </div>
+              <p className="text-[11px] uppercase font-semibold tracking-wider text-slate-400 mt-1.5">
                 Acesse sua conta para continuar
               </p>
             </div>
@@ -213,7 +218,12 @@ function LoginForm() {
                     inputMode={isCpf ? 'numeric' : 'email'}
                     placeholder="seu@email.com ou 000.000.000-00"
                     value={identifier}
-                    onChange={e => setIdentifier(e.target.value)}
+                    onChange={e => {
+                      setIdentifier(e.target.value)
+                      mico.onEmailChange(e.target.value)
+                    }}
+                    onFocus={mico.onEmailFocus}
+                    onBlur={mico.onEmailBlur}
                     required
                     className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
                   />
@@ -231,13 +241,28 @@ function LoginForm() {
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[var(--brand-primary)] transition-colors" />
                   <Input
                     id="password"
-                    type="password"
+                    type={mico.showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
+                    onFocus={mico.onPasswordFocus}
+                    onBlur={mico.onPasswordBlur}
                     required
-                    className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
+                    className="h-11 pl-12 pr-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={mico.toggleShowPassword}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors"
+                    tabIndex={-1}
+                    aria-label={mico.showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                  >
+                    {mico.showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
               </div>
 
