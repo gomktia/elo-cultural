@@ -62,7 +62,7 @@ export function DecisaoPDF({
         View,
         { style: styles.header },
         React.createElement(Text, { style: styles.tenantName }, tenantNome),
-        React.createElement(Text, { style: styles.docTitle }, 'DECISAO ADMINISTRATIVA')
+        React.createElement(Text, { style: styles.docTitle }, 'DECISÃO ADMINISTRATIVA')
       ),
 
       // Meta info
@@ -85,7 +85,7 @@ export function DecisaoPDF({
           View,
           null,
           React.createElement(Text, { style: styles.metaLabel }, 'Tipo'),
-          React.createElement(Text, { style: styles.metaValue }, tipoRecurso === 'habilitacao' ? 'Habilitacao' : 'Avaliacao')
+          React.createElement(Text, { style: styles.metaValue }, tipoRecurso === 'habilitacao' ? 'Habilitação' : 'Avaliação')
         )
       ),
 
@@ -104,19 +104,19 @@ export function DecisaoPDF({
       ),
 
       // Fundamentacao
-      React.createElement(Text, { style: styles.sectionTitle }, 'Fundamentacao'),
+      React.createElement(Text, { style: styles.sectionTitle }, 'Fundamentação'),
       React.createElement(Text, { style: styles.paragraph }, fundamentacao),
 
       // Analise do Merito
-      React.createElement(Text, { style: styles.sectionTitle }, 'Analise do Merito'),
+      React.createElement(Text, { style: styles.sectionTitle }, 'Análise do Mérito'),
       React.createElement(Text, { style: styles.paragraph }, decisaoTexto),
 
       // Conclusao
-      React.createElement(Text, { style: styles.sectionTitle }, 'Conclusao'),
+      React.createElement(Text, { style: styles.sectionTitle }, 'Conclusão'),
       React.createElement(
         Text,
         { style: styles.paragraph },
-        `Diante da analise realizada e considerando os elementos constantes nos autos, conclui-se pelo ${statusLabel.toLowerCase()} do presente recurso.`
+        `Diante da análise realizada e considerando os elementos constantes nos autos, conclui-se pelo ${statusLabel.toLowerCase()} do presente recurso.`
       ),
 
       // Dispositivo
@@ -133,7 +133,7 @@ export function DecisaoPDF({
         { style: styles.signatureBlock },
         React.createElement(View, { style: styles.signatureLine }),
         React.createElement(Text, { style: styles.signatureName }, decisorNome),
-        React.createElement(Text, { style: styles.signatureRole }, 'Assessor / Coordenador / Secretario'),
+        React.createElement(Text, { style: styles.signatureRole }, 'Assessor / Coordenador / Secretário'),
         React.createElement(Text, { style: { fontSize: 9, color: '#666', marginTop: 8 } }, dataDecisao)
       ),
 
@@ -141,7 +141,7 @@ export function DecisaoPDF({
       React.createElement(
         View,
         { style: styles.footer },
-        React.createElement(Text, null, `Documento gerado eletronicamente - ${tenantNome}`)
+        React.createElement(Text, null, `Documento gerado eletronicamente — ${tenantNome}`)
       )
     )
   )

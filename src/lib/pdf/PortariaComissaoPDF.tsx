@@ -74,7 +74,7 @@ export function PortariaComissaoPDF({
       React.createElement(
         Text,
         { style: styles.preambulo },
-        `O(A) Secretario(a) Municipal de Cultura, no uso de suas atribuicoes legais, e considerando a necessidade de constituir Comissao de Avaliacao para o ${editalTitulo} (${editalNumero}),`
+        `O(A) Secretário(a) Municipal de Cultura, no uso de suas atribuições legais, e considerando a necessidade de constituir Comissão de Avaliação para o ${editalTitulo} (${editalNumero}),`
       ),
 
       // RESOLVE
@@ -85,7 +85,7 @@ export function PortariaComissaoPDF({
         Text,
         { style: styles.artigo },
         React.createElement(Text, { style: styles.artigoLabel }, 'Art. 1. '),
-        React.createElement(Text, null, `Designar os seguintes membros para compor a Comissao de Avaliacao do Edital ${editalNumero}:`)
+        React.createElement(Text, null, `Designar os seguintes membros para compor a Comissão de Avaliação do Edital ${editalNumero}:`)
       ),
 
       // Table header
@@ -94,7 +94,7 @@ export function PortariaComissaoPDF({
         { style: styles.tableHeader },
         React.createElement(Text, { style: [styles.colNome, styles.cellHeader] }, 'Nome'),
         React.createElement(Text, { style: [styles.colCpf, styles.cellHeader] }, 'CPF'),
-        React.createElement(Text, { style: [styles.colQual, styles.cellHeader] }, 'Qualificacao'),
+        React.createElement(Text, { style: [styles.colQual, styles.cellHeader] }, 'Qualificação'),
         React.createElement(Text, { style: [styles.colTipo, styles.cellHeader] }, 'Tipo')
       ),
 
@@ -115,7 +115,7 @@ export function PortariaComissaoPDF({
         Text,
         { style: [styles.artigo, { marginTop: 20 }] },
         React.createElement(Text, { style: styles.artigoLabel }, 'Art. 2. '),
-        React.createElement(Text, null, 'A Comissao tera a atribuicao de avaliar os projetos inscritos conforme criterios estabelecidos no edital referido no Art. 1.')
+        React.createElement(Text, null, 'A Comissão terá a atribuição de avaliar os projetos inscritos conforme critérios estabelecidos no edital referido no Art. 1.')
       ),
 
       // Art. 3
@@ -123,7 +123,7 @@ export function PortariaComissaoPDF({
         Text,
         { style: styles.artigo },
         React.createElement(Text, { style: styles.artigoLabel }, 'Art. 3. '),
-        React.createElement(Text, null, 'Esta Portaria entra em vigor na data de sua publicacao.')
+        React.createElement(Text, null, 'Esta Portaria entra em vigor na data de sua publicação.')
       ),
 
       // Signature block
@@ -132,7 +132,7 @@ export function PortariaComissaoPDF({
         { style: styles.signatureBlock },
         React.createElement(Text, { style: { fontSize: 10, color: '#666', marginBottom: 4 } }, dataPublicacao),
         React.createElement(View, { style: styles.signatureLine }),
-        React.createElement(Text, { style: styles.signatureName }, 'Secretario(a) Municipal de Cultura'),
+        React.createElement(Text, { style: styles.signatureName }, 'Secretário(a) Municipal de Cultura'),
         React.createElement(Text, { style: styles.signatureRole }, tenantNome)
       ),
 
@@ -140,7 +140,7 @@ export function PortariaComissaoPDF({
       React.createElement(
         View,
         { style: styles.footer },
-        React.createElement(Text, null, `Documento gerado eletronicamente - ${tenantNome}`)
+        React.createElement(Text, null, `Documento gerado eletronicamente — ${tenantNome}`)
       )
     )
   )

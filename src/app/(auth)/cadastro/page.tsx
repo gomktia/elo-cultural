@@ -11,8 +11,9 @@ import { Label } from '@/components/ui/label'
 import { ProponenteForm } from '@/components/cadastro/ProponenteForm'
 import { AvaliadorForm } from '@/components/cadastro/AvaliadorForm'
 import { GestorForm } from '@/components/cadastro/GestorForm'
-import { Loader2, User, Mail, Lock, Phone, CreditCard, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Loader2, User, Mail, Lock, Phone, CreditCard, ArrowRight, ArrowLeft, Building2 } from 'lucide-react'
 import { translateAuthError } from '@/lib/utils/translate-auth-error'
+import { formatCpfCnpj, cleanDigits, isCnpj } from '@/lib/utils/cpf-cnpj'
 import { motion, AnimatePresence } from 'framer-motion'
 
 type PerfilTipo = 'proponente' | 'avaliador' | 'gestor'
@@ -299,12 +300,37 @@ export default function CadastroPage() {
                     </div>
 
                     <div className="space-y-2 group">
-                      <Label htmlFor="cpf" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">CPF ou CNPJ</Label>
+                      <Label htmlFor="cpf" className="text-[11px] font-medium text-slate-500 uppercase tracking-wide ml-1">
+                        CPF ou CNPJ
+                        {cpfCnpj && (
+                          <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] font-semibold ${isCnpj(cpfCnpj) ? 'bg-blue-100 text-blue-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                            {isCnpj(cpfCnpj) ? 'CNPJ' : 'CPF'}
+                          </span>
+                        )}
+                      </Label>
                       <div className="relative">
-                        <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
-                        <Input id="cpf" placeholder="000.000.000-00" value={cpfCnpj} onChange={e => setCpfCnpj(e.target.value)} required
+                        {isCnpj(cpfCnpj)
+                          ? <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-400 transition-colors" />
+                          : <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-[#0047AB] transition-colors" />
+                        }
+                        <Input id="cpf" placeholder="000.000.000-00" value={cpfCnpj}
+                          onChange={e => {
+                            const formatted = formatCpfCnpj(e.target.value)
+                            setCpfCnpj(formatted)
+                            // Auto-set tipo_pessoa based on document type
+                            if (isCnpj(e.target.value)) {
+                              setProponenteData(prev => ({ ...prev, tipo_pessoa: 'juridica' }))
+                            } else if (cleanDigits(e.target.value).length <= 11) {
+                              setProponenteData(prev => prev.tipo_pessoa === 'juridica' ? { ...prev, tipo_pessoa: 'fisica' } : prev)
+                            }
+                          }}
+                          maxLength={18}
+                          required
                           className="h-11 pl-12 rounded-2xl border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-300 focus:ring-2 focus:ring-[var(--brand-primary)]/20 outline-none transition-all" />
                       </div>
+                      {isCnpj(cpfCnpj) && (
+                        <p className="text-[10px] text-blue-500 ml-1">CNPJ detectado — dados da empresa serão solicitados na próxima etapa</p>
+                      )}
                     </div>
 
                     <div className="space-y-2 group md:col-span-2">
@@ -321,16 +347,16 @@ export default function CadastroPage() {
                     <input type="checkbox" id="lgpd" checked={lgpdConsent} onChange={e => setLgpdConsent(e.target.checked)}
                       className="mt-1 h-4 w-4 rounded border-slate-200 bg-slate-50 text-[#0047AB] focus:ring-offset-0 focus:ring-[#0047AB]" />
                     <Label htmlFor="lgpd" className="text-[11px] text-slate-500 font-medium leading-relaxed uppercase tracking-wider cursor-pointer">
-                      Li e aceito os <span className="text-[var(--brand-primary)] underline">Termos de Uso</span> e a <span className="text-[var(--brand-primary)] underline">Politica de Privacidade</span> (LGPD).
+                      Li e aceito os <span className="text-[var(--brand-primary)] underline">Termos de Uso</span> e a <span className="text-[var(--brand-primary)] underline">Política de Privacidade</span> (LGPD).
                     </Label>
                   </div>
 
                   <Button type="submit" className="w-full h-12 rounded-2xl bg-[#0047AB] hover:bg-[#005cdd] text-white font-semibold uppercase text-xs tracking-wider shadow-xl shadow-[#0047AB]/20 transition-all active:scale-[0.98] mt-4">
-                    <ArrowRight className="mr-2 h-4 w-4" /> Proximo: Dados do Perfil
+                    <ArrowRight className="mr-2 h-4 w-4" /> Próximo: Dados do Perfil
                   </Button>
 
                   <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-wide pt-2">
-                    Ja possui acesso? {' '}
+                    Já possui acesso? {' '}
                     <Link href="/login" className="text-[var(--brand-primary)] hover:underline transition-colors">Entrar</Link>
                   </p>
                 </motion.form>
@@ -386,7 +412,7 @@ export default function CadastroPage() {
                   {/* Role-specific form */}
                   <div className="max-h-[400px] overflow-y-auto pr-1 scrollbar-thin">
                     {perfilTipo === 'proponente' && (
-                      <ProponenteForm form={proponenteData} onChange={updateProponente} />
+                      <ProponenteForm form={proponenteData} onChange={updateProponente} cpfCnpj={cpfCnpj} />
                     )}
                     {perfilTipo === 'avaliador' && (
                       <AvaliadorForm form={avaliadorData} onChange={updateAvaliador} />

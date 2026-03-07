@@ -9,18 +9,18 @@ export type LoginFormData = z.infer<typeof loginSchema>
 
 export const cadastroStep1Schema = z.object({
   nome: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-  email: z.string().email('E-mail invalido'),
+  email: z.string().email('E-mail inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
-  cpfCnpj: z.string().min(11, 'CPF/CNPJ invalido').refine(
+  cpfCnpj: z.string().min(11, 'CPF/CNPJ inválido').refine(
     (val) => {
       const digits = val.replace(/\D/g, '')
       return digits.length === 11 || digits.length === 14
     },
-    { message: 'CPF deve ter 11 digitos ou CNPJ 14 digitos' }
+    { message: 'CPF deve ter 11 dígitos ou CNPJ 14 dígitos' }
   ),
-  telefone: z.string().min(10, 'Telefone invalido'),
+  telefone: z.string().min(10, 'Telefone inválido'),
   lgpdConsent: z.literal(true, {
-    message: 'Voce deve aceitar os termos da LGPD',
+    message: 'Você deve aceitar os termos da LGPD',
   }),
 })
 
@@ -42,7 +42,7 @@ export const proponenteSchema = z.object({
 export const avaliadorSchema = z.object({
   curriculo_descricao: z.string().default(''),
   areas_avaliacao: z.array(z.string()).default([]),
-  lattes_url: z.string().url('URL invalida').or(z.literal('')).default(''),
+  lattes_url: z.string().url('URL inválida').or(z.literal('')).default(''),
 })
 
 export const gestorSchema = z.object({
@@ -52,16 +52,16 @@ export const gestorSchema = z.object({
 })
 
 export const esquecerSenhaSchema = z.object({
-  email: z.string().email('E-mail invalido'),
+  email: z.string().email('E-mail inválido'),
 })
 
 export type EsquecerSenhaData = z.infer<typeof esquecerSenhaSchema>
 
 export const alterarSenhaSchema = z.object({
   nova: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
-  confirmar: z.string().min(6, 'Confirmacao deve ter pelo menos 6 caracteres'),
+  confirmar: z.string().min(6, 'Confirmação deve ter pelo menos 6 caracteres'),
 }).refine((data) => data.nova === data.confirmar, {
-  message: 'As senhas nao coincidem',
+  message: 'As senhas não coincidem',
   path: ['confirmar'],
 })
 

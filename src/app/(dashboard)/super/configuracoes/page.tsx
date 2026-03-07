@@ -121,7 +121,7 @@ export default function SuperConfiguracoesPage() {
 
       if (!res.ok) throw new Error()
 
-      toast.success('Configuracoes de IA salvas com sucesso!')
+      toast.success('Configurações de IA salvas com sucesso!')
       setNewApiKey('')
 
       // Reload to get masked key
@@ -131,7 +131,7 @@ export default function SuperConfiguracoesPage() {
         setOpenaiApiKey(settings.openai_api_key || '')
       }
     } catch {
-      toast.error('Erro ao salvar configuracoes de IA.')
+      toast.error('Erro ao salvar configurações de IA.')
     } finally {
       setIaSaving(false)
     }
@@ -157,7 +157,7 @@ export default function SuperConfiguracoesPage() {
 
       if (!res.ok) throw new Error()
 
-      toast.success('Configuracoes de email salvas com sucesso!')
+      toast.success('Configurações de email salvas com sucesso!')
       setNewResendKey('')
 
       const reload = await fetch('/api/platform-settings')
@@ -166,7 +166,7 @@ export default function SuperConfiguracoesPage() {
         setResendApiKey(settings.resend_api_key || '')
       }
     } catch {
-      toast.error('Erro ao salvar configuracoes de email.')
+      toast.error('Erro ao salvar configurações de email.')
     } finally {
       setEmailSaving(false)
     }
@@ -217,8 +217,8 @@ export default function SuperConfiguracoesPage() {
         <div className="h-1 w-full bg-[var(--brand-primary)]" />
         <CardContent className="p-4">
           <div className="space-y-1">
-            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Configuracoes da Plataforma</h1>
-            <p className="text-sm text-slate-500">Visao geral da plataforma e gestao de instancias.</p>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Configurações da Plataforma</h1>
+            <p className="text-sm text-slate-500">Visão geral da plataforma e gestão de instâncias.</p>
           </div>
         </CardContent>
       </Card>
@@ -258,7 +258,7 @@ export default function SuperConfiguracoesPage() {
         <CardHeader className="bg-[var(--brand-primary)] p-4">
           <CardTitle className="text-xs font-medium uppercase tracking-wide text-white flex items-center gap-2">
             <Building2 className="h-4 w-4" />
-            Gestao Rapida de Instancias
+            Gestão Rápida de Instâncias
           </CardTitle>
         </CardHeader>
         <CardContent className="p-5">
@@ -276,7 +276,7 @@ export default function SuperConfiguracoesPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-slate-900 truncate">{t.nome}</p>
-                      <p className="text-[11px] text-slate-400 font-medium">{t.dominio} &middot; {t.cnpj || 'CNPJ nao informado'}</p>
+                      <p className="text-[11px] text-slate-400 font-medium">{t.dominio} &middot; {t.cnpj || 'CNPJ não informado'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
@@ -299,12 +299,12 @@ export default function SuperConfiguracoesPage() {
         </CardContent>
       </Card>
 
-      {/* Integracoes — IA */}
+      {/* Integrações — IA */}
       <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
         <CardHeader className="bg-[var(--brand-primary)] p-4">
           <CardTitle className="text-xs font-medium uppercase tracking-wide text-white flex items-center gap-2">
             <Brain className="h-4 w-4" />
-            Integracoes — Inteligencia Artificial
+            Integrações — Inteligência Artificial
           </CardTitle>
         </CardHeader>
         <CardContent className="p-5 space-y-5">
@@ -314,7 +314,7 @@ export default function SuperConfiguracoesPage() {
             <div>
               <p className="text-sm font-semibold text-slate-900">Triagem por IA</p>
               <p className="text-[11px] text-slate-400 font-medium mt-0.5">
-                Habilita analise automatica de projetos e deteccao de irregularidades.
+                Habilita análise automática de projetos e detecção de irregularidades.
               </p>
             </div>
             <button
@@ -339,7 +339,7 @@ export default function SuperConfiguracoesPage() {
             {openaiApiKey && openaiApiKey !== '' ? (
               <Badge className="bg-green-50 text-green-600 border-none text-[10px] ml-2">API Key configurada</Badge>
             ) : (
-              <Badge className="bg-amber-50 text-amber-600 border-none text-[10px] ml-2">API Key nao configurada</Badge>
+              <Badge className="bg-amber-50 text-amber-600 border-none text-[10px] ml-2">API Key não configurada</Badge>
             )}
           </div>
 
@@ -401,7 +401,7 @@ export default function SuperConfiguracoesPage() {
             <p className="text-[10px] text-slate-400 ml-1">
               {iaProvider === 'gemini'
                 ? 'Obtenha sua chave gratuita em aistudio.google.com/apikeys'
-                : 'A chave e armazenada de forma segura no banco de dados. Se vazia, usa a variavel de ambiente OPENAI_API_KEY.'}
+                : 'A chave é armazenada de forma segura no banco de dados. Se vazia, usa a variável de ambiente OPENAI_API_KEY.'}
             </p>
           </div>
 
@@ -419,17 +419,17 @@ export default function SuperConfiguracoesPage() {
                 {iaProvider === 'gemini' ? (
                   <>
                     <option value="gemini-2.5-flash">Gemini 2.5 Flash (Recomendado)</option>
-                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (Maior precisao)</option>
+                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (Maior precisão)</option>
                     <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-                    <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Economico)</option>
+                    <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Econômico)</option>
                   </>
                 ) : (
                   <>
                     <option value="gpt-4">GPT-4 (Recomendado)</option>
                     <option value="gpt-4-turbo">GPT-4 Turbo</option>
                     <option value="gpt-4o">GPT-4o</option>
-                    <option value="gpt-4o-mini">GPT-4o Mini (Economico)</option>
-                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Rapido)</option>
+                    <option value="gpt-4o-mini">GPT-4o Mini (Econômico)</option>
+                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Rápido)</option>
                   </>
                 )}
               </select>
@@ -448,7 +448,7 @@ export default function SuperConfiguracoesPage() {
                 ) : (
                   <>
                     <option value="text-embedding-3-small">text-embedding-3-small (Recomendado)</option>
-                    <option value="text-embedding-3-large">text-embedding-3-large (Maior precisao)</option>
+                    <option value="text-embedding-3-large">text-embedding-3-large (Maior precisão)</option>
                     <option value="text-embedding-ada-002">text-embedding-ada-002 (Legado)</option>
                   </>
                 )}
@@ -468,7 +468,7 @@ export default function SuperConfiguracoesPage() {
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  Salvar Configuracoes IA
+                  Salvar Configurações IA
                 </>
               )}
             </Button>
@@ -477,12 +477,12 @@ export default function SuperConfiguracoesPage() {
         </CardContent>
       </Card>
 
-      {/* Integracoes — Email */}
+      {/* Integrações — Email */}
       <Card className="border-slate-200 shadow-sm rounded-2xl overflow-hidden bg-white">
         <CardHeader className="bg-[var(--brand-primary)] p-4">
           <CardTitle className="text-xs font-medium uppercase tracking-wide text-white flex items-center gap-2">
             <Mail className="h-4 w-4" />
-            Integracoes — Email (Resend)
+            Integrações — Email (Resend)
           </CardTitle>
         </CardHeader>
         <CardContent className="p-5 space-y-5">
@@ -490,9 +490,9 @@ export default function SuperConfiguracoesPage() {
           {/* Email Enabled toggle */}
           <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-xl border border-slate-100">
             <div>
-              <p className="text-sm font-semibold text-slate-900">Notificacoes por Email</p>
+              <p className="text-sm font-semibold text-slate-900">Notificações por Email</p>
               <p className="text-[11px] text-slate-400 font-medium mt-0.5">
-                Envia emails automaticos para proponentes sobre inscricoes, habilitacao, recursos e resultados.
+                Envia emails automáticos para proponentes sobre inscrições, habilitação, recursos e resultados.
               </p>
             </div>
             <button
@@ -517,7 +517,7 @@ export default function SuperConfiguracoesPage() {
             {resendApiKey && resendApiKey !== '' ? (
               <Badge className="bg-green-50 text-green-600 border-none text-[10px] ml-2">API Key configurada</Badge>
             ) : (
-              <Badge className="bg-amber-50 text-amber-600 border-none text-[10px] ml-2">API Key nao configurada</Badge>
+              <Badge className="bg-amber-50 text-amber-600 border-none text-[10px] ml-2">API Key não configurada</Badge>
             )}
           </div>
 
@@ -552,7 +552,7 @@ export default function SuperConfiguracoesPage() {
               className="h-10 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-mono placeholder:text-slate-300"
             />
             <p className="text-[10px] text-slate-400 ml-1">
-              Obtenha sua chave em <strong>resend.com/api-keys</strong>. Se vazia, usa a variavel de ambiente RESEND_API_KEY.
+              Obtenha sua chave em <strong>resend.com/api-keys</strong>. Se vazia, usa a variável de ambiente RESEND_API_KEY.
             </p>
           </div>
 
@@ -588,11 +588,11 @@ export default function SuperConfiguracoesPage() {
             <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mb-3">Eventos Notificados</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {[
-                'Confirmacao de inscricao',
-                'Resultado da habilitacao',
-                'Decisao de recurso',
-                'Mudanca de fase do edital',
-                'Status da prestacao de contas',
+                'Confirmação de inscrição',
+                'Resultado da habilitação',
+                'Decisão de recurso',
+                'Mudança de fase do edital',
+                'Status da prestação de contas',
               ].map(evento => (
                 <div key={evento} className="flex items-center gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
@@ -629,7 +629,7 @@ export default function SuperConfiguracoesPage() {
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  Salvar Configuracoes Email
+                  Salvar Configurações Email
                 </>
               )}
             </Button>
@@ -643,7 +643,7 @@ export default function SuperConfiguracoesPage() {
         <CardHeader className="bg-[var(--brand-primary)] p-4">
           <CardTitle className="text-xs font-medium uppercase tracking-wide text-white flex items-center gap-2">
             <Shield className="h-4 w-4" />
-            Informacoes do Sistema
+            Informações do Sistema
           </CardTitle>
         </CardHeader>
         <CardContent className="p-5">

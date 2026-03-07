@@ -66,10 +66,10 @@ export function inscricaoConfirmada(params: {
   brand?: BrandOptions
 }): { subject: string; html: string } {
   return {
-    subject: `Inscricao confirmada — ${params.protocolo}`,
-    html: baseLayout('Inscricao Confirmada', `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p('Sua inscricao foi recebida com sucesso. Guarde o numero de protocolo para acompanhamento.')}
+    subject: `Inscrição confirmada — ${params.protocolo}`,
+    html: baseLayout('Inscrição Confirmada', `
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p('Sua inscrição foi recebida com sucesso. Guarde o número de protocolo para acompanhamento.')}
       ${highlight('Protocolo', params.protocolo)}
       ${highlight('Projeto', params.titulo)}
       ${highlight('Edital', params.editalTitulo)}
@@ -89,15 +89,15 @@ export function habilitacaoResultado(params: {
 }): { subject: string; html: string } {
   const isHabilitado = params.status === 'habilitado'
   return {
-    subject: `Habilitacao: ${params.status.toUpperCase()} — ${params.titulo}`,
-    html: baseLayout('Resultado da Habilitacao', `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p(`O resultado da habilitacao do seu projeto foi publicado:`)}
+    subject: `Habilitação: ${params.status.toUpperCase()} — ${params.titulo}`,
+    html: baseLayout('Resultado da Habilitação', `
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p(`O resultado da habilitação do seu projeto foi publicado:`)}
       ${highlight('Projeto', params.titulo)}
       ${highlight('Edital', params.editalTitulo)}
       <div style="margin:16px 0">${statusBadge(params.status, isHabilitado ? 'green' : 'red')}</div>
       ${params.justificativa ? highlight('Justificativa', params.justificativa) : ''}
-      ${!isHabilitado ? p('Caso discorde, voce podera interpor recurso no prazo previsto no edital.') : p('Parabens! Seu projeto segue para a proxima etapa.')}
+      ${!isHabilitado ? p('Caso discorde, você poderá interpor recurso no prazo previsto no edital.') : p('Parabéns! Seu projeto segue para a próxima etapa.')}
     `, params.brand),
   }
 }
@@ -114,13 +114,13 @@ export function recursoDecisao(params: {
   const isDeferido = params.status === 'deferido'
   return {
     subject: `Recurso ${params.status.toUpperCase()} — ${params.titulo}`,
-    html: baseLayout('Decisao do Recurso', `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p(`A decisao sobre o seu recurso de <strong>${params.tipo}</strong> foi publicada:`)}
+    html: baseLayout('Decisão do Recurso', `
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p(`A decisão sobre o seu recurso de <strong>${params.tipo}</strong> foi publicada:`)}
       ${highlight('Projeto', params.titulo)}
       ${highlight('Edital', params.editalTitulo)}
       <div style="margin:16px 0">${statusBadge(params.status, isDeferido ? 'green' : 'red')}</div>
-      ${params.decisao ? highlight('Decisao', params.decisao) : ''}
+      ${params.decisao ? highlight('Decisão', params.decisao) : ''}
     `, params.brand),
   }
 }
@@ -133,12 +133,12 @@ export function editalFaseAlterada(params: {
   brand?: BrandOptions
 }): { subject: string; html: string } {
   const faseLabels: Record<string, string> = {
-    inscricao: 'Inscricoes Abertas',
-    inscricao_encerrada: 'Inscricoes Encerradas',
+    inscricao: 'Inscrições Abertas',
+    inscricao_encerrada: 'Inscrições Encerradas',
     divulgacao_inscritos: 'Lista de Inscritos Publicada',
-    avaliacao_tecnica: 'Avaliacao Tecnica em Andamento',
-    resultado_preliminar_avaliacao: 'Resultado Preliminar da Avaliacao',
-    resultado_preliminar_habilitacao: 'Resultado Preliminar da Habilitacao',
+    avaliacao_tecnica: 'Avaliação Técnica em Andamento',
+    resultado_preliminar_avaliacao: 'Resultado Preliminar da Avaliação',
+    resultado_preliminar_habilitacao: 'Resultado Preliminar da Habilitação',
     resultado_final: 'Resultado Final Publicado',
     homologacao: 'Resultado Homologado',
   }
@@ -147,8 +147,8 @@ export function editalFaseAlterada(params: {
   return {
     subject: `${faseTexto} — Edital ${params.editalNumero}`,
     html: baseLayout(faseTexto, `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p('Houve uma atualizacao no edital em que voce esta inscrito:')}
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p('Houve uma atualização no edital em que você está inscrito:')}
       ${highlight('Edital', `${params.editalNumero} — ${params.editalTitulo}`)}
       <div style="margin:16px 0">${statusBadge(faseTexto, 'blue')}</div>
       ${p('Acesse a plataforma para mais detalhes.')}
@@ -164,13 +164,13 @@ export function convocacaoSuplente(params: {
   brand?: BrandOptions
 }): { subject: string; html: string } {
   return {
-    subject: `Convocacao de Suplente (${params.numeroChamada}a chamada) — ${params.titulo}`,
-    html: baseLayout(`Convocacao de Suplente — ${params.numeroChamada}a Chamada`, `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
+    subject: `Convocação de Suplente (${params.numeroChamada}a chamada) — ${params.titulo}`,
+    html: baseLayout(`Convocação de Suplente — ${params.numeroChamada}a Chamada`, `
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
       ${p(`Seu projeto foi convocado como suplente na <strong>${params.numeroChamada}a chamada</strong>.`)}
       ${highlight('Projeto', params.titulo)}
-      ${highlight('Prazo para Habilitacao', params.prazoHabilitacao)}
-      ${p('Apresente a documentacao de habilitacao dentro do prazo indicado para garantir sua vaga.')}
+      ${highlight('Prazo para Habilitação', params.prazoHabilitacao)}
+      ${p('Apresente a documentação de habilitação dentro do prazo indicado para garantir sua vaga.')}
       ${p('Acesse a plataforma para mais detalhes.')}
     `, params.brand),
   }
@@ -187,7 +187,7 @@ export function pagamentoLiberado(params: {
   return {
     subject: `Pagamento ${statusLabel} — ${params.titulo}`,
     html: baseLayout(`Pagamento ${statusLabel}`, `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
       ${p(`O pagamento referente ao seu projeto foi <strong>${statusLabel.toLowerCase()}</strong>.`)}
       ${highlight('Projeto', params.titulo)}
       ${highlight('Valor', params.valor)}
@@ -207,11 +207,11 @@ export function errataPublicada(params: {
   return {
     subject: `Errata no ${params.numeroErrata} — ${params.editalTitulo}`,
     html: baseLayout(`Errata no ${params.numeroErrata} Publicada`, `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p('Uma errata foi publicada no edital em que voce esta inscrito.')}
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p('Uma errata foi publicada no edital em que você está inscrito.')}
       ${highlight('Edital', params.editalTitulo)}
       ${highlight('Errata', `no ${params.numeroErrata}`)}
-      ${highlight('Descricao', params.descricao)}
+      ${highlight('Descrição', params.descricao)}
       ${p('Acesse a plataforma para consultar a errata completa.')}
     `, params.brand),
   }
@@ -223,10 +223,10 @@ export function termoDisponivel(params: {
   brand?: BrandOptions
 }): { subject: string; html: string } {
   return {
-    subject: `Termo de Execucao Disponivel — ${params.titulo}`,
-    html: baseLayout('Termo de Execucao Disponivel', `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p('O Termo de Execucao Cultural referente ao seu projeto esta disponivel para assinatura.')}
+    subject: `Termo de Execução Disponível — ${params.titulo}`,
+    html: baseLayout('Termo de Execução Disponível', `
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p('O Termo de Execução Cultural referente ao seu projeto está disponível para assinatura.')}
       ${highlight('Projeto', params.titulo)}
       ${p('Acesse a plataforma para revisar e assinar o termo.')}
     `, params.brand),
@@ -242,8 +242,8 @@ export function prazoLembrete(params: {
 }): { subject: string; html: string } {
   const tipoLabels: Record<string, string> = {
     assinatura: 'assinatura do termo',
-    prestacao: 'prestacao de contas',
-    recurso: 'interposicao de recurso',
+    prestacao: 'prestação de contas',
+    recurso: 'interposição de recurso',
   }
   const tipoLabel = tipoLabels[params.tipo] || params.tipo
   const urgencia = params.diasRestantes <= 2 ? 'red' : params.diasRestantes <= 5 ? 'amber' : 'blue'
@@ -251,11 +251,11 @@ export function prazoLembrete(params: {
   return {
     subject: `Prazo: ${params.diasRestantes} dia(s) para ${tipoLabel} — ${params.titulo}`,
     html: baseLayout('Lembrete de Prazo', `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p(`Voce tem <strong>${params.diasRestantes} dia(s)</strong> restante(s) para ${tipoLabel}.`)}
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p(`Você tem <strong>${params.diasRestantes} dia(s)</strong> restante(s) para ${tipoLabel}.`)}
       ${highlight('Projeto', params.titulo)}
       <div style="margin:16px 0">${statusBadge(`${params.diasRestantes} dia(s) restante(s)`, urgencia)}</div>
-      ${p('Acesse a plataforma para completar a acao pendente.')}
+      ${p('Acesse a plataforma para completar a ação pendente.')}
     `, params.brand),
   }
 }
@@ -271,16 +271,16 @@ export function prestacaoStatus(params: {
   const statusLabels: Record<string, { label: string; color: string }> = {
     aprovada: { label: 'Aprovada', color: 'green' },
     reprovada: { label: 'Reprovada', color: 'red' },
-    com_pendencias: { label: 'Com Pendencias', color: 'amber' },
-    em_analise: { label: 'Em Analise', color: 'blue' },
+    com_pendencias: { label: 'Com Pendências', color: 'amber' },
+    em_analise: { label: 'Em Análise', color: 'blue' },
   }
   const info = statusLabels[params.status] || { label: params.status, color: 'blue' }
 
   return {
-    subject: `Prestacao de Contas: ${info.label} — ${params.protocolo}`,
-    html: baseLayout(`Prestacao de Contas — ${info.label}`, `
-      ${p(`Ola, <strong>${params.nome}</strong>!`)}
-      ${p('A prestacao de contas do seu projeto teve uma atualizacao:')}
+    subject: `Prestação de Contas: ${info.label} — ${params.protocolo}`,
+    html: baseLayout(`Prestação de Contas — ${info.label}`, `
+      ${p(`Olá, <strong>${params.nome}</strong>!`)}
+      ${p('A prestação de contas do seu projeto teve uma atualização:')}
       ${highlight('Projeto', params.titulo)}
       ${highlight('Protocolo', params.protocolo)}
       <div style="margin:16px 0">${statusBadge(info.label, info.color)}</div>

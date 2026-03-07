@@ -26,9 +26,9 @@ interface HeroRobotProps {
 }
 
 export function HeroRobot({
-  title = 'Gestao de editais',
+  title = 'Gestão de editais',
   subtitle = 'culturais inteligente',
-  description = 'Do edital ao pagamento, do proponente a prestacao de contas. A plataforma mais completa do Brasil para fomento cultural municipal.',
+  description = 'Do edital ao pagamento, do proponente à prestação de contas. A plataforma mais completa do Brasil para fomento cultural municipal.',
   ctaLabel = 'Comece Agora',
   ctaHref = '/cadastro',
   secondaryLabel = 'Ver Editais Abertos',

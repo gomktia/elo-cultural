@@ -163,78 +163,78 @@ const profiles = [
   {
     id: 'proponente',
     label: 'Proponente',
-    tagline: 'Tudo o que o artista precisa, em um so lugar.',
+    tagline: 'Tudo o que o artista precisa, em um só lugar.',
     color: '#0047AB',
     icon: Users,
     features: [
-      { icon: FileText, title: 'Inscricao em 4 Etapas', desc: 'Formulario guiado com dados pessoais, projeto, equipe, orcamento e cronograma.' },
-      { icon: Upload, title: 'Upload de Documentos', desc: 'Envie RG, CPF, curriculo, portfolio e comprovantes diretamente pela plataforma.' },
-      { icon: ClipboardCheck, title: 'Recibo Automatico', desc: 'Receba PDF de comprovante de inscricao imediatamente apos submissao.' },
-      { icon: Eye, title: 'Acompanhamento em Tempo Real', desc: 'Veja o status do seu projeto: triagem, avaliacao, resultado, habilitacao.' },
-      { icon: Gavel, title: 'Recursos Online', desc: 'Interponha recursos com fundamentacao, prazos e acompanhe a decisao.' },
-      { icon: FileSignature, title: 'Assinatura Digital', desc: 'Assine termos de execucao digitalmente com hash SHA-256 e verificacao publica.' },
-      { icon: Receipt, title: 'Prestacao de Contas', desc: 'Preencha as 9 secoes do relatorio final (Anexo XI) diretamente no sistema.' },
-      { icon: Bell, title: 'Notificacoes', desc: 'Receba alertas por email e in-app sobre prazos, resultados e pendencias.' },
+      { icon: FileText, title: 'Inscrição em 4 Etapas', desc: 'Formulário guiado com dados pessoais, projeto, equipe, orçamento e cronograma.' },
+      { icon: Upload, title: 'Upload de Documentos', desc: 'Envie RG, CPF, currículo, portfólio e comprovantes diretamente pela plataforma.' },
+      { icon: ClipboardCheck, title: 'Recibo Automático', desc: 'Receba PDF de comprovante de inscrição imediatamente após submissão.' },
+      { icon: Eye, title: 'Acompanhamento em Tempo Real', desc: 'Veja o status do seu projeto: triagem, avaliação, resultado, habilitação.' },
+      { icon: Gavel, title: 'Recursos Online', desc: 'Interponha recursos com fundamentação, prazos e acompanhe a decisão.' },
+      { icon: FileSignature, title: 'Assinatura Digital', desc: 'Assine termos de execução digitalmente com hash SHA-256 e verificação pública.' },
+      { icon: Receipt, title: 'Prestação de Contas', desc: 'Preencha as 9 seções do relatório final (Anexo XI) diretamente no sistema.' },
+      { icon: Bell, title: 'Notificações', desc: 'Receba alertas por email e in-app sobre prazos, resultados e pendências.' },
     ]
   },
   {
     id: 'gestor',
     label: 'Gestor Municipal',
-    tagline: 'Gestao completa do fomento cultural, do edital ao pagamento.',
+    tagline: 'Gestão completa do fomento cultural, do edital ao pagamento.',
     color: '#77a80b',
     icon: Building2,
     features: [
-      { icon: Settings, title: 'Configuracao de Editais', desc: 'Crie editais com categorias, vagas, valores, criterios de avaliacao e cotas.' },
-      { icon: Brain, title: 'Triagem por IA', desc: 'Screening automatico de inscricoes com inteligencia artificial para agilizar analise.' },
-      { icon: Award, title: 'Motor de Cotas Inteligente', desc: 'Alocacao dual-track automatica: ampla concorrencia + cotas com remanejamento.' },
-      { icon: TrendingUp, title: 'Ranking Automatizado', desc: 'Consolidacao com desempate multi-criterio, desclassificacao e lista de suplentes.' },
-      { icon: FileCheck, title: 'Habilitacao Documental', desc: 'Checklist por documento com conferencia individual e diligencia automatica.' },
-      { icon: Wallet, title: 'Termos e Pagamentos', desc: 'Gere termos em lote, registre pagamentos e acompanhe liberacoes.' },
-      { icon: Download, title: 'Exportacao PNAB Federal', desc: '4 abas no formato MinC (SpreadsheetML) geradas automaticamente.' },
-      { icon: PieChart, title: 'Dashboard de Indicadores', desc: 'Metricas de execucao, pipeline de projetos, prazos e pendencias.' },
+      { icon: Settings, title: 'Configuração de Editais', desc: 'Crie editais com categorias, vagas, valores, critérios de avaliação e cotas.' },
+      { icon: Brain, title: 'Triagem por IA', desc: 'Screening automático de inscrições com inteligência artificial para agilizar análise.' },
+      { icon: Award, title: 'Motor de Cotas Inteligente', desc: 'Alocação dual-track automática: ampla concorrência + cotas com remanejamento.' },
+      { icon: TrendingUp, title: 'Ranking Automatizado', desc: 'Consolidação com desempate multi-critério, desclassificação e lista de suplentes.' },
+      { icon: FileCheck, title: 'Habilitação Documental', desc: 'Checklist por documento com conferência individual e diligência automática.' },
+      { icon: Wallet, title: 'Termos e Pagamentos', desc: 'Gere termos em lote, registre pagamentos e acompanhe liberações.' },
+      { icon: Download, title: 'Exportação PNAB Federal', desc: '4 abas no formato MinC (SpreadsheetML) geradas automaticamente.' },
+      { icon: PieChart, title: 'Dashboard de Indicadores', desc: 'Métricas de execução, pipeline de projetos, prazos e pendências.' },
     ]
   },
   {
     id: 'avaliador',
     label: 'Avaliador',
-    tagline: 'Avaliacao transparente, organizada e sem conflito de interesse.',
+    tagline: 'Avaliação transparente, organizada e sem conflito de interesse.',
     color: '#eeb513',
     icon: Star,
     features: [
-      { icon: ClipboardCheck, title: 'Formulario de Avaliacao', desc: 'Criterios configurados pelo gestor com notas individuais e justificativa.' },
-      { icon: Users, title: 'Atribuicao Automatica', desc: 'Distribuicao round-robin equilibrada ou atribuicao manual pelo gestor.' },
-      { icon: Scale, title: 'Deteccao de Discrepancia', desc: 'Alerta automatico quando notas divergem significativamente entre avaliadores.' },
-      { icon: Eye, title: 'Visualizacao do Projeto', desc: 'Acesso completo ao projeto, documentos e historico do proponente.' },
-      { icon: Hash, title: 'Comissao de Avaliacao', desc: 'Cadastro de comissao com portaria PDF, agrupamento por tipo de membro.' },
+      { icon: ClipboardCheck, title: 'Formulário de Avaliação', desc: 'Critérios configurados pelo gestor com notas individuais e justificativa.' },
+      { icon: Users, title: 'Atribuição Automática', desc: 'Distribuição round-robin equilibrada ou atribuição manual pelo gestor.' },
+      { icon: Scale, title: 'Detecção de Discrepância', desc: 'Alerta automático quando notas divergem significativamente entre avaliadores.' },
+      { icon: Eye, title: 'Visualização do Projeto', desc: 'Acesso completo ao projeto, documentos e histórico do proponente.' },
+      { icon: Hash, title: 'Comissão de Avaliação', desc: 'Cadastro de comissão com portaria PDF, agrupamento por tipo de membro.' },
       { icon: Lock, title: 'Sigilo Garantido', desc: 'Cada avaliador ve apenas seus projetos atribuidos, sem acesso ao ranking.' },
     ]
   },
   {
     id: 'publico',
-    label: 'Transparencia Publica',
-    tagline: 'Acesso aberto a informacoes, resultados e verificacao.',
+    label: 'Transparência Pública',
+    tagline: 'Acesso aberto a informações, resultados e verificação.',
     color: '#e32a74',
     icon: Globe,
     features: [
       { icon: Search, title: 'Busca de Editais', desc: 'Pesquise por nome, filtre por status e veja editais abertos e encerrados.' },
-      { icon: BarChart3, title: 'Resultados Publicados', desc: 'Selecao, habilitacao e homologacao publicadas com lista completa.' },
-      { icon: MapPin, title: 'Mapa Cultural', desc: 'Visualize a distribuicao geografica dos projetos contemplados.' },
-      { icon: TrendingUp, title: 'Indicadores', desc: 'Metricas publicas de execucao, diversidade e distribuicao de recursos.' },
+      { icon: BarChart3, title: 'Resultados Publicados', desc: 'Seleção, habilitação e homologação publicadas com lista completa.' },
+      { icon: MapPin, title: 'Mapa Cultural', desc: 'Visualize a distribuição geográfica dos projetos contemplados.' },
+      { icon: TrendingUp, title: 'Indicadores', desc: 'Métricas públicas de execução, diversidade e distribuição de recursos.' },
       { icon: Shield, title: 'Verificar Assinatura', desc: 'Confira a autenticidade de qualquer documento assinado digitalmente.' },
-      { icon: Calendar, title: 'Cronograma do Edital', desc: 'Todas as fases com datas, prazos e countdown ate o encerramento.' },
+      { icon: Calendar, title: 'Cronograma do Edital', desc: 'Todas as fases com datas, prazos e countdown até o encerramento.' },
     ]
   },
 ]
 
 const differentiators = [
-  { icon: Brain, title: 'Triagem por IA', desc: 'Screening automatico de inscricoes', us: 'Automatico', them: 'Manual', color: '#0047AB' },
-  { icon: Award, title: 'Motor de Cotas', desc: 'Alocacao dual-track com remanejamento', us: 'Inteligente', them: 'Planilha', color: '#77a80b' },
-  { icon: FileSignature, title: 'Assinatura Digital', desc: 'SHA-256 com verificacao publica', us: 'Integrada', them: 'PDF manual', color: '#e32a74' },
-  { icon: Layers, title: 'Multi-tenant SaaS', desc: 'Uma plataforma para N municipios', us: 'Ilimitado', them: 'Single-city', color: '#eeb513' },
-  { icon: Download, title: 'Export PNAB Federal', desc: '4 abas no formato MinC automatico', us: '1 clique', them: 'Manual', color: '#0047AB' },
-  { icon: Receipt, title: 'Prestacao de Contas', desc: '9 secoes do Anexo XI digitalizadas', us: 'Estruturada', them: 'Google Forms', color: '#77a80b' },
-  { icon: Shield, title: 'LGPD Compliance', desc: 'Exportacao de dados e exclusao', us: 'Nativo', them: 'Inexistente', color: '#e32a74' },
-  { icon: Globe, title: 'API de Transparencia', desc: 'Endpoints REST publicos', us: 'REST API', them: 'Nenhuma', color: '#eeb513' },
+  { icon: Brain, title: 'Triagem por IA', desc: 'Screening automático de inscrições', us: 'Automático', them: 'Manual', color: '#0047AB' },
+  { icon: Award, title: 'Motor de Cotas', desc: 'Alocação dual-track com remanejamento', us: 'Inteligente', them: 'Planilha', color: '#77a80b' },
+  { icon: FileSignature, title: 'Assinatura Digital', desc: 'SHA-256 com verificação pública', us: 'Integrada', them: 'PDF manual', color: '#e32a74' },
+  { icon: Layers, title: 'Multi-tenant SaaS', desc: 'Uma plataforma para N municípios', us: 'Ilimitado', them: 'Single-city', color: '#eeb513' },
+  { icon: Download, title: 'Export PNAB Federal', desc: '4 abas no formato MinC automático', us: '1 clique', them: 'Manual', color: '#0047AB' },
+  { icon: Receipt, title: 'Prestação de Contas', desc: '9 seções do Anexo XI digitalizadas', us: 'Estruturada', them: 'Google Forms', color: '#77a80b' },
+  { icon: Shield, title: 'LGPD Compliance', desc: 'Exportação de dados e exclusão', us: 'Nativo', them: 'Inexistente', color: '#e32a74' },
+  { icon: Globe, title: 'API de Transparência', desc: 'Endpoints REST públicos', us: 'REST API', them: 'Nenhuma', color: '#eeb513' },
 ]
 
 export default function SalesPage() {
@@ -447,7 +447,7 @@ export default function SalesPage() {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] mb-6"
             style={{ animation: 'fadeUp 0.6s ease-out 0.1s both' }}
           >
-            <span className="text-[#0047AB]">Gestao de editais</span>
+            <span className="text-[#0047AB]">Gestão de editais</span>
             <br />
             <span
               className="bg-clip-text text-transparent"
@@ -463,7 +463,7 @@ export default function SalesPage() {
             className="text-base md:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed mb-10"
             style={{ animation: 'fadeUp 0.6s ease-out 0.2s both' }}
           >
-            Do edital ao pagamento, do proponente a prestacao de contas.
+            Do edital ao pagamento, do proponente à prestação de contas.
             A plataforma mais completa do Brasil para fomento cultural municipal.
           </p>
 
@@ -553,10 +553,10 @@ export default function SalesPage() {
           <div className="text-center mb-14">
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#0047AB] mb-3">Para cada perfil</p>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight font-[Sora,sans-serif]">
-              Uma experiencia pensada para voce
+              Uma experiência pensada para você
             </h2>
             <p className="text-sm text-slate-500 mt-3 max-w-lg mx-auto">
-              Seja proponente, gestor, avaliador ou cidadao — cada perfil tem funcionalidades especificas.
+              Seja proponente, gestor, avaliador ou cidadão — cada perfil tem funcionalidades específicas.
             </p>
           </div>
 
@@ -646,7 +646,7 @@ export default function SalesPage() {
           <div className="text-center mb-16">
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#eeb513] mb-3">Tecnologia de ponta</p>
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight font-[Sora,sans-serif]">
-              Construido para o setor publico brasileiro
+              Construído para o setor público brasileiro
             </h2>
           </div>
 
@@ -654,20 +654,20 @@ export default function SalesPage() {
             {[
               {
                 icon: Lock,
-                title: 'Seguranca e LGPD',
-                desc: 'Assinatura SHA-256, verificacao publica, exportacao de dados pessoais, solicitacao de exclusao. Row-level security no banco de dados.',
+                title: 'Segurança e LGPD',
+                desc: 'Assinatura SHA-256, verificação pública, exportação de dados pessoais, solicitação de exclusão. Row-level security no banco de dados.',
                 color: '#0047AB',
               },
               {
                 icon: Zap,
-                title: 'Automacao Inteligente',
-                desc: 'Ranking automatico com desempate, motor de cotas, triagem IA, geracao de PDFs, notificacoes dual-channel, suplentes e convocacoes.',
+                title: 'Automação Inteligente',
+                desc: 'Ranking automático com desempate, motor de cotas, triagem IA, geração de PDFs, notificações dual-channel, suplentes e convocações.',
                 color: '#77a80b',
               },
               {
                 icon: LayoutDashboard,
                 title: 'Multi-Tenant SaaS',
-                desc: 'Uma unica plataforma para N municipios. Cada prefeitura com sua marca, logo, cores, dominio e dados isolados.',
+                desc: 'Uma única plataforma para N municípios. Cada prefeitura com sua marca, logo, cores, domínio e dados isolados.',
                 color: '#e32a74',
               },
             ].map((card, i) => {
@@ -700,7 +700,7 @@ export default function SalesPage() {
           <div className="text-center mb-16">
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#77a80b] mb-3">Jornada completa</p>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight font-[Sora,sans-serif]">
-              Do edital a prestacao de contas
+              Do edital à prestação de contas
             </h2>
             <p className="text-sm text-slate-500 mt-3 max-w-lg mx-auto">
               8 etapas totalmente digitalizadas. Sem papel, sem planilha, sem retrabalho.
@@ -709,14 +709,14 @@ export default function SalesPage() {
 
           <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
             {[
-              { step: '01', title: 'Publicacao', desc: 'Edital configurado e publicado', color: '#0047AB', icon: FileText },
-              { step: '02', title: 'Inscricao', desc: 'Proponentes enviam projetos', color: '#0047AB', icon: Upload },
-              { step: '03', title: 'Avaliacao', desc: 'Pareceristas avaliam por criterios', color: '#eeb513', icon: Star },
-              { step: '04', title: 'Ranking', desc: 'Consolidacao automatica + cotas', color: '#eeb513', icon: TrendingUp },
-              { step: '05', title: 'Recursos', desc: 'Prazo e analise de recursos', color: '#e32a74', icon: Gavel },
-              { step: '06', title: 'Habilitacao', desc: 'Conferencia documental', color: '#e32a74', icon: FileCheck },
-              { step: '07', title: 'Execucao', desc: 'Termos, pagamentos, aditivos', color: '#77a80b', icon: Wallet },
-              { step: '08', title: 'Prestacao', desc: 'Relatorio final e encerramento', color: '#77a80b', icon: Receipt },
+              { step: '01', title: 'Publicação', desc: 'Edital configurado e publicado', color: '#0047AB', icon: FileText },
+              { step: '02', title: 'Inscrição', desc: 'Proponentes enviam projetos', color: '#0047AB', icon: Upload },
+              { step: '03', title: 'Avaliação', desc: 'Pareceristas avaliam por critérios', color: '#eeb513', icon: Star },
+              { step: '04', title: 'Ranking', desc: 'Consolidação automática + cotas', color: '#eeb513', icon: TrendingUp },
+              { step: '05', title: 'Recursos', desc: 'Prazo e análise de recursos', color: '#e32a74', icon: Gavel },
+              { step: '06', title: 'Habilitação', desc: 'Conferência documental', color: '#e32a74', icon: FileCheck },
+              { step: '07', title: 'Execução', desc: 'Termos, pagamentos, aditivos', color: '#77a80b', icon: Wallet },
+              { step: '08', title: 'Prestação', desc: 'Relatório final e encerramento', color: '#77a80b', icon: Receipt },
             ].map((s, i) => (
               <JourneyStep key={s.step} {...s} index={i} />
             ))}
@@ -736,17 +736,17 @@ export default function SalesPage() {
                 PDFs gerados automaticamente
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed mb-8">
-                Todos os documentos oficiais do processo sao gerados pelo sistema com assinatura digital integrada.
+                Todos os documentos oficiais do processo são gerados pelo sistema com assinatura digital integrada.
                 Chega de montar documentos no Word.
               </p>
               <div className="space-y-3">
                 {[
-                  'Termo de Execucao Cultural',
-                  'Decisao Administrativa de Recurso',
-                  'Portaria da Comissao de Avaliacao',
+                  'Termo de Execução Cultural',
+                  'Decisão Administrativa de Recurso',
+                  'Portaria da Comissão de Avaliação',
                   'Lista Oficial de Inscritos',
                   'Termo Aditivo',
-                  'Recibo de Inscricao',
+                  'Recibo de Inscrição',
                 ].map(doc => (
                   <div key={doc} className="flex items-center gap-3">
                     <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
@@ -775,8 +775,8 @@ export default function SalesPage() {
                       <FileSignature className="h-5 w-5 text-[#0047AB]" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-slate-900">Termo de Execucao</p>
-                      <p className="text-xs text-slate-400">14 clausulas • Assinado digitalmente</p>
+                      <p className="text-sm font-semibold text-slate-900">Termo de Execução</p>
+                      <p className="text-xs text-slate-400">14 cláusulas • Assinado digitalmente</p>
                     </div>
                   </div>
                   <div className="space-y-2.5">
@@ -812,7 +812,7 @@ export default function SalesPage() {
                 Inclusivo por natureza
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed mb-6">
-                VLibras integrado para traducao em Libras, campos de acessibilidade nos projetos
+                VLibras integrado para tradução em Libras, campos de acessibilidade nos projetos
                 (19 medidas em 3 categorias), e formularios responsivos para qualquer dispositivo.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -851,10 +851,10 @@ export default function SalesPage() {
 
         <div className="relative container mx-auto px-6 md:px-8 py-20 md:py-28 text-center">
           <h2 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight font-[Sora,sans-serif] mb-4">
-            Pronto para transformar a gestao cultural?
+            Pronto para transformar a gestão cultural?
           </h2>
           <p className="text-sm md:text-base text-white/50 max-w-xl mx-auto mb-10">
-            Junte-se a plataforma mais completa para editais culturais do Brasil.
+            Junte-se à plataforma mais completa para editais culturais do Brasil.
             Cadastro gratuito para proponentes.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

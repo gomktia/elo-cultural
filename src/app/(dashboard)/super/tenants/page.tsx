@@ -55,7 +55,7 @@ export default async function SuperTenantsPage() {
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Prefeituras e Municipios</h1>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-tight">Prefeituras e Municípios</h1>
               <p className="text-sm text-slate-500">
                 {tenants?.length || 0} tenant{(tenants?.length || 0) !== 1 ? 's' : ''} cadastrado{(tenants?.length || 0) !== 1 ? 's' : ''}
               </p>

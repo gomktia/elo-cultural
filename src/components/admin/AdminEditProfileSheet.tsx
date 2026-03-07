@@ -247,7 +247,7 @@ export function AdminEditProfileSheet({ profile }: AdminEditProfileSheetProps) {
                   <GestorForm form={gestorData} onChange={updateGestor} />
                 )}
                 {profile.role === 'proponente' && (
-                  <ProponenteForm form={proponenteData} onChange={updateProponente} />
+                  <ProponenteForm form={proponenteData} onChange={updateProponente} cpfCnpj={form.cpf_cnpj} />
                 )}
               </section>
             )}

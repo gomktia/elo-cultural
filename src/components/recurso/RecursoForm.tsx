@@ -23,13 +23,13 @@ export function RecursoForm({ tipo, onTipoChange, fundamentacao, onFundamentacao
             <SelectValue placeholder="Selecione o tipo" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="habilitacao">Recurso de Habilitacao</SelectItem>
-            <SelectItem value="avaliacao">Recurso de Avaliacao</SelectItem>
+            <SelectItem value="habilitacao">Recurso de Habilitação</SelectItem>
+            <SelectItem value="avaliacao">Recurso de Avaliação</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="fundamentacao">Fundamentacao *</Label>
+        <Label htmlFor="fundamentacao">Fundamentação *</Label>
         <Textarea
           id="fundamentacao"
           value={fundamentacao}
@@ -39,7 +39,7 @@ export function RecursoForm({ tipo, onTipoChange, fundamentacao, onFundamentacao
           disabled={disabled}
           required
         />
-        <p className="text-xs text-muted-foreground">Minimo de 50 caracteres. Seja claro e objetivo.</p>
+        <p className="text-xs text-muted-foreground">Mínimo de 50 caracteres. Seja claro e objetivo.</p>
       </div>
     </div>
   )

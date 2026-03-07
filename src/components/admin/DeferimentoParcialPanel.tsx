@@ -70,11 +70,11 @@ export function DeferimentoParcialPanel({
       return
     }
     if (selectedCriterios.size === 0) {
-      toast.error('Selecione ao menos um criterio para revisao')
+      toast.error('Selecione ao menos um critério para revisão')
       return
     }
     if (!justificativa.trim()) {
-      toast.error('Preencha a justificativa para a revisao')
+      toast.error('Preencha a justificativa para a revisão')
       return
     }
 
@@ -91,7 +91,7 @@ export function DeferimentoParcialPanel({
     if (result.error) {
       toast.error(result.error)
     } else {
-      toast.success('Revisao solicitada com sucesso. O parecerista sera notificado.')
+      toast.success('Revisão solicitada com sucesso. O parecerista será notificado.')
       router.refresh()
     }
   }
@@ -100,7 +100,7 @@ export function DeferimentoParcialPanel({
     return (
       <Card className="border border-slate-200 rounded-2xl shadow-sm">
         <CardContent className="p-5 text-center">
-          <p className="text-sm text-slate-500">Nenhuma avaliacao encontrada para este projeto.</p>
+          <p className="text-sm text-slate-500">Nenhuma avaliação encontrada para este projeto.</p>
         </CardContent>
       </Card>
     )
@@ -110,12 +110,12 @@ export function DeferimentoParcialPanel({
     <Card className="border-2 border-dashed border-purple-300 rounded-2xl shadow-sm bg-purple-50/20">
       <CardContent className="p-5 space-y-4">
         <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-          <RotateCcw className="h-4 w-4 text-purple-500" /> Deferimento Parcial - Solicitar Revisao
+          <RotateCcw className="h-4 w-4 text-purple-500" /> Deferimento Parcial - Solicitar Revisão
         </h3>
 
         <p className="text-xs text-slate-500">
-          Selecione o avaliador e os criterios que devem ser reavaliados. O parecerista recebera a solicitacao
-          para revisar apenas os criterios selecionados.
+          Selecione o avaliador e os critérios que devem ser reavaliados. O parecerista receberá a solicitação
+          para revisar apenas os critérios selecionados.
         </p>
 
         {/* Avaliador selection */}
@@ -161,7 +161,7 @@ export function DeferimentoParcialPanel({
                 {isSelected && av.criterios.length > 0 && (
                   <div className="ml-4 space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300">
                     <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">
-                      Selecione os criterios a revisar:
+                      Selecione os critérios a revisar:
                     </p>
                     {av.criterios.map(crit => {
                       const checked = selectedCriterios.has(crit.criterio_id)
@@ -205,10 +205,10 @@ export function DeferimentoParcialPanel({
         {selectedAvaliador && selectedCriterios.size > 0 && (
           <div className="space-y-2 animate-in fade-in duration-300">
             <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">
-              Justificativa para revisao *
+              Justificativa para revisão *
             </Label>
             <Textarea
-              placeholder="Explique por que os criterios selecionados devem ser reavaliados..."
+              placeholder="Explique por que os critérios selecionados devem ser reavaliados..."
               value={justificativa}
               onChange={e => setJustificativa(e.target.value)}
               className="rounded-xl border-slate-200 bg-white text-sm min-h-[80px]"
@@ -220,7 +220,7 @@ export function DeferimentoParcialPanel({
         {selectedAvaliador && selectedCriterios.size > 0 && (
           <div className="flex items-center justify-between pt-2">
             <span className="text-xs text-slate-500">
-              {selectedCriterios.size} criterio(s) selecionado(s) para revisao
+              {selectedCriterios.size} critério(s) selecionado(s) para revisão
             </span>
             <Button
               onClick={handleSolicitar}
@@ -228,7 +228,7 @@ export function DeferimentoParcialPanel({
               className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs gap-1.5 h-10 px-5"
             >
               {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="h-3.5 w-3.5" />}
-              Solicitar Revisao
+              Solicitar Revisão
             </Button>
           </div>
         )}

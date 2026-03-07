@@ -37,26 +37,38 @@ export default function VerificarAssinaturaPage() {
     const { data } = await supabase
       .from('assinaturas_digitais')
       .select(`
-        id, tipo_assinatura, hash_documento, ip_address, user_agent, data_assinatura,
-        profiles:assinante_id (nome),
-        termos_execucao:termo_id (numero_termo, projetos:projeto_id (titulo))
+        id, papel_signatario, hash_documento, ip_address, user_agent, assinado_em,
+        nome_signatario, documento_id
       `)
       .eq('hash_documento', hash.trim())
       .single()
 
     if (data) {
-      const profiles = data.profiles as unknown as { nome: string } | null
-      const termo = data.termos_execucao as unknown as { numero_termo: string; projetos: { titulo: string } } | null
+      // Fetch termo + projeto separately to avoid join issues
+      let termoNumero = '—'
+      let projetoTitulo = '—'
+      if (data.documento_id) {
+        const { data: termo } = await supabase
+          .from('termos_execucao')
+          .select('numero_termo, projetos:projeto_id (titulo)')
+          .eq('id', data.documento_id)
+          .single()
+        if (termo) {
+          termoNumero = termo.numero_termo || '—'
+          const proj = termo.projetos as unknown as { titulo: string } | null
+          projetoTitulo = proj?.titulo || '—'
+        }
+      }
       setResult({
         id: data.id,
-        tipo_assinatura: data.tipo_assinatura,
+        tipo_assinatura: data.papel_signatario,
         hash_documento: data.hash_documento,
         ip_address: data.ip_address || '',
         user_agent: data.user_agent || '',
-        data_assinatura: data.data_assinatura,
-        assinante_nome: profiles?.nome || '—',
-        termo_numero: termo?.numero_termo || '—',
-        projeto_titulo: termo?.projetos?.titulo || '—',
+        data_assinatura: data.assinado_em,
+        assinante_nome: data.nome_signatario || '—',
+        termo_numero: termoNumero,
+        projeto_titulo: projetoTitulo,
       })
     } else {
       setNotFound(true)

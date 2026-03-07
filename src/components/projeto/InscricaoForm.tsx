@@ -25,8 +25,8 @@ interface EquipeMembro {
 
 // ── Orcamento (Fase 1.7) ──
 const CATEGORIAS_ORCAMENTO = [
-  { value: 'producao', label: 'Producao' },
-  { value: 'divulgacao', label: 'Divulgacao' },
+  { value: 'producao', label: 'Produção' },
+  { value: 'divulgacao', label: 'Divulgação' },
   { value: 'acessibilidade', label: 'Acessibilidade' },
   { value: 'outras_fontes', label: 'Outras Fontes' },
 ]
@@ -41,10 +41,10 @@ interface OrcamentoItem {
 
 // ── Cronograma (Fase 1.8) ──
 const FASES_CRONOGRAMA = [
-  { value: 'pre_producao', label: 'Pre-producao' },
-  { value: 'divulgacao', label: 'Divulgacao' },
-  { value: 'producao', label: 'Producao' },
-  { value: 'pos_producao', label: 'Pos-producao' },
+  { value: 'pre_producao', label: 'Pré-produção' },
+  { value: 'divulgacao', label: 'Divulgação' },
+  { value: 'producao', label: 'Produção' },
+  { value: 'pos_producao', label: 'Pós-produção' },
 ]
 
 interface CronogramaItem {
@@ -55,31 +55,31 @@ interface CronogramaItem {
 }
 
 const ACESSIBILIDADE_ARQUITETONICA = [
-  { key: 'rotas_acessiveis', label: 'Rotas acessiveis' },
-  { key: 'piso_tatil', label: 'Piso tatil' },
+  { key: 'rotas_acessiveis', label: 'Rotas acessíveis' },
+  { key: 'piso_tatil', label: 'Piso tátil' },
   { key: 'rampas', label: 'Rampas' },
   { key: 'elevadores', label: 'Elevadores' },
-  { key: 'corrimaos', label: 'Corrimaos' },
+  { key: 'corrimaos', label: 'Corrimãos' },
   { key: 'banheiros_adaptados', label: 'Banheiros adaptados' },
   { key: 'vagas_estacionamento', label: 'Vagas de estacionamento PcD' },
   { key: 'assentos_obesos', label: 'Assentos para obesos' },
-  { key: 'iluminacao', label: 'Iluminacao adequada' },
+  { key: 'iluminacao', label: 'Iluminação adequada' },
 ]
 
 const ACESSIBILIDADE_COMUNICACIONAL = [
-  { key: 'libras', label: 'Interprete de Libras' },
+  { key: 'libras', label: 'Intérprete de Libras' },
   { key: 'braille', label: 'Material em Braille' },
-  { key: 'sinalizacao_tatil', label: 'Sinalizacao tatil' },
-  { key: 'audiodescricao', label: 'Audiodescricao' },
+  { key: 'sinalizacao_tatil', label: 'Sinalização tátil' },
+  { key: 'audiodescricao', label: 'Audiodescrição' },
   { key: 'legendas', label: 'Legendas' },
   { key: 'linguagem_simples', label: 'Linguagem simples' },
   { key: 'textos_leitor_tela', label: 'Textos para leitor de tela' },
 ]
 
 const ACESSIBILIDADE_ATITUDINAL = [
-  { key: 'capacitacao_equipes', label: 'Capacitacao de equipes' },
-  { key: 'contratacao_pcd', label: 'Contratacao de PcD' },
-  { key: 'formacao_sensibilizacao', label: 'Formacao e sensibilizacao' },
+  { key: 'capacitacao_equipes', label: 'Capacitação de equipes' },
+  { key: 'contratacao_pcd', label: 'Contratação de PcD' },
+  { key: 'formacao_sensibilizacao', label: 'Formação e sensibilização' },
 ]
 
 const AREAS_PROJETO = [
@@ -90,29 +90,29 @@ const AREAS_PROJETO = [
   { value: 'audiovisual', label: 'Audiovisual' },
   { value: 'circo', label: 'Circo' },
   { value: 'cultura_popular', label: 'Cultura Popular' },
-  { value: 'danca', label: 'Danca' },
+  { value: 'danca', label: 'Dança' },
   { value: 'economia_criativa', label: 'Economia Criativa' },
   { value: 'livro_literatura', label: 'Livro e Literatura' },
-  { value: 'musica', label: 'Musica' },
-  { value: 'patrimonio', label: 'Patrimonio Cultural' },
+  { value: 'musica', label: 'Música' },
+  { value: 'patrimonio', label: 'Patrimônio Cultural' },
   { value: 'teatro', label: 'Teatro' },
-  { value: 'tradicao_folclore', label: 'Tradicao e Folclore' },
+  { value: 'tradicao_folclore', label: 'Tradição e Folclore' },
   { value: 'outras', label: 'Outras' },
 ]
 
 const PUBLICO_PRIORITARIO = [
-  { value: 'vitimas_violencia', label: 'Vitimas de violencia' },
-  { value: 'pobreza', label: 'Pessoas em situacao de pobreza' },
-  { value: 'situacao_rua', label: 'Pessoas em situacao de rua' },
+  { value: 'vitimas_violencia', label: 'Vítimas de violência' },
+  { value: 'pobreza', label: 'Pessoas em situação de pobreza' },
+  { value: 'situacao_rua', label: 'Pessoas em situação de rua' },
   { value: 'privacao_liberdade', label: 'Pessoas privadas de liberdade' },
-  { value: 'pcd', label: 'Pessoas com deficiencia' },
-  { value: 'sofrimento_fisico_psiquico', label: 'Pessoas em sofrimento fisico/psiquico' },
+  { value: 'pcd', label: 'Pessoas com deficiência' },
+  { value: 'sofrimento_fisico_psiquico', label: 'Pessoas em sofrimento físico/psíquico' },
   { value: 'mulheres', label: 'Mulheres' },
   { value: 'lgbtqiapn', label: 'LGBTQIAPN+' },
   { value: 'povos_tradicionais', label: 'Povos e comunidades tradicionais' },
   { value: 'negros', label: 'Pessoas negras' },
   { value: 'ciganos', label: 'Povos ciganos' },
-  { value: 'indigenas', label: 'Povos indigenas' },
+  { value: 'indigenas', label: 'Povos indígenas' },
   { value: 'aberto_todos', label: 'Aberto a todos' },
   { value: 'outro', label: 'Outro' },
 ]
@@ -192,13 +192,13 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
   const cronogramaWarnings = cronograma.map((item, i) => {
     const warnings: string[] = []
     if (form.periodo_execucao_inicio && item.data_inicio && item.data_inicio < form.periodo_execucao_inicio) {
-      warnings.push('Data inicio anterior ao periodo de execucao')
+      warnings.push('Data início anterior ao período de execução')
     }
     if (form.periodo_execucao_fim && item.data_fim && item.data_fim > form.periodo_execucao_fim) {
-      warnings.push('Data fim posterior ao periodo de execucao')
+      warnings.push('Data fim posterior ao período de execução')
     }
     if (item.data_inicio && item.data_fim && item.data_inicio > item.data_fim) {
-      warnings.push('Data inicio posterior a data fim')
+      warnings.push('Data início posterior à data fim')
     }
     return warnings
   })
@@ -250,7 +250,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
 
   async function handleSubmit() {
     if (!aceitaTermos) {
-      toast.error('Voce deve aceitar os termos para enviar.')
+      toast.error('Você deve aceitar os termos para enviar.')
       return
     }
 
@@ -263,7 +263,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
     setLoading(true)
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { toast.error('Sessao expirada'); setLoading(false); return }
+    if (!user) { toast.error('Sessão expirada'); setLoading(false); return }
 
     const protocolo = `PROT-${Date.now().toString(36).toUpperCase()}`
 
@@ -311,7 +311,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       .single()
 
     if (error) {
-      toast.error('Erro ao enviar inscricao: ' + error.message)
+      toast.error('Erro ao enviar inscrição: ' + error.message)
       setLoading(false)
       return
     }
@@ -388,7 +388,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       },
     }).catch(() => {})
 
-    toast.success(`Inscricao enviada! Protocolo: ${protocolo}`)
+    toast.success(`Inscrição enviada! Protocolo: ${protocolo}`)
 
     fetch('/api/email/notify-inscricao', {
       method: 'POST',
@@ -413,7 +413,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               {s < step ? <Check className="h-4 w-4" /> : s}
             </div>
             <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'} hidden lg:inline`}>
-              {s === 1 ? 'Projeto' : s === 2 ? 'Detalhes' : s === 3 ? 'Equipe' : s === 4 ? 'Documentos' : 'Revisao'}
+              {s === 1 ? 'Projeto' : s === 2 ? 'Detalhes' : s === 3 ? 'Equipe' : s === 4 ? 'Documentos' : 'Revisão'}
             </span>
             {s < 5 && <div className="h-px w-3 sm:w-6 bg-border" />}
           </div>
@@ -428,7 +428,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           </CardHeader>
           <CardContent className="space-y-5">
             <div className="space-y-2">
-              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Titulo do Projeto *</Label>
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Título do Projeto *</Label>
               <Input
                 value={form.titulo}
                 onChange={e => updateForm('titulo', e.target.value)}
@@ -455,10 +455,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               </div>
             )}
 
-            {/* Areas do Projeto */}
+            {/* Áreas do Projeto */}
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
-                <Target className="h-3 w-3" /> Areas do Projeto
+                <Target className="h-3 w-3" /> Áreas do Projeto
               </Label>
               <div className="flex flex-wrap gap-2">
                 {AREAS_PROJETO.map(area => (
@@ -484,29 +484,29 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               <Textarea
                 value={form.resumo}
                 onChange={e => updateForm('resumo', e.target.value)}
-                placeholder="Breve descricao do projeto"
+                placeholder="Breve descrição do projeto"
                 rows={3}
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Minicurriculo do Proponente</Label>
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Minicurrículo do Proponente</Label>
               <Textarea
                 value={form.minicurriculo_proponente}
                 onChange={e => updateForm('minicurriculo_proponente', e.target.value)}
-                placeholder="Descreva sua trajetoria cultural e qualificacoes relevantes"
+                placeholder="Descreva sua trajetória cultural e qualificações relevantes"
                 rows={3}
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Descricao Tecnica</Label>
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Descrição Técnica</Label>
               <Textarea
                 value={form.descricao_tecnica}
                 onChange={e => updateForm('descricao_tecnica', e.target.value)}
-                placeholder="Detalhamento tecnico do projeto"
+                placeholder="Detalhamento técnico do projeto"
                 rows={5}
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
@@ -517,7 +517,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               <Textarea
                 value={form.objetivos}
                 onChange={e => updateForm('objetivos', e.target.value)}
-                placeholder="Objetivos gerais e especificos do projeto"
+                placeholder="Objetivos gerais e específicos do projeto"
                 rows={3}
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
@@ -528,7 +528,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               <Textarea
                 value={form.metas_projeto}
                 onChange={e => updateForm('metas_projeto', e.target.value)}
-                placeholder="Metas quantitativas e qualitativas a serem alcancadas"
+                placeholder="Metas quantitativas e qualitativas a serem alcançadas"
                 rows={3}
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
@@ -537,7 +537,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             {/* Campos extras do edital */}
             {camposExtras.length > 0 && (
               <div className="border-t pt-4 mt-4 space-y-4">
-                <h4 className="text-sm font-semibold text-slate-700">Informacoes Adicionais</h4>
+                <h4 className="text-sm font-semibold text-slate-700">Informações Adicionais</h4>
                 {camposExtras.map(campo => (
                   <div key={campo.id} className="space-y-2">
                     <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">
@@ -620,7 +620,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 disabled={!form.titulo || (categorias.length > 0 && !categoriaId)}
                 className="rounded-xl"
               >
-                Proximo
+                Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -638,19 +638,19 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             {/* Publico */}
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
-                <Users className="h-3 w-3" /> Perfil do Publico
+                <Users className="h-3 w-3" /> Perfil do Público
               </Label>
               <Textarea
                 value={form.perfil_publico}
                 onChange={e => updateForm('perfil_publico', e.target.value)}
-                placeholder="Descreva o publico-alvo do projeto"
+                placeholder="Descreva o público-alvo do projeto"
                 rows={2}
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Publico Prioritario</Label>
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Público Prioritário</Label>
               <div className="flex flex-wrap gap-2">
                 {PUBLICO_PRIORITARIO.map(p => (
                   <button
@@ -673,12 +673,12 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             {/* Local e Periodo */}
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
-                <MapPin className="h-3 w-3" /> Local de Execucao
+                <MapPin className="h-3 w-3" /> Local de Execução
               </Label>
               <Input
                 value={form.local_execucao}
                 onChange={e => updateForm('local_execucao', e.target.value)}
-                placeholder="Endereco ou espaco onde o projeto sera realizado"
+                placeholder="Endereço ou espaço onde o projeto será realizado"
                 className="h-11 rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
@@ -686,7 +686,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
-                  <Calendar className="h-3 w-3" /> Inicio da Execucao
+                  <Calendar className="h-3 w-3" /> Início da Execução
                 </Label>
                 <Input
                   type="date"
@@ -696,7 +696,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Fim da Execucao</Label>
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Fim da Execução</Label>
                 <Input
                   type="date"
                   value={form.periodo_execucao_fim}
@@ -709,7 +709,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             {/* Orcamento */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Orcamento Total (R$)</Label>
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Orçamento Total (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -722,7 +722,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Cronograma de Execucao</Label>
+              <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Cronograma de Execução</Label>
               <Textarea
                 value={form.cronograma_execucao}
                 onChange={e => updateForm('cronograma_execucao', e.target.value)}
@@ -735,12 +735,12 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             {/* Divulgacao */}
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
-                <Megaphone className="h-3 w-3" /> Estrategia de Divulgacao
+                <Megaphone className="h-3 w-3" /> Estratégia de Divulgação
               </Label>
               <Textarea
                 value={form.estrategia_divulgacao}
                 onChange={e => updateForm('estrategia_divulgacao', e.target.value)}
-                placeholder="Como o projeto sera divulgado?"
+                placeholder="Como o projeto será divulgado?"
                 rows={2}
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
@@ -788,7 +788,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                   onChange={e => setVendaProdutos(e.target.checked)}
                   className="h-4 w-4 rounded border-slate-200 text-[#0047AB]"
                 />
-                <span className="text-xs font-medium text-slate-700">Havera venda de produtos ou ingressos?</span>
+                <span className="text-xs font-medium text-slate-700">Haverá venda de produtos ou ingressos?</span>
               </label>
               {vendaProdutos && (
                 <Textarea
@@ -872,11 +872,11 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               </div>
 
               <div className="space-y-2 pt-2">
-                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Como as medidas serao implementadas?</Label>
+                <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Como as medidas serão implementadas?</Label>
                 <Textarea
                   value={acessibilidadeDescricao}
                   onChange={e => setAcessibilidadeDescricao(e.target.value)}
-                  placeholder="Descreva como as medidas de acessibilidade selecionadas serao implementadas no projeto..."
+                  placeholder="Descreva como as medidas de acessibilidade selecionadas serão implementadas no projeto..."
                   rows={3}
                   className="rounded-xl border-slate-200 bg-white text-sm"
                 />
@@ -901,8 +901,8 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="negra">Pessoa Negra</SelectItem>
-                    <SelectItem value="indigena">Pessoa Indigena</SelectItem>
-                    <SelectItem value="pcd">Pessoa com Deficiencia (PcD)</SelectItem>
+                    <SelectItem value="indigena">Pessoa Indígena</SelectItem>
+                    <SelectItem value="pcd">Pessoa com Deficiência (PcD)</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -914,7 +914,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 Voltar
               </Button>
               <Button onClick={() => setStep(3)} className="rounded-xl">
-                Proximo
+                Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -926,7 +926,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       {step === 3 && (
         <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Equipe, Orcamento e Cronograma</CardTitle>
+            <CardTitle className="text-lg font-semibold">Equipe, Orçamento e Cronograma</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
 
@@ -934,7 +934,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Users className="h-3.5 w-3.5 text-blue-500" />
-                <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wide">Ficha Tecnica / Equipe</span>
+                <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wide">Ficha Técnica / Equipe</span>
               </div>
 
               {equipe.length > 0 && (
@@ -960,7 +960,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2">
                 <DollarSign className="h-3.5 w-3.5 text-emerald-500" />
-                <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide">Planilha Orcamentaria</span>
+                <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide">Planilha Orçamentária</span>
               </div>
 
               {orcamento.length > 0 && (
@@ -1020,7 +1020,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2">
                 <Clock className="h-3.5 w-3.5 text-amber-500" />
-                <span className="text-[11px] font-semibold text-amber-600 uppercase tracking-wide">Cronograma de Execucao</span>
+                <span className="text-[11px] font-semibold text-amber-600 uppercase tracking-wide">Cronograma de Execução</span>
               </div>
 
               {cronograma.length > 0 && (
@@ -1052,7 +1052,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               {hasCronogramaWarnings && (
                 <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs">
                   <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span>Algumas atividades possuem datas fora do periodo de execucao ({form.periodo_execucao_inicio || '?'} a {form.periodo_execucao_fim || '?'})</span>
+                  <span>Algumas atividades possuem datas fora do período de execução ({form.periodo_execucao_inicio || '?'} a {form.periodo_execucao_fim || '?'})</span>
                 </div>
               )}
 
@@ -1065,7 +1065,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 Voltar
               </Button>
               <Button onClick={() => setStep(4)} className="rounded-xl">
-                Proximo
+                Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -1082,7 +1082,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           <CardContent className="space-y-6">
             <DocumentUpload tipo="identidade" label="Documento de Identidade" tenantId={tenantId} onUpload={handleDocUpload} />
             <DocumentUpload tipo="proposta" label="Proposta do Projeto" tenantId={tenantId} onUpload={handleDocUpload} />
-            <DocumentUpload tipo="orcamento" label="Planilha Orcamentaria" tenantId={tenantId} onUpload={handleDocUpload} />
+            <DocumentUpload tipo="orcamento" label="Planilha Orçamentária" tenantId={tenantId} onUpload={handleDocUpload} />
             <DocumentUpload tipo="complementar" label="Documentos Complementares" tenantId={tenantId} onUpload={handleDocUpload} />
             <div className="flex justify-between">
               <Button variant="outline" onClick={() => setStep(3)} className="rounded-xl">
@@ -1090,7 +1090,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 Voltar
               </Button>
               <Button onClick={() => setStep(5)} className="rounded-xl">
-                Proximo
+                Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -1102,30 +1102,30 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       {step === 5 && (
         <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Revisao e Envio</CardTitle>
+            <CardTitle className="text-lg font-semibold">Revisão e Envio</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
               <h4 className="font-medium text-sm">Dados do Projeto</h4>
-              <p className="text-sm"><strong>Titulo:</strong> {form.titulo}</p>
+              <p className="text-sm"><strong>Título:</strong> {form.titulo}</p>
               {categoriaId && (
                 <p className="text-sm"><strong>Categoria:</strong> {categorias.find(c => c.id === categoriaId)?.nome}</p>
               )}
               {areasProjetoSelected.length > 0 && (
-                <p className="text-sm"><strong>Areas:</strong> {areasProjetoSelected.map(a => AREAS_PROJETO.find(ap => ap.value === a)?.label).join(', ')}</p>
+                <p className="text-sm"><strong>Áreas:</strong> {areasProjetoSelected.map(a => AREAS_PROJETO.find(ap => ap.value === a)?.label).join(', ')}</p>
               )}
               {form.resumo && <p className="text-sm"><strong>Resumo:</strong> {form.resumo}</p>}
               {form.objetivos && <p className="text-sm"><strong>Objetivos:</strong> {form.objetivos}</p>}
-              {form.orcamento_total && <p className="text-sm"><strong>Orcamento:</strong> R$ {parseFloat(form.orcamento_total).toFixed(2)}</p>}
+              {form.orcamento_total && <p className="text-sm"><strong>Orçamento:</strong> R$ {parseFloat(form.orcamento_total).toFixed(2)}</p>}
               {form.local_execucao && <p className="text-sm"><strong>Local:</strong> {form.local_execucao}</p>}
               {(form.periodo_execucao_inicio || form.periodo_execucao_fim) && (
-                <p className="text-sm"><strong>Periodo:</strong> {form.periodo_execucao_inicio} a {form.periodo_execucao_fim}</p>
+                <p className="text-sm"><strong>Período:</strong> {form.periodo_execucao_inicio} a {form.periodo_execucao_fim}</p>
               )}
               {concorreCota && tipoCota && (
-                <p className="text-sm"><strong>Cota:</strong> {tipoCota === 'negra' ? 'Pessoa Negra' : tipoCota === 'indigena' ? 'Pessoa Indigena' : 'PcD'}</p>
+                <p className="text-sm"><strong>Cota:</strong> {tipoCota === 'negra' ? 'Pessoa Negra' : tipoCota === 'indigena' ? 'Pessoa Indígena' : 'PcD'}</p>
               )}
               {publicoPrioritarioSelected.length > 0 && (
-                <p className="text-sm"><strong>Publico prioritario:</strong> {publicoPrioritarioSelected.map(p => PUBLICO_PRIORITARIO.find(pp => pp.value === p)?.label).join(', ')}</p>
+                <p className="text-sm"><strong>Público prioritário:</strong> {publicoPrioritarioSelected.map(p => PUBLICO_PRIORITARIO.find(pp => pp.value === p)?.label).join(', ')}</p>
               )}
               {Object.keys(acessibilidade).filter(k => acessibilidade[k]).length > 0 && (
                 <p className="text-sm"><strong>Acessibilidade:</strong> {
@@ -1136,7 +1136,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 }</p>
               )}
               {acessibilidadeDescricao && (
-                <p className="text-sm"><strong>Implementacao acessibilidade:</strong> {acessibilidadeDescricao}</p>
+                <p className="text-sm"><strong>Implementação acessibilidade:</strong> {acessibilidadeDescricao}</p>
               )}
               {camposExtras.filter(c => camposValues[c.id]?.trim()).map(c => (
                 <p key={c.id} className="text-sm"><strong>{c.label}:</strong> {camposValues[c.id]}</p>
@@ -1152,7 +1152,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             )}
             {orcamento.length > 0 && (
               <div className="rounded-2xl border border-slate-200 p-4 space-y-2">
-                <h4 className="font-medium text-sm">Orcamento ({orcamento.length} itens)</h4>
+                <h4 className="font-medium text-sm">Orçamento ({orcamento.length} itens)</h4>
                 <p className="text-sm font-medium">Total: R$ {orcamento.reduce((sum, item) => sum + (parseFloat(item.quantidade) || 0) * (parseFloat(item.valor_unitario) || 0), 0).toFixed(2)}</p>
               </div>
             )}
@@ -1182,7 +1182,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="mt-1"
               />
               <label htmlFor="termos" className="text-sm text-muted-foreground leading-snug">
-                Declaro que as informacoes prestadas sao verdadeiras e que estou ciente das regras do edital.
+                Declaro que as informações prestadas são verdadeiras e que estou ciente das regras do edital.
               </label>
             </div>
             <div className="flex justify-between pt-4">
@@ -1192,7 +1192,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               </Button>
               <Button onClick={handleSubmit} disabled={loading || !aceitaTermos} className="rounded-xl">
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Enviar Inscricao
+                Enviar Inscrição
               </Button>
             </div>
           </CardContent>
@@ -1219,9 +1219,9 @@ function EquipeAddForm({ onAdd }: { onAdd: (m: EquipeMembro) => void }) {
     <div className="space-y-3 p-4 rounded-xl border border-blue-100 bg-blue-50/30">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Input placeholder="Nome *" value={nome} onChange={e => setNome(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
-        <Input placeholder="Funcao *" value={funcao} onChange={e => setFuncao(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input placeholder="Função *" value={funcao} onChange={e => setFuncao(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
         <Input placeholder="CPF/CNPJ (opcional)" value={cpf} onChange={e => setCpf(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
-        <Input placeholder="Minicurriculo (opcional)" value={mini} onChange={e => setMini(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
+        <Input placeholder="Minicurrículo (opcional)" value={mini} onChange={e => setMini(e.target.value)} className="h-10 rounded-xl border-slate-200 bg-white text-sm" />
       </div>
       <Button type="button" onClick={add} variant="outline" size="sm" className="rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50">
         <UserPlus className="h-3.5 w-3.5 mr-2" /> Adicionar Membro

@@ -82,7 +82,7 @@ export function buildAvaliacaoPrompt(
   edital: EditalParaAnalise
 ): { system: string; user: string } {
   const user = `## Tarefa
-Avalie o projeto abaixo com base no criterio de avaliacao especificado. Atribua uma nota dentro do intervalo permitido e justifique sua avaliacao.
+Avalie o projeto abaixo com base no critério de avaliação especificado. Atribua uma nota dentro do intervalo permitido e justifique sua avaliacao.
 
 ## Edital
 - Titulo: ${edital.titulo}
@@ -96,7 +96,7 @@ Avalie o projeto abaixo com base no criterio de avaliacao especificado. Atribua 
 - Orcamento Total: R$ ${projeto.orcamento_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 - Cronograma de Execucao: ${projeto.cronograma_execucao}
 
-## Criterio de Avaliacao
+## Critério de Avaliação
 - ID: ${criterio.id}
 - Descricao: ${criterio.descricao}
 - Nota Minima: ${criterio.nota_minima}
@@ -148,7 +148,7 @@ Avalie o projeto abaixo com base em TODOS os criterios de avaliacao listados. Pa
 - Orcamento Total: R$ ${Number(projeto.orcamento_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 - Cronograma de Execucao: ${projeto.cronograma_execucao}
 
-## Criterios de Avaliacao
+## Critérios de Avaliação
 ${criteriosStr}
 
 ## Instrucoes

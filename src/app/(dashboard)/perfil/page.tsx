@@ -437,7 +437,7 @@ export default function PerfilPage() {
           <div className="p-6">
             <form onSubmit={salvarDadosPerfil} className="space-y-6">
               {profile.role === 'proponente' && (
-                <ProponenteForm form={proponenteData} onChange={updateProponente} />
+                <ProponenteForm form={proponenteData} onChange={updateProponente} cpfCnpj={form.cpf_cnpj} />
               )}
               {profile.role === 'avaliador' && (
                 <AvaliadorForm form={avaliadorData} onChange={updateAvaliador} />

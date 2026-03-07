@@ -16,25 +16,25 @@ export default function TenantNaoEncontradoPage() {
           </div>
 
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">
-            Instancia nao encontrada
+            Instância não encontrada
           </h1>
 
           <p className="text-sm text-slate-500 mb-6 leading-relaxed">
-            O dominio <strong className="text-slate-700">{domain}</strong> nao esta
-            vinculado a nenhuma instancia ativa na plataforma.
+            O domínio <strong className="text-slate-700">{domain}</strong> não está
+            vinculado a nenhuma instância ativa na plataforma.
           </p>
 
           <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 text-left space-y-2">
-            <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Possiveis causas:</p>
+            <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Possíveis causas:</p>
             <ul className="text-xs text-slate-500 space-y-1.5 list-disc ml-4">
-              <li>O dominio ainda nao foi configurado pelo administrador</li>
-              <li>A instancia esta temporariamente inativa ou suspensa</li>
-              <li>O endereco digitado pode estar incorreto</li>
+              <li>O domínio ainda não foi configurado pelo administrador</li>
+              <li>A instância está temporariamente inativa ou suspensa</li>
+              <li>O endereço digitado pode estar incorreto</li>
             </ul>
           </div>
 
           <p className="text-[11px] text-slate-400 mt-6">
-            Se voce e administrador, acesse o painel super admin para configurar o dominio desta instancia.
+            Se você é administrador, acesse o painel super admin para configurar o domínio desta instância.
           </p>
         </div>
       </div>

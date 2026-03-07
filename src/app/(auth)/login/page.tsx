@@ -73,7 +73,7 @@ function LoginForm() {
         })
         const data = await res.json()
         if (!res.ok) {
-          setError(data.error || 'CPF/CNPJ nao encontrado no sistema.')
+          setError(data.error || 'CPF/CNPJ não encontrado no sistema.')
           setLoading(false)
           return
         }
