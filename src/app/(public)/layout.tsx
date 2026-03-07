@@ -79,12 +79,6 @@ export default async function PublicLayout({
             >
               Mapa
             </Link>
-            <Link
-              href="/home"
-              className="hidden sm:block text-sm font-medium text-white/80 hover:text-white transition-colors"
-            >
-              Sobre
-            </Link>
 
             {user ? (
               <Link href="/dashboard">
