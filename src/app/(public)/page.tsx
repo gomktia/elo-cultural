@@ -3,10 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { EditalCard } from '@/components/edital/EditalCard'
-import { EditalSlider } from '@/components/home/EditalSlider'
 import type { Edital } from '@/types/database.types'
-import { ArrowRight, FileText, Upload, BarChart3 } from 'lucide-react'
+import { ArrowRight, FileText } from 'lucide-react'
 import SalesPage from './home/page'
+import { HeroRobot } from '@/components/home/HeroRobot'
 
 export default async function RootPage() {
   const cookieStore = await cookies()
@@ -17,7 +17,7 @@ export default async function RootPage() {
     return <SalesPage />
   }
 
-  // Has tenant → show institutional page with editais
+  // Has tenant → show robot hero + editais
   const supabase = await createClient()
 
   let tenantName: string | null = null
@@ -35,69 +35,19 @@ export default async function RootPage() {
   return (
     <div>
       {/* ═══════════════════════════════════════
-          HERO — Edital Slider
+          HERO — Robot + tenant branding
           ═══════════════════════════════════════ */}
-      <section className="bg-gradient-to-b from-[#F0F4F8] to-white">
-        <div className="container mx-auto px-4 py-12 md:py-20">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight font-[Sora,sans-serif]">
-              {tenantName ? `${tenantName} — Editais Culturais` : 'Plataforma de Editais Culturais'}
-            </h1>
-            <p className="mt-3 text-sm md:text-base text-slate-500 max-w-xl mx-auto">
-              Descubra oportunidades, envie seus projetos e acompanhe resultados de forma transparente.
-            </p>
-          </div>
-
-          <EditalSlider editais={(editais as Edital[]) || []} brandName={tenantName || undefined} />
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════
-          COMO FUNCIONA — 3 Steps
-          ═══════════════════════════════════════ */}
-      <section className="bg-white border-y border-slate-100">
-        <div className="container mx-auto px-4 py-16 md:py-20">
-          <h2 className="text-lg md:text-xl font-semibold text-slate-900 text-center mb-10 tracking-tight">
-            Como Funciona
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-3xl mx-auto">
-            {[
-              {
-                icon: FileText,
-                title: 'Consulte Editais',
-                description: 'Navegue pelos editais abertos e encontre oportunidades para seu projeto cultural.',
-                color: 'var(--brand-primary, #0047AB)',
-              },
-              {
-                icon: Upload,
-                title: 'Envie seu Projeto',
-                description: 'Cadastre-se na plataforma e submeta seu projeto cultural de forma simples.',
-                color: '#77a80b',
-              },
-              {
-                icon: BarChart3,
-                title: 'Acompanhe Resultados',
-                description: 'Confira notas, ranking e o resultado final do processo seletivo.',
-                color: '#eeb513',
-              },
-            ].map((step) => {
-              const Icon = step.icon
-              return (
-                <div key={step.title} className="text-center">
-                  <div
-                    className="h-12 w-12 rounded-xl flex items-center justify-center mx-auto mb-4"
-                    style={{ backgroundColor: `${step.color}12` }}
-                  >
-                    <Icon className="h-6 w-6" style={{ color: step.color }} />
-                  </div>
-                  <h3 className="text-base font-semibold text-slate-900 mb-2">{step.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">{step.description}</p>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+      <HeroRobot
+        title={tenantName ? `${tenantName}` : 'Editais Culturais'}
+        subtitle="Editais Culturais"
+        description="Descubra oportunidades, envie seus projetos e acompanhe resultados de forma transparente."
+        ctaLabel="Cadastrar-se"
+        ctaHref="/cadastro"
+        secondaryLabel="Ver Editais"
+        secondaryHref="/editais"
+        showBadges={false}
+        compact
+      />
 
       {/* ═══════════════════════════════════════
           EDITAIS EM DESTAQUE
