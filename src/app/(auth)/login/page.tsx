@@ -108,15 +108,28 @@ function LoginForm() {
       const role = profile?.role || 'proponente'
       const isStaff = ['admin', 'gestor', 'avaliador'].includes(role)
       const isRootDomain = !cookieTenantId
+      const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
       if (isStaff) {
-        if (isRootDomain) {
+        if (isRootDomain && !isDev) {
           await supabase.auth.signOut()
           setError('Acesse pelo domínio do seu município para fazer login.')
           setLoading(false)
           return
         }
-        if (profile?.tenant_id && profile.tenant_id !== cookieTenantId) {
+        // In dev without tenant, auto-assign tenant from profile
+        if (isRootDomain && isDev && profile?.tenant_id) {
+          const { data: userTenant } = await supabase
+            .from('tenants')
+            .select('id, dominio')
+            .eq('id', profile.tenant_id)
+            .single()
+          if (userTenant) {
+            document.cookie = `tenant_id=${userTenant.id}; path=/; SameSite=Lax`
+            document.cookie = `tenant_slug=${userTenant.dominio}; path=/; SameSite=Lax`
+          }
+        }
+        if (profile?.tenant_id && cookieTenantId && profile.tenant_id !== cookieTenantId) {
           const { data: correctTenant } = await supabase
             .from('tenants')
             .select('nome, dominio')
