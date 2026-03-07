@@ -7,6 +7,7 @@ import type { Edital } from '@/types/database.types'
 import { ArrowRight, FileText } from 'lucide-react'
 import SalesPage from './home/page'
 import { HeroRobot } from '@/components/home/HeroRobot'
+import { getTenantFromCookie, getTenantBrand } from '@/lib/tenant'
 
 export default async function RootPage() {
   const cookieStore = await cookies()
@@ -20,9 +21,9 @@ export default async function RootPage() {
   // Has tenant → show robot hero + editais
   const supabase = await createClient()
 
-  let tenantName: string | null = null
-  const { data: t } = await supabase.from('tenants').select('nome').eq('id', tenantId).single()
-  tenantName = t?.nome || null
+  const tenant = await getTenantFromCookie()
+  const { brandColor, brandName } = getTenantBrand(tenant)
+  const tenantName = tenant?.nome || null
 
   const { data: editais } = await supabase
     .from('editais')
@@ -47,6 +48,7 @@ export default async function RootPage() {
         secondaryHref="/editais"
         showBadges={false}
         compact
+        brandColor={brandColor}
       />
 
       {/* ═══════════════════════════════════════
