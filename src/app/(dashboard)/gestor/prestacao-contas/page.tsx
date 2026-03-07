@@ -34,17 +34,18 @@ export default async function GestorPrestacaoContasPage() {
     .order('data_envio', { ascending: false })
 
   // Load comprovantes for all projects
-  const projetoIds = [...new Set((prestacoes || []).map((p: any) => p.projeto_id).filter(Boolean))]
+  const projetoIds = [...new Set((prestacoes || []).map((p) => p.projeto_id).filter(Boolean))]
   const { data: allDocs } = projetoIds.length > 0
     ? await supabase
         .from('projeto_documentos')
         .select('id, nome_arquivo, storage_path, tipo, created_at, projeto_id')
         .in('projeto_id', projetoIds)
         .in('tipo', ['comprovante_despesa', 'relatorio_atividade', 'prestacao_contas'])
-    : { data: [] }
+    : { data: [] as { id: string; nome_arquivo: string; storage_path: string; tipo: string; created_at: string; projeto_id: string }[] }
 
-  const docsByProjeto = new Map<string, typeof allDocs>()
-  for (const doc of (allDocs || []) as any[]) {
+  type DocRow = { id: string; nome_arquivo: string; storage_path: string; tipo: string; created_at: string; projeto_id: string }
+  const docsByProjeto = new Map<string, DocRow[]>()
+  for (const doc of (allDocs || [])) {
     const list = docsByProjeto.get(doc.projeto_id) || []
     list.push(doc)
     docsByProjeto.set(doc.projeto_id, list)
@@ -105,7 +106,9 @@ export default async function GestorPrestacaoContasPage() {
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {prestacoes.map((p: any) => (
+            {prestacoes.map((p) => {
+              const proj = p.projetos as unknown as { titulo?: string; numero_protocolo?: string; orcamento_total?: number; editais?: { titulo?: string; numero_edital?: string } } | null
+              return (
               <PrestacaoAnalise
                 key={p.id}
                 prestacao={{
@@ -123,15 +126,15 @@ export default async function GestorPrestacaoContasPage() {
                 }}
                 projeto={{
                   id: p.projeto_id,
-                  titulo: p.projetos?.titulo || 'Projeto',
-                  numero_protocolo: p.projetos?.numero_protocolo || '',
-                  orcamento_total: Number(p.projetos?.orcamento_total) || 0,
-                  edital_titulo: p.projetos?.editais?.titulo || '',
-                  edital_numero: p.projetos?.editais?.numero_edital || '',
+                  titulo: proj?.titulo || 'Projeto',
+                  numero_protocolo: proj?.numero_protocolo || '',
+                  orcamento_total: Number(proj?.orcamento_total) || 0,
+                  edital_titulo: proj?.editais?.titulo || '',
+                  edital_numero: proj?.editais?.numero_edital || '',
                 }}
-                documentos={(docsByProjeto.get(p.projeto_id) || []) as any}
+                documentos={(docsByProjeto.get(p.projeto_id) || []) as { id: string; nome_arquivo: string; storage_path: string; tipo: string; created_at: string }[]}
               />
-            ))}
+            )})}
           </div>
         )}
       </div>

@@ -33,7 +33,7 @@ export default async function DashboardLayout({
   const role = (profile?.role as UserRole) || 'proponente'
 
   // Staff: use profile.tenant_id. Global proponente: use cookie tenant (domain context).
-  let tenant: any = null
+  let tenant: { nome?: string; tema_cores?: unknown; logo_url?: string | null; logo_rodape_url?: string | null } | null = null
   if (profile?.tenant_id) {
     const { data } = await supabase
       .from('tenants')
@@ -50,8 +50,8 @@ export default async function DashboardLayout({
   const userName = profile?.nome || user.email || 'Usuario'
   const userEmail = user.email || ''
   const tenantName = isSuperAdmin ? 'Elo Cultural' : tenant?.nome
-  const tenantLogoUrl = isSuperAdmin ? null : (tenant as any)?.logo_url || null
-  const tenantRodapeUrl = isSuperAdmin ? null : (tenant as any)?.logo_rodape_url || null
+  const tenantLogoUrl = isSuperAdmin ? null : tenant?.logo_url || null
+  const tenantRodapeUrl = isSuperAdmin ? null : tenant?.logo_rodape_url || null
   const temaCores = isSuperAdmin ? null : (tenant?.tema_cores as TenantTemaCores | null)
   const brandColor = temaCores?.primary || '#0047AB'
   const brandSecondary = temaCores?.secondary || '#E91E63'

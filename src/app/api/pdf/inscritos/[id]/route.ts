@@ -87,6 +87,7 @@ export async function GET(
       geradoEm,
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const buffer = await renderToBuffer(pdfElement as any)
 
     return new NextResponse(new Uint8Array(buffer), {

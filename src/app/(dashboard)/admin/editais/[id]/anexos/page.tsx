@@ -70,7 +70,8 @@ export default async function AnexosPage({
     if (!profile) return
 
     const ext = file.name.split('.').pop()?.toLowerCase() || 'bin'
-    const storagePath = `edital-anexos/${id}/${Date.now()}-${file.name}`
+    const timestamp = Date.now() // eslint-disable-line react-hooks/purity
+    const storagePath = `edital-anexos/${id}/${timestamp}-${file.name}`
 
     const { error: uploadErr } = await supabase2.storage
       .from('documentos')

@@ -28,7 +28,7 @@ export function VLibrasWidget() {
         src="https://vlibras.gov.br/app/vlibras-plugin.js"
         strategy="lazyOnload"
         onLoad={() => {
-          const w = window as any
+          const w = window as unknown as Record<string, Record<string, new (url: string) => unknown>>
           if (w.VLibras) new w.VLibras.Widget('https://vlibras.gov.br/app')
         }}
       />

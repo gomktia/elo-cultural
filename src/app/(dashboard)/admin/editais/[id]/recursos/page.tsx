@@ -46,7 +46,7 @@ export default async function RecursosAdminPage({
     .select('id')
     .eq('edital_id', id)
 
-  const projetoIds = (projetos || []).map((p: any) => p.id)
+  const projetoIds = (projetos || []).map((p: { id: string }) => p.id)
 
   const { data: recursos } = projetoIds.length > 0
     ? await supabase
@@ -57,9 +57,9 @@ export default async function RecursosAdminPage({
     : { data: [] }
 
   const total = (recursos || []).length
-  const pendentes = (recursos || []).filter((r: any) => r.status === 'pendente' || r.status === 'em_analise' || r.status === 'deferido_parcial').length
-  const deferidos = (recursos || []).filter((r: any) => r.status === 'deferido').length
-  const indeferidos = (recursos || []).filter((r: any) => r.status === 'indeferido').length
+  const pendentes = (recursos || []).filter((r: { status: string }) => r.status === 'pendente' || r.status === 'em_analise' || r.status === 'deferido_parcial').length
+  const deferidos = (recursos || []).filter((r: { status: string }) => r.status === 'deferido').length
+  const indeferidos = (recursos || []).filter((r: { status: string }) => r.status === 'indeferido').length
 
   // Determine active recurso period
   const now = new Date()
@@ -194,7 +194,7 @@ export default async function RecursosAdminPage({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {(recursos || []).map((rec: any) => {
+            {(recursos || []).map((rec: { id: string; status: string; tipo: string; created_at: string; numero_protocolo: string; fundamentacao?: string; profiles: { nome: string } | null; projetos: { titulo: string; numero_protocolo: string } | null; [key: string]: unknown }) => {
               const statusBarColor = rec.status === 'deferido' ? 'bg-[var(--brand-success)]' :
                 rec.status === 'indeferido' ? 'bg-[var(--brand-secondary)]' :
                   rec.status === 'em_analise' ? 'bg-blue-500' :
@@ -251,7 +251,7 @@ export default async function RecursosAdminPage({
                       recursoId={rec.id}
                       editalId={id}
                       status={rec.status}
-                      fundamentacao={rec.fundamentacao}
+                      fundamentacao={rec.fundamentacao || ''}
                     />
                   </div>
                 </TableCell>

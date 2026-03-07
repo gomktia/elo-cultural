@@ -97,7 +97,7 @@ export default async function ResultadosPublicosPage({
               <FileText className="h-4 w-4 text-[var(--brand-primary)]" />
               Documentos Publicados ({publicacoes.length})
             </h2>
-            {publicacoes.map((pub: any) => (
+            {publicacoes.map((pub: { id: string; titulo: string; conteudo: string; etapa: string; tipo: string; data_publicacao: string }) => (
               <div key={pub.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1.5">

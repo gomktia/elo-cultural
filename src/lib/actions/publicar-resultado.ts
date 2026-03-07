@@ -100,6 +100,17 @@ export async function publicarResultado(editalId: string, tipo: TipoResultado) {
   return { success: true, titulo }
 }
 
+interface ProjetoPublicacao {
+  titulo: string
+  numero_protocolo: string | null
+  nota_final: number | null
+  status_atual: string
+  classificacao_tipo: string | null
+  categoria: string | null
+  orcamento_total?: number | null
+  profiles: unknown
+}
+
 async function gerarConteudoSelecao(
   supabase: Awaited<ReturnType<typeof createClient>>,
   editalId: string,
@@ -119,11 +130,11 @@ async function gerarConteudoSelecao(
     ? `RESULTADO PRELIMINAR DA SELEÇÃO\n${numeroEdital}\n\nA Comissão de Seleção torna público o resultado preliminar da avaliação técnica dos projetos inscritos.\n`
     : `RESULTADO FINAL DA SELEÇÃO\n${numeroEdital}\n\nA Comissão de Seleção torna público o resultado final da avaliação técnica, após análise dos recursos interpostos.\n`
 
-  const classificados = projetos.filter((p: any) =>
+  const classificados = (projetos as unknown as ProjetoPublicacao[]).filter(p =>
     ['classificado', 'habilitado', 'contemplado'].includes(p.status_atual)
   )
-  const suplentes = projetos.filter((p: any) => p.status_atual === 'suplente')
-  const desclassificados = projetos.filter((p: any) =>
+  const suplentes = (projetos as unknown as ProjetoPublicacao[]).filter(p => p.status_atual === 'suplente')
+  const desclassificados = (projetos as unknown as ProjetoPublicacao[]).filter(p =>
     ['desclassificado', 'eliminado'].includes(p.status_atual)
   )
 
@@ -168,20 +179,21 @@ async function gerarConteudoHabilitacao(
     ? `RESULTADO PRELIMINAR DA HABILITAÇÃO\n${numeroEdital}\n\nA Comissão torna público o resultado preliminar da análise documental dos projetos classificados.\n`
     : `RESULTADO DEFINITIVO DA HABILITAÇÃO\n${numeroEdital}\n\nA Comissão torna público o resultado definitivo da habilitação, após análise dos recursos interpostos.\n`
 
-  const habilitados = projetos.filter((p: any) => ['habilitado', 'contemplado'].includes(p.status_atual))
-  const inabilitados = projetos.filter((p: any) => p.status_atual === 'inabilitado')
+  const projetosTyped = projetos as unknown as ProjetoPublicacao[]
+  const habilitados = projetosTyped.filter(p => ['habilitado', 'contemplado'].includes(p.status_atual))
+  const inabilitados = projetosTyped.filter(p => p.status_atual === 'inabilitado')
 
   let body = header
   body += `\n--- HABILITADOS (${habilitados.length}) ---\n\n`
-  habilitados.forEach((p: any, i: number) => {
-    const nome = (p.profiles as any)?.nome || 'N/A'
+  habilitados.forEach((p, i: number) => {
+    const nome = (p.profiles as unknown as { nome: string } | null)?.nome || 'N/A'
     body += `${i + 1}. ${p.numero_protocolo || '—'} | ${p.titulo} | ${nome} | ${p.categoria || '—'}\n`
   })
 
   if (inabilitados.length > 0) {
     body += `\n--- INABILITADOS (${inabilitados.length}) ---\n\n`
-    inabilitados.forEach((p: any, i: number) => {
-      const nome = (p.profiles as any)?.nome || 'N/A'
+    inabilitados.forEach((p, i: number) => {
+      const nome = (p.profiles as unknown as { nome: string } | null)?.nome || 'N/A'
       body += `${i + 1}. ${p.numero_protocolo || '—'} | ${p.titulo} | ${nome} | ${p.categoria || '—'}\n`
     })
   }
@@ -205,8 +217,9 @@ async function gerarConteudoHomologacao(
     .in('status_atual', ['habilitado', 'contemplado'])
     .order('nota_final', { ascending: false })
 
-  const total = projetos?.length || 0
-  const valorTotal = projetos?.reduce((s: number, p: any) => s + (Number(p.orcamento_total) || 0), 0) || 0
+  const projetosTyped = (projetos || []) as unknown as ProjetoPublicacao[]
+  const total = projetosTyped.length
+  const valorTotal = projetosTyped.reduce((s: number, p) => s + (Number(p.orcamento_total) || 0), 0)
 
   let body = `HOMOLOGAÇÃO FINAL\n${numeroEdital}\n\n`
   body += `O Secretário Municipal de Cultura HOMOLOGA o resultado final do processo seletivo.\n\n`
@@ -214,8 +227,8 @@ async function gerarConteudoHomologacao(
   body += `Valor total: ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n`
   body += `--- PROJETOS CONTEMPLADOS ---\n\n`
 
-  projetos?.forEach((p: any, i: number) => {
-    const nome = (p.profiles as any)?.nome || 'N/A'
+  projetosTyped.forEach((p, i: number) => {
+    const nome = (p.profiles as unknown as { nome: string } | null)?.nome || 'N/A'
     const valor = Number(p.orcamento_total) || 0
     body += `${i + 1}. ${p.numero_protocolo || '—'} | ${p.titulo} | ${nome} | ${p.categoria || '—'} | ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} | Nota: ${p.nota_final ?? '—'}\n`
   })
@@ -225,10 +238,10 @@ async function gerarConteudoHomologacao(
   return body
 }
 
-function formatarListaProjetos(projetos: any[], showNota: boolean) {
+function formatarListaProjetos(projetos: ProjetoPublicacao[], showNota: boolean) {
   let text = ''
-  projetos.forEach((p: any, i: number) => {
-    const nome = (p.profiles as any)?.nome || 'N/A'
+  projetos.forEach((p, i: number) => {
+    const nome = (p.profiles as unknown as { nome: string } | null)?.nome || 'N/A'
     const classificacao = p.classificacao_tipo ? ` [${p.classificacao_tipo.replace(/_/g, ' ').toUpperCase()}]` : ''
     const nota = showNota && p.nota_final != null ? ` | Nota: ${Number(p.nota_final).toFixed(2)}` : ''
     text += `${i + 1}. ${p.numero_protocolo || '—'} | ${p.titulo} | ${nome} | ${p.categoria || '—'}${nota}${classificacao}\n`

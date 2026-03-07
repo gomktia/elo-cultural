@@ -133,7 +133,7 @@ export default function CadastroPage() {
 
     // 2. Update profile with role and role-specific data
     if (signUpData.user) {
-      const extraData: Record<string, any> = {
+      const extraData: Record<string, string | boolean | string[] | Record<string, unknown>> = {
         role: perfilTipo,
         // Avaliador/gestor precisam de aprovação do admin
         ...(perfilTipo !== 'proponente' ? { aprovado: false } : {}),
@@ -219,13 +219,13 @@ export default function CadastroPage() {
     router.push(`/login?msg=${msg}`)
   }
 
-  function updateProponente(field: string, value: any) {
+  function updateProponente(field: string, value: string | boolean | string[] | { nome: string; cpf: string }[]) {
     setProponenteData(prev => ({ ...prev, [field]: value }))
   }
-  function updateAvaliador(field: string, value: any) {
+  function updateAvaliador(field: string, value: string | string[]) {
     setAvaliadorData(prev => ({ ...prev, [field]: value }))
   }
-  function updateGestor(field: string, value: any) {
+  function updateGestor(field: string, value: string | string[]) {
     setGestorData(prev => ({ ...prev, [field]: value }))
   }
 

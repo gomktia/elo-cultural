@@ -30,7 +30,7 @@ export function DownloadRelatorios({
     editalId, editalTitulo, editalNumero, tenantId, tenantNome
 }: DownloadRelatoriosProps) {
     const [loading, setLoading] = useState(false)
-    const [data, setData] = useState<any>(null)
+    const [data, setData] = useState<{ ranking: { posicao: number; titulo: string; protocolo: string; nota: number | null; avaliacoes: number }[] } | null>(null)
     const supabase = createClient()
 
     async function fetchData() {

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import type { Criterio } from '@/types/database.types'
-import { Plus, Trash2, Save, GripVertical } from 'lucide-react'
+import { Plus, Trash2, Save } from 'lucide-react'
 
 interface CriteriosTableProps {
   editalId: string
@@ -214,7 +214,7 @@ export function CriteriosTable({ editalId, tenantId, criterios, onUpdate }: Crit
               <Plus className="h-7 w-7" />
             </div>
             <p className="text-slate-400 font-medium text-sm mb-1">Nenhum critério definido</p>
-            <p className="text-slate-300 text-xs">Clique em "Novo Critério" para começar.</p>
+            <p className="text-slate-300 text-xs">Clique em {'"'}Novo Critério{'"'} para começar.</p>
           </div>
         )}
       </div>

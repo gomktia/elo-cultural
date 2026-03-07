@@ -19,7 +19,7 @@ interface AvaliadorFormProps {
     areas_avaliacao: string[]
     lattes_url: string
   }
-  onChange: (field: string, value: any) => void
+  onChange: (field: string, value: string | string[]) => void
 }
 
 export function AvaliadorForm({ form, onChange }: AvaliadorFormProps) {

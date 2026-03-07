@@ -19,9 +19,8 @@ interface MapaCulturalProps {
 export function MapaCultural({ pontos }: MapaCulturalProps) {
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true) }, [])
 
   if (!mounted) {
     return (
@@ -39,8 +38,9 @@ export function MapaCultural({ pontos }: MapaCulturalProps) {
 
 // Componente separado que importa Leaflet apenas no client
 function MapaLeaflet({ pontos }: MapaCulturalProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [L, setL] = useState<any>(null)
-  const [components, setComponents] = useState<any>(null)
+  const [components, setComponents] = useState<typeof import('react-leaflet') | null>(null)
 
   useEffect(() => {
     // Dynamic import do Leaflet e react-leaflet (SSR-safe)
@@ -49,7 +49,7 @@ function MapaLeaflet({ pontos }: MapaCulturalProps) {
       import('react-leaflet'),
     ]).then(([leaflet, rl]) => {
       // Fix para ícones do Leaflet
-      delete (leaflet.default.Icon.Default.prototype as any)._getIconUrl
+      delete (leaflet.default.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl
       leaflet.default.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',

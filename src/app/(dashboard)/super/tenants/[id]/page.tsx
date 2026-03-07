@@ -73,9 +73,9 @@ export default function EditarTenantPage() {
         status: tenant.status || 'ativo',
         cor_primaria: cores?.primary || '#0047AB',
         cor_secundaria: cores?.secondary || '#7E3AF2',
-        whatsapp_suporte: (tenant as any).whatsapp_suporte || '',
-        email_suporte: (tenant as any).email_suporte || '',
-        site_url: (tenant as any).site_url || '',
+        whatsapp_suporte: (tenant as unknown as Record<string, string>).whatsapp_suporte || '',
+        email_suporte: (tenant as unknown as Record<string, string>).email_suporte || '',
+        site_url: (tenant as unknown as Record<string, string>).site_url || '',
       })
       setLogoUrl(tenant.logo_url || null)
       setLogoRodapeUrl(tenant.logo_rodape_url || null)

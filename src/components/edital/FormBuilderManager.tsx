@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
-import { Plus, X, GripVertical, Loader2, Save, ChevronUp, ChevronDown } from 'lucide-react'
+import { Plus, X, Loader2, Save, ChevronUp, ChevronDown } from 'lucide-react'
 
 interface CampoInscricao {
   id?: string
@@ -59,6 +59,7 @@ export function FormBuilderManager({ editalId, tenantId }: FormBuilderManagerPro
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadCampos()
   }, [editalId])
@@ -100,7 +101,7 @@ export function FormBuilderManager({ editalId, tenantId }: FormBuilderManagerPro
     setCampos(prev => prev.filter((_, i) => i !== idx))
   }
 
-  function updateCampo(idx: number, field: keyof CampoInscricao, value: any) {
+  function updateCampo(idx: number, field: keyof CampoInscricao, value: string | boolean | string[] | number) {
     setCampos(prev => {
       const updated = [...prev]
       updated[idx] = { ...updated[idx], [field]: value }

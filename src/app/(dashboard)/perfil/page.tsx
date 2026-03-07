@@ -20,7 +20,7 @@ import { GestorForm } from '@/components/cadastro/GestorForm'
 export default function PerfilPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [profile, setProfile] = useState<any>(null)
+  const [profile, setProfile] = useState<Record<string, string | boolean | number | string[] | null> | null>(null)
   const [userEmail, setUserEmail] = useState('')
   const [form, setForm] = useState({ nome: '', telefone: '', cpf_cnpj: '' })
   const [proponenteData, setProponenteData] = useState({
@@ -164,13 +164,13 @@ export default function PerfilPage() {
     setSaving(false)
   }
 
-  function updateProponente(field: string, value: any) {
+  function updateProponente(field: string, value: string | boolean | string[] | { nome: string; cpf: string }[]) {
     setProponenteData(prev => ({ ...prev, [field]: value }))
   }
-  function updateAvaliador(field: string, value: any) {
+  function updateAvaliador(field: string, value: string | string[]) {
     setAvaliadorData(prev => ({ ...prev, [field]: value }))
   }
-  function updateGestor(field: string, value: any) {
+  function updateGestor(field: string, value: string | string[]) {
     setGestorData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -181,7 +181,7 @@ export default function PerfilPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { toast.error('Sessão expirada'); setSavingExtra(false); return }
 
-    let extraData: Record<string, any> = {}
+    let extraData: Record<string, unknown> = {}
     if (profile?.role === 'proponente') {
       extraData = {
         areas_atuacao: proponenteData.areas_atuacao.length > 0 ? proponenteData.areas_atuacao : null,
@@ -316,8 +316,8 @@ export default function PerfilPage() {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
       toast.success('Dados exportados com sucesso')
-    } catch (err: any) {
-      toast.error(err.message || 'Erro ao exportar dados')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao exportar dados')
     }
     setExportando(false)
   }
@@ -342,8 +342,8 @@ export default function PerfilPage() {
       setProtocoloExclusao(data.protocolo)
       toast.success('Solicitação registrada com sucesso')
       setMotivoExclusao('')
-    } catch (err: any) {
-      toast.error(err.message || 'Erro ao enviar solicitação')
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao enviar solicitação')
     }
     setEnviandoExclusao(false)
   }
@@ -419,7 +419,7 @@ export default function PerfilPage() {
       </Card>
 
       {/* Dados do Perfil (Role-specific) — shown first for visibility */}
-      {profile?.role && ['proponente', 'avaliador', 'gestor'].includes(profile.role) && (
+      {profile?.role && ['proponente', 'avaliador', 'gestor'].includes(String(profile.role)) && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="bg-[var(--brand-primary)] px-6 py-3.5">
             <div className="flex items-center gap-3">
@@ -591,8 +591,8 @@ export default function PerfilPage() {
                 Consentimento LGPD registrado em{' '}
                 <span className="font-semibold">
                   {profile.data_consentimento
-                    ? new Date(profile.data_consentimento).toLocaleDateString('pt-BR')
-                    : new Date(profile.created_at).toLocaleDateString('pt-BR')}
+                    ? new Date(String(profile.data_consentimento)).toLocaleDateString('pt-BR')
+                    : new Date(String(profile.created_at)).toLocaleDateString('pt-BR')}
                 </span>
               </p>
             </div>

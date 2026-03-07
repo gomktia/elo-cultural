@@ -40,6 +40,7 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
   const [filtroCategoria, setFiltroCategoria] = useState('todas')
   const [filtroGenero, setFiltroGenero] = useState('todos')
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!expanded || projetos.length > 0) return
     loadProjetos()
@@ -101,7 +102,7 @@ export function RelatorioDetalhado({ editalId }: RelatorioDetalhadoProps) {
         proponente_genero: prof?.genero || null,
         num_avaliacoes: avCount[p.id] || 0,
         categoria_nome: p.categoria_id ? catMap.get(p.categoria_id) || null : null,
-        campos_extras: (p as any).campos_extras || null,
+        campos_extras: (p as unknown as { campos_extras: Record<string, string> | null }).campos_extras || null,
       }
     }))
     setLoading(false)

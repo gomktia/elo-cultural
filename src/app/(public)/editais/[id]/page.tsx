@@ -75,12 +75,12 @@ export default async function EditalPublicoPage({
   // Build cronograma from edital dates
   const cronograma = [
     { fase: 'Inscrições', inicio: e.inicio_inscricao, fim: e.fim_inscricao },
-    { fase: 'Recurso Inscrição', inicio: (e as any).inicio_recurso_inscricao, fim: (e as any).fim_recurso_inscricao },
+    { fase: 'Recurso Inscrição', inicio: (e as unknown as Record<string, string | null>).inicio_recurso_inscricao, fim: (e as unknown as Record<string, string | null>).fim_recurso_inscricao },
     { fase: 'Impugnação da Lista de Inscritos', inicio: e.inicio_impugnacao_inscritos, fim: e.fim_impugnacao_inscritos },
-    { fase: 'Avaliação Técnica', inicio: (e as any).inicio_avaliacao, fim: (e as any).fim_avaliacao },
-    { fase: 'Recurso Avaliação', inicio: (e as any).inicio_recurso_selecao, fim: (e as any).fim_recurso_selecao },
-    { fase: 'Habilitação', inicio: (e as any).inicio_habilitacao, fim: (e as any).fim_habilitacao },
-    { fase: 'Recurso Habilitação', inicio: (e as any).inicio_recurso_habilitacao, fim: (e as any).fim_recurso_habilitacao },
+    { fase: 'Avaliação Técnica', inicio: (e as unknown as Record<string, string | null>).inicio_avaliacao, fim: (e as unknown as Record<string, string | null>).fim_avaliacao },
+    { fase: 'Recurso Avaliação', inicio: (e as unknown as Record<string, string | null>).inicio_recurso_selecao, fim: (e as unknown as Record<string, string | null>).fim_recurso_selecao },
+    { fase: 'Habilitação', inicio: (e as unknown as Record<string, string | null>).inicio_habilitacao, fim: (e as unknown as Record<string, string | null>).fim_habilitacao },
+    { fase: 'Recurso Habilitação', inicio: (e as unknown as Record<string, string | null>).inicio_recurso_habilitacao, fim: (e as unknown as Record<string, string | null>).fim_recurso_habilitacao },
   ].filter(item => item.inicio || item.fim)
 
   const cotaLabels: Record<string, string> = {
@@ -150,13 +150,13 @@ export default async function EditalPublicoPage({
               </div>
               <h3 className="text-[11px] md:text-xs font-semibold text-white/50 uppercase tracking-wider mb-2 md:mb-3">Sobre o Processo</h3>
               <p className="text-white font-medium leading-relaxed italic relative z-10 text-xs md:text-sm line-clamp-4">
-                "{e.descricao}"
+                {'"'}{e.descricao}{'"'}
               </p>
             </div>
           )}
         </div>
 
-        {e.fim_inscricao && new Date(e.fim_inscricao).getTime() > Date.now() && (
+        {e.fim_inscricao && new Date(e.fim_inscricao).getTime() > new Date().getTime() && (
           <EditalCountdown deadline={e.fim_inscricao} />
         )}
 
@@ -168,7 +168,7 @@ export default async function EditalPublicoPage({
               Anexos para Download
             </h2>
             <div className="grid gap-2">
-              {anexos.map((anexo: any) => {
+              {anexos.map((anexo: { id: string; nome: string; tipo_anexo: string; descricao?: string | null; nome_arquivo?: string; storage_path: string; tamanho_bytes?: number }) => {
                 const tipoLabels: Record<string, string> = {
                   carta_anuencia: 'Carta de Anuência',
                   planilha_orcamentaria: 'Planilha Orçamentária',
@@ -182,9 +182,10 @@ export default async function EditalPublicoPage({
                   edital_completo: 'Edital Completo',
                   outros: 'Outros',
                 }
-                const sizeStr = anexo.tamanho_bytes < 1024 * 1024
-                  ? `${(anexo.tamanho_bytes / 1024).toFixed(0)} KB`
-                  : `${(anexo.tamanho_bytes / (1024 * 1024)).toFixed(1)} MB`
+                const bytes = anexo.tamanho_bytes || 0
+                const sizeStr = bytes < 1024 * 1024
+                  ? `${(bytes / 1024).toFixed(0)} KB`
+                  : `${(bytes / (1024 * 1024)).toFixed(1)} MB`
                 return (
                   <a
                     key={anexo.id}
@@ -281,7 +282,7 @@ export default async function EditalPublicoPage({
               Categorias e Vagas
             </h2>
             <div className="grid gap-3">
-              {categorias.map((cat: any) => (
+              {categorias.map((cat: { id: string; nome: string; vagas: number }) => (
                 <div key={cat.id} className="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-50">
                   <div className="flex items-center gap-3">
                     <Tag className="h-4 w-4 text-indigo-400" />
@@ -297,7 +298,7 @@ export default async function EditalPublicoPage({
               <div className="mt-4 pt-4 border-t border-slate-100">
                 <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mb-3">Cotas / Ações Afirmativas</p>
                 <div className="flex flex-wrap gap-2">
-                  {cotas.map((cota: any, i: number) => (
+                  {cotas.map((cota: { tipo_cota: string; vagas_fixas: number; percentual: number }, i: number) => (
                     <Badge key={i} className="bg-amber-50 text-amber-700 border-none text-xs font-medium px-2.5 py-1 rounded-lg">
                       {cotaLabels[cota.tipo_cota] || cota.tipo_cota}: {cota.vagas_fixas > 0 ? `${cota.vagas_fixas} vagas` : `${cota.percentual}%`}
                     </Badge>
@@ -317,7 +318,7 @@ export default async function EditalPublicoPage({
             </h2>
             <div className="space-y-2">
               {(['sociedade_civil', 'poder_executivo', 'suplente'] as const).map(tipo => {
-                const membros = comissao.filter((m: any) => m.tipo === tipo)
+                const membros = comissao.filter((m: { tipo: string; nome: string; qualificacao?: string; portaria_numero?: string }) => m.tipo === tipo)
                 if (membros.length === 0) return null
                 const tipoLabel: Record<string, string> = {
                   sociedade_civil: 'Sociedade Civil',
@@ -328,7 +329,7 @@ export default async function EditalPublicoPage({
                   <div key={tipo}>
                     <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mb-2">{tipoLabel[tipo]}</p>
                     <div className="grid gap-2 mb-3">
-                      {membros.map((m: any, i: number) => (
+                      {membros.map((m: { tipo: string; nome: string; qualificacao?: string; portaria_numero?: string }, i: number) => (
                         <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-slate-50">
                           <div className="h-8 w-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500 flex-shrink-0">
                             <Shield className="h-4 w-4" />
@@ -359,7 +360,7 @@ export default async function EditalPublicoPage({
               Erratas ({erratas.length})
             </h2>
             <div className="space-y-3">
-              {erratas.map((errata: any) => (
+              {erratas.map((errata: { id: string; numero_errata: number; descricao: string; campo_alterado?: string; valor_anterior?: string; valor_novo?: string; publicado_em: string }) => (
                 <div key={errata.id} className="bg-white rounded-xl p-4 border border-amber-100 space-y-1.5">
                   <div className="flex items-center gap-2">
                     <Badge className="bg-amber-100 text-amber-700 border-none text-[11px] font-semibold px-2 py-0.5 rounded-md">

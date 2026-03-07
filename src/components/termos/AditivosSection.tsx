@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { criarAditivo, aprovarAditivo, rejeitarAditivo } from '@/lib/actions/aditivo-actions'
 import { toast } from 'sonner'
-import { Plus, FileEdit, CheckCircle2, XCircle, Clock, FileDown } from 'lucide-react'
+import { Plus, FileEdit, CheckCircle2, XCircle, FileDown } from 'lucide-react'
 import type { TermoAditivo, TermoWithProjeto } from '@/types/database.types'
 
 const TIPO_LABELS: Record<string, string> = {
@@ -93,7 +93,7 @@ export function AditivosSection({ termos, aditivos }: AditivosSectionProps) {
                   <SelectContent>
                     {termos.map(t => (
                       <SelectItem key={t.id} value={t.id}>
-                        {t.numero_termo} — {(t.projetos as any)?.titulo || 'Projeto'}
+                        {t.numero_termo} — {(t.projetos as unknown as { titulo: string } | null)?.titulo || 'Projeto'}
                       </SelectItem>
                     ))}
                   </SelectContent>

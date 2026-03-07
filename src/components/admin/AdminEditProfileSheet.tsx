@@ -79,13 +79,13 @@ export function AdminEditProfileSheet({ profile }: AdminEditProfileSheetProps) {
     membros: [] as { nome: string; cpf: string }[],
   })
 
-  function updateAvaliador(field: string, value: any) {
+  function updateAvaliador(field: string, value: string | string[]) {
     setAvaliadorData(prev => ({ ...prev, [field]: value }))
   }
-  function updateGestor(field: string, value: any) {
+  function updateGestor(field: string, value: string | string[]) {
     setGestorData(prev => ({ ...prev, [field]: value }))
   }
-  function updateProponente(field: string, value: any) {
+  function updateProponente(field: string, value: string | boolean | string[] | { nome: string; cpf: string }[]) {
     setProponenteData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -97,7 +97,7 @@ export function AdminEditProfileSheet({ profile }: AdminEditProfileSheetProps) {
 
     setSubmitting(true)
 
-    let roleData: Record<string, any> = {}
+    let roleData: Record<string, string | boolean | string[] | null> = {}
     if (profile.role === 'avaliador') {
       roleData = {
         curriculo_descricao: avaliadorData.curriculo_descricao || null,

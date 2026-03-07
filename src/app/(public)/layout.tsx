@@ -14,12 +14,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     ...(title && { title }),
-    ...((tenant as any)?.logo_url && {
-      icons: {
-        icon: (tenant as any).logo_url,
-        apple: (tenant as any).logo_url,
-      },
-    }),
+    ...(() => {
+      const logoUrl = (tenant as unknown as Record<string, string | null>)?.logo_url
+      return logoUrl ? { icons: { icon: logoUrl, apple: logoUrl } } : {}
+    })(),
   }
 }
 
@@ -33,8 +31,8 @@ export default async function PublicLayout({
 
   const tenant = await getTenantFromCookie()
   const { brandColor, logoSrc, brandName } = getTenantBrand(tenant)
-  const whatsapp = (tenant as any)?.whatsapp_suporte as string | null
-  const emailSuporte = (tenant as any)?.email_suporte as string | null
+  const whatsapp = (tenant as unknown as Record<string, string | null>)?.whatsapp_suporte as string | null
+  const emailSuporte = (tenant as unknown as Record<string, string | null>)?.email_suporte as string | null
   const cssVars = brandCssVars(getTenantBrand(tenant))
 
   return (

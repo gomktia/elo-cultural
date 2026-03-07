@@ -10,7 +10,7 @@ interface GestorFormProps {
     funcao_cargo: string
     matricula: string
   }
-  onChange: (field: string, value: any) => void
+  onChange: (field: string, value: string | string[]) => void
 }
 
 export function GestorForm({ form, onChange }: GestorFormProps) {

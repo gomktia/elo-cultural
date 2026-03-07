@@ -124,7 +124,7 @@ interface ProponenteFormProps {
     portfolio: string
     membros: ColetivoMembro[]
   }
-  onChange: (field: string, value: any) => void
+  onChange: (field: string, value: string | boolean | string[] | ColetivoMembro[]) => void
 }
 
 function ColetivoSection({ form, onChange }: Pick<ProponenteFormProps, 'form' | 'onChange'>) {

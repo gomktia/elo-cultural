@@ -52,7 +52,7 @@ export default async function PrestacaoContasPage({
     .eq('projeto_id', id)
     .in('tipo', ['comprovante_despesa', 'relatorio_atividade', 'prestacao_contas'])
 
-  const edital = (projeto as any).editais as { titulo: string; numero_edital: string } | null
+  const edital = (projeto as unknown as { editais: { titulo: string; numero_edital: string } | null }).editais
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">

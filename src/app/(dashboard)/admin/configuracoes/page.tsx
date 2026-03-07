@@ -13,12 +13,13 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { Loader2, Upload, Image, X } from 'lucide-react'
+import type { Tenant } from '@/types/database.types'
 
 export default function ConfiguracoesPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [tenant, setTenant] = useState<any>(null)
+  const [tenant, setTenant] = useState<Tenant | null>(null)
   const [form, setForm] = useState({
     nome: '',
     cnpj: '',
@@ -76,7 +77,7 @@ export default function ConfiguracoesPage() {
       setLoading(false)
     }
     load()
-  }, [])
+  }, [router])
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault()

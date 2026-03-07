@@ -25,7 +25,7 @@ export default async function MapaPage() {
   const municipioMap = new Map<string, { municipio: string; estado: string; lat: number; lng: number; total_projetos: number; valor_total: number }>()
 
   for (const projeto of (projetos || [])) {
-    const profile = (projeto as any).profiles as { municipio: string | null; estado: string | null } | null
+    const profile = (projeto as unknown as { profiles: { municipio: string | null; estado: string | null } | null }).profiles
     if (!profile?.municipio || !profile?.estado) continue
 
     const coords = getCoordenadas(profile.municipio, profile.estado)

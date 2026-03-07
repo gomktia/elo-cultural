@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -34,7 +33,6 @@ interface PagamentosSectionProps {
 }
 
 export function PagamentosSection({ editalId, termos }: PagamentosSectionProps) {
-  const router = useRouter()
   const [pagamentos, setPagamentos] = useState<Pagamento[]>([])
   const [loaded, setLoaded] = useState(false)
   const [showForm, setShowForm] = useState(false)
@@ -114,7 +112,7 @@ export function PagamentosSection({ editalId, termos }: PagamentosSectionProps) 
                   <option value="">Selecione...</option>
                   {termosAssinados.map(t => (
                     <option key={t.id} value={t.id}>
-                      {t.numero_termo} — {(t.projetos as any)?.titulo || 'Projeto'}
+                      {t.numero_termo} — {(t.projetos as unknown as { titulo: string } | null)?.titulo || 'Projeto'}
                     </option>
                   ))}
                 </select>
@@ -153,7 +151,7 @@ export function PagamentosSection({ editalId, termos }: PagamentosSectionProps) 
           <div className="space-y-2">
             {pagamentos.map(p => {
               const badge = STATUS_BADGES[p.status] || STATUS_BADGES.pendente
-              const termoInfo = p.termos_execucao as any
+              const termoInfo = p.termos_execucao as { numero_termo: string; projetos?: { titulo: string } | null } | null | undefined
               return (
                 <div key={p.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 group">
                   <div className="flex-1 min-w-0">

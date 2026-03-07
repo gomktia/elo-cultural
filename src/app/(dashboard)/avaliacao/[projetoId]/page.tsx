@@ -30,8 +30,15 @@ export default function AvaliacaoPage() {
   const projetoId = params.projetoId as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [projeto, setProjeto] = useState<any>(null)
-  const [avaliacao, setAvaliacao] = useState<any>(null)
+  const [projeto, setProjeto] = useState<{
+    id: string; titulo: string; resumo: string | null; descricao_tecnica: string | null;
+    orcamento_total: number | null; cronograma_execucao: string | null;
+    numero_protocolo: string; edital_id: string;
+  } | null>(null)
+  const [avaliacao, setAvaliacao] = useState<{
+    id: string; status: string; justificativa: string | null;
+    checklist_documentos: Record<string, unknown> | null;
+  } | null>(null)
   const [criterios, setCriterios] = useState<CriterioAvaliacao[]>([])
   const [justificativa, setJustificativa] = useState('')
   const [documentos, setDocumentos] = useState<{ nome_arquivo: string; storage_path: string; tipo: string }[]>([])
@@ -75,7 +82,7 @@ export default function AvaliacaoPage() {
       if (av?.justificativa) setJustificativa(av.justificativa)
       if (av?.checklist_documentos) {
         const cl: Record<string, boolean> = {}
-        for (const [key, val] of Object.entries(av.checklist_documentos as Record<string, any>)) {
+        for (const [key, val] of Object.entries(av.checklist_documentos as Record<string, { verificado?: boolean }>)) {
           cl[key] = val?.verificado ?? false
         }
         setChecklistDocs(cl)
@@ -98,8 +105,8 @@ export default function AvaliacaoPage() {
           : { data: [] }
 
         setCriterios(
-          (crits || []).map((c: any) => {
-            const existing = existingNotas?.find((n: any) => n.criterio_id === c.id)
+          (crits || []).map((c: { id: string; descricao: string; nota_minima: number; nota_maxima: number; peso: number }) => {
+            const existing = existingNotas?.find((n: { criterio_id: string; nota?: number; comentario?: string }) => n.criterio_id === c.id)
             return {
               criterio_id: c.id,
               descricao: c.descricao,
@@ -122,7 +129,7 @@ export default function AvaliacaoPage() {
           .limit(1)
           .single()
 
-        let aiNotas: Record<string, { nota: number; justificativa: string; confianca: number }> = {}
+        const aiNotas: Record<string, { nota: number; justificativa: string; confianca: number }> = {}
         if (latestExec) {
           const { data: resultado } = await supabase
             .from('triagem_ia_resultados')

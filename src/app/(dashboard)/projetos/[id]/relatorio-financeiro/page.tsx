@@ -116,7 +116,8 @@ export default function RelatorioFinanceiroPage() {
     setLoading(false)
   }, [projetoId])
 
-  useEffect(() => { loadData() }, [loadData])
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { void loadData() }, [loadData])
 
   async function handleAddPagamento() {
     if (!relatorio || !novoPagData || !novoPagDesc.trim() || !novoPagValor) return

@@ -48,7 +48,7 @@ function Counter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: 
 
 /* ─── Profile feature card ─── */
 function FeatureCard({ icon: Icon, title, desc, color, delay }: {
-  icon: any; title: string; desc: string; color: string; delay: number
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; title: string; desc: string; color: string; delay: number
 }) {
   const { ref, inView } = useInView()
   return (
@@ -75,7 +75,7 @@ function FeatureCard({ icon: Icon, title, desc, color, delay }: {
 
 /* ─── Differentiator row ─── */
 function DiffRow({ icon: Icon, title, desc, us, them, color, delay }: {
-  icon: any; title: string; desc: string; us: string; them: string; color: string; delay: number
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; title: string; desc: string; us: string; them: string; color: string; delay: number
 }) {
   const { ref, inView } = useInView()
   return (
@@ -104,6 +104,41 @@ function DiffRow({ icon: Icon, title, desc, us, them, color, delay }: {
       <div className="flex items-center gap-2 md:justify-center">
         <span className="text-xs text-slate-400">{them}</span>
       </div>
+    </div>
+  )
+}
+
+/* ─── Journey step card (extracted to avoid hooks-in-callback) ─── */
+function JourneyStep({ step, title, desc, color, icon: Icon, index }: {
+  step: string; title: string; desc: string; color: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; index: number
+}) {
+  const { ref, inView } = useInView()
+  return (
+    <div
+      ref={ref}
+      className="text-center"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(20px)',
+        transition: `all 0.5s ease ${index * 80}ms`,
+      }}
+    >
+      <div className="relative mx-auto mb-3">
+        <div
+          className="h-14 w-14 rounded-2xl flex items-center justify-center mx-auto transition-transform hover:scale-110"
+          style={{ backgroundColor: `${color}10` }}
+        >
+          <Icon className="h-6 w-6" style={{ color }} />
+        </div>
+        <span
+          className="absolute -top-2 -right-2 h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+          style={{ backgroundColor: color }}
+        >
+          {step}
+        </span>
+      </div>
+      <h4 className="text-sm font-semibold text-slate-900 mb-0.5">{title}</h4>
+      <p className="text-xs text-slate-500">{desc}</p>
     </div>
   )
 }
@@ -517,39 +552,9 @@ export default function SalesPage() {
               { step: '06', title: 'Habilitacao', desc: 'Conferencia documental', color: '#e32a74', icon: FileCheck },
               { step: '07', title: 'Execucao', desc: 'Termos, pagamentos, aditivos', color: '#77a80b', icon: Wallet },
               { step: '08', title: 'Prestacao', desc: 'Relatorio final e encerramento', color: '#77a80b', icon: Receipt },
-            ].map((s, i) => {
-              const Icon = s.icon
-              const { ref, inView } = useInView()
-              return (
-                <div
-                  key={s.step}
-                  ref={ref}
-                  className="text-center"
-                  style={{
-                    opacity: inView ? 1 : 0,
-                    transform: inView ? 'translateY(0)' : 'translateY(20px)',
-                    transition: `all 0.5s ease ${i * 80}ms`,
-                  }}
-                >
-                  <div className="relative mx-auto mb-3">
-                    <div
-                      className="h-14 w-14 rounded-2xl flex items-center justify-center mx-auto transition-transform hover:scale-110"
-                      style={{ backgroundColor: `${s.color}10` }}
-                    >
-                      <Icon className="h-6 w-6" style={{ color: s.color }} />
-                    </div>
-                    <span
-                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-                      style={{ backgroundColor: s.color }}
-                    >
-                      {s.step}
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-semibold text-slate-900 mb-0.5">{s.title}</h4>
-                  <p className="text-xs text-slate-500">{s.desc}</p>
-                </div>
-              )
-            })}
+            ].map((s, i) => (
+              <JourneyStep key={s.step} {...s} index={i} />
+            ))}
           </div>
         </div>
       </section>

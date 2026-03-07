@@ -17,8 +17,13 @@ export default function AssinarTermoPage() {
 
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [termo, setTermo] = useState<any>(null)
-  const [projeto, setProjeto] = useState<any>(null)
+  const [termo, setTermo] = useState<{
+    id: string; numero_termo: string; status: string; valor_total: number | null;
+    vigencia_inicio: string | null; vigencia_fim: string | null; edital_referencia: string | null;
+  } | null>(null)
+  const [projeto, setProjeto] = useState<{
+    titulo: string; numero_protocolo: string;
+  } | null>(null)
   const [aceito, setAceito] = useState(false)
 
   useEffect(() => {

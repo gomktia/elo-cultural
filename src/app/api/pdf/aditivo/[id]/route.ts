@@ -98,6 +98,7 @@ export async function GET(
       representanteCargo: gestorProfile?.funcao_cargo || null,
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const buffer = await renderToBuffer(pdfElement as any)
 
     const filename = `aditivo-${aditivo.numero_aditivo}-termo-${termo.numero_termo}.pdf`

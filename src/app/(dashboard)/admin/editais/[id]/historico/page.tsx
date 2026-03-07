@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, History, ChevronDown, ChevronRight } from 'lucide-react'
+import type { LogAuditoria, EditalErrata, Profile } from '@/types/database.types'
 
 export default async function HistoricoPage({
   params,
@@ -37,15 +38,18 @@ export default async function HistoricoPage({
     .eq('edital_id', id)
     .order('numero_errata', { ascending: false })
 
-  const logsList = (logs || []) as any[]
-  const erratasList = (erratas || []) as any[]
+  type LogEntry = LogAuditoria & { profiles: Pick<Profile, 'nome'> | null }
+  type ErrataEntry = EditalErrata
+
+  const logsList = (logs || []) as unknown as LogEntry[]
+  const erratasList = (erratas || []) as unknown as ErrataEntry[]
 
   // Merge into timeline
-  const timeline: Array<{
-    type: 'audit' | 'errata'
-    date: string
-    data: any
-  }> = [
+  type TimelineItem =
+    | { type: 'audit'; date: string; data: LogEntry }
+    | { type: 'errata'; date: string; data: ErrataEntry }
+
+  const timeline: TimelineItem[] = [
     ...logsList.map(l => ({ type: 'audit' as const, date: l.created_at, data: l })),
     ...erratasList.map(e => ({ type: 'errata' as const, date: e.created_at, data: e })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

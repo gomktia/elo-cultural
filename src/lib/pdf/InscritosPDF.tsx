@@ -170,7 +170,7 @@ function TableDataRow({ item, index }: { item: InscritoPDFItem; index: number })
   const rowStyle = index % 2 === 1 ? styles.tableRowAlt : styles.tableRow
   return React.createElement(
     View,
-    { style: rowStyle } as any,
+    { style: rowStyle } as Record<string, unknown>,
     React.createElement(
       View,
       { style: styles.colNum },
@@ -207,11 +207,11 @@ export function InscritosPDF(props: InscritosPDFProps) {
     null,
     React.createElement(
       Page,
-      { size: 'A4', style: styles.page } as any,
+      { size: 'A4', style: styles.page } as Record<string, unknown>,
       // Header
       React.createElement(
         View,
-        { style: styles.header } as any,
+        { style: styles.header } as Record<string, unknown>,
         React.createElement(Text, { style: styles.headerTenant }, tenantNome),
         React.createElement(Text, { style: styles.headerTitle }, 'LISTA DE INSCRITOS'),
         React.createElement(
@@ -242,7 +242,7 @@ export function InscritosPDF(props: InscritosPDFProps) {
       // Footer
       React.createElement(
         View,
-        { style: styles.footer, fixed: true } as any,
+        { style: styles.footer, fixed: true } as Record<string, unknown>,
         React.createElement(
           Text,
           null,
@@ -252,7 +252,7 @@ export function InscritosPDF(props: InscritosPDFProps) {
           Text,
           { render: ({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) =>
             `Gerado em ${geradoEm} | Pagina ${pageNumber} de ${totalPages}`
-          } as any,
+          } as Record<string, unknown>,
           null
         )
       )

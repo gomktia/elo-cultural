@@ -12,7 +12,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { Projeto, ProjetoDocumento } from '@/types/database.types'
 import { FileIcon, ExternalLink, CheckCircle, XCircle, Loader2, FileText, FileImage, File, AlertTriangle, Clock, Send } from 'lucide-react'
@@ -57,6 +56,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
     const [enviandoDiligencia, setEnviandoDiligencia] = useState(false)
     const supabase = createClient()
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (projeto && open) {
             fetchData()
@@ -94,7 +94,7 @@ export function HabilitacaoSheet({ projeto, open, onOpenChange, onSuccess }: Hab
             .eq('projeto_id', projeto.id)
 
         const confMap: Record<string, DocConferencia> = {}
-        ;(conf || []).forEach((c: any) => { confMap[c.doc_exigido_id] = c })
+        ;((conf || []) as unknown as DocConferencia[]).forEach((c) => { confMap[c.doc_exigido_id] = c })
         setConferencias(confMap)
 
         setLoading(false)

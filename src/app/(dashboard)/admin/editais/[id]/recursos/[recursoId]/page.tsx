@@ -10,6 +10,31 @@ import { buscarAssinaturaDecisao } from '@/lib/actions/assinar-decisao'
 import { ArrowLeft, FileText, User, Calendar, Scale, AlertTriangle, Download } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import type { Recurso, Profile, Projeto, Avaliacao, Criterio, RecursoAnexo } from '@/types/database.types'
+
+interface RecursoJoined extends Recurso {
+  profiles: Pick<Profile, 'nome' | 'cpf_cnpj'> | null
+  projetos: Pick<Projeto, 'id' | 'titulo' | 'numero_protocolo' | 'resumo' | 'orcamento_total' | 'status_habilitacao' | 'nota_final' | 'categoria_id' | 'edital_id'> | null
+}
+
+interface AvaliacaoJoined extends Avaliacao {
+  profiles: Pick<Profile, 'nome'> | null
+}
+
+interface CriterioNotaJoined {
+  avaliacao_id: string
+  criterio_id: string
+  nota: number
+  comentario: string | null
+  criterios: Pick<Criterio, 'id' | 'descricao' | 'peso' | 'nota_minima' | 'nota_maxima'> | null
+}
+
+interface RevisaoRow {
+  id: string
+  avaliador_id: string
+  status: string
+  criterios_revisar: string[]
+}
 
 export default async function RecursoDetalhePage({
   params,
@@ -35,6 +60,10 @@ export default async function RecursoDetalhePage({
 
   if (!recurso) notFound()
 
+  const typedRecurso = recurso as unknown as RecursoJoined
+  const recursoProfile = typedRecurso.profiles as unknown as Pick<Profile, 'nome' | 'cpf_cnpj'> | null
+  const recursoProjeto = typedRecurso.projetos as unknown as NonNullable<RecursoJoined['projetos']> | null
+
   // Get avaliacoes for the project (for side-by-side view)
   const { data: avaliacoes } = await supabase
     .from('avaliacoes')
@@ -43,7 +72,7 @@ export default async function RecursoDetalhePage({
     .order('created_at')
 
   // Get criterio scores for each avaliacao
-  const avaliacaoIds = (avaliacoes || []).map((a: any) => a.id)
+  const avaliacaoIds = (avaliacoes || []).map((a) => a.id)
   const { data: criterioNotas } = avaliacaoIds.length > 0
     ? await supabase
       .from('avaliacao_criterios')
@@ -81,32 +110,35 @@ export default async function RecursoDetalhePage({
     .eq('recurso_id', recursoId)
 
   // Fetch avaliador names for revisoes
-  const revisaoAvaliadorIds = [...new Set((revisoes || []).map((r: any) => r.avaliador_id))]
+  const revisaoAvaliadorIds = [...new Set((revisoes || []).map((r: RevisaoRow) => r.avaliador_id))]
   const { data: revisaoProfiles } = revisaoAvaliadorIds.length > 0
     ? await supabase.from('profiles').select('id, nome').in('id', revisaoAvaliadorIds)
     : { data: [] }
-  const revisaoProfileMap = new Map((revisaoProfiles || []).map((p: any) => [p.id, p.nome]))
+  const revisaoProfileMap = new Map((revisaoProfiles || []).map((p: Pick<Profile, 'id' | 'nome'>) => [p.id, p.nome]))
 
   // Build avaliacoes data for partial deferment panel
-  const avaliacoesForPanel = (avaliacoes || []).map((av: any, idx: number) => {
-    const notasAv = (criterioNotas || []).filter((cn: any) => cn.avaliacao_id === av.id)
+  const typedAvaliacoes = (avaliacoes || []) as unknown as AvaliacaoJoined[]
+  const typedCriterioNotas = (criterioNotas || []) as unknown as CriterioNotaJoined[]
+
+  const avaliacoesForPanel = typedAvaliacoes.map((av, idx: number) => {
+    const notasAv = typedCriterioNotas.filter((cn) => cn.avaliacao_id === av.id)
     return {
       id: av.id,
       avaliador_id: av.avaliador_id,
-      avaliador_nome: (av.profiles as any)?.nome || `Parecerista ${idx + 1}`,
+      avaliador_nome: (av.profiles as unknown as Pick<Profile, 'nome'> | null)?.nome || `Parecerista ${idx + 1}`,
       pontuacao_total: av.pontuacao_total,
-      criterios: notasAv.map((nc: any) => ({
-        criterio_id: nc.criterio_id || (nc.criterios as any)?.id,
-        descricao: (nc.criterios as any)?.descricao || '',
+      criterios: notasAv.map((nc) => ({
+        criterio_id: nc.criterio_id,
+        descricao: nc.criterios?.descricao || '',
         nota: Number(nc.nota),
-        nota_maxima: Number((nc.criterios as any)?.nota_maxima || 10),
-        peso: Number((nc.criterios as any)?.peso || 1),
+        nota_maxima: Number(nc.criterios?.nota_maxima || 10),
+        peso: Number(nc.criterios?.peso || 1),
       })),
     }
   })
 
   // Build revisoes data for finalization panel
-  const revisoesPendentes = (revisoes || []).map((rev: any) => ({
+  const revisoesPendentes = ((revisoes || []) as unknown as RevisaoRow[]).map((rev) => ({
     id: rev.id,
     avaliador_id: rev.avaliador_id,
     avaliador_nome: revisaoProfileMap.get(rev.avaliador_id) || 'Parecerista',
@@ -169,21 +201,21 @@ export default async function RecursoDetalhePage({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Proponente</p>
-                  <p className="text-sm font-medium text-slate-900">{(recurso.profiles as any)?.nome}</p>
-                  {(recurso.profiles as any)?.cpf_cnpj && (
-                    <p className="text-xs text-slate-500">{(recurso.profiles as any).cpf_cnpj}</p>
+                  <p className="text-sm font-medium text-slate-900">{recursoProfile?.nome}</p>
+                  {recursoProfile?.cpf_cnpj && (
+                    <p className="text-xs text-slate-500">{recursoProfile.cpf_cnpj}</p>
                   )}
                 </div>
                 <div>
                   <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Protocolo Projeto</p>
-                  <p className="text-sm font-medium text-slate-900">{(recurso.projetos as any)?.numero_protocolo}</p>
+                  <p className="text-sm font-medium text-slate-900">{recursoProjeto?.numero_protocolo}</p>
                 </div>
               </div>
               <div>
                 <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Projeto</p>
-                <p className="text-sm font-semibold text-slate-900">{(recurso.projetos as any)?.titulo}</p>
-                {(recurso.projetos as any)?.resumo && (
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-3">{(recurso.projetos as any).resumo}</p>
+                <p className="text-sm font-semibold text-slate-900">{recursoProjeto?.titulo}</p>
+                {recursoProjeto?.resumo && (
+                  <p className="text-xs text-slate-500 mt-1 line-clamp-3">{recursoProjeto.resumo}</p>
                 )}
               </div>
               <div className="grid grid-cols-3 gap-3">
@@ -194,13 +226,13 @@ export default async function RecursoDetalhePage({
                 <div>
                   <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Habilitacao</p>
                   <Badge variant="outline" className="text-[11px] mt-0.5">
-                    {(recurso.projetos as any)?.status_habilitacao}
+                    {recursoProjeto?.status_habilitacao}
                   </Badge>
                 </div>
                 <div>
                   <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Nota Final</p>
                   <p className="text-sm font-semibold text-slate-900">
-                    {(recurso.projetos as any)?.nota_final != null ? (recurso.projetos as any).nota_final.toFixed(1) : '—'}
+                    {recursoProjeto?.nota_final != null ? recursoProjeto.nota_final.toFixed(1) : '—'}
                   </p>
                 </div>
               </div>
@@ -231,7 +263,7 @@ export default async function RecursoDetalhePage({
                   <FileText className="h-4 w-4 text-slate-400" /> Anexos ({anexos.length})
                 </h3>
                 <div className="space-y-2">
-                  {anexos.map((a: any) => (
+                  {anexos.map((a: { id: string; storage_path: string; nome_arquivo: string; created_at: string }) => (
                     <div key={a.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-100">
                       <span className="text-xs font-medium text-slate-700 truncate">{a.nome_arquivo}</span>
                     </div>
@@ -318,8 +350,8 @@ export default async function RecursoDetalhePage({
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {avaliacoes.map((av: any, idx: number) => {
-                    const notasAv = (criterioNotas || []).filter((cn: any) => cn.avaliacao_id === av.id)
+                  {typedAvaliacoes.map((av, idx: number) => {
+                    const notasAv = typedCriterioNotas.filter((cn) => cn.avaliacao_id === av.id)
                     return (
                       <div key={av.id} className="bg-slate-50 rounded-xl border border-slate-100 p-4 space-y-3">
                         <div className="flex items-center justify-between">
@@ -328,7 +360,7 @@ export default async function RecursoDetalhePage({
                               P{idx + 1}
                             </div>
                             <span className="text-sm font-semibold text-slate-900">
-                              {(av.profiles as any)?.nome || `Parecerista ${idx + 1}`}
+                              {(av.profiles as unknown as Pick<Profile, 'nome'> | null)?.nome || `Parecerista ${idx + 1}`}
                             </span>
                           </div>
                           <div className="text-right">
@@ -342,22 +374,25 @@ export default async function RecursoDetalhePage({
                         {/* Notas por criterio */}
                         {notasAv.length > 0 && (
                           <div className="space-y-1.5">
-                            {notasAv.map((nc: any, i: number) => (
+                            {notasAv.map((nc: CriterioNotaJoined, i: number) => {
+                              const crit = nc.criterios as unknown as Pick<Criterio, 'descricao' | 'nota_maxima' | 'peso'> | null
+                              return (
                               <div key={i} className="flex items-center justify-between text-xs">
                                 <span className="text-slate-600 truncate max-w-[60%]">
-                                  {(nc.criterios as any)?.descricao}
+                                  {crit?.descricao}
                                 </span>
                                 <div className="flex items-center gap-2">
                                   <span className="font-semibold text-slate-900">{nc.nota}</span>
                                   <span className="text-slate-400">
-                                    / {(nc.criterios as any)?.nota_maxima}
+                                    / {crit?.nota_maxima}
                                   </span>
-                                  {(nc.criterios as any)?.peso > 1 && (
-                                    <span className="text-[10px] text-purple-500 font-medium">x{(nc.criterios as any).peso}</span>
+                                  {(crit?.peso ?? 0) > 1 && (
+                                    <span className="text-[10px] text-purple-500 font-medium">x{crit?.peso}</span>
                                   )}
                                 </div>
                               </div>
-                            ))}
+                              )
+                            })}
                           </div>
                         )}
 
@@ -374,7 +409,7 @@ export default async function RecursoDetalhePage({
 
                   {/* Discrepancia alert */}
                   {avaliacoes.length >= 2 && (() => {
-                    const notas = avaliacoes.filter((a: any) => a.pontuacao_total != null).map((a: any) => a.pontuacao_total)
+                    const notas = avaliacoes.filter((a) => a.pontuacao_total != null).map((a) => a.pontuacao_total as number)
                     if (notas.length >= 2) {
                       const max = Math.max(...notas)
                       const min = Math.min(...notas)

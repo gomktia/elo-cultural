@@ -94,8 +94,8 @@ export default async function GestorRankingsPage() {
               {edital.categorias.length > 0 && (
                 <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2 flex-wrap">
                   <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Categorias:</span>
-                  {edital.categorias.map((cat: any) => {
-                    const count = edital.projetos.filter((p: any) => p.categoria_id === cat.id).length
+                  {edital.categorias.map((cat: { id: string; nome: string; vagas: number }) => {
+                    const count = edital.projetos.filter((p: { id: string; categoria_id: string | null }) => p.categoria_id === cat.id).length
                     return (
                       <Badge key={cat.id} className="bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] border-none text-[11px] font-medium px-2 py-0.5 rounded-md">
                         {cat.nome} ({count}{cat.vagas > 0 ? `/${cat.vagas}` : ''})
@@ -150,7 +150,7 @@ export default async function GestorRankingsPage() {
                           {edital.categorias.length > 0 && (
                             <TableCell className="py-5 px-4">
                               <span className="text-xs text-slate-500">
-                                {edital.categorias.find((c: any) => c.id === p.categoria_id)?.nome || '—'}
+                                {edital.categorias.find((c: { id: string; nome: string; vagas: number }) => c.id === p.categoria_id)?.nome || '—'}
                               </span>
                             </TableCell>
                           )}

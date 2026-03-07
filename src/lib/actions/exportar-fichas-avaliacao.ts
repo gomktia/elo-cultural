@@ -47,7 +47,17 @@ export async function exportarFichasAvaliacao(editalId: string) {
     .eq('edital_id', editalId)
     .order('nota_final', { ascending: false })
 
-  const projetosList = (projetos || []) as any[]
+  interface ProjetoExport {
+    id: string
+    titulo: string
+    numero_protocolo: string | null
+    nota_final: number | null
+    status_atual: string
+    proponente_id: string
+    profiles: unknown
+  }
+
+  const projetosList = (projetos || []) as ProjetoExport[]
 
   // Load all avaliacoes for this edital
   const projetoIds = projetosList.map(p => p.id)
@@ -56,10 +66,21 @@ export async function exportarFichasAvaliacao(editalId: string) {
     .select('id, projeto_id, avaliador_id, nota_total, status, justificativa, notas_criterios, profiles:avaliador_id(nome)')
     .in('projeto_id', projetoIds.length > 0 ? projetoIds : ['_none_'])
 
-  const avaliacoesList = (avaliacoes || []) as any[]
+  interface AvaliacaoExport {
+    id: string
+    projeto_id: string
+    avaliador_id: string
+    nota_total: number | null
+    status: string
+    justificativa: string | null
+    notas_criterios: Record<string, number> | null
+    profiles: unknown
+  }
+
+  const avaliacoesList = (avaliacoes || []) as AvaliacaoExport[]
 
   // Group avaliacoes by projeto
-  const avaliacoesByProjeto = new Map<string, any[]>()
+  const avaliacoesByProjeto = new Map<string, AvaliacaoExport[]>()
   for (const a of avaliacoesList) {
     const list = avaliacoesByProjeto.get(a.projeto_id) || []
     list.push(a)
@@ -123,9 +144,9 @@ ${projetosList.map((p, i) => {
     for (const crit of criteriosList) {
       const notasAvaliadores = avals.map(a => {
         const notas = a.notas_criterios || {}
-        return notas[crit.id] ?? ''
+        return notas[crit.id] as number | undefined
       })
-      const notasValidas = notasAvaliadores.filter(n => n !== '' && n !== null && n !== undefined).map(Number)
+      const notasValidas = notasAvaliadores.filter((n): n is number => n != null).map(Number)
       const media = notasValidas.length > 0 ? notasValidas.reduce((a, b) => a + b, 0) / notasValidas.length : 0
 
       rows += `<Row>

@@ -58,7 +58,7 @@ export default async function ProjetoDetailPage({
     .eq('projeto_id', id)
 
   const docsPendentes = (docsExigidos || []).filter(doc => {
-    const conf = (conferencias || []).find((c: any) => c.doc_exigido_id === doc.id)
+    const conf = (conferencias || []).find((c) => c.doc_exigido_id === doc.id)
     return !conf || !conf.documento_id || conf.status === 'pendente' || conf.status === 'reprovado'
   })
 
@@ -285,8 +285,8 @@ export default async function ProjetoDetailPage({
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {docsPendentes.map((doc: any) => {
-                const conf = (conferencias || []).find((c: any) => c.doc_exigido_id === doc.id)
+              {docsPendentes.map((doc) => {
+                const conf = (conferencias || []).find((c) => c.doc_exigido_id === doc.id)
                 const statusLabel = conf?.status === 'reprovado' ? 'Reprovado - reenviar' : 'Pendente'
                 const statusColor = conf?.status === 'reprovado' ? 'text-red-600 bg-red-50' : 'text-amber-600 bg-amber-50'
                 return (
@@ -309,7 +309,7 @@ export default async function ProjetoDetailPage({
 
       {/* Prazos Importantes */}
       {(() => {
-        const ed = projeto.editais as any
+        const ed = projeto.editais as unknown as { fim_recurso_inscricao?: string; fim_recurso_selecao?: string; fim_habilitacao?: string; fim_recurso_habilitacao?: string } | null
         if (!ed) return null
         const now = new Date()
         const prazos = [
@@ -319,7 +319,7 @@ export default async function ProjetoDetailPage({
           { label: 'Recurso da Habilitação', fim: ed.fim_recurso_habilitacao },
         ]
           .filter(p => p.fim && new Date(p.fim) > now)
-          .map(p => ({ ...p, dias: differenceInDays(new Date(p.fim), now) }))
+          .map(p => ({ ...p, dias: differenceInDays(new Date(p.fim!), now) }))
 
         if (prazos.length === 0) return null
         return (
@@ -336,7 +336,7 @@ export default async function ProjetoDetailPage({
                   <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white border border-amber-100">
                     <span className="text-sm font-medium text-slate-900">{p.label}</span>
                     <div className="text-right">
-                      <p className="text-xs text-slate-500">{format(new Date(p.fim), "dd/MM/yyyy", { locale: ptBR })}</p>
+                      <p className="text-xs text-slate-500">{format(new Date(p.fim!), "dd/MM/yyyy", { locale: ptBR })}</p>
                       <p className={`text-xs font-semibold ${p.dias <= 3 ? 'text-red-600' : p.dias <= 7 ? 'text-amber-600' : 'text-slate-500'}`}>
                         {p.dias === 0 ? 'Hoje!' : p.dias === 1 ? 'Amanhã' : `${p.dias} dias restantes`}
                       </p>

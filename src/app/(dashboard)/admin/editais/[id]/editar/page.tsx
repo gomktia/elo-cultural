@@ -143,7 +143,7 @@ export default function EditarEditalPage() {
 
       setEditalConfig({
         tipo_edital: edital.tipo_edital || 'fomento',
-        categorias: (cats || []).map((c: any) => ({ id: c.id, nome: c.nome, vagas: c.vagas || 0 })),
+        categorias: (cats || []).map((c: { id: string; nome: string; vagas: number | null }) => ({ id: c.id, nome: c.nome, vagas: c.vagas || 0 })),
         config_cotas: edital.config_cotas || [],
         config_desempate: edital.config_desempate || [],
         config_pontuacao_extra: edital.config_pontuacao_extra || [],

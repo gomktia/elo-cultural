@@ -20,7 +20,7 @@ export default function SuperConfiguracoesPage() {
     tenantsInativos: 0,
     tenantsSuspensos: 0,
   })
-  const [tenants, setTenants] = useState<any[]>([])
+  const [tenants, setTenants] = useState<Array<{ id: string; nome: string; dominio: string; cnpj: string | null; status: string; tema_cores: { primary?: string; secondary?: string } | null }>>([])
 
   // IA settings state
   const [iaEnabled, setIaEnabled] = useState(true)
@@ -63,7 +63,7 @@ export default function SuperConfiguracoesPage() {
         .select('*')
         .order('nome')
 
-      const list = allTenants || []
+      const list = (allTenants || []) as Array<{ id: string; nome: string; dominio: string; cnpj: string | null; status: string; tema_cores: { primary?: string; secondary?: string } | null }>
       setTenants(list)
       setStats({
         totalTenants: list.length,

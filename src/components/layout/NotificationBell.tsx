@@ -43,6 +43,7 @@ export function NotificationBell() {
     }
   }, [])
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     fetchNotificacoes()
     const interval = setInterval(fetchNotificacoes, POLL_INTERVAL)
@@ -53,6 +54,7 @@ export function NotificationBell() {
   useEffect(() => {
     if (open) fetchNotificacoes()
   }, [open, fetchNotificacoes])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   async function markAsRead(id: string) {
     await fetch('/api/notificacoes/read', {

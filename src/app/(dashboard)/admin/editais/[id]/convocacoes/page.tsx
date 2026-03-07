@@ -8,7 +8,23 @@ import { ArrowLeft, UserPlus, CheckCircle, XCircle, Clock, AlertTriangle } from 
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { convocarSuplente, atualizarConvocacao } from '@/lib/actions/convocacao-actions'
-import type { Convocacao } from '@/types/database.types'
+import type { Convocacao, Profile, Projeto } from '@/types/database.types'
+
+interface ConvocacaoJoined extends Convocacao {
+  projetos: (Pick<Projeto, 'titulo' | 'numero_protocolo' | 'nota_final'> & {
+    proponente_id: string
+    profiles: Pick<Profile, 'nome'> | null
+  }) | null
+  projeto_substituido: Pick<Projeto, 'titulo' | 'numero_protocolo'> | null
+}
+
+interface SelecionadoProjeto {
+  id: string
+  titulo: string
+  numero_protocolo: string
+  nota_final: number | null
+  status_atual: string
+}
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof CheckCircle }> = {
   convocado: { label: 'Convocado', color: 'bg-blue-50 text-blue-600', icon: Clock },
@@ -41,7 +57,7 @@ export default async function ConvocacoesPage({
     .eq('edital_id', id)
     .order('created_at', { ascending: false })
 
-  const convocacoesList = (convocacoes || []) as any[]
+  const convocacoesList = (convocacoes || []) as unknown as ConvocacaoJoined[]
 
   // Load selecionados (for convocation source)
   const { data: selecionados } = await supabase
@@ -128,7 +144,7 @@ export default async function ConvocacoesPage({
                   className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/20 focus:border-[var(--brand-primary)]"
                 >
                   <option value="">Selecione o projeto...</option>
-                  {(selecionados || []).map((p: any) => (
+                  {(selecionados || []).map((p: SelecionadoProjeto) => (
                     <option key={p.id} value={p.id}>
                       {p.numero_protocolo} — {p.titulo} (nota: {Number(p.nota_final).toFixed(2)})
                     </option>
@@ -166,12 +182,12 @@ export default async function ConvocacoesPage({
       {convocacoesList.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-xs font-medium uppercase tracking-wide text-slate-400 px-1">Histórico de Convocações</h2>
-          {convocacoesList.map((conv: any) => {
+          {convocacoesList.map((conv: ConvocacaoJoined) => {
             const config = STATUS_CONFIG[conv.status] || STATUS_CONFIG.convocado
             const prazoExpirado = conv.prazo_habilitacao && new Date(conv.prazo_habilitacao) < new Date() && conv.status === 'convocado'
-            const projeto = conv.projetos || {}
-            const substituido = conv.projeto_substituido || {}
-            const proponente = (projeto.profiles as any)?.nome || 'Proponente'
+            const projeto = conv.projetos || {} as Partial<NonNullable<ConvocacaoJoined['projetos']>>
+            const substituido = conv.projeto_substituido || {} as Partial<NonNullable<ConvocacaoJoined['projeto_substituido']>>
+            const proponente = (projeto.profiles as unknown as Pick<Profile, 'nome'> | null)?.nome || 'Proponente'
 
             return (
               <Card key={conv.id} className="border border-slate-200 shadow-sm bg-white rounded-2xl">

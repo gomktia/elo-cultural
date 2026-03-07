@@ -41,7 +41,7 @@ export default async function HabilitacaoPage({
         .limit(1)
         .single()
 
-    let aiSugestoes: Record<string, { sugestao: string; motivo: string }> = {}
+    const aiSugestoes: Record<string, { sugestao: string; motivo: string }> = {}
     if (latestExec) {
         const { data: resultados } = await supabase
             .from('triagem_ia_resultados')

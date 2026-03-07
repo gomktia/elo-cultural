@@ -57,11 +57,13 @@ export function EditalCountdown({ deadline }: EditalCountdownProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calcTimeLeft(deadline))
   const [mounted, setMounted] = useState(false)
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setMounted(true)
     const timer = setInterval(() => setTimeLeft(calcTimeLeft(deadline)), 1000)
     return () => clearInterval(timer)
   }, [deadline])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!mounted) {
     return (

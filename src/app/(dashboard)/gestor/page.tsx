@@ -74,9 +74,9 @@ export default async function GestorDashboardPage() {
     supabase.from('projetos').select('edital_id').eq('tenant_id', tenantId),
   ])
 
-  const editaisList = (editaisAtivos || []) as any[]
-  const dotacaoTotal = editaisList.reduce((sum: number, e: any) => sum + (parseFloat(e.valor_total) || 0), 0)
-  const orcamentoComprometido = (projetosSelecionados || []).reduce((sum: number, p: any) => sum + (parseFloat(p.orcamento_total) || 0), 0)
+  const editaisList = editaisAtivos || []
+  const dotacaoTotal = editaisList.reduce((sum: number, e) => sum + (parseFloat(e.valor_total) || 0), 0)
+  const orcamentoComprometido = (projetosSelecionados || []).reduce((sum: number, p) => sum + (parseFloat(p.orcamento_total) || 0), 0)
   const orcamentoPct = dotacaoTotal > 0 ? Math.min(100, Math.round((orcamentoComprometido / dotacaoTotal) * 100)) : 0
 
   const totalAvaliacoes = (avaliacoesFinalizadas || 0) + (avaliacoesPendentes || 0)
@@ -91,15 +91,15 @@ export default async function GestorDashboardPage() {
   // Category distribution
   const categoriaCounts: Record<string, number> = {}
   for (const p of projetosPorCategoria || []) {
-    const catName = (p as any).edital_categorias?.nome || 'Sem categoria'
+    const catName = (p as unknown as { edital_categorias?: { nome: string } | null }).edital_categorias?.nome || 'Sem categoria'
     categoriaCounts[catName] = (categoriaCounts[catName] || 0) + 1
   }
   const categoriaData = Object.entries(categoriaCounts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value)
 
   // Budget per edital for chart
   const orcamentoData = editaisList
-    .filter((e: any) => e.valor_total)
-    .map((e: any) => ({
+    .filter((e) => e.valor_total)
+    .map((e) => ({
       name: e.numero_edital || e.titulo?.slice(0, 15),
       dotacao: parseFloat(e.valor_total) || 0,
       comprometido: 0, // Would need per-edital calc — simplified for now
@@ -248,7 +248,7 @@ export default async function GestorDashboardPage() {
 
             {editaisList.length > 0 ? (
               <div className="space-y-2.5">
-                {editaisList.map((edital: any) => {
+                {editaisList.map((edital) => {
                   const faseIndex = faseOrder.indexOf(edital.status as FaseEdital)
                   const progressPct = faseIndex >= 0 ? Math.round(((faseIndex + 1) / faseOrder.length) * 100) : 0
                   const projCount = editalProjectCount.get(edital.id) || 0
@@ -393,7 +393,7 @@ export default async function GestorDashboardPage() {
                 <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400">Exportação PNAB Federal</h3>
               </div>
               <div className="divide-y divide-slate-100">
-                {editaisList.map((ed: any) => (
+                {editaisList.map((ed) => (
                   <div key={ed.id} className="flex items-center justify-between px-5 py-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-slate-700 truncate">{ed.numero_edital}</p>

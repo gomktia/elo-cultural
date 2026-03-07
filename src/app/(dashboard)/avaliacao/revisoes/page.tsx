@@ -27,7 +27,7 @@ export default async function RevisoesListPage() {
         .in('id', recursoIds)
     : { data: [] }
 
-  const recursoMap = new Map((recursos || []).map((r: any) => [r.id, r]))
+  const recursoMap = new Map((recursos || []).map((r) => [r.id, r]))
 
   const pendentes = (revisoes || []).filter(r => r.status !== 'revisada')
   const concluidas = (revisoes || []).filter(r => r.status === 'revisada')
@@ -91,9 +91,9 @@ export default async function RevisoesListPage() {
       {(revisoes || []).length > 0 ? (
         <div className="grid gap-3">
           {/* Show pending first */}
-          {[...pendentes, ...concluidas].map((rev: any) => {
+          {[...pendentes, ...concluidas].map((rev) => {
             const recurso = recursoMap.get(rev.recurso_id)
-            const projeto = (recurso?.projetos as any)
+            const projeto = (recurso?.projetos as unknown as { titulo?: string; editais?: { titulo?: string } } | null)
             const edital = projeto?.editais
             const criteriosCount = (rev.criterios_revisar as string[])?.length || 0
 

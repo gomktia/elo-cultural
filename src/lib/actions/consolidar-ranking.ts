@@ -523,7 +523,7 @@ export async function consolidarRanking(editalId: string) {
 
     // ── Pass 4: Remanejamento — unfilled cota slots ──
     // First try to redistribute to other cotas that have eligible candidates
-    let unfilledTotal = cotaSlots.reduce((sum, c) => sum + (c.vagas - c.filled), 0)
+    const unfilledTotal = cotaSlots.reduce((sum, c) => sum + (c.vagas - c.filled), 0)
 
     if (unfilledTotal > 0) {
       // Try filling other cotas first

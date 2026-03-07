@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ClipboardList, User, FileText } from 'lucide-react'
+import type { AvaliacaoWithProjeto } from '@/types/database.types'
 
 export default async function AvaliadoresPage() {
   const supabase = await createClient()
@@ -35,7 +36,7 @@ export default async function AvaliadoresPage() {
     current.total++
     if (av.status === 'finalizada') current.finalizadas++
     if (av.status === 'em_andamento') current.em_andamento++
-    const edital = (av as any).projetos?.editais
+    const edital = (av as unknown as AvaliacaoWithProjeto).projetos?.editais
     if (edital?.numero_edital) current.editais.add(edital.numero_edital)
     avaliacoesPorAvaliador.set(av.avaliador_id, current)
   }

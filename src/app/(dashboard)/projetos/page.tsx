@@ -46,18 +46,25 @@ export default async function MeusProjetosPage() {
       .eq('proponente_id', user.id)
       .order('data_envio', { ascending: false })
 
-    const unified = (allProjects || []).map((p: any) => ({
-      id: p.id,
-      titulo: p.titulo,
-      status_atual: p.status_atual,
-      data_envio: p.data_envio,
-      numero_protocolo: p.numero_protocolo,
-      edital_titulo: p.editais.titulo,
-      edital_numero: p.editais.numero_edital,
-      municipio: p.editais.tenants.nome,
-      dominio: p.editais.tenants.dominio,
-      tema_cores: p.editais.tenants.tema_cores as { primary: string } | null,
-    }))
+    type ProjectWithJoins = {
+      id: string; titulo: string; status_atual: string; data_envio: string; numero_protocolo: string;
+      editais: { titulo: string; numero_edital: string; tenant_id: string; tenants: { nome: string; dominio: string; tema_cores: unknown } };
+    }
+    const unified = (allProjects || []).map((p) => {
+      const proj = p as unknown as ProjectWithJoins
+      return {
+        id: proj.id,
+        titulo: proj.titulo,
+        status_atual: proj.status_atual,
+        data_envio: proj.data_envio,
+        numero_protocolo: proj.numero_protocolo,
+        edital_titulo: proj.editais.titulo,
+        edital_numero: proj.editais.numero_edital,
+        municipio: proj.editais.tenants.nome,
+        dominio: proj.editais.tenants.dominio,
+        tema_cores: proj.editais.tenants.tema_cores as { primary: string } | null,
+      }
+    })
 
     return (
       <div className="space-y-6 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">

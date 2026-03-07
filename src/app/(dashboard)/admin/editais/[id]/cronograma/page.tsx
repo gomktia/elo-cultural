@@ -59,8 +59,8 @@ export default async function CronogramaPage({
         editalId={id}
         currentStatus={e.status}
         fases={(fases as EditalFase[]) || []}
-        cancelado={(edital as any).cancelado ?? false}
-        justificativaCancelamento={(edital as any).justificativa_cancelamento}
+        cancelado={e.cancelado ?? false}
+        justificativaCancelamento={e.justificativa_cancelamento}
       />
     </div>
   )

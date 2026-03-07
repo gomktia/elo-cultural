@@ -39,7 +39,19 @@ export async function exportarResultado(editalId: string) {
     .eq('edital_id', editalId)
     .order('nota_final', { ascending: false, nullsFirst: false })
 
-  const projetosList = (projetos || []) as any[]
+  interface ResultadoProjeto {
+    id: string
+    titulo: string
+    proponente_id: string
+    categoria_id: string | null
+    nota_final: number | null
+    status_atual: string
+    classificacao_tipo: string | null
+    status_habilitacao: string | null
+    profiles: unknown
+  }
+
+  const projetosList = (projetos || []) as unknown as ResultadoProjeto[]
 
   // Load categorias
   const { data: categorias } = await supabase
@@ -47,11 +59,20 @@ export async function exportarResultado(editalId: string) {
     .select('id, nome')
     .eq('edital_id', editalId)
 
-  const catMap = new Map((categorias || []).map((c: any) => [c.id, c.nome]))
+  const catMap = new Map((categorias || []).map(c => [c.id, c.nome]))
 
   // Load all finalized avaliacoes for this edital's projects
-  const projetoIds = projetosList.map((p: any) => p.id)
-  let avaliacoes: any[] = []
+  const projetoIds = projetosList.map(p => p.id)
+
+  interface ResultadoAvaliacao {
+    id: string
+    projeto_id: string
+    avaliador_id: string
+    pontuacao_total: number | null
+    profiles: unknown
+  }
+
+  let avaliacoes: ResultadoAvaliacao[] = []
 
   if (projetoIds.length > 0) {
     const { data: avData } = await supabase
@@ -61,11 +82,11 @@ export async function exportarResultado(editalId: string) {
       .eq('status', 'finalizada')
       .eq('active', true)
 
-    avaliacoes = (avData || []) as any[]
+    avaliacoes = (avData || []) as unknown as ResultadoAvaliacao[]
   }
 
   // Group avaliacoes by projeto_id
-  const avalByProjeto = new Map<string, any[]>()
+  const avalByProjeto = new Map<string, ResultadoAvaliacao[]>()
   for (const av of avaliacoes) {
     const list = avalByProjeto.get(av.projeto_id) || []
     list.push(av)
@@ -73,7 +94,7 @@ export async function exportarResultado(editalId: string) {
   }
 
   // Sort projetos by nota_final DESC (nulls last)
-  projetosList.sort((a: any, b: any) => {
+  projetosList.sort((a, b) => {
     const na = a.nota_final ?? -1
     const nb = b.nota_final ?? -1
     return nb - na
@@ -125,8 +146,8 @@ export async function exportarResultado(editalId: string) {
     'Média Final', 'Status', 'Habilitação',
   ]
 
-  const dataRows = projetosList.map((p: any, idx: number) => {
-    const prof = p.profiles || {}
+  const dataRows = projetosList.map((p, idx: number) => {
+    const prof = (p.profiles as unknown as { nome: string } | null) || { nome: '' }
     const projetoAvals = avalByProjeto.get(p.id) || []
 
     // Get up to 3 pareceristas with their scores
@@ -134,9 +155,9 @@ export async function exportarResultado(editalId: string) {
     const parecerista2 = projetoAvals[1]
     const parecerista3 = projetoAvals[2]
 
-    const pareceristaCellValue = (av: any) => {
+    const pareceristaCellValue = (av: ResultadoAvaliacao | undefined) => {
       if (!av) return ''
-      const nome = (av.profiles as any)?.nome || 'Avaliador'
+      const nome = (av.profiles as unknown as { nome: string } | null)?.nome || 'Avaliador'
       const nota = av.pontuacao_total != null ? Number(av.pontuacao_total).toFixed(2) : '-'
       return `${nome} (${nota})`
     }

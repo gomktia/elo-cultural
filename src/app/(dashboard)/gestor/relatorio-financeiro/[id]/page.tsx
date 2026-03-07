@@ -98,8 +98,8 @@ export default async function GestorRelatorioFinanceiroPage({
         <Card>
           <CardContent className="pt-5 pb-4">
             <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Proponente</p>
-            <p className="text-sm font-semibold text-slate-900 mt-0.5">{(proponente as any)?.nome || '---'}</p>
-            <p className="text-xs text-slate-400">{(proponente as any)?.email}</p>
+            <p className="text-sm font-semibold text-slate-900 mt-0.5">{(proponente as { nome?: string; email?: string } | null)?.nome || '---'}</p>
+            <p className="text-xs text-slate-400">{(proponente as { nome?: string; email?: string } | null)?.email}</p>
           </CardContent>
         </Card>
         <Card>

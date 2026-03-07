@@ -22,16 +22,24 @@ const roleBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'de
 }
 
 export default function UsuariosAdminPage() {
-  const [usuarios, setUsuarios] = useState<any[]>([])
+  interface UsuarioRow {
+    id: string
+    nome: string | null
+    email: string | null
+    cpf_cnpj: string | null
+    role: UserRole
+    aprovado: boolean | null
+    created_at: string
+    telefone?: string | null
+    [key: string]: unknown
+  }
+
+  const [usuarios, setUsuarios] = useState<UsuarioRow[]>([])
   const [loading, setLoading] = useState(true)
   const [busca, setBusca] = useState('')
   const [atualizando, setAtualizando] = useState<string | null>(null)
   const [myRole, setMyRole] = useState<string>('proponente')
   const [filtroPendente, setFiltroPendente] = useState(false)
-
-  useEffect(() => {
-    loadUsuarios()
-  }, [])
 
   async function loadUsuarios() {
     const supabase = createClient()
@@ -52,9 +60,12 @@ export default function UsuariosAdminPage() {
       .eq('tenant_id', myProfile!.tenant_id)
       .order('created_at', { ascending: false })
 
-    setUsuarios(data || [])
+    setUsuarios((data || []) as UsuarioRow[])
     setLoading(false)
   }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { loadUsuarios() }, [])
 
   const canEditRoles = myRole === 'admin' || myRole === 'super_admin'
 

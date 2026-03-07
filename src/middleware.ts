@@ -113,7 +113,7 @@ export async function middleware(request: NextRequest) {
 
 function applyAuthProtection(
   request: NextRequest,
-  user: any,
+  user: { id: string; app_metadata?: Record<string, unknown>; user_metadata?: Record<string, unknown> } | null,
   supabaseResponse: NextResponse,
   pathname: string
 ) {

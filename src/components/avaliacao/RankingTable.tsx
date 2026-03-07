@@ -57,7 +57,7 @@ function exportToXLS(items: RankingItem[]) {
   const rows = items.map(item => {
     const base: (string | number)[] = [item.posicao, item.titulo]
     if (hasCategoria) base.push(item.categoria_nome || '—')
-    base.push(item.protocolo, item.nota_media?.toFixed(2) ?? '', item.num_avaliacoes as any)
+    base.push(item.protocolo, item.nota_media?.toFixed(2) ?? '', item.num_avaliacoes)
     if (hasClassificacao) base.push(
       item.classificacao_tipo ? (CLASSIFICACAO_LABELS[item.classificacao_tipo]?.label || item.classificacao_tipo) : '—'
     )

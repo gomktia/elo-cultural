@@ -44,7 +44,41 @@ export async function exportarPNAB(editalId: string) {
     .select('*, profiles:proponente_id(id, nome, cpf_cnpj, telefone, data_nascimento, endereco_completo, municipio, estado, raca_etnia, genero, orientacao_sexual, renda, escolaridade, pcd, tipo_deficiencia, tipo_pessoa, razao_social, nome_fantasia, representante_nome, representante_cpf)')
     .eq('edital_id', editalId)
 
-  const projetosList = (projetos || []) as any[]
+  interface PnabProfile {
+    id: string
+    nome: string
+    cpf_cnpj: string | null
+    telefone: string | null
+    data_nascimento: string | null
+    endereco_completo: string | null
+    municipio: string | null
+    estado: string | null
+    raca_etnia: string | null
+    genero: string | null
+    orientacao_sexual: string | null
+    renda: string | null
+    escolaridade: string | null
+    pcd: boolean
+    tipo_deficiencia: string | null
+    tipo_pessoa: string | null
+    razao_social: string | null
+    nome_fantasia: string | null
+    representante_nome: string | null
+    representante_cpf: string | null
+  }
+
+  interface PnabProjeto {
+    id: string
+    titulo: string
+    numero_protocolo: string | null
+    status_atual: string
+    orcamento_total: number | null
+    categoria_id: string | null
+    resumo: string | null
+    profiles: PnabProfile | null
+  }
+
+  const projetosList = (projetos || []) as unknown as PnabProjeto[]
 
   // Load categorias
   const { data: categorias } = await supabase
@@ -52,7 +86,7 @@ export async function exportarPNAB(editalId: string) {
     .select('id, nome')
     .eq('edital_id', editalId)
 
-  const catMap = new Map((categorias || []).map((c: any) => [c.id, c.nome]))
+  const catMap = new Map((categorias || []).map(c => [c.id, c.nome]))
 
   // Separate PF and PJ
   const pessoasFisicas = projetosList.filter(p => p.profiles?.tipo_pessoa !== 'juridica')
@@ -85,7 +119,7 @@ ${['CNPJ Ente', 'Título Edital', 'Número', 'Objeto', 'Modalidade', 'Valor Tota
 <Cell ss:StyleID="num"><Data ss:Type="Number">${edital.valor_total || 0}</Data></Cell>
 <Cell><Data ss:Type="Number">${projetosList.length}</Data></Cell>
 <Cell><Data ss:Type="Number">${projetosList.filter(p => p.status_atual === 'selecionado').length}</Data></Cell>
-<Cell><Data ss:Type="String">${esc((categorias || []).map((c: any) => c.nome).join(', '))}</Data></Cell>
+<Cell><Data ss:Type="String">${esc((categorias || []).map(c => c.nome).join(', '))}</Data></Cell>
 <Cell><Data ss:Type="String">${esc(JSON.stringify(edital.config_cotas || []))}</Data></Cell>
 <Cell><Data ss:Type="String"></Data></Cell>
 </Row>
@@ -98,7 +132,7 @@ ${['CNPJ Ente', 'Título Edital', 'Número', 'Objeto', 'Modalidade', 'Valor Tota
 <Table>
 <Row>${pfHeaders.map(h => `<Cell ss:StyleID="header"><Data ss:Type="String">${h}</Data></Cell>`).join('')}</Row>
 ${pessoasFisicas.map(p => {
-    const prof = p.profiles || {}
+    const prof = (p.profiles || {}) as Partial<PnabProfile>
     return `<Row>
 <Cell><Data ss:Type="String">${esc(prof.cpf_cnpj)}</Data></Cell>
 <Cell><Data ss:Type="String">${esc(prof.nome)}</Data></Cell>
@@ -131,7 +165,7 @@ ${pessoasFisicas.map(p => {
 <Table>
 <Row>${orgHeaders.map(h => `<Cell ss:StyleID="header"><Data ss:Type="String">${h}</Data></Cell>`).join('')}</Row>
 ${organizacoes.map(p => {
-    const prof = p.profiles || {}
+    const prof = (p.profiles || {}) as Partial<PnabProfile>
     return `<Row>
 <Cell><Data ss:Type="String">Pessoa Jurídica</Data></Cell>
 <Cell><Data ss:Type="String">${esc(prof.cpf_cnpj)}</Data></Cell>
@@ -153,7 +187,7 @@ ${organizacoes.map(p => {
 <Table>
 <Row>${acHeaders.map(h => `<Cell ss:StyleID="header"><Data ss:Type="String">${h}</Data></Cell>`).join('')}</Row>
 ${projetosList.map(p => {
-    const prof = p.profiles || {}
+    const prof = (p.profiles || {}) as Partial<PnabProfile>
     return `<Row>
 <Cell><Data ss:Type="String">${esc(p.numero_protocolo)}</Data></Cell>
 <Cell><Data ss:Type="String">${esc(prof.cpf_cnpj)}</Data></Cell>

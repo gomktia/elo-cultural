@@ -19,7 +19,16 @@ export async function enviarLembretesPrazos() {
     .eq('status', 'pendente_assinatura_proponente')
     .not('data_envio_para_assinatura', 'is', null)
 
-  for (const termo of (termosPendentes || []) as any[]) {
+  interface TermoPendente {
+    id: string
+    projeto_id: string
+    proponente_id: string
+    data_envio_para_assinatura: string | null
+    tenant_id: string
+    projetos: unknown
+  }
+
+  for (const termo of (termosPendentes || []) as unknown as TermoPendente[]) {
     if (!termo.data_envio_para_assinatura) continue
     const diasRestantes = diasUteisRestantes(
       new Date(new Date(termo.data_envio_para_assinatura).getTime() + 2 * 24 * 60 * 60 * 1000) // +2 days default prazo
@@ -46,7 +55,16 @@ export async function enviarLembretesPrazos() {
     .in('status', ['vigente', 'assinado'])
     .not('vigencia_fim', 'is', null)
 
-  for (const termo of (termosVigentes || []) as any[]) {
+  interface TermoVigente {
+    id: string
+    projeto_id: string
+    proponente_id: string
+    vigencia_fim: string | null
+    tenant_id: string
+    projetos: unknown
+  }
+
+  for (const termo of (termosVigentes || []) as unknown as TermoVigente[]) {
     if (!termo.vigencia_fim) continue
 
     // Check if prestação already submitted
@@ -85,7 +103,17 @@ export async function enviarLembretesPrazos() {
     .or(`fim_recurso_selecao.gte.${new Date().toISOString().split('T')[0]},fim_recurso_habilitacao.gte.${new Date().toISOString().split('T')[0]}`)
 
   // This is a simplified version - full implementation would check each recurso type
-  for (const edital of (editais || []) as any[]) {
+  interface EditalPrazo {
+    id: string
+    titulo: string
+    tenant_id: string
+    fim_recurso_inscricao: string | null
+    fim_recurso_selecao: string | null
+    fim_recurso_habilitacao: string | null
+    [key: string]: string | null | undefined
+  }
+
+  for (const edital of (editais || []) as unknown as EditalPrazo[]) {
     const deadlines = [
       { field: 'fim_recurso_inscricao', label: 'recurso de inscrição' },
       { field: 'fim_recurso_selecao', label: 'recurso de seleção' },

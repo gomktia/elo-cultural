@@ -52,7 +52,7 @@ export async function avancarEtapa(editalId: string) {
 
   if (fetchError || !edital) return { error: 'Edital não encontrado' }
 
-  const currentIndex = FASE_ORDER.indexOf(edital.status as any)
+  const currentIndex = FASE_ORDER.indexOf(edital.status as typeof FASE_ORDER[number])
   if (currentIndex === -1) return { error: 'Fase atual inválida' }
   if (currentIndex >= FASE_ORDER.length - 1) return { error: 'Edital já está na última fase' }
 
@@ -107,7 +107,7 @@ export async function reverterEtapa(editalId: string) {
 
   if (fetchError || !edital) return { error: 'Edital não encontrado' }
 
-  const currentIndex = FASE_ORDER.indexOf(edital.status as any)
+  const currentIndex = FASE_ORDER.indexOf(edital.status as typeof FASE_ORDER[number])
   if (currentIndex === -1) return { error: 'Fase atual inválida' }
   if (currentIndex <= 0) return { error: 'Edital já está na primeira fase' }
 

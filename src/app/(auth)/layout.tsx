@@ -21,7 +21,7 @@ export default async function AuthLayout({
 
   return (
     <div className="min-h-screen" style={cssVars}>
-      <TenantProvider name={tenant?.nome || null} logoUrl={(tenant as any)?.logo_url || null}>
+      <TenantProvider name={tenant?.nome || null} logoUrl={(tenant as unknown as { logo_url?: string })?.logo_url || null}>
         {children}
       </TenantProvider>
     </div>

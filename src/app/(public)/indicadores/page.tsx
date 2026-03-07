@@ -330,8 +330,8 @@ export default async function IndicadoresPage() {
               </div>
             </div>
             <div className="divide-y divide-slate-100">
-              {(projetosAprovados || []).map((proj: any, idx: number) => {
-                const edital = proj.editais
+              {(projetosAprovados || []).map((proj: { id: string; titulo: string; numero_protocolo: string; nota_final: number | null; editais: { titulo: string; numero_edital: string }[] }, idx: number) => {
+                const edital = (proj.editais as unknown as { titulo: string; numero_edital: string } | null)
                 return (
                   <div key={proj.id} className="flex items-center justify-between px-6 py-3.5 hover:bg-slate-50/50 transition-colors">
                     <div className="flex items-center gap-4 min-w-0">

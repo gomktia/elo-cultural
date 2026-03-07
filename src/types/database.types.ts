@@ -13,8 +13,12 @@ export interface Tenant {
   cnpj: string
   dominio: string
   logo_url: string | null
+  logo_rodape_url: string | null
   tema_cores: { primary: string; secondary: string }
   status: 'ativo' | 'inativo' | 'suspenso'
+  whatsapp_suporte: string | null
+  email_suporte: string | null
+  site_url: string | null
   created_at: string
   updated_at: string
   version: number
@@ -93,6 +97,11 @@ export interface Edital {
   fim_recurso_habilitacao: string | null
   inicio_impugnacao_inscritos: string | null
   fim_impugnacao_inscritos: string | null
+  inicio_avaliacao: string | null
+  fim_avaliacao: string | null
+  inicio_habilitacao: string | null
+  fim_habilitacao: string | null
+  valor_total: number | null
   config_cotas: Record<string, unknown>[] | null
   config_desempate: string[] | null
   config_pontuacao_extra: Record<string, unknown>[] | null

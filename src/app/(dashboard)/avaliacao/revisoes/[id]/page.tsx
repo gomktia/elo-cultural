@@ -32,8 +32,15 @@ export default function RevisaoDetailPage() {
 
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [revisao, setRevisao] = useState<any>(null)
-  const [projeto, setProjeto] = useState<any>(null)
+  const [revisao, setRevisao] = useState<{
+    id: string; status: string; recurso_id: string; avaliador_id: string;
+    criterios_revisar: string[]; notas_anteriores: Record<string, unknown> | null;
+    data_solicitacao: string | null;
+  } | null>(null)
+  const [projeto, setProjeto] = useState<{
+    titulo: string; numero_protocolo: string; edital_id: string; resumo: string | null;
+    recurso_protocolo: string; fundamentacao: string;
+  } | null>(null)
   const [criterios, setCriterios] = useState<CriterioRevisao[]>([])
   const [justificativa, setJustificativa] = useState('')
 
@@ -69,8 +76,8 @@ export default function RevisaoDetailPage() {
 
       if (!recurso) { setLoading(false); return }
 
-      const proj = recurso.projetos as any
-      setProjeto({ ...proj, recurso_protocolo: recurso.numero_protocolo, fundamentacao: recurso.fundamentacao })
+      const proj = recurso.projetos as unknown as { titulo: string; numero_protocolo: string; edital_id: string; resumo: string | null } | null
+      setProjeto({ ...proj!, recurso_protocolo: recurso.numero_protocolo, fundamentacao: recurso.fundamentacao })
 
       // Load criterios
       const criteriosRevisar = rev.criterios_revisar as string[]
@@ -87,7 +94,7 @@ export default function RevisaoDetailPage() {
         const notasAnteriores = (rev.notas_anteriores || {}) as Record<string, { nota: number; comentario?: string }>
 
         setCriterios(
-          (crits || []).map((c: any) => ({
+          (crits || []).map((c: { id: string; descricao: string; nota_minima: number; nota_maxima: number; peso: number }) => ({
             criterio_id: c.id,
             descricao: c.descricao,
             nota_minima: c.nota_minima,

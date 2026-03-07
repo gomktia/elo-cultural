@@ -156,7 +156,7 @@ export async function submeterRevisao({
   if (revisao.avaliador_id !== user.id) return { error: 'Voce nao e o avaliador designado para esta revisao' }
   if (revisao.status === 'revisada') return { error: 'Esta revisao ja foi concluida' }
 
-  const projetoId = (revisao.recursos as any)?.projeto_id
+  const projetoId = (revisao.recursos as unknown as { projeto_id: string } | null)?.projeto_id
   if (!projetoId) return { error: 'Projeto nao encontrado' }
 
   // Load the avaliacao
@@ -204,7 +204,7 @@ export async function submeterRevisao({
   let somaNotasPeso = 0
   let somaPesos = 0
   for (const n of allNotas || []) {
-    const peso = (n.criterios as any)?.peso || 1
+    const peso = (n.criterios as unknown as { peso: number } | null)?.peso || 1
     somaNotasPeso += Number(n.nota) * peso
     somaPesos += peso
   }
@@ -425,7 +425,7 @@ export async function getRevisaoDetail(revisaoId: string) {
   }
 
   // Load criteria details
-  const projetoData = revisao.recursos as any
+  const projetoData = revisao.recursos as unknown as { projetos: { edital_id: string } | null } | null
   const editalId = projetoData?.projetos?.edital_id
 
   const { data: criterios } = editalId
@@ -438,7 +438,7 @@ export async function getRevisaoDetail(revisaoId: string) {
 
   // Filter to only the criteria that need revision
   const criteriosRevisar = revisao.criterios_revisar as string[]
-  const criteriosFiltrados = (criterios || []).filter((c: any) => criteriosRevisar.includes(c.id))
+  const criteriosFiltrados = (criterios || []).filter(c => criteriosRevisar.includes(c.id))
 
   return {
     data: {
