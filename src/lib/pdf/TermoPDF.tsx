@@ -1,5 +1,5 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer'
 
 const styles = StyleSheet.create({
   page: {
@@ -98,6 +98,37 @@ const styles = StyleSheet.create({
     color: '#999',
     borderTop: '1 solid #eee',
     paddingTop: 8,
+  },
+  qrSection: {
+    marginTop: 30,
+    alignItems: 'center',
+    padding: 16,
+    borderTop: '1 solid #eee',
+  },
+  qrRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  qrImage: {
+    width: 80,
+    height: 80,
+  },
+  qrText: {
+    fontSize: 8,
+    color: '#666',
+    maxWidth: 300,
+  },
+  qrTitle: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  qrUrl: {
+    fontSize: 7,
+    color: '#0047AB',
+    marginTop: 2,
   },
 })
 

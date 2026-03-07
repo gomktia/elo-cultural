@@ -58,6 +58,7 @@ const navByRole: Record<UserRole, NavItem[]> = {
     { title: 'Editais', url: '/admin/editais', icon: FileText },
     { title: 'Usuários', url: '/admin/usuarios', icon: Users },
     { title: 'Avaliadores', url: '/admin/avaliadores', icon: ClipboardList },
+    { title: 'Requerimentos', url: '/admin/requerimentos', icon: FileCheck },
     { title: 'Auditoria', url: '/admin/auditoria', icon: Shield },
     { title: 'Configurações', url: '/admin/configuracoes', icon: Settings },
   ],

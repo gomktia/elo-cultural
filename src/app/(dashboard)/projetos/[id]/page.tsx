@@ -10,6 +10,7 @@ import { format, differenceInDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Users, DollarSign, Clock } from 'lucide-react'
 import type { ProjetoWithEdital, ProjetoDocumento, ProjetoEquipe, ProjetoOrcamentoItem, ProjetoCronograma } from '@/types/database.types'
+import { RequerimentoSection } from '@/components/projeto/RequerimentoSection'
 
 export default async function ProjetoDetailPage({
   params,
@@ -79,6 +80,20 @@ export default async function ProjetoDetailPage({
     .order('created_at', { ascending: false })
     .limit(1)
     .single()
+
+  // Load requerimentos
+  const { data: requerimentosData } = await supabase
+    .from('requerimentos')
+    .select('id, tipo, justificativa, valor_envolvido, status, protocolo, diligencia_count, diligencia_texto, diligencia_resposta, decisao_texto, created_at, decidido_em')
+    .eq('projeto_id', id)
+    .order('created_at', { ascending: false })
+
+  const requerimentos = (requerimentosData || []) as Array<{
+    id: string; tipo: string; justificativa: string; valor_envolvido: number | null
+    status: string; protocolo: string | null; diligencia_count: number
+    diligencia_texto: string | null; diligencia_resposta: string | null
+    decisao_texto: string | null; created_at: string; decidido_em: string | null
+  }>
 
   const editalStatus = projeto.editais?.status
 
@@ -392,6 +407,21 @@ export default async function ProjetoDetailPage({
             {(termo.status === 'assinado' || termo.status === 'vigente') && (
               <p className="text-sm text-green-600 font-medium">Termo assinado por ambas as partes.</p>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Requerimentos */}
+      {(termo || requerimentos.length > 0) && (
+        <Card className="border border-slate-200 shadow-sm bg-white rounded-2xl">
+          <CardContent className="p-5">
+            <RequerimentoSection
+              projetoId={id}
+              termoId={termo?.id || null}
+              tenantId={projeto.tenant_id}
+              requerimentos={requerimentos}
+              termoVigente={termo?.status === 'vigente' || termo?.status === 'assinado'}
+            />
           </CardContent>
         </Card>
       )}

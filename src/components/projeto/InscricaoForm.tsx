@@ -117,9 +117,22 @@ const PUBLICO_PRIORITARIO = [
   { value: 'outro', label: 'Outro' },
 ]
 
+// ── Perfil de formulário por tipo de edital ──
+type SecaoFormulario = 'objetivos' | 'equipe' | 'orcamento' | 'cronograma' | 'acessibilidade' | 'contrapartida' | 'publico' | 'divulgacao' | 'cotas'
+
+const PERFIL_FORMULARIO: Record<string, SecaoFormulario[]> = {
+  fomento: ['objetivos', 'equipe', 'orcamento', 'cronograma', 'acessibilidade', 'contrapartida', 'publico', 'divulgacao', 'cotas'],
+  premiacao: ['acessibilidade', 'publico', 'cotas'],
+  credenciamento: ['equipe'],
+  chamamento_publico: ['objetivos', 'equipe', 'orcamento', 'cronograma', 'acessibilidade', 'contrapartida', 'publico', 'divulgacao', 'cotas'],
+  cultura_viva: ['objetivos', 'equipe', 'orcamento', 'cronograma', 'acessibilidade', 'contrapartida', 'publico', 'divulgacao', 'cotas'],
+  outros: ['objetivos', 'equipe', 'orcamento', 'cronograma', 'acessibilidade', 'contrapartida', 'publico', 'divulgacao', 'cotas'],
+}
+
 interface InscricaoFormProps {
   editalId: string
   tenantId: string
+  tipoEdital?: string
 }
 
 interface Categoria {
@@ -138,7 +151,9 @@ interface CampoExtra {
   ordem: number
 }
 
-export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
+export function InscricaoForm({ editalId, tenantId, tipoEdital = 'fomento' }: InscricaoFormProps) {
+  const secoes = PERFIL_FORMULARIO[tipoEdital] || PERFIL_FORMULARIO.fomento
+  const showSecao = (s: SecaoFormulario) => secoes.includes(s)
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -402,23 +417,31 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
   return (
     <div className="space-y-6">
       {/* Step indicator */}
-      <div className="flex items-center gap-1.5">
-        {[1, 2, 3, 4, 5].map(s => (
-          <div key={s} className="flex items-center gap-1.5">
-            <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
-              s < step ? 'bg-primary text-primary-foreground' :
-              s === step ? 'bg-primary text-primary-foreground' :
-              'bg-muted text-muted-foreground'
-            }`}>
-              {s < step ? <Check className="h-4 w-4" /> : s}
-            </div>
-            <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'} hidden lg:inline`}>
-              {s === 1 ? 'Projeto' : s === 2 ? 'Detalhes' : s === 3 ? 'Equipe' : s === 4 ? 'Documentos' : 'Revisão'}
-            </span>
-            {s < 5 && <div className="h-px w-3 sm:w-6 bg-border" />}
+      {(() => {
+        const hasStep3 = showSecao('equipe') || showSecao('orcamento') || showSecao('cronograma')
+        const stepLabels: Record<number, string> = { 1: 'Projeto', 2: 'Detalhes', 4: 'Documentos', 5: 'Revisão' }
+        if (hasStep3) stepLabels[3] = 'Equipe'
+        const steps = Object.keys(stepLabels).map(Number).sort((a, b) => a - b)
+        return (
+          <div className="flex items-center gap-1.5">
+            {steps.map((s, idx) => (
+              <div key={s} className="flex items-center gap-1.5">
+                <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
+                  s < step ? 'bg-primary text-primary-foreground' :
+                  s === step ? 'bg-primary text-primary-foreground' :
+                  'bg-muted text-muted-foreground'
+                }`}>
+                  {s < step ? <Check className="h-4 w-4" /> : idx + 1}
+                </div>
+                <span className={`text-sm ${s === step ? 'font-medium' : 'text-muted-foreground'} hidden lg:inline`}>
+                  {stepLabels[s]}
+                </span>
+                {idx < steps.length - 1 && <div className="h-px w-3 sm:w-6 bg-border" />}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )
+      })()}
 
       {/* Step 1: Basic Project Data */}
       {step === 1 && (
@@ -512,6 +535,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
               />
             </div>
 
+            {showSecao('objetivos') && (
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Objetivos</Label>
               <Textarea
@@ -522,7 +546,9 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
+            )}
 
+            {showSecao('objetivos') && (
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Metas</Label>
               <Textarea
@@ -533,6 +559,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
+            )}
 
             {/* Campos extras do edital */}
             {camposExtras.length > 0 && (
@@ -636,6 +663,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
           </CardHeader>
           <CardContent className="space-y-5">
             {/* Publico */}
+            {showSecao('publico') && (<>
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
                 <Users className="h-3 w-3" /> Perfil do Público
@@ -669,6 +697,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 ))}
               </div>
             </div>
+            </>)}
 
             {/* Local e Periodo */}
             <div className="space-y-2">
@@ -707,6 +736,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             </div>
 
             {/* Orcamento */}
+            {showSecao('orcamento') && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Orçamento Total (R$)</Label>
@@ -720,7 +750,9 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 />
               </div>
             </div>
+            )}
 
+            {showSecao('cronograma') && (
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Cronograma de Execução</Label>
               <Textarea
@@ -731,8 +763,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
+            )}
 
             {/* Divulgacao */}
+            {showSecao('divulgacao') && (
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide flex items-center gap-2">
                 <Megaphone className="h-3 w-3" /> Estratégia de Divulgação
@@ -745,8 +779,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
+            )}
 
             {/* Contrapartida Social */}
+            {showSecao('contrapartida') && (
             <div className="space-y-2">
               <Label className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Contrapartida Social</Label>
               <Textarea
@@ -757,6 +793,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 className="rounded-2xl border-slate-200 bg-slate-50/50 text-sm"
               />
             </div>
+            )}
 
             {/* Outras fontes */}
             <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-200">
@@ -802,6 +839,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             </div>
 
             {/* Acessibilidade (Fase 1.5) */}
+            {showSecao('acessibilidade') && (
             <div className="space-y-4 p-5 rounded-2xl border border-violet-100 bg-violet-50/30">
               <div className="flex items-center gap-2">
                 <Accessibility className="h-3.5 w-3.5 text-violet-500" />
@@ -882,8 +920,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 />
               </div>
             </div>
+            )}
 
             {/* Cotas */}
+            {showSecao('cotas') && (
             <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-200">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
@@ -907,13 +947,14 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
                 </Select>
               )}
             </div>
+            )}
 
             <div className="flex justify-between">
               <Button variant="outline" onClick={() => setStep(1)} className="rounded-xl">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar
               </Button>
-              <Button onClick={() => setStep(3)} className="rounded-xl">
+              <Button onClick={() => setStep(showSecao('equipe') ? 3 : 4)} className="rounded-xl">
                 Próximo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -923,14 +964,17 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
       )}
 
       {/* Step 3: Equipe + Orcamento + Cronograma */}
-      {step === 3 && (
+      {step === 3 && (showSecao('equipe') || showSecao('orcamento') || showSecao('cronograma')) && (
         <Card className="border border-slate-200 rounded-2xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Equipe, Orçamento e Cronograma</CardTitle>
+            <CardTitle className="text-lg font-semibold">
+              {[showSecao('equipe') && 'Equipe', showSecao('orcamento') && 'Orçamento', showSecao('cronograma') && 'Cronograma'].filter(Boolean).join(', ')}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
 
             {/* === EQUIPE (Fase 1.6) === */}
+            {showSecao('equipe') && (<>
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Users className="h-3.5 w-3.5 text-blue-500" />
@@ -955,8 +999,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
 
               <EquipeAddForm onAdd={(m) => setEquipe(prev => [...prev, m])} />
             </div>
+            </>)}
 
             {/* === ORCAMENTO (Fase 1.7) === */}
+            {showSecao('orcamento') && (
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2">
                 <DollarSign className="h-3.5 w-3.5 text-emerald-500" />
@@ -1015,8 +1061,10 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
 
               <OrcamentoAddForm onAdd={(item) => setOrcamento(prev => [...prev, item])} />
             </div>
+            )}
 
             {/* === CRONOGRAMA (Fase 1.8) === */}
+            {showSecao('cronograma') && (
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2">
                 <Clock className="h-3.5 w-3.5 text-amber-500" />
@@ -1058,6 +1106,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
 
               <CronogramaAddForm onAdd={(item) => setCronograma(prev => [...prev, item])} />
             </div>
+            )}
 
             <div className="flex justify-between pt-2">
               <Button variant="outline" onClick={() => setStep(2)} className="rounded-xl">
@@ -1085,7 +1134,7 @@ export function InscricaoForm({ editalId, tenantId }: InscricaoFormProps) {
             <DocumentUpload tipo="orcamento" label="Planilha Orçamentária" tenantId={tenantId} onUpload={handleDocUpload} />
             <DocumentUpload tipo="complementar" label="Documentos Complementares" tenantId={tenantId} onUpload={handleDocUpload} />
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(3)} className="rounded-xl">
+              <Button variant="outline" onClick={() => setStep((showSecao('equipe') || showSecao('orcamento') || showSecao('cronograma')) ? 3 : 2)} className="rounded-xl">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar
               </Button>

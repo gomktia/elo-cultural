@@ -1,9 +1,10 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { InscricaoForm } from '@/components/projeto/InscricaoForm'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft } from 'lucide-react'
@@ -12,6 +13,20 @@ function NovoProjetoContent() {
   const searchParams = useSearchParams()
   const editalId = searchParams.get('edital') || ''
   const tenantId = searchParams.get('tenant') || ''
+  const [tipoEdital, setTipoEdital] = useState<string>('fomento')
+
+  useEffect(() => {
+    if (!editalId) return
+    const supabase = createClient()
+    supabase
+      .from('editais')
+      .select('tipo_edital')
+      .eq('id', editalId)
+      .single()
+      .then(({ data }) => {
+        if (data?.tipo_edital) setTipoEdital(data.tipo_edital)
+      })
+  }, [editalId])
 
   if (!editalId || !tenantId) {
     return (
@@ -21,7 +36,7 @@ function NovoProjetoContent() {
     )
   }
 
-  return <InscricaoForm editalId={editalId} tenantId={tenantId} />
+  return <InscricaoForm editalId={editalId} tenantId={tenantId} tipoEdital={tipoEdital} />
 }
 
 export default function NovoProjetoPage() {
